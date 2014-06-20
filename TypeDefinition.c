@@ -20,9 +20,9 @@ NamedElement* newPoly_TypeDefinition()
 	pTypeDefObj->superTypes = hashmap_new();
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
-	pTypeDefObj->AddSuperTypes = AddSuperTypes;
+	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
 	pTypeDefObj->RemoveDeployUnit = TypeDefinition_RemoveDeployUnit;
-	pTypeDefObj->RemoveSuperTypes = RemoveSuperTypes;
+	pTypeDefObj->RemoveSuperTypes = TypeDefinition_RemoveSuperTypes;
 	pObj->MetaClassName = TypeDefinition_MetaClassName;
 	pObj->InternalGetKey = TypeDefinition_InternalGetKey;
 	pObj->Delete = deletePoly_TypeDefinition;
@@ -54,9 +54,9 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->superTypes = hashmap_new();
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
-	pTypeDefObj->AddSuperTypes = AddSuperTypes;
+	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
 	pTypeDefObj->RemoveDeployUnit = TypeDefinition_RemoveDeployUnit;
-	pTypeDefObj->RemoveSuperTypes = RemoveSuperTypes;
+	pTypeDefObj->RemoveSuperTypes = TypeDefinition_RemoveSuperTypes;
 	pTypeDefObj->MetaClassName = TypeDefinition_MetaClassName;
 	pTypeDefObj->InternalGetKey = TypeDefinition_InternalGetKey;
 	pTypeDefObj->Delete = delete_TypeDefinition;
@@ -104,7 +104,7 @@ void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit* ptr
 	free(ptr);
 }
 
-void AddSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
+void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
 {
 	TypeDefinition* container = (TypeDefinition*)ptr;
 	

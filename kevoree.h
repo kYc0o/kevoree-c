@@ -9,3 +9,7 @@
 #include "Repository.h"
 #include "TypedElement.h"
 #include "TypeLibrary.h"
+#include "PortTypeRef.h"
+#include "PortType.h"
+#include "PortTypeMapping.h"
+#include "ComponentType.h"

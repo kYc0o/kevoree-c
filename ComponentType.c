@@ -154,7 +154,54 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 		}
 	}
 }
-void ComponentType_RemoveRequired(ComponentType* const this, PortTypeRef* ptr);
-void ComponentType_RemoveProvided(ComponentType* const this, PortTypeRef* ptr);
-void deletePoly_ComponentType(TypeDefinition* const this);
-void delete_ComponentType(ComponentType* const this);
+
+void ComponentType_RemoveRequired(ComponentType* const this, PortTypeRef* ptr)
+{
+	PortTypeRef* container = (PortTypeRef*)ptr;
+
+	if(container->InternalGetKey(container) == NULL)
+	{
+		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
+	}
+	else
+	{
+		hashmap_remove(this->required, container->InternalGetKey(container));
+		/*container->setEContainer(NULL,NULL,"");*/
+	}
+}
+
+void ComponentType_RemoveProvided(ComponentType* const this, PortTypeRef* ptr)
+{
+	PortTypeRef* container = (PortTypeRef*)ptr;
+
+	if(container->InternalGetKey(container) == NULL)
+	{
+		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
+	}
+	else
+	{
+		hashmap_remove(this->provided, container->InternalGetKey(container));
+		/*container->setEContainer(NULL,NULL,"");*/
+	}
+}
+
+void deletePoly_ComponentType(TypeDefinition* const this)
+{
+	ComponentType* pCompTypeObj;
+	pCompTypeObj = this->pDerivedObj;
+	/*destroy derived obj*/
+	hashmap_free(pCompTypeObj->required);
+	hashmap_free(pCompTypeObj->provided);
+	free(pCompTypeObj);
+	/*destroy base Obj*/
+	delete_TypeDefinition(this);
+}
+void delete_ComponentType(ComponentType* const this)
+{
+	/* destroy base object */
+	delete_TypeDefinition(this->super);
+	/* destroy data memebers */
+	hashmap_free(this->required);
+	hashmap_free(this->provided);
+	free(this);
+}

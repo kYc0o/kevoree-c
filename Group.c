@@ -78,7 +78,7 @@ char* Group_InternalGetKey(Group* const this)
 	return internalKey;
 }
 
-char* Goup_MetaClassName(Group* const this)
+char* Group_MetaClassName(Group* const this)
 {
 	char* name;
 

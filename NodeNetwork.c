@@ -60,6 +60,16 @@ char* NodeNetwork_MetaClassName(NodeNetwork* const this)
 	return name;
 }
 
+NodeLink* NodeNetwork_FindLinkByID(NodeNetwork* const this, char* id)
+{
+	NodeLink* value;
+
+	if(hashmap_get(this->link, id, (void**)(&value)) == MAP_OK)
+		return value;
+	else
+		return NULL;
+}
+
 /*void NodeNetwork::addlink(NodeLink *ptr)*/
 void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 {

@@ -1,4 +1,4 @@
-#include "DefaultFactorykevoree.h"
+/*#include "DefaultFactorykevoree.h"*/
 //#include "Comparekevoree.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -133,17 +133,23 @@ int main(void)
 
 	/*TypeDefinition *comtype  = factory.createComponentType();
 	comtype->name = "Light";
-	comtype->abstract = false;
-	TypeDefinition* comtype = new_ComponentType
+	comtype->abstract = false;*/
+	TypeDefinition* comtype = newPoly_ComponentType();
+	strcpy(comtype->super->name, "Light");
+	comtype->abstract = 0;
 	
 	
-	PortTypeRef *reglight = new PortTypeRef();
+	/*PortTypeRef *reglight = new PortTypeRef();
 	reglight->name ="port";
-	reglight->optional = true;
+	reglight->optional = true;*/
+	PortTypeRef* reglight = new_PortTypeRef();
+	strcpy(reglight->super->name, "port");
+	reglight->optional = 1;
 
-	((ComponentType*)comtype)->addrequired(reglight);
+	/*((ComponentType*)comtype)->addrequired(reglight);*/
+	((ComponentType*)comtype->pDerivedObj)->AddRequired((ComponentType*)comtype->pDerivedObj, reglight);
 
-	DictionaryType *typegroup2= factory.createDictionaryType();
+	/*DictionaryType *typegroup2= factory.createDictionaryType();
 	DictionaryAttribute *attport2 = factory.createDictionaryAttribute();
 	attport2->optional = false;
 	attport2->datatype = "Boolean";
@@ -163,39 +169,46 @@ int main(void)
 	attport3->defaultValue = "7";
 
 	typegroup2->addattributes(attport3);
-	comtype->adddictionaryType(typegroup2);
+	comtype->adddictionaryType(typegroup2);*/
 
 
-	DeployUnit *dc =factory.createDeployUnit();
+	/*DeployUnit *dc =factory.createDeployUnit();
 	dc->name = "LightComponent";
 	dc->groupName = "org.kevoree.library";
 	dc->version = "1.0.0-SNAPSHOT";
-	dc->type ="so";
+	dc->type ="so";*/
+	DeployUnit* dc = new_DeployUnit();
+	strcpy(dc->super->name, "LightComponent");
+	strcpy(dc->groupName, "org.kevoree.library");
+	strcpy(dc->version,"1.0.0-SNAPSHOT");
+	strcpy(dc->type,"ce");
 
-	comtype->adddeployUnit(dc);
+	/*comtype->adddeployUnit(dc);*/
+	comtype->AddDeployUnit(comtype, dc);
 
-
-
-
-
-	node0->addtypeDefinition(nodetype);*/
+	/*node0->addtypeDefinition(nodetype);*/
+	node0->super->AddTypeDefinition(node0->super, nodetype);
 
 
 	/* Temperature */
 	/*TypeDefinition *anenotype  = factory.createComponentType();
 	anenotype->name = "Temperature";
-	anenotype->abstract = false;
+	anenotype->abstract = false;*/
+	TypeDefinition* anenotype = newPoly_ComponentType();
+	strcpy(anenotype->super->name, "Temperature");
+	anenotype->abstract = 0;
 
-	PortTypeRef *reg = new PortTypeRef();
+	/*PortTypeRef *reg = new PortTypeRef();
 	reg->name ="port";
-	reg->optional = true;
+	reg->optional = true;*/
+	PortTypeRef* reg = new_PortTypeRef();
+	strcpy(reg->super->name, "port");
+	reg->optional = 1;
 
-	((ComponentType*)anenotype)->addrequired(reg);
+	/*((ComponentType*)anenotype)->addrequired(reg);*/
+	((ComponentType*)comtype->pDerivedObj)->AddRequired((ComponentType*)comtype->pDerivedObj, reg);
 
-
-
-
-	DictionaryType *typeanomo= factory.createDictionaryType();
+	/*DictionaryType *typeanomo= factory.createDictionaryType();
 	anenotype->adddictionaryType(typeanomo);
 
 	DictionaryAttribute *attportanom = factory.createDictionaryAttribute();
@@ -204,29 +217,41 @@ int main(void)
 	attportanom->fragmentDependant = false;
 	attportanom->name ="pin";
 	attportanom->defaultValue = "7";
-	typeanomo->addattributes(attportanom);
+	typeanomo->addattributes(attportanom);*/
 
-	DeployUnit *dcano =factory.createDeployUnit();
+	/*DeployUnit *dcano =factory.createDeployUnit();
 	dcano->name = "TemperatureComponent";
 	dcano->groupName = "org.kevoree.library";
 	dcano->version = "1.0.0-SNAPSHOT";
 	dcano->type ="so";*/
+	DeployUnit* dcano = new_DeployUnit();
+	strcpy(dcano->super->name, "TemperatureComponent");
+	strcpy(dcano->groupName, "org.kevoree.library");
+	strcpy(dcano->version,"1.0.0-SNAPSHOT");
+	strcpy(dcano->type,"ce");
 
 	/* GW  */
 
 	/*TypeDefinition *gwMQTTtype  = factory.createComponentType();
 	gwMQTTtype->name = "WebSocketGatewayMQTT";
-	gwMQTTtype->abstract = false;
+	gwMQTTtype->abstract = false;*/
+	TypeDefinition* gwMQTTtype = newPoly_ComponentType();
+	strcpy(gwMQTTtype->super->name, "WebSocketGatewayMQTT");
+	gwMQTTtype->abstract = 0;
 
-
-	DeployUnit *dcMQTTgw =factory.createDeployUnit();
+	/*DeployUnit *dcMQTTgw =factory.createDeployUnit();
 	dcMQTTgw->name = "WebSocketGatewayMQTT";
 	dcMQTTgw->groupName = "org.kevoree.library";
 	dcMQTTgw->version = "1.0.0-SNAPSHOT";
-	dcMQTTgw->type ="so";
+	dcMQTTgw->type ="so";*/
+	DeployUnit* dcMQTTgw = new_DeployUnit();
+	strcpy(dcMQTTgw->super->name, "WebSocketGatewayMQTT");
+	strcpy(dcMQTTgw->groupName, "org.kevoree.library");
+	strcpy(dcMQTTgw->version,"1.0.0-SNAPSHOT");
+	strcpy(dcMQTTgw->type,"ce");
 
 
-	DictionaryType *typegwMQTT= factory.createDictionaryType();
+	/*DictionaryType *typegwMQTT= factory.createDictionaryType();
 	DictionaryAttribute *attportGW = factory.createDictionaryAttribute();
 	attportGW->optional = false;
 	attportGW->datatype = "int";
@@ -256,32 +281,46 @@ int main(void)
 	attportGW3->defaultValue = "localhost";
 	typegwMQTT->addattributes(attportGW3);
 
-	gwMQTTtype->adddictionaryType(typegwMQTT);
+	gwMQTTtype->adddictionaryType(typegwMQTT);*/
 
 
-	gwMQTTtype->adddeployUnit(dcMQTTgw);
+	/*gwMQTTtype->adddeployUnit(dcMQTTgw);*/
+	gwMQTTtype->AddDeployUnit(gwMQTTtype, dcMQTTgw);
 
 
-	model->addtypeDefinitions(anenotype);
+	/*model->addtypeDefinitions(anenotype);
 	model->addtypeDefinitions(grouptype);
 	model->addtypeDefinitions(nodetype);
 	model->addtypeDefinitions(comtype);
-	model->addtypeDefinitions(gwMQTTtype);
+	model->addtypeDefinitions(gwMQTTtype);*/
+	model->AddTypeDefinitions(model, anenotype);
+	model->AddTypeDefinitions(model, grouptype);
+	model->AddTypeDefinitions(model, nodetype);
+	model->AddTypeDefinitions(model, comtype);
+	model->AddTypeDefinitions(model, gwMQTTtype);
 
-	model->adddeployUnits(d);
+	/*model->adddeployUnits(d);
 	model->adddeployUnits(dg);
 	model->adddeployUnits(dc);
 	model->adddeployUnits(dcano);
-	model->adddeployUnits(dcMQTTgw);
+	model->adddeployUnits(dcMQTTgw);*/
+	model->AddDeployUnits(model, d);
+	model->AddDeployUnits(model, dg);
+	model->AddDeployUnits(model, dc);
+	model->AddDeployUnits(model, dcano);
+	model->AddDeployUnits(model, dcMQTTgw);
 
-	model->addnodes(node0);
+	/*model->addnodes(node0);*/
+	model->AddNodes(model, node0);
 
-	model->addgroups(group);
+	/*model->addgroups(group);
 	group->addsubNodes(node0);
-	node0->addgroups(group);
+	node0->addgroups(group);*/
+	model->AddGroups(model, group);
+	group->AddSubNodes(group, node0);
+	node0->AddGroups(node0, group);
 
-
-	kb->setBootstrapModel(model); // boostrapmodel
+	/*kb->setBootstrapModel(model); // boostrapmodel
 	kb->start();
 
 

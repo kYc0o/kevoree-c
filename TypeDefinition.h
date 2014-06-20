@@ -44,10 +44,10 @@ typedef struct _TypeDefinition {
 char* TypeDefinition_InternalGetKey(TypeDefinition* const this);
 void TypeDefinition_AddDeployUnit(TypeDefinition* const this, DeployUnit *ptr);
 /*void adddictionaryType(DictionaryType *ptr);*/
-void AddSuperTypes(TypeDefinition* const this, TypeDefinition *ptr);
+void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition *ptr);
 void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit *ptr);
 /*void removedictionaryType(DictionaryType *ptr);*/
-void RemoveSuperTypes(TypeDefinition* const this, TypeDefinition *ptr);
+void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition *ptr);
 char* TypeDefinition_MetaClassName(TypeDefinition* const this);
 NamedElement* newPoly_TypeDefinition(void);
 TypeDefinition* new_TypeDefinition(void);
