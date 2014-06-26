@@ -15,7 +15,8 @@ NodeLink* new_NodeLink()
 	pObj->pDerivedObj = pObj;
 
 	/*pObj->generated_KMF_ID = Uuid::getSingleton().generateUUID();*/
-	pObj->networkProperties = hashmap_new();
+	/*pObj->networkProperties = hashmap_new();*/
+	pObj->networkProperties = NULL;
 	
 	pObj->InternalGetKey = NodeLink_InternalGetKey;
 	pObj->MetaClassName = NodeLink_MetaClassName;
@@ -80,9 +81,14 @@ void NodeLink_AddNetworkProperties(NodeLink* const this, NetworkProperty* ptr)
 	else
 	{
 		/*if(networkProperties.find(container->internalGetKey()) == networkProperties.end())*/
+		if(this->networkProperties == NULL)
+		{
+			this->networkProperties = hashmap_new();
+		}
 		if(hashmap_get(this->networkProperties, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*networkProperties[container->internalGetKey()]=ptr;*/
+			container = (NetworkProperty*)ptr;
 			hashmap_put(this->networkProperties, container->InternalGetKey(container), ptr);
 			/*any ptr_any = container;
 			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"networkProperties",ptr_any);

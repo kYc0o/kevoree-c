@@ -19,7 +19,8 @@ Instance* newPoly_Group()
 	pObj->InternalGetKey = Group_InternalGetKey;
 	pObj->MetaClassName = Group_MetaClassName;
 	
-	pGroupObj->subNodes = hashmap_new();
+	/*pGroupObj->subNodes = hashmap_new();*/
+	pGroupObj->subNodes = NULL;;
 	
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
@@ -51,7 +52,8 @@ Group* new_Group()
 	pGroupObj->InternalGetKey = Group_InternalGetKey;
 	pGroupObj->MetaClassName = Group_MetaClassName;
 	
-	pGroupObj->subNodes = hashmap_new();
+	/*pGroupObj->subNodes = hashmap_new();*/
+	pGroupObj->subNodes = NULL;
 	
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
@@ -102,9 +104,14 @@ void Group_AddSubNodes(Group* const this, ContainerNode* ptr)
 	else
 	{
 		/*if(subNodes.find(container->internalGetKey()) == subNodes.end())*/
+		if(this->subNodes == NULL)
+		{
+			this->subNodes = hashmap_new();
+		}
 		if(hashmap_get(this->subNodes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*subNodes[container->internalGetKey()]=ptr;*/
+			container = (ContainerNode*)ptr;
 			hashmap_put(this->subNodes, container->InternalGetKey(container), ptr);
 		}
 	}

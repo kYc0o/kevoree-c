@@ -15,16 +15,27 @@ ContainerRoot* new_ContainerRoot(void)
 	pObj->pDerivedObj = pObj;
 
 	/*pObj->generated_KMF_ID = Uuid::getSingleton().generateUUID();*/
-	pObj->nodes = hashmap_new();
+	/*pObj->nodes = hashmap_new();
 	pObj->typeDefinitions = hashmap_new();
 	pObj->repositories = hashmap_new();
 	pObj->dataTypes = hashmap_new();
-	pObj->libraries = hashmap_new();
+	pObj->libraries = hashmap_new();*/
 	/*pObj->hubs = hashmap_new();
 	pObj->mBindings = hashmap_new();*/
-	pObj->deployUnits = hashmap_new();
+	/*pObj->deployUnits = hashmap_new();
 	pObj->nodeNetworks = hashmap_new();
-	pObj->groups = hashmap_new();
+	pObj->groups = hashmap_new();*/
+	pObj->nodes = NULL;
+	pObj->typeDefinitions = NULL;
+	pObj->repositories = NULL;
+	pObj->dataTypes = NULL;
+	pObj->libraries = NULL;
+	/*pObj->hubs = NULL;
+	pObj->mBindings = NULL;*/
+	pObj->deployUnits = NULL;
+	pObj->nodeNetworks = NULL;
+	pObj->groups = NULL;
+	
 	
 	pObj->InternalGetKey = ContainerRoot_InternalGetKey;
 	pObj->MetaClassName = ContainerRoot_MetaClassName;
@@ -201,8 +212,13 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 	}
 	else
 	{
+		if(this->nodes == NULL)
+		{
+			this->nodes = hashmap_new();
+		}
 		if(hashmap_get(this->nodes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (ContainerNode*)ptr;
 			hashmap_put(this->nodes, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -218,8 +234,13 @@ void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition*
 	}
 	else
 	{
+		if(this->typeDefinitions == NULL)
+		{
+			this->typeDefinitions = hashmap_new();
+		}
 		if(hashmap_get(this->typeDefinitions, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (TypeDefinition*)ptr;
 			hashmap_put(this->typeDefinitions, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -235,8 +256,13 @@ void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 	}
 	else
 	{
+		if(this->repositories == NULL)
+		{
+			this->repositories = hashmap_new();
+		}
 		if(hashmap_get(this->repositories, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (Repository*)ptr;
 			hashmap_put(this->repositories, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -252,8 +278,13 @@ void ContainerRoot_AddDataTypes(ContainerRoot* const this, TypedElement* ptr)
 	}
 	else
 	{
+		if(this->dataTypes == NULL)
+		{
+			this->dataTypes = hashmap_new();
+		}
 		if(hashmap_get(this->dataTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (TypedElement*)ptr;
 			hashmap_put(this->dataTypes, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -269,8 +300,13 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 	}
 	else
 	{
+		if(this->libraries == NULL)
+		{
+			this->libraries = hashmap_new();
+		}
 		if(hashmap_get(this->libraries, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (TypeLibrary*)ptr;
 			hashmap_put(this->libraries, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -285,8 +321,13 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 	}
 	else
 	{
+		if(this->hubs == NULL)
+		{
+			this->hubs = hashmap_new();
+		}
 		if(hashmap_get(this->hubs, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (Channel*)ptr;
 			hashmap_put(this->hubs, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -301,8 +342,13 @@ void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 	}
 	else
 	{
+		if(this->mBindings == NULL)
+		{
+			this->mBindings = hashmap_new();
+		}
 		if(hashmap_get(this->mBindings, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (MBinding*)ptr;
 			hashmap_put(this->mBindings, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -318,8 +364,13 @@ void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 	}
 	else
 	{
+		if(this->deployUnits == NULL)
+		{
+			this->deployUnits = hashmap_new();
+		}
 		if(hashmap_get(this->deployUnits, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (DeployUnit*)ptr;
 			hashmap_put(this->deployUnits, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -335,8 +386,13 @@ void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 	}
 	else
 	{
+		if(this->nodeNetworks == NULL)
+		{
+			this->nodeNetworks = hashmap_new();
+		}
 		if(hashmap_get(this->nodeNetworks, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (NodeNetwork*)ptr;
 			hashmap_put(this->nodeNetworks, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -352,8 +408,13 @@ void ContainerRoot_AddGroups(ContainerRoot* const this, Group* ptr)
 	}
 	else
 	{
+		if(this->groups == NULL)
+		{
+			this->groups = hashmap_new();
+		}
 		if(hashmap_get(this->groups, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (Group*)ptr;
 			hashmap_put(this->groups, container->InternalGetKey(container), ptr);
 		}
 	}

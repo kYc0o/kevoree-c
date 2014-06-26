@@ -17,7 +17,8 @@ NamedElement* newPoly_TypeDefinition()
 	pObj->pDerivedObj = pTypeDefObj; /* Pointing to derived object */
 
 	pTypeDefObj->deployUnits = NULL;
-	pTypeDefObj->superTypes = hashmap_new();
+	/*pTypeDefObj->superTypes = hashmap_new();*/
+	pTypeDefObj->superTypes = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
 	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
@@ -46,12 +47,13 @@ TypeDefinition* new_TypeDefinition()
 		return NULL;
 	}
 
-	/*pObj->pDerivedObj = pTypeDefObj; /* Pointing to derived object */
+	/*pObj->pDerivedObj = pTypeDefObj; Pointing to derived object */
 	pTypeDefObj->super = pObj; /* Pointing to base object */
 	
 
 	pTypeDefObj->deployUnits = NULL;
-	pTypeDefObj->superTypes = hashmap_new();
+	/*pTypeDefObj->superTypes = hashmap_new();*/
+	pTypeDefObj->superTypes = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
 	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
@@ -115,9 +117,14 @@ void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* pt
 	else
 	{
 		/*if(superTypes.find(container->internalGetKey()) == superTypes.end())*/
+		if(this->superTypes == NULL)
+		{
+			this->superTypes = hashmap_new();
+		}
 		if(hashmap_get(this->superTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*superTypes[container->internalGetKey()]=ptr;*/
+			container = (TypeDefinition*)ptr;
 			hashmap_put(this->superTypes, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -126,7 +133,6 @@ void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* pt
 void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
 {
     TypeDefinition* container = (TypeDefinition*)ptr;
-    int error;
     
     /*if(container->internalGetKey().empty())*/
 	if(container->InternalGetKey(container) == NULL)

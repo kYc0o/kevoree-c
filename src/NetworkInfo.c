@@ -16,7 +16,9 @@ NamedElement* newPoly_NetworkInfo()
 
 	pObj->pDerivedObj = pNetInfoObj; /* Pointing to derived object */
 	
-	pNetInfoObj->values = hashmap_new();
+	/*pNetInfoObj->values = hashmap_new();*/
+	pNetInfoObj->values = NULL;
+	
 	pNetInfoObj->AddValues = NetworkInfo_AddValues;
 	pNetInfoObj->RemoveValues = NetworkInfo_RemoveValues;
 	pNetInfoObj->FindValuesByID = NetworkInfo_FindValuesByID;
@@ -48,7 +50,9 @@ NetworkInfo* new_NetworkInfo()
 	/*pObj->pDerivedObj = pNetInfoObj;  Pointing to derived object */
 	pNetInfoObj->super = pObj;
 	
-	pNetInfoObj->values = hashmap_new();
+	/*pNetInfoObj->values = hashmap_new();*/
+	pNetInfoObj->values = NULL;
+	
 	pNetInfoObj->AddValues = NetworkInfo_AddValues;
 	pNetInfoObj->RemoveValues = NetworkInfo_RemoveValues;
 	pNetInfoObj->FindValuesByID = NetworkInfo_FindValuesByID;
@@ -100,9 +104,14 @@ void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr)
 	}else
 	{
 		/*if(values.find(container->internalGetKey()) == values.end())*/
+		if(this->values == NULL)
+		{
+			this->values = hashmap_new();
+		}
 		if(hashmap_get(this->values, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*values[container->internalGetKey()]=ptr;*/
+			container = (NetworkProperty*)ptr;
 			hashmap_put(this->values, container->InternalGetKey(container), ptr);
 			/*any ptr_any = container;
 			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"values",ptr_any);

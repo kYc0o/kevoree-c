@@ -16,7 +16,8 @@ NamedElement* newPoly_PortTypeRef(void)
 
 	pObj->pDerivedObj = pPortTypeRefObj; /* Pointing to derived object */
 	
-	pPortTypeRefObj->mappings = hashmap_new();
+	/*pPortTypeRefObj->mappings = hashmap_new();*/
+	pPortTypeRefObj->mappings = NULL;
 	pPortTypeRefObj->ref = NULL;
 	
 	pPortTypeRefObj->FindMappingsByID = PortTypeRef_FindMappingsByID;
@@ -51,7 +52,8 @@ PortTypeRef* new_PortTypeRef(void)
 	/*pObj->pDerivedObj = pPortTypeRefObj;  Pointing to derived object */
 	pPortTypeRefObj->super = pObj;
 	
-	pPortTypeRefObj->mappings = hashmap_new();
+	/*pPortTypeRefObj->mappings = hashmap_new();*/
+	pPortTypeRefObj->mappings = NULL;
 	pPortTypeRefObj->ref = NULL;
 	
 	pPortTypeRefObj->FindMappingsByID = PortTypeRef_FindMappingsByID;
@@ -119,8 +121,13 @@ void PortTypeRef_AddMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 	}
 	else
 	{
+		if(this->mappings == NULL)
+		{
+			this->mappings = hashmap_new();
+		}
 		if(hashmap_get(this->mappings, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (PortTypeMapping*)ptr;
 			hashmap_put(this->mappings, container->InternalGetKey(container), ptr);
 		}
 	}

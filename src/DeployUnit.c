@@ -18,7 +18,8 @@ NamedElement* newPoly_DeployUnit()
 	pObj->MetaClassName = DeployUnit_MetaClassName;
 	pObj->InternalGetKey = DeployUnit_InternalGetKey;
 	
-	pDepUnitObj->requiredLibs = hashmap_new();
+	/*pDepUnitObj->requiredLibs = hashmap_new();*/
+	pDepUnitObj->requiredLibs = NULL;
 	
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
@@ -51,7 +52,8 @@ DeployUnit* new_DeployUnit()
 	pDepUnitObj->MetaClassName = DeployUnit_MetaClassName;
 	pDepUnitObj->InternalGetKey = DeployUnit_InternalGetKey;
 	
-	pDepUnitObj->requiredLibs = hashmap_new();
+	/*pDepUnitObj->requiredLibs = hashmap_new();*/
+	pDepUnitObj->requiredLibs = NULL;
 	
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
@@ -69,20 +71,21 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->groupName) + strlen("/") + strlen(this->hashcode) + strlen("/") + strlen(this->super->name) + strlen("/") + strlen(this->version)) + 1);
+	internalKey = malloc(sizeof(char) * (strlen(this->groupName) + strlen("/") /*+ strlen(this->hashcode)*/ + strlen("/") + strlen(this->super->name) + strlen("/") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
 
 	strcpy(internalKey, this->groupName);
 	strcat(internalKey, "/");
-	strcat(internalKey, this->hashcode);
-	strcat(internalKey, "/");
+	/*strcat(internalKey, this->hashcode);
+	strcat(internalKey, "/");*/
 	strcat(internalKey, this->super->name);
 	strcat(internalKey, "/");
 	strcat(internalKey, this->version);
 	
 
+	/*printf("%s\n", internalKey);*/
 	return internalKey;
 }
 
@@ -110,9 +113,14 @@ void DeployUnit_AddRequiredLibs(DeployUnit* const this, DeployUnit* ptr)
 	else
 	{
 		/*if(requiredLibs.find(container->internalGetKey()) == requiredLibs.end())*/
+		if(this->requiredLibs == NULL)
+		{
+			this->requiredLibs = hashmap_new();
+		}
 		if(hashmap_get(this->requiredLibs, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*requiredLibs[container->internalGetKey()]=ptr;*/
+			container = (DeployUnit*)ptr;
 			hashmap_put(this->requiredLibs, container->InternalGetKey(container), ptr);
 		}
 	}

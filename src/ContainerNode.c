@@ -18,10 +18,14 @@ Instance* newPoly_ContainerNode()
 	pObj->MetaClassName = ContainerNode_MetaClassName;
 	pObj->InternalGetKey = ContainerNode_InternalGetKey;
 	
-	pContNodeObj->components = hashmap_new();
+	/*pContNodeObj->components = hashmap_new();
 	pContNodeObj->hosts = hashmap_new();
 	pContNodeObj->groups = hashmap_new();
-	pContNodeObj->networkInformation = hashmap_new();
+	pContNodeObj->networkInformation = hashmap_new();*/
+	pContNodeObj->components = NULL;
+	pContNodeObj->hosts = NULL;
+	pContNodeObj->groups = NULL;
+	pContNodeObj->networkInformation = NULL;
 	
 	pContNodeObj->FindComponentsByID = ContainerNode_FindComponentsByID;
 	pContNodeObj->FindHostsByID = ContainerNode_FindHostsByID;
@@ -52,7 +56,7 @@ ContainerNode* new_ContainerNode()
 		return NULL;
 
 	/* Allocating memory */
-	pContNodeObj = (ContainerNode*)malloc(sizeof(pContNodeObj));
+	pContNodeObj = (ContainerNode*)malloc(sizeof(ContainerNode));
 
 	if (pContNodeObj == NULL)
 	{
@@ -65,10 +69,14 @@ ContainerNode* new_ContainerNode()
 	pContNodeObj->MetaClassName = ContainerNode_MetaClassName;
 	pContNodeObj->InternalGetKey = ContainerNode_InternalGetKey;
 	
-	pContNodeObj->components = hashmap_new();
+	/*pContNodeObj->components = hashmap_new();
 	pContNodeObj->hosts = hashmap_new();
 	pContNodeObj->groups = hashmap_new();
-	pContNodeObj->networkInformation = hashmap_new();
+	pContNodeObj->networkInformation = hashmap_new();*/
+	pContNodeObj->components = NULL;
+	pContNodeObj->hosts = NULL;
+	pContNodeObj->groups = NULL;
+	pContNodeObj->networkInformation = NULL;
 	
 	pContNodeObj->FindComponentsByID = ContainerNode_FindComponentsByID;
 	pContNodeObj->FindHostsByID = ContainerNode_FindHostsByID;
@@ -183,9 +191,14 @@ void ContainerNode_AddComponents(ContainerNode* const this, ComponentInstance* p
 	else
 	{
 		/*if(components.find(container->internalGetKey()) == components.end())*/
+		if(this->components == NULL)
+		{
+			this->components = hashmap_new();
+		}
 		if(hashmap_get(this->components, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
 		{
 			/*components[container->internalGetKey()]=ptr;*/
+			container = (ComponentInstance*)ptr;
 			hashmap_put(this->components, container->InternalGetKey(container), ptr);
 			/*any ptr_any = container;
 			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"components",ptr_any);
@@ -208,9 +221,14 @@ void ContainerNode_AddHosts(ContainerNode* const this, ContainerNode* ptr)
 	else
 	{
 		/*if(hosts.find(container->internalGetKey()) == hosts.end())*/
+		if(this->hosts == NULL)
+		{
+			this->hosts = hashmap_new();
+		}
 		if(hashmap_get(this->hosts, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
 		{
 			/*hosts[container->internalGetKey()]=ptr;*/
+			container = (ContainerNode*)ptr;
 			hashmap_put(this->hosts, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -237,9 +255,14 @@ void ContainerNode_AddGroups(ContainerNode* const this, Group* ptr)
 	else
 	{
 		/*if(groups.find(container->internalGetKey()) == groups.end())*/
+		if(this->groups == NULL)
+		{
+			this->groups = hashmap_new();
+		}
 		if(hashmap_get(this->groups, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
 		{
 			/*groups[container->internalGetKey()]=ptr;*/
+			container = (Group*)ptr;
 			hashmap_put(this->groups, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -259,9 +282,14 @@ void ContainerNode_AddNetworkInformation(ContainerNode* const this, NetworkInfo*
 	else
 	{
 		/*if(networkInformation.find(container->internalGetKey()) == networkInformation.end())*/
+		if(this->networkInformation == NULL)
+		{
+			this->networkInformation = hashmap_new();
+		}
 		if(hashmap_get(this->networkInformation, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
 		{
 			/*networkInformation[container->internalGetKey()]=ptr;*/
+			container = (NetworkInfo*)ptr;
 			hashmap_put(this->networkInformation, container->InternalGetKey(container), ptr);
 			/*any ptr_any = container;
 			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"networkInformation",ptr_any);

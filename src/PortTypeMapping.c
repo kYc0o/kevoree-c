@@ -18,7 +18,7 @@ PortTypeMapping* new_PortTypeMapping()
 	
 	pObj->InternalGetKey = PortTypeMapping_InternalGetKey;
 	pObj->MetaClassName = PortTypeMapping_MetaClassName;
-	pObj->Delete = delete_PortTypeMapping;;
+	pObj->Delete = delete_PortTypeMapping;
 	
 	return pObj;
 }

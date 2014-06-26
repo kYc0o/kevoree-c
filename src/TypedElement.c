@@ -16,7 +16,8 @@ NamedElement* newPoly_TypedElement(void)
 
 	pObj->pDerivedObj = pTypeElemObj; /* Pointing to derived object */
 	
-	pTypeElemObj->genericTypes = hashmap_new();
+	/*pTypeElemObj->genericTypes = hashmap_new();*/
+	pTypeElemObj->genericTypes = NULL;
 	
 	pTypeElemObj->FindGenericTypesByID = TypedElement_FindGenericTypesByID;
 	pTypeElemObj->AddGenericTypes = TypedElement_AddGenericTypes;
@@ -48,7 +49,8 @@ TypedElement* new_TypedElement(void)
 	/*pObj->pDerivedObj = pTypeElemObj;  Pointing to derived object */
 	pTypeElemObj->super = pObj;
 	
-	pTypeElemObj->genericTypes = hashmap_new();
+	/*pTypeElemObj->genericTypes = hashmap_new();*/
+	pTypeElemObj->genericTypes = NULL;
 	
 	pTypeElemObj->FindGenericTypesByID = TypedElement_FindGenericTypesByID;
 	pTypeElemObj->AddGenericTypes = TypedElement_AddGenericTypes;
@@ -112,9 +114,14 @@ void TypedElement_AddGenericTypes(TypedElement* const this, TypedElement* ptr)
 	else
 	{
 		/*if(genericTypes.find(container->internalGetKey()) == genericTypes.end())*/
+		if(this->genericTypes == NULL)
+		{
+			this->genericTypes = hashmap_new();
+		}
 		if(hashmap_get(this->genericTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*genericTypes[container->internalGetKey()]=ptr;*/
+			container = (TypedElement*)ptr;
 			hashmap_put(this->genericTypes, container->InternalGetKey(container), ptr);
 		}
 	}

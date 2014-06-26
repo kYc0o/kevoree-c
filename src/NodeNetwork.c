@@ -17,7 +17,8 @@ NodeNetwork* new_NodeNetwork()
 	/*pObj->generated_KMF_ID = Uuid::getSingleton().generateUUID();*/
 	pObj->initBy = NULL;
 	pObj->target = NULL;
-	pObj->link = hashmap_new();
+	/*pObj->link = hashmap_new();*/
+	pObj->link = NULL;
 	
 	pObj->InternalGetKey = NodeNetwork_InternalGetKey;
 	pObj->MetaClassName = NodeNetwork_MetaClassName;
@@ -84,9 +85,14 @@ void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 	else
 	{
 		/*if(link.find(container->internalGetKey()) == link.end())*/
+		if(this->link == NULL)
+		{
+			this->link = hashmap_new();
+		}
 		if(hashmap_get(this->link, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*link[container->internalGetKey()]=ptr;*/
+			container = (NodeLink*)ptr;
 			hashmap_put(this->link, container->InternalGetKey(container), ptr);
 			/*any ptr_any = container;
 			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"link",ptr_any);

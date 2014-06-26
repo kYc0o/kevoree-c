@@ -50,6 +50,7 @@ int main(void)
 
 	/*model = factory.createContainerRoot();*/
 	model = new_ContainerRoot();
+	printf("ContainerRoot 'model' created\n");
 
 	/*DeployUnit *d =factory.createDeployUnit();
 	d->name = "CPPNodeType";
@@ -57,22 +58,28 @@ int main(void)
 	d->version = "1.0.0-SNAPSHOT";
 	d->type ="so";*/
 	DeployUnit* d = new_DeployUnit();
+	printf("DeployUnit 'd' created -> %i\n", d);
+	d->super->name = malloc(sizeof(char) * (strlen("ContikiNodeType") + 1));
 	strcpy(d->super->name, "ContikiNodeType");
+	d->groupName = malloc(sizeof(char) * (strlen("org.kevoree.library") + 1));
 	strcpy(d->groupName, "org.kevoree.library");
+	d->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
 	strcpy(d->version,"1.0.0-SNAPSHOT");
+	d->type = malloc(sizeof(char) * (strlen("ce") + 1));
 	strcpy(d->type,"ce");
-	printf("DeployUnit 'd' created\n");
+	printf("DeployUnit 'd' initialized -> %i\n", d);
 
 	/*TypeDefinition *nodetype = factory.createNodeType();
 	nodetype->name = "CPPNode";
 	nodetype->abstract= false;
 	nodetype->adddeployUnit(d);*/
 	TypeDefinition* nodetype = newPoly_NodeType();
+	nodetype->super->name = malloc(sizeof(char) * (strlen("ContikiNode") + 1));
 	strcpy(nodetype->super->name, "ContikiNode");
 	nodetype->abstract = 0;
 	printf("NodeType nodetype created\n");
 	nodetype->AddDeployUnit(nodetype, d);
-	printf("Adding 'nodetype' to DeployUnit 'd' \n");
+	printf("Adding DeployUnit 'd' -> %i to 'nodetype' -> %i\n", d, nodetype);
 
 	/*DeployUnit *dg =factory.createDeployUnit();
 	dg->name = "kevoree-group-websocket";
@@ -80,9 +87,13 @@ int main(void)
 	dg->version = "1.0.0-SNAPSHOT";
 	dg->type ="so";*/
 	DeployUnit* dg = new_DeployUnit();
+	dg->super->name = malloc(sizeof(char) * (strlen("kevoree-group-websocket") + 1));
 	strcpy(dg->super->name, "kevoree-group-websocket");
+	dg->groupName = malloc(sizeof(char) * (strlen("org.kevoree.library") + 1));
 	strcpy(dg->groupName, "org.kevoree.library");
+	dg->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
 	strcpy(dg->version,"1.0.0-SNAPSHOT");
+	dg->type = malloc(sizeof(char) * (strlen("ce") + 1));
 	strcpy(dg->type,"ce");
 	printf("DeployUnit 'dg' created\n");
 	
@@ -92,7 +103,9 @@ int main(void)
 	grouptype->version = "1.0";*/
 	TypeDefinition* grouptype = newPoly_GroupType();
 	grouptype->abstract = 0;
+	grouptype->super->name = malloc(sizeof(char) * (strlen("WebSocketGroup") + 1));
 	strcpy(grouptype->super->name, "WebSocketGroup");
+	grouptype->version = malloc(sizeof(char) * (strlen("1.0") + 1));
 	strcpy(grouptype->version, "1.0");
 	printf("GroupType 'grouptype' created\n");
 
@@ -114,6 +127,9 @@ int main(void)
 	node0->started= true;
 	node0->started = true;*/
 	ContainerNode* node0 = new_ContainerNode();
+	printf("ContainerNode 'node0' created\n");
+	node0->super->super->name = malloc(sizeof(char) * (strlen("node0") + 1));
+	strcpy(node0->super->super->name, "node0");
 	node0->super->started = 1;
 
 
@@ -122,8 +138,12 @@ int main(void)
 	group->started = true;
 	group->addtypeDefinition(grouptype);*/
 	Group* group = new_Group();
+	printf("Group 'group' created\n");
+	group->super->super->name = malloc(sizeof(char) * (strlen("group0") + 1));
+	strcpy(group->super->super->name, "group0");
 	group->super->started = 1;
 	group->super->AddTypeDefinition(group->super, grouptype);
+	printf("Adding 'grouptype' to 'group'\n");
 	
 	/*FragmentDictionary *dico =factory.createFragmentDictionary();
 
@@ -141,20 +161,27 @@ int main(void)
 	comtype->name = "Light";
 	comtype->abstract = false;*/
 	TypeDefinition* comtype = newPoly_ComponentType();
+	printf("ComponentType 'comtype' created\n");
+	comtype->super->name = malloc(sizeof(char) * (strlen("Light") + 1));
 	strcpy(comtype->super->name, "Light");
 	comtype->abstract = 0;
-	
+	printf("'comtype' initialized\n");
 	
 	/*PortTypeRef *reglight = new PortTypeRef();
 	reglight->name ="port";
 	reglight->optional = true;*/
 	PortTypeRef* reglight = new_PortTypeRef();
+	printf("PortTypeRef 'reglight' created\n");
+	reglight->super->name = malloc(sizeof(char) * (strlen("port") + 1));
 	strcpy(reglight->super->name, "port");
 	reglight->optional = 1;
+	printf("'reglight' initialized\n");
 
 	/*((ComponentType*)comtype)->addrequired(reglight);*/
-	((ComponentType*)comtype->pDerivedObj)->AddRequired((ComponentType*)comtype->pDerivedObj, reglight);
-
+	((ComponentType*)(comtype->pDerivedObj))->AddRequired((ComponentType*)(comtype->pDerivedObj), reglight);
+	printf("Adding required PortTypeRef 'reglight' to ComponentType 'comtype'\n");
+	
+	
 	/*DictionaryType *typegroup2= factory.createDictionaryType();
 	DictionaryAttribute *attport2 = factory.createDictionaryAttribute();
 	attport2->optional = false;
@@ -184,16 +211,24 @@ int main(void)
 	dc->version = "1.0.0-SNAPSHOT";
 	dc->type ="so";*/
 	DeployUnit* dc = new_DeployUnit();
+	printf("DeployUnit 'dc' created\n");
+	dc->super->name = malloc(sizeof(char) * (strlen("LightComponent") + 1));
 	strcpy(dc->super->name, "LightComponent");
+	dc->groupName = malloc(sizeof(char) * (strlen("org.kevoree.library") + 1));
 	strcpy(dc->groupName, "org.kevoree.library");
-	strcpy(dc->version,"1.0.0-SNAPSHOT");
+	dc->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
+	strcpy(dc->version, "1.0.0-SNAPSHOT");
+	dc->type = malloc(sizeof(char) * (strlen("ce") + 1));
 	strcpy(dc->type,"ce");
+	printf("DeployUnit 'dc' initialized\n");
 
 	/*comtype->adddeployUnit(dc);*/
 	comtype->AddDeployUnit(comtype, dc);
+	printf("Adding 'dc' to 'comtype'\n");
 
 	/*node0->addtypeDefinition(nodetype);*/
 	node0->super->AddTypeDefinition(node0->super, nodetype);
+	printf("Adding 'nodetype' to 'node0'\n");
 
 
 	/* Temperature */
@@ -201,18 +236,25 @@ int main(void)
 	anenotype->name = "Temperature";
 	anenotype->abstract = false;*/
 	TypeDefinition* anenotype = newPoly_ComponentType();
+	printf("ComponentType 'anenotype' created\n");
+	anenotype->super->name = malloc(sizeof(char) * (strlen("Temperature") + 1));
 	strcpy(anenotype->super->name, "Temperature");
 	anenotype->abstract = 0;
+	printf("ComponentType 'anenotype' initialized\n");
 
 	/*PortTypeRef *reg = new PortTypeRef();
 	reg->name ="port";
 	reg->optional = true;*/
 	PortTypeRef* reg = new_PortTypeRef();
+	printf("PortTypeRef 'reg' created\n");
+	reg->super->name = malloc(sizeof(char) * (strlen("port") + 1));
 	strcpy(reg->super->name, "port");
 	reg->optional = 1;
+	printf("PortTypeRef 'reg' initialized\n");
 
 	/*((ComponentType*)anenotype)->addrequired(reg);*/
 	((ComponentType*)comtype->pDerivedObj)->AddRequired((ComponentType*)comtype->pDerivedObj, reg);
+	printf("Adding required PortTypeRef 'reg' to ComponentType 'comtype'\n");
 
 	/*DictionaryType *typeanomo= factory.createDictionaryType();
 	anenotype->adddictionaryType(typeanomo);
@@ -231,10 +273,16 @@ int main(void)
 	dcano->version = "1.0.0-SNAPSHOT";
 	dcano->type ="so";*/
 	DeployUnit* dcano = new_DeployUnit();
+	printf("DeployUnit 'dcano' created\n");
+	dcano->super->name = malloc(sizeof(char) * (strlen("TemperatureComponent") + 1));
 	strcpy(dcano->super->name, "TemperatureComponent");
+	dcano->groupName = malloc(sizeof(char) * (strlen("org.kevoree.library") + 1));
 	strcpy(dcano->groupName, "org.kevoree.library");
-	strcpy(dcano->version,"1.0.0-SNAPSHOT");
+	dcano->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
+	strcpy(dcano->version, "1.0.0-SNAPSHOT");
+	dcano->type = malloc(sizeof(char) * (strlen("ce") + 1));
 	strcpy(dcano->type,"ce");
+	printf("DeployUnit 'dcano' initialized\n");
 
 	/* GW  */
 
@@ -242,6 +290,7 @@ int main(void)
 	gwMQTTtype->name = "WebSocketGatewayMQTT";
 	gwMQTTtype->abstract = false;*/
 	TypeDefinition* gwMQTTtype = newPoly_ComponentType();
+	gwMQTTtype->super->name = malloc(sizeof(char) * (strlen("WebSocketGatewayMQTT") + 1));
 	strcpy(gwMQTTtype->super->name, "WebSocketGatewayMQTT");
 	gwMQTTtype->abstract = 0;
 
@@ -251,9 +300,13 @@ int main(void)
 	dcMQTTgw->version = "1.0.0-SNAPSHOT";
 	dcMQTTgw->type ="so";*/
 	DeployUnit* dcMQTTgw = new_DeployUnit();
+	dcMQTTgw->super->name = malloc(sizeof(char) * (strlen("WebSocketGatewayMQTT") + 1));
 	strcpy(dcMQTTgw->super->name, "WebSocketGatewayMQTT");
+	dcMQTTgw->groupName = malloc(sizeof(char) * (strlen("org.kevoree.library") + 1));
 	strcpy(dcMQTTgw->groupName, "org.kevoree.library");
+	dcMQTTgw->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
 	strcpy(dcMQTTgw->version,"1.0.0-SNAPSHOT");
+	dcMQTTgw->type = malloc(sizeof(char) * (strlen("ce") + 1));
 	strcpy(dcMQTTgw->type,"ce");
 
 
@@ -292,6 +345,7 @@ int main(void)
 
 	/*gwMQTTtype->adddeployUnit(dcMQTTgw);*/
 	gwMQTTtype->AddDeployUnit(gwMQTTtype, dcMQTTgw);
+	printf("Adding DeployUnit 'dcMQTTgw' to 'gwMQTTtype'\n");
 
 
 	/*model->addtypeDefinitions(anenotype);
@@ -304,6 +358,7 @@ int main(void)
 	model->AddTypeDefinitions(model, nodetype);
 	model->AddTypeDefinitions(model, comtype);
 	model->AddTypeDefinitions(model, gwMQTTtype);
+	printf("Adding TypeDefinition 'anenotype', 'grouptype', 'nodetype', 'comtype', 'gwMQTTtype' to 'model'\n");
 
 	/*model->adddeployUnits(d);
 	model->adddeployUnits(dg);
@@ -315,22 +370,28 @@ int main(void)
 	model->AddDeployUnits(model, dc);
 	model->AddDeployUnits(model, dcano);
 	model->AddDeployUnits(model, dcMQTTgw);
+	printf("Adding DeployUnit 'd', 'dg', 'dc', 'dcano', 'dcMQTTgw' to 'model'\n");
 
 	/*model->addnodes(node0);*/
 	model->AddNodes(model, node0);
+	printf("Adding 'node0' -> %s to 'model' -> %i\n", node0->super->super->name, model);
 
 	/*model->addgroups(group);
 	group->addsubNodes(node0);
 	node0->addgroups(group);*/
 	model->AddGroups(model, group);
+	printf("Adding 'group' -> %s to 'model' -> %i\n", group->super->super->name, model);
 	group->AddSubNodes(group, node0);
+	printf("Adding subnode '%s' to group '%s'\n", node0->super->super->name, group->super->super->name);
 	node0->AddGroups(node0, group);
+	printf("Adding group '%s' to node '%s'\n", group->super->super->name, node0->super->super->name);
 
 	/*kb->setBootstrapModel(model); // boostrapmodel
 	kb->start();
 
 	clock_t finish = clock();
 	std::cin >> exit;*/
+	printf("Model created with sucess!\n");
 
 	return 0;
 }

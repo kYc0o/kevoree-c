@@ -16,7 +16,8 @@ NamedElement* newPoly_TypeLibrary(void)
 
 	pObj->pDerivedObj = pTypeLibObj; /* Pointing to derived object */
 	
-	pTypeLibObj->subTypes = hashmap_new();
+	/*pTypeLibObj->subTypes = hashmap_new();*/
+	pTypeLibObj->subTypes = NULL;
 	
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
@@ -48,7 +49,8 @@ TypeLibrary* new_TypeLibrary(void)
 	/* pObj->pDerivedObj = pTypeLibObj; Pointing to derived object */
 	pTypeLibObj->super = pObj;
 	
-	pTypeLibObj->subTypes = hashmap_new();
+	/*pTypeLibObj->subTypes = hashmap_new();*/
+	pTypeLibObj->subTypes = NULL;
 	
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
@@ -112,9 +114,14 @@ void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 	else
 	{
 		/*if(subTypes.find(container->internalGetKey()) == subTypes.end())*/
+		if(this->subTypes == NULL)
+		{
+			this->subTypes = hashmap_new();
+		}
 		if(hashmap_get(this->subTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			/*subTypes[container->internalGetKey()]=ptr;*/
+			container = (TypeDefinition*)ptr;
 			hashmap_put(this->subTypes, container->InternalGetKey(container), ptr);
 		}
 	}

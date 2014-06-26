@@ -4,6 +4,9 @@ TypeDefinition* newPoly_ComponentType(void)
 {
 	ComponentType* pCompTypeObj = NULL;
 	TypeDefinition* pObj = new_TypeDefinition();
+	
+	if(pObj == NULL)
+		return NULL;
 
 	/* Allocating memory */
 	pCompTypeObj = (ComponentType*)malloc(sizeof(ComponentType));
@@ -16,8 +19,11 @@ TypeDefinition* newPoly_ComponentType(void)
 
 	pObj->pDerivedObj = pCompTypeObj; /* Pointing to derived object */
 	
-	pCompTypeObj->required = hashmap_new();
-	pCompTypeObj->provided = hashmap_new();
+	
+	/*pCompTypeObj->required = hashmap_new();
+	pCompTypeObj->provided = hashmap_new();*/
+	pCompTypeObj->required = NULL;
+	pCompTypeObj->provided = NULL;
 	
 	pCompTypeObj->FindRequiredByID = ComponentType_FindRequiredByID;
 	pCompTypeObj->FindProvidedByID = ComponentType_FindProvidedByID;
@@ -54,8 +60,8 @@ ComponentType* new_ComponentType(void)
 	/*pObj->pDerivedObj = pCompTypeObj;  Pointing to derived object */
 	pCompTypeObj->super = pObj;
 	
-	pCompTypeObj->required = hashmap_new();
-	pCompTypeObj->provided = hashmap_new();
+	pCompTypeObj->required = NULL;
+	pCompTypeObj->provided = NULL;
 	
 	pCompTypeObj->FindRequiredByID = ComponentType_FindRequiredByID;
 	pCompTypeObj->FindProvidedByID = ComponentType_FindProvidedByID;
@@ -131,8 +137,14 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 	}
 	else
 	{
+		if(this->required == NULL)
+		{
+			this->required = hashmap_new();
+		}
+
 		if(hashmap_get(this->required, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (PortTypeRef*)ptr;
 			hashmap_put(this->required, container->InternalGetKey(container), ptr);
 		}
 	}
@@ -148,8 +160,13 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 	}
 	else
 	{
+		if(this->provided == NULL)
+		{
+			this->provided = hashmap_new();
+		}
 		if(hashmap_get(this->provided, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
+			container = (PortTypeRef*)ptr;
 			hashmap_put(this->provided, container->InternalGetKey(container), ptr);
 		}
 	}
