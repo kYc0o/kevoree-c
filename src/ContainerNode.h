@@ -9,6 +9,7 @@
 #include "Group.h"
 #include "NetworkInfo.h"
 #include "hashmap.h"
+#include "Visitor.h"
 
 typedef struct _ContainerNode ContainerNode;
 typedef struct _Group Group;
@@ -30,6 +31,7 @@ typedef void (*fptrContNodeRemoveHost)(ContainerNode*, ContainerNode*);
 typedef void (*fptrContNodeRemoveGroups)(ContainerNode*, Group*);
 typedef void (*fptrContNodeRemoveNetworkInformation)(ContainerNode*, NetworkInfo*);
 typedef void (*fptrDeleteContNode)(ContainerNode*);
+typedef void (*fptrVisitAttrContainerNode)(ContainerNode*, char*, Visitor*);
 
 typedef struct _ContainerNode {
 	Instance* super;
@@ -61,6 +63,7 @@ typedef struct _ContainerNode {
 	fptrContNodeRemoveGroups RemoveGroups;
 	fptrContNodeRemoveNetworkInformation RemoveNetworkInformation;
 	fptrDeleteContNode Delete;
+	fptrVisitAttrContainerNode VisitAttributes;
 	/*int (*accept)(struct _ContainerNode*, struct _ContainerNode*, Visitor*);*/
 } ContainerNode ;
 
@@ -85,5 +88,6 @@ void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkIn
 /*int _acceptContainerNode(ContainerNode* this, ContainerNode* c, Visitor* visitor);*/
 void deletePoly_ContainerNode(Instance* const this);
 void delete_ContainerNode(ContainerNode* const this);
+void ContainerNode_VisitAttributes(ContainerNode* const this, char* parent, Visitor* visitor);
 
-#endif
+#endif /* H_ContainerNode */

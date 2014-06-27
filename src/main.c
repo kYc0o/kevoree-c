@@ -4,22 +4,33 @@
 #include <stdio.h>
 #include "kevoree.h"
 
-
-/*void actionprintf(void *val,void *val2,int type)
+void actionprintf(char *path, Type type, void* value)
 {
 	switch(type)
 	{
-		case 0:
-			if(val != NULL)
-				printf("%s - %s \n",(char*)val,(char*)val2);
+		case STRING:
+			printf("path = %s  value = %s\n",path,(char*)value);
 			break;
-
-		case 1:
-			printf("%d\n",(int)val);
+		
+		case BOOL:
+			printf("path = %s  value = %d\n",path,(int)value);
 			break;
-	  
 	}
-}*/
+
+	/*if(findbyPath(root2,path) == NULL)
+	{*/
+		/* no exist
+		 * TraceRemove* = n
+		 */
+	/*}
+	else
+	{
+		if(sttrmp(a, b))
+		{
+			TraceSet
+		}
+	}*/
+}
 
 ContainerRoot *model = NULL;
 
@@ -392,6 +403,12 @@ int main(void)
 	clock_t finish = clock();
 	std::cin >> exit;*/
 	printf("Model created with sucess!\n");
+	
+	Visitor *visitor_print = (Visitor*)malloc(sizeof(Visitor));
+
+	visitor_print->action =  actionprintf;
+
+	model->Visit(model, visitor_print);
 
 	return 0;
 }

@@ -1,13 +1,13 @@
-/*#ifndef H_TOOLS
+#ifndef H_TOOLS
 #define H_TOOLS
 
-#include <string.h>
-#include <stdlib.h>
+short StartsWith (char* base, char* str);
+short EndsWith (char* base, char* str);
+int IndexOf (char* base, char* str);
+int IndexOf_shift (char* base, char* str, int startIndex);
+int LastIndexOf (char* base, char* str);
+char* Substring(char *string, int position, int length);
 
-typedef struct __visitor {
-	void (*action)(void *val, void *val2, int type); // Implementation, for example VisitorCount or VisitorDesc
-} Visitor;
 
-size_t getsize(void *p);
-void *realloc(void *ptr,size_t size);
-#endif*/
+
+#endif

@@ -15,6 +15,7 @@ Instance* newPoly_ComponentInstance()
 	}
 
 	pObj->pDerivedObj = pCompInstanceObj; /* Pointing to derived object */
+	pCompInstanceObj->VisitAttributes = ComponentInstance_VisitAttributes;
 	
 	pObj->MetaClassName = ComponentInstance_MetaClassName;
 	pObj->InternalGetKey = ComponentInstance_InternalGetKey;
@@ -41,6 +42,8 @@ ComponentInstance* new_ComponentInstance()
 	}
 
 	/*((Instance*)(pObj->pDerivedObj))->pDerivedObj = pCompInstanceObj; Pointing to derived object */
+	pCompInstanceObj->super = pObj;
+	pCompInstanceObj->VisitAttributes = ComponentInstance_VisitAttributes;
 	
 	pCompInstanceObj->MetaClassName = ComponentInstance_MetaClassName;
 	pCompInstanceObj->InternalGetKey = ComponentInstance_InternalGetKey;
@@ -95,6 +98,22 @@ void delete_ComponentInstance(ComponentInstance* const this)
 	free(this);
 	
 }
+
+void ComponentInstance_VisitAttributes(ComponentInstance* const this, char *parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	sprintf(path, "%s/components[%s]", parent, this->super->super->name);
+
+	sprintf(path, "%s\\name", path);
+
+	visitor->action(path, STRING, this->super->super->name);
+	
+	sprintf(path, "%s\\started", path);
+	visitor->action(path, BOOL, this->super->started);
+}
+
+/*void ComponentInstance_VisitReferences*/
 
 /*int _acceptComponentInstance(ComponentInstance* this, ComponentInstance* c, Visitor* visitor)
 {

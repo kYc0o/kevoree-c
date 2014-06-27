@@ -10,21 +10,6 @@
 #define INITIAL_SIZE (32)
 #define MAX_CHAIN_LENGTH (8)
 
-/* We need to keep keys and values */
-typedef struct _hashmap_element{
-	char* key;
-	int in_use;
-	any_t data;
-} hashmap_element;
-
-/* A hashmap has some maximum size and current size,
- * as well as the data to hold. */
-typedef struct _hashmap_map{
-	int table_size;
-	int size;
-	hashmap_element *data;
-} hashmap_map;
-
 /*
  * Return an empty hashmap, or NULL on failure.
  */

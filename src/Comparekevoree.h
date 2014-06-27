@@ -17,6 +17,6 @@ int compareContainerNode(ContainerNode *s, ContainerNode *t);
 int compareComponentInstance(ComponentInstance *s, ComponentInstance *t);
 int compareGroup(Group *s, Group *t);
 int compareTypeDefinition(TypeDefinition *s, TypeDefinition *t);
-int compareNodeNetwork(NodeNetwork *s, NodeNetwork *t);*/
+int compareNodeNetwork(NodeNetwork *s, NodeNetwork *t);
 
-#endif /* H_CompareKevoree */
+#endif  H_CompareKevoree */

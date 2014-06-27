@@ -70,6 +70,7 @@ ContainerRoot* new_ContainerRoot(void)
 	pObj->RemoveNodeNetworks = ContainerRoot_RemoveNodeNetworks;
 	pObj->RemoveGroups = ContainerRoot_RemoveGroups;
 	pObj->Delete = delete_ContainerRoot;
+	pObj->Visit = ContainerRoot_Visit;
 	
 	return pObj;
 }
@@ -576,6 +577,29 @@ void delete_ContainerRoot(ContainerRoot* const this)
 		hashmap_free(this->nodeNetworks);
 		hashmap_free(this->groups);
 		free(this);
+	}
+}
+
+void ContainerRoot_Visit(ContainerRoot* const this, Visitor* visitor)
+{
+	int i;
+
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	hashmap_map* m = (hashmap_map*) this->nodes;
+
+	/* compare nodes*/
+	for(i = 0; i< m->table_size; i++)
+	{
+		if(m->data[i].in_use != 0)
+		{
+			any_t data = (any_t) (m->data[i].data);
+			ContainerNode* n = data;
+			sprintf(path, "nodes[%s]", n->super->super->name);
+
+			n->VisitAttributes(n, path, visitor);
+		}
 	}
 }
 

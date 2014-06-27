@@ -8,8 +8,8 @@
 #include "Instance.h"
 #include "hashmap.h"
 
-typedef struct _Group Group;
 typedef struct _ContainerNode ContainerNode;
+typedef struct _Group Group;
 
 typedef char* (*fptrGroupInternalGetKey)(Group*);
 typedef char* (*fptrGroupMetaClassName)(Group*);

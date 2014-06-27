@@ -19,3 +19,4 @@
 #include "TypeDefinition.h"
 #include "TypedElement.h"
 #include "TypeLibrary.h"
+#include "Visitor.h"

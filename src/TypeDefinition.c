@@ -24,9 +24,11 @@ NamedElement* newPoly_TypeDefinition()
 	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
 	pTypeDefObj->RemoveDeployUnit = TypeDefinition_RemoveDeployUnit;
 	pTypeDefObj->RemoveSuperTypes = TypeDefinition_RemoveSuperTypes;
+	
 	pObj->MetaClassName = TypeDefinition_MetaClassName;
 	pObj->InternalGetKey = TypeDefinition_InternalGetKey;
 	pObj->Delete = deletePoly_TypeDefinition;
+	pObj->VisitAttributes = TypeDefinition_VisitAttributes;
 
 	return pObj;
 }
@@ -62,6 +64,7 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->MetaClassName = TypeDefinition_MetaClassName;
 	pTypeDefObj->InternalGetKey = TypeDefinition_InternalGetKey;
 	pTypeDefObj->Delete = delete_TypeDefinition;
+	pTypeDefObj->VisitAttributes = TypeDefinition_VisitAttributes;
 
 	return pTypeDefObj;
 }
@@ -173,6 +176,19 @@ void delete_TypeDefinition(TypeDefinition* const this)
 	free(this);
 	
 }
+
+void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	sprintf(path,"%s/components[%s]",parent,component->name);
+
+
+	sprintf(path,"%s\\name",path);
+
+	visitor->action(path,STRING,component->name);
+}
+
 
 /*int _acceptTypeDefinition(TypeDefinition* this, TypeDefinition* c, Visitor* visitor)
 {

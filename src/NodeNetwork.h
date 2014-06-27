@@ -7,6 +7,7 @@
 #include "NodeLink.h"
 #include "ContainerNode.h"
 
+/*typedef struct _ContainerNode ContainerNode;*/
 typedef struct _NodeNetwork NodeNetwork;
 
 typedef char* (*fptrNodeNetMetaClassName)(NodeNetwork*);

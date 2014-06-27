@@ -17,6 +17,7 @@ NamedElement* new_NamedElement()
 	pObj->InternalGetKey = NamedElement_InternalGetKey;
 	pObj->MetaClassName = NamedElement_MetaClassName;
 	pObj->Delete = delete_NamedElement;
+	pObj->VisitAttributes = NamedElement_VisitAttributes;
 	
 	return pObj;
 }
@@ -55,6 +56,15 @@ void delete_NamedElement(NamedElement* const this)
 		free(this->name);
 		free(this);
 	}
+}
+
+void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s\\name", path);
+	visitor->action(path, STRING, (NamedElement*)this->name);
 }
 
 /*int _acceptNamedElement(NamedElement* this, NamedElement* c, Visitor* visitor)

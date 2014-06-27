@@ -26,6 +26,7 @@ NamedElement* newPoly_TypedElement(void)
 	pObj->MetaClassName = TypedElement_MetaClassName;
 	pObj->InternalGetKey = TypedElement_InternalGetKey;
 	pObj->Delete = deletePoly_TypedElement;
+	pObj->VisitAttributes = TypedElement_VisitAttributes;
 
 	return pObj;
 }
@@ -59,6 +60,7 @@ TypedElement* new_TypedElement(void)
 	pTypeElemObj->MetaClassName = TypedElement_MetaClassName;
 	pTypeElemObj->InternalGetKey = TypedElement_InternalGetKey;
 	pTypeElemObj->Delete = delete_TypedElement;
+	pTypeElemObj->VisitAttributes = TypedElement_VisitAttributes;
 
 	return pTypeElemObj;
 }

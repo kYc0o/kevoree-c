@@ -21,11 +21,14 @@ typedef void (*fptrTypeDefRemoveDeployUnit)(TypeDefinition*, DeployUnit*);
 typedef void (*fptrRemoveSuperTypes)(TypeDefinition*, TypeDefinition*);
 typedef char* (*fptrTypeDefMetaClassName)(TypeDefinition*);
 typedef void (*fptrDeleteTypeDef)(TypeDefinition*);
+typedef void )(fptrVisitAttrTypeDefinition)(void*, char*, Visitor*);
 
 typedef struct _TypeDefinition {
 	NamedElement* super;
 	void* pDerivedObj;
 	char* version;
+	char* factoryBean;
+	char* bean;
 	int abstract;
 	DeployUnit* deployUnits;
 	/*int count_typeDefinitions;
@@ -39,6 +42,7 @@ typedef struct _TypeDefinition {
 	fptrRemoveSuperTypes RemoveSuperTypes;
 	fptrTypeDefMetaClassName MetaClassName;
 	fptrDeleteTypeDef Delete;
+	fptrVisitAttrTypeDefinition VisitAttributes;
 } TypeDefinition;
 
 char* TypeDefinition_InternalGetKey(TypeDefinition* const this);
@@ -54,5 +58,6 @@ TypeDefinition* new_TypeDefinition(void);
 /*int _acceptTypeDefinition(TypeDefinition* this, TypeDefinition* c, Visitor* visitor);*/
 void deletePoly_TypeDefinition(NamedElement* const this);
 void delete_TypeDefinition(TypeDefinition* const this);
+void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 
 #endif /* H_TypeDefinition */

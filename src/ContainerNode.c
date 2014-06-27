@@ -41,6 +41,7 @@ Instance* newPoly_ContainerNode()
 	pContNodeObj->RemoveHosts = ContainerNode_RemoveHosts;
 	pContNodeObj->RemoveGroups = ContainerNode_RemoveGroups;
 	pContNodeObj->RemoveNetworkInformation = ContainerNode_RemoveNetworkInformation;
+	pContNodeObj->VisitAttributes = ContainerNode_VisitAttributes;
 	
 	pObj->Delete = deletePoly_ContainerNode;
 
@@ -92,6 +93,7 @@ ContainerNode* new_ContainerNode()
 	pContNodeObj->RemoveHosts = ContainerNode_RemoveHosts;
 	pContNodeObj->RemoveGroups = ContainerNode_RemoveGroups;
 	pContNodeObj->RemoveNetworkInformation = ContainerNode_RemoveNetworkInformation;
+	pContNodeObj->VisitAttributes = ContainerNode_VisitAttributes;
 	
 	pContNodeObj->Delete = delete_ContainerNode;
 
@@ -409,6 +411,42 @@ void delete_ContainerNode(ContainerNode* const this)
 	hashmap_free(this->networkInformation);
 	free(this->host);
 	free(this);
+}
+
+void ContainerNode_VisitAttributes(ContainerNode* const this, char* parent, Visitor* visitor)
+{
+	int i;
+
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	sprintf(path, "%s\\name", parent);
+	
+	visitor->action(path, STRING, this->super->super->name);
+
+	sprintf(path,"%s\\started", parent);
+	visitor->action(path, BOOL, (void*)this->super->started);
+}
+
+void ContainerNode_VisitReferences(ContainerNode* const this, char* parent, Visitor* visitor)
+{
+	if(this->components != NULL)
+	{
+		int i;
+
+		/* components */
+		hashmap_map* m =  this->components;
+
+		/* compare components */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				ComponentInstance *n = data;
+				n->VisitAttributes(n, parent, visitor);
+			}
+		}
+	}
 }
 
 /*int _acceptContainerNode(ContainerNode* this, ContainerNode* c, Visitor* visitor)
