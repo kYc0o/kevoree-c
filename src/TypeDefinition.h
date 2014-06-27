@@ -21,7 +21,8 @@ typedef void (*fptrTypeDefRemoveDeployUnit)(TypeDefinition*, DeployUnit*);
 typedef void (*fptrRemoveSuperTypes)(TypeDefinition*, TypeDefinition*);
 typedef char* (*fptrTypeDefMetaClassName)(TypeDefinition*);
 typedef void (*fptrDeleteTypeDef)(TypeDefinition*);
-typedef void )(fptrVisitAttrTypeDefinition)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrTypeDefinition)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsTypeDefinition)(void*, char*, Visitor*);
 
 typedef struct _TypeDefinition {
 	NamedElement* super;
@@ -43,6 +44,7 @@ typedef struct _TypeDefinition {
 	fptrTypeDefMetaClassName MetaClassName;
 	fptrDeleteTypeDef Delete;
 	fptrVisitAttrTypeDefinition VisitAttributes;
+	fptrVisitRefsTypeDefinition VisitReferences;
 } TypeDefinition;
 
 char* TypeDefinition_InternalGetKey(TypeDefinition* const this);
@@ -59,5 +61,6 @@ TypeDefinition* new_TypeDefinition(void);
 void deletePoly_TypeDefinition(NamedElement* const this);
 void delete_TypeDefinition(TypeDefinition* const this);
 void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor);
 
 #endif /* H_TypeDefinition */

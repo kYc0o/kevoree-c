@@ -110,7 +110,7 @@ void ComponentInstance_VisitAttributes(ComponentInstance* const this, char *pare
 	visitor->action(path, STRING, this->super->super->name);
 	
 	sprintf(path, "%s\\started", path);
-	visitor->action(path, BOOL, this->super->started);
+	visitor->action(path, BOOL, (int)(this->super->started));
 }
 
 /*void ComponentInstance_VisitReferences*/

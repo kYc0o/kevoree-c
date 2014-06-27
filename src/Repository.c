@@ -17,6 +17,8 @@ Repository* new_Repository()
 	pObj->InternalGetKey = Repository_InternalGetKey;
 	pObj->MetaClassName = Repository_MetaClassName;
 	pObj->Delete = delete_Repository;
+	pObj->VisitAttributes = Repository_VisitAttributes;
+	pObj->VisitReferences = Repository_VisitAttributes;
 	
 	return pObj;
 }
@@ -56,4 +58,15 @@ void delete_Repository(Repository* const this)
 		free(this->url);
 		free(this);
 	}
+}
+
+void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s/%s",parent, ((Repository*)(this))->url);
+
+	sprintf(path,"%s\\url",parent);
+	visitor->action(path, STRING, ((Repository*)(this))->url);
 }

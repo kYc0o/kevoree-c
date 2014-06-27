@@ -29,6 +29,8 @@ NamedElement* newPoly_PortTypeRef(void)
 	pObj->MetaClassName = PortTypeRef_MetaClassName;
 	pObj->InternalGetKey = PortTypeRef_InternalGetKey;
 	pObj->Delete = deletePoly_PortTypeRef;
+	pObj->VisitAttributes = PortTypeRef_VisitAttributes;
+	pObj->VisitReferences = PortTypeRef_VisitReferences;
 
 	return pObj;
 }
@@ -173,4 +175,56 @@ void delete_PortTypeRef(PortTypeRef* const this)
 	hashmap_free(this->mappings);
 	free(this->ref);
 	free(this);
+}
+
+void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s/%s",parent, ((PortTypeRef*)(this))->super->name);
+
+	sprintf(path,"%s\\name",parent);
+	visitor->action(path, STRING, ((PortTypeRef*)(this))->super->name);
+	
+	sprintf(path,"%s\\optional",parent);
+	visitor->action(path, BOOL, ((PortTypeRef*)(this))->optional);
+
+	sprintf(path,"%s\\noDependency",parent);
+	visitor->action(path, BOOL, ((PortTypeRef*)(this))->noDependency);
+}
+
+void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((PortTypeRef*)(this))->ref != NULL)
+	{
+		sprintf(path, "%s/ref[%s]", parent, ((PortTypeRef*)(this))->ref->super->super->name);
+		((PortTypeRef*)(this))->ref->VisitAttributes(((PortTypeRef*)(this))->ref, parent, visitor);
+	}
+	
+	if(((PortTypeRef*)(this))->mappings != NULL)
+	{
+		int i;
+		
+		
+		sprintf(path,"%s/mappings[%s]", parent, ((PortTypeRef*)(this))->super->name);
+		
+		/* mappings */
+		hashmap_map* m = ((PortTypeRef*)(this))->mappings;
+
+		/* compare mappings */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				PortTypeMapping* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
 }

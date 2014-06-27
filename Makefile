@@ -666,6 +666,30 @@ src/TypedElement.c.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/TypedElement.c.s
 .PHONY : src/TypedElement.c.s
 
+src/Visitor.o: src/Visitor.c.o
+.PHONY : src/Visitor.o
+
+# target to build an object file
+src/Visitor.c.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Visitor.c.o
+.PHONY : src/Visitor.c.o
+
+src/Visitor.i: src/Visitor.c.i
+.PHONY : src/Visitor.i
+
+# target to preprocess a source file
+src/Visitor.c.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Visitor.c.i
+.PHONY : src/Visitor.c.i
+
+src/Visitor.s: src/Visitor.c.s
+.PHONY : src/Visitor.s
+
+# target to generate assembly for a file
+src/Visitor.c.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Visitor.c.s
+.PHONY : src/Visitor.c.s
+
 src/hashmap.o: src/hashmap.c.o
 .PHONY : src/hashmap.o
 
@@ -840,6 +864,9 @@ help:
 	@echo "... src/TypedElement.o"
 	@echo "... src/TypedElement.i"
 	@echo "... src/TypedElement.s"
+	@echo "... src/Visitor.o"
+	@echo "... src/Visitor.i"
+	@echo "... src/Visitor.s"
 	@echo "... src/hashmap.o"
 	@echo "... src/hashmap.i"
 	@echo "... src/hashmap.s"

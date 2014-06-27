@@ -27,6 +27,7 @@ NamedElement* newPoly_TypedElement(void)
 	pObj->InternalGetKey = TypedElement_InternalGetKey;
 	pObj->Delete = deletePoly_TypedElement;
 	pObj->VisitAttributes = TypedElement_VisitAttributes;
+	pObj->VisitReferences = TypedElement_VisitReferences;
 
 	return pObj;
 }
@@ -61,6 +62,7 @@ TypedElement* new_TypedElement(void)
 	pTypeElemObj->InternalGetKey = TypedElement_InternalGetKey;
 	pTypeElemObj->Delete = delete_TypedElement;
 	pTypeElemObj->VisitAttributes = TypedElement_VisitAttributes;
+	pTypeElemObj->VisitReferences = TypedElement_VisitReferences;
 
 	return pTypeElemObj;
 }
@@ -166,4 +168,43 @@ void delete_TypedElement(TypedElement* const this)
 	/* destroy data memebers */
 	hashmap_free(this->genericTypes);
 	free(this);
+}
+
+void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s/%s",parent, ((TypedElement*)(this))->super->name);
+
+	sprintf(path,"%s\\name",parent);
+	visitor->action(path, STRING, ((TypedElement*)(this))->super->name);
+}
+
+void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((TypedElement*)(this))->genericTypes != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/genericTypes[%s]", parent, ((TypedElement*)(this))->super->name);
+		
+		/* genericTypes */
+		hashmap_map* m = ((TypedElement*)(this))->genericTypes;
+
+		/* compare genericTypes */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				TypedElement* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
 }

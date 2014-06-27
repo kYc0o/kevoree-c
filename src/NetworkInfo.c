@@ -25,6 +25,8 @@ NamedElement* newPoly_NetworkInfo()
 	
 	pObj->MetaClassName = NetworkInfo_MetaClassName;
 	pObj->InternalGetKey = NetworkInfo_InternalGetKey;
+	pObj->VisitAttributes = NetworkInfo_VisitAttributes;
+	pObj->VisitReferences = NetworkInfo_VisitReferences;
 	
 	pObj->Delete = deletePoly_NetworkInfo;
 
@@ -59,6 +61,8 @@ NetworkInfo* new_NetworkInfo()
 	
 	pNetInfoObj->MetaClassName = NetworkInfo_MetaClassName;
 	pNetInfoObj->InternalGetKey = NetworkInfo_InternalGetKey;
+	pNetInfoObj->VisitAttributes = NetworkInfo_VisitAttributes;
+	pNetInfoObj->VisitReferences = NetworkInfo_VisitReferences;
 	
 	pNetInfoObj->Delete = delete_NetworkInfo;
 
@@ -168,6 +172,45 @@ void delete_NetworkInfo(NetworkInfo* const this)
 	hashmap_free(this->values);
 	free(this);
 	
+}
+
+void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s/%s", parent, ((NetworkInfo*)(this))->super->name);
+
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((NetworkInfo*)(this))->super->name);
+}
+
+void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	
+	if(((NetworkInfo*)(this))->values != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/values[%s]", parent, ((NetworkInfo*)(this))->super->name);
+		
+		/* values */
+		hashmap_map* m = ((NetworkInfo*)(this))->values;
+
+		/* compare values */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				NetworkProperty* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
 }
 
 /*int _acceptNetworkInfo(NetworkInfo* this, NetworkInfo* c, Visitor* visitor)

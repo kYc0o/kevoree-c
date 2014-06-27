@@ -424,7 +424,7 @@ void ContainerNode_VisitAttributes(ContainerNode* const this, char* parent, Visi
 	visitor->action(path, STRING, this->super->super->name);
 
 	sprintf(path,"%s\\started", parent);
-	visitor->action(path, BOOL, (void*)this->super->started);
+	visitor->action(path, BOOL, this->super->started);
 }
 
 void ContainerNode_VisitReferences(ContainerNode* const this, char* parent, Visitor* visitor)

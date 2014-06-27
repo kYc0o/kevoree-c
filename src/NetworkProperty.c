@@ -16,8 +16,10 @@ NamedElement* newPoly_NetworkProperty()
 
 	pObj->pDerivedObj = pNetPropObj; /* Pointing to derived object */
 	
-	pNetPropObj->MetaClassName = NetworkProperty_MetaClassName;
-	pNetPropObj->InternalGetKey = NetworkProperty_InternalGetKey;
+	pObj->MetaClassName = NetworkProperty_MetaClassName;
+	pObj->InternalGetKey = NetworkProperty_InternalGetKey;
+	pObj->VisitAttributes = NetworkProperty_VisitAttributes;
+	pObj->VisitReferences = NetworkProperty_VisitAttributes;
 	
 	pObj->Delete = deletePoly_NetworkProperty;
 
@@ -45,6 +47,8 @@ NetworkProperty* new_NetworkProperty()
 	
 	pNetPropObj->MetaClassName = NetworkProperty_MetaClassName;
 	pNetPropObj->InternalGetKey = NetworkProperty_InternalGetKey;
+	pNetPropObj->VisitAttributes = NetworkProperty_VisitAttributes;
+	pNetPropObj->VisitReferences = NetworkProperty_VisitAttributes;
 	
 	pNetPropObj->Delete = delete_NetworkProperty;
 
@@ -97,6 +101,17 @@ void delete_NetworkProperty(NetworkProperty* const this)
 	free(this->value);
 	free(this);
 	
+}
+
+void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s/%s", parent, ((NetworkProperty*)(this))->super->name);
+
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((NetworkProperty*)(this))->super->name);
 }
 
 /*int _acceptNetworkProperty(NetworkProperty* this, NetworkProperty* c, Visitor* visitor)

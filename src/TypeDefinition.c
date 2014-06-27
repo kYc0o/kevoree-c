@@ -29,6 +29,7 @@ NamedElement* newPoly_TypeDefinition()
 	pObj->InternalGetKey = TypeDefinition_InternalGetKey;
 	pObj->Delete = deletePoly_TypeDefinition;
 	pObj->VisitAttributes = TypeDefinition_VisitAttributes;
+	pObj->VisitReferences = TypeDefinition_VisitReferences;
 
 	return pObj;
 }
@@ -65,6 +66,7 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->InternalGetKey = TypeDefinition_InternalGetKey;
 	pTypeDefObj->Delete = delete_TypeDefinition;
 	pTypeDefObj->VisitAttributes = TypeDefinition_VisitAttributes;
+	pTypeDefObj->VisitReferences = TypeDefinition_VisitReferences;
 
 	return pTypeDefObj;
 }
@@ -181,14 +183,59 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 {
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
-	sprintf(path,"%s/components[%s]",parent,component->name);
 
+	sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);
 
-	sprintf(path,"%s\\name",path);
-
-	visitor->action(path,STRING,component->name);
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((TypeDefinition*)(this))->super->name);
+	
+	sprintf(path, "%s\\version", parent);
+	visitor->action(path, STRING, ((TypeDefinition*)(this))->version);
+	
+	/*sprintf(path,"%s\\factoryBean",parent);
+	visitor->action(path, STRING, ((TypeDefinition*)(this))->factoryBean);
+	
+	sprintf(path,"%s\\bean",parent);
+	visitor->action(path, STRING, ((TypeDefinition*)(this))->bean);*/
+	
+	sprintf(path, "%s\\abstract", parent);
+	visitor->action(path, BOOL, ((TypeDefinition*)(this))->abstract);
 }
 
+void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((TypeDefinition*)(this))->deployUnits != NULL)
+	{
+		sprintf(path, "%s/deployUnits[%s]", parent, ((TypeDefinition*)(this))->deployUnits->super->name);
+		/*((TypeDefinition*)(this))->deployUnits->VisitAttributes(((TypeDefinition*)(this))->deployUnits, parent, visitor);*/
+	}
+	
+	if(((TypeDefinition*)(this))->superTypes != NULL)
+	{
+		int i;
+		
+		
+		sprintf(path,"%s/superTypes[%s]", parent, ((TypeDefinition*)(this))->super->name);
+		
+		/* superTypes */
+		hashmap_map* m = ((TypeDefinition*)(this))->superTypes;
+
+		/* compare superTypes */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				TypeDefinition* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
+}
 
 /*int _acceptTypeDefinition(TypeDefinition* this, TypeDefinition* c, Visitor* visitor)
 {

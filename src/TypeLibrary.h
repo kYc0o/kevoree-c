@@ -14,6 +14,8 @@ typedef TypeDefinition* (*fptrTypeLibFindSubTypesByID)(TypeLibrary*, char*);
 typedef void (*fptrTypeLibAddSubTypes)(TypeLibrary*, TypeDefinition*);
 typedef void (*fptrTypeLibRemoveSubTypes)(TypeLibrary*, TypeDefinition*);
 typedef void (*fptrDeleteTypeLib)(TypeLibrary*);
+typedef void (*fptrVisitAttrTypeLib)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsTypeLib)(void*, char*, Visitor*);
 
 typedef struct _TypeLibrary {
 	NamedElement* super;
@@ -23,7 +25,9 @@ typedef struct _TypeLibrary {
 	fptrTypeLibFindSubTypesByID FindSubTypesByID;
 	fptrTypeLibAddSubTypes AddSubTypes;
 	fptrTypeLibRemoveSubTypes RemoveSubTypes;
-	fptrDeleteTypeLib Delete;  
+	fptrDeleteTypeLib Delete;
+	fptrVisitAttrTypeLib VisitAttributes;
+	fptrVisitRefsTypeLib VisitReferences;
 } TypeLibrary;
 
 NamedElement* newPoly_TypeLibrary(void);
@@ -35,5 +39,7 @@ void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr);
 void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr);
 void deletePoly_TypeLibrary(NamedElement* const this);
 void delete_TypeLibrary(TypeLibrary* const this);
+void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor);
 
 #endif /* __TypeLibrary_H */

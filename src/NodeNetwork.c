@@ -14,7 +14,8 @@ NodeNetwork* new_NodeNetwork()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = Uuid::getSingleton().generateUUID();*/
+	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_NodeNetwork") + 1));/*Uuid::getSingleton().generateUUID();*/
+	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeNetwork");
 	pObj->initBy = NULL;
 	pObj->target = NULL;
 	/*pObj->link = hashmap_new();*/
@@ -30,6 +31,8 @@ NodeNetwork* new_NodeNetwork()
 	pObj->RemoveInitBy = NodeNetwork_RemoveInitBy;
 	pObj->RemoveTarget = NodeNetwork_RemoveTarget;
 	pObj->Delete = delete_NodeNetwork;
+	pObj->VisitAttributes = NodeNetwork_VisitAttributes;
+	pObj->VisitReferences = NodeNetwork_VisitReferences;
 	
 	return pObj;
 }
@@ -159,6 +162,56 @@ void delete_NodeNetwork(NodeNetwork* const this)
 		free(this->target);
 		hashmap_free(this->link);
 		free(this);
+	}
+}
+
+void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s/%s",parent, ((NodeNetwork*)(this))->generated_KMF_ID);
+
+	sprintf(path,"%s\\ID",parent);
+	visitor->action(path, STRING, ((NodeNetwork*)(this))->generated_KMF_ID);
+}
+void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((NodeNetwork*)(this))->target != NULL)
+	{
+		sprintf(path, "%s/target[%s]", parent, ((NodeNetwork*)(this))->target->super->super->name);
+		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, parent, visitor);
+	}
+	
+	if(((NodeNetwork*)(this))->initBy != NULL)
+	{
+		sprintf(path, "%s/initBy[%s]", parent, ((NodeNetwork*)(this))->initBy->super->super->name);
+		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, parent, visitor);
+	}
+	
+	if(((NodeNetwork*)(this))->link != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/link[%s]", parent, ((NodeNetwork*)(this))->generated_KMF_ID);
+		
+		/* link */
+		hashmap_map* m = ((NodeNetwork*)(this))->link;
+
+		/* compare link */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				NodeLink* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
 	}
 }
 

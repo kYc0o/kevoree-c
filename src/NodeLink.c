@@ -14,7 +14,8 @@ NodeLink* new_NodeLink()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = Uuid::getSingleton().generateUUID();*/
+	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_NodeLink") + 1));/*Uuid::getSingleton().generateUUID();*/
+	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeLink");
 	/*pObj->networkProperties = hashmap_new();*/
 	pObj->networkProperties = NULL;
 	
@@ -24,6 +25,8 @@ NodeLink* new_NodeLink()
 	pObj->AddNetworkProperties = NodeLink_AddNetworkProperties;
 	pObj->RemoveNetworkProperties = NodeLink_RemoveNetworkProperties;
 	pObj->Delete = delete_NodeLink;
+	pObj->VisitAttributes = NodeLink_VisitAttributes;
+	pObj->VisitReferences = NodeLink_VisitReferences;
 	
 	return pObj;
 }
@@ -128,5 +131,56 @@ void delete_NodeLink(NodeLink* const this)
 		free(this->generated_KMF_ID);
 		hashmap_free(this->networkProperties);
 		free(this);
+	}
+}
+
+void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s/%s", parent, ((NodeLink*)(this))->generated_KMF_ID);
+
+	sprintf(path, "%s\\ID", parent);
+	visitor->action(path, STRING, ((NodeLink*)(this))->generated_KMF_ID);
+	
+	sprintf(path, "%s\\networkType", parent);
+	visitor->action(path, STRING, ((NodeLink*)(this))->networkType);
+	
+	sprintf(path,"%s\\lastCheck",parent);
+	visitor->action(path, STRING, ((NodeLink*)(this))->lastCheck);
+	
+	sprintf(path,"%s\\zoneID",parent);
+	visitor->action(path, STRING, ((NodeLink*)(this))->zoneID);
+	
+	sprintf(path, "%s\\estimatedRate", parent);
+	visitor->action(path, BOOL, ((NodeLink*)(this))->estimatedRate);
+}
+
+void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	
+	if(((NodeLink*)(this))->networkProperties != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/networkProperties[%s]", parent, ((NodeLink*)(this))->generated_KMF_ID);
+		
+		/* networkProperties */
+		hashmap_map* m = ((NodeLink*)(this))->networkProperties;
+
+		/* compare networkProperties */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				NetworkProperty* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
 	}
 }

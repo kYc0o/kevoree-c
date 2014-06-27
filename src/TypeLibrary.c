@@ -26,6 +26,8 @@ NamedElement* newPoly_TypeLibrary(void)
 	pObj->MetaClassName = TypeLibrary_MetaClassname;
 	pObj->InternalGetKey = TypeLibrary_InternalGetKey;
 	pObj->Delete = deletePoly_TypeLibrary;
+	pObj->VisitAttributes = TypeLibrary_VisitAttributes;
+	pObj->VisitReferences = TypeLibrary_VisitReferences;
 
 	return pObj;
 }
@@ -59,6 +61,8 @@ TypeLibrary* new_TypeLibrary(void)
 	pTypeLibObj->MetaClassName = TypeLibrary_MetaClassname;
 	pTypeLibObj->InternalGetKey = TypeLibrary_InternalGetKey;
 	pTypeLibObj->Delete = delete_TypeLibrary;
+	pTypeLibObj->VisitAttributes = TypeLibrary_VisitAttributes;
+	pTypeLibObj->VisitReferences = TypeLibrary_VisitReferences;
 
 	return pTypeLibObj;
 }
@@ -164,4 +168,43 @@ void delete_TypeLibrary(TypeLibrary* const this)
 	/* destroy data memebers */
 	hashmap_free(this->subTypes);
 	free(this);
+}
+
+void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s/%s",parent, ((TypeLibrary*)(this))->super->name);
+
+	sprintf(path,"%s\\name",parent);
+	visitor->action(path, STRING, ((TypeLibrary*)(this))->super->name);
+}
+
+void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((TypeLibrary*)(this))->subTypes != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/subTypes[%s]", parent, ((TypeLibrary*)(this))->super->name);
+		
+		/* subTypes */
+		hashmap_map* m = ((TypeLibrary*)(this))->subTypes;
+
+		/* compare subTypes */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				TypeDefinition* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
 }

@@ -1,6 +1,7 @@
 #ifndef H_NamedElement
 #define H_NamedElement
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "tools.h"
@@ -12,6 +13,7 @@ typedef void (*fptrDeleteNamedElement)(NamedElement*);
 typedef char* (*fptrNamedElementInternalGetKey)(NamedElement*);
 typedef char* (*fptrNamedElementMetaClassName)(NamedElement*);
 typedef void (*fptrVisitAttrNamedElement)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsNamedElement)(void*, char*, Visitor*);
 
 typedef struct _NamedElement {
 	void* pDerivedObj;
@@ -21,6 +23,7 @@ typedef struct _NamedElement {
 	fptrNamedElementMetaClassName MetaClassName;
 	fptrDeleteNamedElement Delete;
 	fptrVisitAttrNamedElement VisitAttributes;
+	fptrVisitRefsNamedElement VisitReferences;
 }NamedElement;
 
 NamedElement* new_NamedElement(void);

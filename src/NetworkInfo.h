@@ -15,6 +15,8 @@ typedef void (*fptrNetInfoAddValues)(NetworkInfo*, NetworkProperty*);
 typedef void (*fptrNetInfoRemoveValues)(NetworkInfo*, NetworkProperty*);
 typedef NetworkInfo* (*fptrNetInfoFindValuesByID)(NetworkInfo*, char*);
 typedef void (*fptrDeleteNetInfo)(NetworkInfo*);
+typedef void (*fptrVisitAttrNetworkInfo)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsNetworkInfo)(void*, char*, Visitor*);
 
 typedef struct _NetworkInfo {
 	NamedElement* super;
@@ -28,6 +30,8 @@ typedef struct _NetworkInfo {
 	fptrNetInfoRemoveValues RemoveValues;
 	fptrNetInfoFindValuesByID FindValuesByID;
 	fptrDeleteNetInfo Delete;
+	fptrVisitAttrNetworkInfo VisitAttributes;
+	fptrVisitRefsNetworkInfo VisitReferences;
 } NetworkInfo;
 
 NamedElement* newPoly_NetworkInfo(void);
@@ -40,5 +44,7 @@ void NetworkInfo_RemoveValues(NetworkInfo* const this, NetworkProperty* ptr);
 NetworkInfo* NetworkInfo_FindValuesByID(NetworkInfo* const this, char* id);
 void deletePoly_NetworkInfo(NamedElement* const this);
 void delete_NetworkInfo(NetworkInfo* const this);
+void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor);
 
 #endif /* H_NetworkInfo */

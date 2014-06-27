@@ -14,11 +14,14 @@ PortTypeMapping* new_PortTypeMapping()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = Uuid::getSingleton().generateUUID();*/
+	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_PortTypeMapping") + 1));/*Uuid::getSingleton().generateUUID();*/
+	strcpy(pObj->generated_KMF_ID, "dummyKMFID_PortTypeMapping");
 	
 	pObj->InternalGetKey = PortTypeMapping_InternalGetKey;
 	pObj->MetaClassName = PortTypeMapping_MetaClassName;
 	pObj->Delete = delete_PortTypeMapping;
+	pObj->VisitAttributes = PortTypeMapping_VisitAttributes;
+	pObj->VisitReferences = PortTypeMapping_VisitAttributes;
 	
 	return pObj;
 }
@@ -61,4 +64,24 @@ void delete_PortTypeMapping(PortTypeMapping* const this)
 		free(this->generated_KMF_ID);
 		free(this);
 	}
+}
+
+void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s/%s", parent, ((PortTypeMapping*)(this))->generated_KMF_ID);
+
+	sprintf(path,"%s\\ID",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->generated_KMF_ID);
+	
+	sprintf(path,"%s\\beanMethodName",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->beanMethodName);
+	
+	sprintf(path,"%s\\serviceMethodName",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->serviceMethodName);
+	
+	sprintf(path,"%s\\paramTypes",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->paramTypes);
 }

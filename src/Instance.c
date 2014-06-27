@@ -20,6 +20,8 @@ NamedElement* newPoly_Instance()
 	pObj->MetaClassName = Instance_MetaClassName;
 	pObj->InternalGetKey = Instance_InternalGetKey;
 	pObj->Delete = deletePoly_Instance;
+	pObj->VisitAttributes = Instance_VisitAttributes;
+	pObj->VisitReferences = Instance_VisitReferences;
 
 	return pObj;
 }
@@ -44,13 +46,15 @@ Instance* new_Instance()
 	pInstanceObj->MetaClassName = Instance_MetaClassName;
 	pInstanceObj->InternalGetKey = Instance_InternalGetKey;
 	pInstanceObj->Delete = delete_Instance;
+	pInstanceObj->VisitAttributes = Instance_VisitAttributes;
+	pInstanceObj->VisitReferences = Instance_VisitReferences;
 
 	return pInstanceObj;
 }
 
 void Instance_AddTypeDefinition(Instance* this, TypeDefinition* ptr)
 {
-	this->TypeDefinition = ptr;
+	this->typeDefinition = ptr;
 }
 
 char* Instance_InternalGetKey(Instance* const this)
@@ -99,6 +103,29 @@ void delete_Instance(Instance* const this)
 	free(this->metaData);
 	free(this);
 	
+}
+
+void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s/%s", parent, ((Instance*)(this))->super->name);
+
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((Instance*)(this))->super->name);
+}
+
+void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((Instance*)(this))->typeDefinition != NULL)
+	{
+		sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->super->name);
+		((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, parent, visitor);
+	}
 }
 
 /*int _acceptInstance(Instance* this, Instance* c, Visitor* visitor)

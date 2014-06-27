@@ -7,7 +7,6 @@
 #include "NodeLink.h"
 #include "ContainerNode.h"
 
-/*typedef struct _ContainerNode ContainerNode;*/
 typedef struct _NodeNetwork NodeNetwork;
 
 typedef char* (*fptrNodeNetMetaClassName)(NodeNetwork*);
@@ -20,6 +19,8 @@ typedef void (*fptrNodeNetRemoveLink)(NodeNetwork*, NodeLink*);
 typedef void (*fptrNodeNetRemoveInitBy)(NodeNetwork*, ContainerNode*);
 typedef void (*fptrNodeNetRemoveTarget)(NodeNetwork*, ContainerNode*);
 typedef void (*fptrDeleteNodeNetwork)(NodeNetwork*);
+typedef void (*fptrVisitAttrNodeNetwork)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsNodeNetwork)(void*, char*, Visitor*);
 
 typedef struct _NodeNetwork {
 	void* pDerivedObj;
@@ -40,6 +41,8 @@ typedef struct _NodeNetwork {
 	fptrNodeNetRemoveTarget RemoveTarget;
 	fptrDeleteNodeNetwork Delete;
 	/*int (*accept)(struct _NodeNetwork* this, struct _NodeNetwork* c, Visitor* visitor);*/
+	fptrVisitAttrNodeNetwork VisitAttributes;
+	fptrVisitRefsNodeNetwork VisitReferences;
 } NodeNetwork;
 
 NodeNetwork* new_NodeNetwork(void);
@@ -53,6 +56,8 @@ void NodeNetwork_RemoveLink(NodeNetwork* const this, NodeLink* ptr);
 void NodeNetwork_RemoveInitBy(NodeNetwork* const this, ContainerNode* ptr);
 void NodeNetwork_RemoveTarget(NodeNetwork* const this, ContainerNode* ptr);
 void delete_NodeNetwork(NodeNetwork* const this);
-
 /*int _acceptNodeNetwork(NodeNetwork* this, NodeNetwork* c, Visitor* visitor);*/
+void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor);
+
 #endif
