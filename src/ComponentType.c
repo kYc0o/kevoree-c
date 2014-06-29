@@ -34,6 +34,8 @@ TypeDefinition* newPoly_ComponentType(void)
 
 	pObj->MetaClassName = ComponentType_MetaClassName;
 	pObj->InternalGetKey = ComponentType_InternalGetKey;
+	pObj->VisitAttributes = ComponentType_VisitAttributes;
+	pObj->VisitReferences = ComponentType_VisitReferences;
 	
 	pObj->Delete = deletePoly_ComponentType;
 
@@ -72,6 +74,8 @@ ComponentType* new_ComponentType(void)
 
 	pCompTypeObj->MetaClassName = ComponentType_MetaClassName;
 	pCompTypeObj->InternalGetKey = ComponentType_InternalGetKey;
+	pCompTypeObj->VisitAttributes = ComponentType_VisitAttributes;
+	pCompTypeObj->VisitReferences = ComponentType_VisitReferences;
 	
 	pCompTypeObj->Delete = delete_ComponentType;
 
@@ -221,4 +225,64 @@ void delete_ComponentType(ComponentType* const this)
 	hashmap_free(this->required);
 	hashmap_free(this->provided);
 	free(this);
+}
+
+void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	
+	sprintf(path, "%s/%s", parent, ((ComponentType*)(this))->super->super->name);
+	
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((ComponentType*)(this))->super->super->name);
+}
+void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	
+	if(((ComponentType*)(this))->required != NULL)
+	{
+		int i;
+		
+		sprintf(path, "%s/required[%s]", parent, ((ComponentType*)(this))->super->super->name);
+		
+		/* required */
+		hashmap_map* m = ((ComponentType*)(this))->required;
+
+		/* compare required */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				PortTypeRef* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
+	
+	if(((ComponentType*)(this))->provided != NULL)
+	{
+		int i;
+		
+		sprintf(path, "%s/provided[%s]", parent, ((ComponentType*)(this))->super->super->name);
+		
+		/* provided */
+		hashmap_map* m = ((ComponentType*)(this))->provided;
+
+		/* compare provided */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				PortTypeRef* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
 }

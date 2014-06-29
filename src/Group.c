@@ -16,14 +16,16 @@ Instance* newPoly_Group()
 
 	pObj->pDerivedObj = pGroupObj; /* Pointing to derived object */
 	
-	pObj->InternalGetKey = Group_InternalGetKey;
-	pObj->MetaClassName = Group_MetaClassName;
-	
 	/*pGroupObj->subNodes = hashmap_new();*/
 	pGroupObj->subNodes = NULL;;
 	
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
+	
+	pObj->InternalGetKey = Group_InternalGetKey;
+	pObj->MetaClassName = Group_MetaClassName;
+	pObj->VisitAttributes = Group_VisitAttributes;
+	pObj->VisitReferences = Group_VisitReferences;
 	
 	pObj->Delete = deletePoly_Group;
 
@@ -49,15 +51,16 @@ Group* new_Group()
 	/*pObj->pDerivedObj = pGroupObj; Pointing to derived object */
 	pGroupObj->super = pObj;
 	
-	pGroupObj->InternalGetKey = Group_InternalGetKey;
-	pGroupObj->MetaClassName = Group_MetaClassName;
-	
 	/*pGroupObj->subNodes = hashmap_new();*/
 	pGroupObj->subNodes = NULL;
 	
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
 	
+	pGroupObj->InternalGetKey = Group_InternalGetKey;
+	pGroupObj->MetaClassName = Group_MetaClassName;
+	pGroupObj->VisitAttributes = Group_VisitAttributes;
+	pGroupObj->VisitReferences = Group_VisitReferences;
 	pGroupObj->Delete = delete_Group;
 
 	return pGroupObj;
@@ -154,6 +157,45 @@ void delete_Group(Group* const this)
 	/* destroy data memebers */
 	hashmap_free(this->subNodes);
 	free(this);
+}
+
+void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s/%s", parent, ((Group*)(this))->super->super->name);
+
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((Group*)(this))->super->super->name);
+}
+
+void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	
+	if(((Group*)(this))->subNodes != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/subNodes[%s]", parent, ((Group*)(this))->super->super->name);
+		
+		/* subNodes */
+		hashmap_map* m = ((Group*)(this))->subNodes;
+
+		/* compare subNodes */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				ContainerNode* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
 }
 
 /*int _acceptGroup(Group* this, Group* c, Visitor* visitor)

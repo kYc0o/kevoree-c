@@ -16,18 +16,22 @@ typedef char* (*fptrGroupMetaClassName)(Group*);
 typedef void (*fptrGroupAddSubNodes)(Group*, ContainerNode*);
 typedef void (*fptrGroupRemoveSubNodes)(Group*, ContainerNode*);
 typedef void (*fptrDeleteGroup)(Group*);
+typedef void (*fptrVisitAttrGroup)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsGroup)(void*, char*, Visitor*);
 
 typedef struct _Group { 
 	Instance* super;
-	fptrGroupInternalGetKey InternalGetKey;
-	fptrGroupMetaClassName MetaClassName;
 	/*int count_subNodes;
 	struct ContainerNode **subNodes;*/
 	map_t subNodes;
 	/*int (*accept)(struct _Group*, struct _Group*, Visitor*);*/
 	fptrGroupAddSubNodes AddSubNodes;
 	fptrGroupRemoveSubNodes RemoveSubNodes;
+	fptrGroupInternalGetKey InternalGetKey;
+	fptrGroupMetaClassName MetaClassName;
 	fptrDeleteGroup Delete;
+	fptrVisitAttrGroup VisitAttributes;
+	fptrVisitRefsGroup VisitReferences;
 } Group;
 
 Instance* newPoly_Group(void);
@@ -39,5 +43,7 @@ void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr);
 /*int _acceptGroup(Group* this, Group* c, Visitor* visitor);*/
 void deletePoly_Group(Instance*);
 void delete_Group(Group*);
+void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void Group_VisitReferences(void* const this, char* parent, Visitor* visitor);
 
 #endif /* H_Group */

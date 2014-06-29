@@ -17,6 +17,8 @@ typedef void (*fptrCompTypeAddProvided)(ComponentType*, PortTypeRef*);
 typedef void (*fptrCompTypeRemoveRequired)(ComponentType*, PortTypeRef*);
 typedef void (*fptrCompTypeRemoveProvided)(ComponentType*, PortTypeRef*);
 typedef void (*fptrDeleteComponentType)(ComponentType*);
+typedef void (*fptrVisitAttrComponentType)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsComponentType)(void*, char*, Visitor*);
 
 typedef struct _ComponentType {
 	TypeDefinition* super;
@@ -31,6 +33,8 @@ typedef struct _ComponentType {
 	fptrCompTypeRemoveRequired RemoveRequired;
 	fptrCompTypeRemoveProvided RemoveProvided;
 	fptrDeleteComponentType Delete;
+	fptrVisitAttrComponentType VisitAttributes;
+	fptrVisitRefsComponentType VisitReferences;
 } ComponentType;
 
 TypeDefinition* newPoly_ComponentType(void);
@@ -45,5 +49,7 @@ void ComponentType_RemoveRequired(ComponentType* const this, PortTypeRef* ptr);
 void ComponentType_RemoveProvided(ComponentType* const this, PortTypeRef* ptr);
 void deletePoly_ComponentType(TypeDefinition* const this);
 void delete_ComponentType(ComponentType* const this);
+void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor);
  
 #endif /* __ComponentType_H */

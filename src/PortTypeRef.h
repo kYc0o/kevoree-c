@@ -17,8 +17,8 @@ typedef void (*fptrPortTypeRefAddMappings)(PortTypeRef*, PortTypeMapping*);
 typedef void (*fptrPortTypeRefRemoveRef)(PortTypeRef*, PortType*);
 typedef void (*fptrPortTypeRefRemoveMappings)(PortTypeRef*, PortTypeMapping*);
 typedef void (*fptrDeletePortTypeRef)(PortTypeRef*);
-typedef void (*fptrVisitAttrPortTypeRef)(void*, char*, Visitor);
-typedef void (*fptrVisitRefsPortTypeRef)(void*, char*, Visitor);
+typedef void (*fptrVisitAttrPortTypeRef)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsPortTypeRef)(void*, char*, Visitor*);
 
 typedef struct _PortTypeRef {
 	NamedElement* super;

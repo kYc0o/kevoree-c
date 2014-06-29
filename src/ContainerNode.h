@@ -31,7 +31,8 @@ typedef void (*fptrContNodeRemoveHost)(ContainerNode*, ContainerNode*);
 typedef void (*fptrContNodeRemoveGroups)(ContainerNode*, Group*);
 typedef void (*fptrContNodeRemoveNetworkInformation)(ContainerNode*, NetworkInfo*);
 typedef void (*fptrDeleteContNode)(ContainerNode*);
-typedef void (*fptrVisitAttrContainerNode)(ContainerNode*, char*, Visitor*);
+typedef void (*fptrVisitAttrContainerNode)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsContainerNode)(void*, char*, Visitor*);
 
 typedef struct _ContainerNode {
 	Instance* super;
@@ -64,6 +65,7 @@ typedef struct _ContainerNode {
 	fptrContNodeRemoveNetworkInformation RemoveNetworkInformation;
 	fptrDeleteContNode Delete;
 	fptrVisitAttrContainerNode VisitAttributes;
+	fptrVisitRefsContainerNode VisitReferences;
 	/*int (*accept)(struct _ContainerNode*, struct _ContainerNode*, Visitor*);*/
 } ContainerNode ;
 
@@ -88,6 +90,7 @@ void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkIn
 /*int _acceptContainerNode(ContainerNode* this, ContainerNode* c, Visitor* visitor);*/
 void deletePoly_ContainerNode(Instance* const this);
 void delete_ContainerNode(ContainerNode* const this);
-void ContainerNode_VisitAttributes(ContainerNode* const this, char* parent, Visitor* visitor);
+void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor);
 
 #endif /* H_ContainerNode */

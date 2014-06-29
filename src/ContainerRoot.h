@@ -45,7 +45,7 @@ typedef void (*fptrContRootRemoveDeployUnits)(ContainerRoot*, DeployUnit*);
 typedef void (*fptrContRootRemoveNodeNetworks)(ContainerRoot*, NodeNetwork*);
 typedef void (*fptrContRootRemoveGroups)(ContainerRoot*, Group*);
 typedef void (*fptrDeleteContainerRoot)(ContainerRoot*);
-typedef void (*fptrVisitContainerRoot)(ContainerRoot*, Visitor*);
+typedef void (*fptrVisitContainerRoot)(void*, Visitor*);
 
 typedef struct _ContainerRoot {
 	void* pDerivedObj;
@@ -130,6 +130,6 @@ void ContainerRoot_RemoveDeployUnits(ContainerRoot* const this,  DeployUnit* ptr
 void ContainerRoot_RemoveNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr);
 void ContainerRoot_RemoveGroups(ContainerRoot* const this, Group* ptr);
 void delete_ContainerRoot(ContainerRoot* const this);
-void ContainerRoot_Visit(ContainerRoot* const this, Visitor* visitor);
+void ContainerRoot_Visit(void* const this, Visitor* visitor);
 
 #endif

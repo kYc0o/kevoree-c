@@ -14,7 +14,8 @@ ContainerRoot* new_ContainerRoot(void)
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = Uuid::getSingleton().generateUUID();*/
+	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_ContainerRoot") + 1));/*Uuid::getSingleton().generateUUID();*/
+	strcpy(pObj->generated_KMF_ID, "dummyKMFID_ContainerRoot");
 	/*pObj->nodes = hashmap_new();
 	pObj->typeDefinitions = hashmap_new();
 	pObj->repositories = hashmap_new();
@@ -580,27 +581,125 @@ void delete_ContainerRoot(ContainerRoot* const this)
 	}
 }
 
-void ContainerRoot_Visit(ContainerRoot* const this, Visitor* visitor)
+void ContainerRoot_Visit(void* const this, Visitor* visitor)
 {
 	int i;
 
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
+	
+	sprintf(path, "%s\\ID", ((ContainerRoot*)(this))->generated_KMF_ID);
+	visitor->action(path, STRING, ((ContainerRoot*)(this))->generated_KMF_ID);
 
-	hashmap_map* m = (hashmap_map*) this->nodes;
-
-	/* compare nodes*/
-	for(i = 0; i< m->table_size; i++)
+	hashmap_map* m = NULL;
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->nodes) != NULL)
 	{
-		if(m->data[i].in_use != 0)
+		/* compare nodes*/
+		for(i = 0; i< m->table_size; i++)
 		{
-			any_t data = (any_t) (m->data[i].data);
-			ContainerNode* n = data;
-			sprintf(path, "nodes[%s]", n->super->super->name);
-
-			n->VisitAttributes(n, path, visitor);
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				ContainerNode* n = data;
+				sprintf(path, "nodes[%s]", n->super->super->name);
+				n->VisitAttributes(n, path, visitor);
+			}
 		}
 	}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->typeDefinitions) != NULL)
+	{
+		/* compare typeDefinitions*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				TypeDefinition* n = data;
+				sprintf(path, "typeDefinitions[%s]", n->super->name);
+				n->VisitAttributes(n, path, visitor);
+			}
+		}
+	}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->repositories) != NULL)
+		/* compare repositories*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				Repository* n = data;
+				sprintf(path, "repositories[%s]", n->url);
+				n->VisitAttributes(n, path, visitor);
+			}
+		}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->dataTypes) != NULL)
+		/* compare dataTypes*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				TypedElement* n = data;
+				sprintf(path, "dataTypes[%s]", n->super->name);
+				n->VisitAttributes(n, path, visitor);
+			}
+		}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->libraries) != NULL)
+		/* compare libraries*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				TypeLibrary* n = data;
+				sprintf(path, "libraries[%s]", n->super->name);
+				n->VisitAttributes(n, path, visitor);
+			}
+		}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->deployUnits) != NULL)
+		/* compare deployUnits*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				DeployUnit* n = data;
+				sprintf(path, "deployUnits[%s]", n->super->name);
+				n->VisitAttributes(n, path, visitor);
+			}
+		}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->nodeNetworks) != NULL)
+		/* compare nodeNetworks*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				NodeNetwork* n = data;
+				sprintf(path, "nodeNetworks[%s]", n->generated_KMF_ID);
+				n->VisitAttributes(n, path, visitor);
+			}
+		}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->groups) != NULL)
+		/* compare groups*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				Group* n = data;
+				sprintf(path, "groups[%s]", n->super->super->name);
+				n->VisitAttributes(n, path, visitor);
+			}
+		}
 }
 
 /*int _acceptContainerRoot(ContainerRoot* this, ContainerRoot* c, Visitor* visitor)

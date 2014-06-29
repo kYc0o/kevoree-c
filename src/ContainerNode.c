@@ -15,8 +15,6 @@ Instance* newPoly_ContainerNode()
 	}
 
 	pObj->pDerivedObj = pContNodeObj; /* Pointing to derived object */
-	pObj->MetaClassName = ContainerNode_MetaClassName;
-	pObj->InternalGetKey = ContainerNode_InternalGetKey;
 	
 	/*pContNodeObj->components = hashmap_new();
 	pContNodeObj->hosts = hashmap_new();
@@ -41,7 +39,11 @@ Instance* newPoly_ContainerNode()
 	pContNodeObj->RemoveHosts = ContainerNode_RemoveHosts;
 	pContNodeObj->RemoveGroups = ContainerNode_RemoveGroups;
 	pContNodeObj->RemoveNetworkInformation = ContainerNode_RemoveNetworkInformation;
-	pContNodeObj->VisitAttributes = ContainerNode_VisitAttributes;
+	
+	pObj->MetaClassName = ContainerNode_MetaClassName;
+	pObj->InternalGetKey = ContainerNode_InternalGetKey;
+	pObj->VisitAttributes = ContainerNode_VisitAttributes;
+	pObj->VisitReferences = ContainerNode_VisitReferences;
 	
 	pObj->Delete = deletePoly_ContainerNode;
 
@@ -67,8 +69,6 @@ ContainerNode* new_ContainerNode()
 
 	/*pObj->pDerivedObj = pContNodeObj; Pointing to derived object */
 	pContNodeObj->super = pObj;
-	pContNodeObj->MetaClassName = ContainerNode_MetaClassName;
-	pContNodeObj->InternalGetKey = ContainerNode_InternalGetKey;
 	
 	/*pContNodeObj->components = hashmap_new();
 	pContNodeObj->hosts = hashmap_new();
@@ -93,7 +93,11 @@ ContainerNode* new_ContainerNode()
 	pContNodeObj->RemoveHosts = ContainerNode_RemoveHosts;
 	pContNodeObj->RemoveGroups = ContainerNode_RemoveGroups;
 	pContNodeObj->RemoveNetworkInformation = ContainerNode_RemoveNetworkInformation;
+	
+	pContNodeObj->MetaClassName = ContainerNode_MetaClassName;
+	pContNodeObj->InternalGetKey = ContainerNode_InternalGetKey;
 	pContNodeObj->VisitAttributes = ContainerNode_VisitAttributes;
+	pContNodeObj->VisitReferences = ContainerNode_VisitReferences;
 	
 	pContNodeObj->Delete = delete_ContainerNode;
 
@@ -413,28 +417,33 @@ void delete_ContainerNode(ContainerNode* const this)
 	free(this);
 }
 
-void ContainerNode_VisitAttributes(ContainerNode* const this, char* parent, Visitor* visitor)
+void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	int i;
-
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
-	sprintf(path, "%s\\name", parent);
 	
-	visitor->action(path, STRING, this->super->super->name);
+	sprintf(path, "%s/%s", parent, ((ContainerNode*)(this))->super->super->name);
+	
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((ContainerNode*)(this))->super->super->name);
 
 	sprintf(path,"%s\\started", parent);
-	visitor->action(path, BOOL, this->super->started);
+	visitor->action(path, BOOL, ((ContainerNode*)(this))->super->started);
 }
 
-void ContainerNode_VisitReferences(ContainerNode* const this, char* parent, Visitor* visitor)
+void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	if(this->components != NULL)
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	
+	if(((ContainerNode*)(this))->components != NULL)
 	{
 		int i;
-
+		
+		sprintf(path,"%s/components[%s]", parent, ((ContainerNode*)(this))->super->super->name);
+		
 		/* components */
-		hashmap_map* m =  this->components;
+		hashmap_map* m = ((ContainerNode*)(this))->components;
 
 		/* compare components */
 		for(i = 0; i< m->table_size; i++)
@@ -442,8 +451,81 @@ void ContainerNode_VisitReferences(ContainerNode* const this, char* parent, Visi
 			if(m->data[i].in_use != 0)
 			{
 				any_t data = (any_t) (m->data[i].data);
-				ComponentInstance *n = data;
+				ComponentInstance* n = data;
 				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
+	
+	if(((ContainerNode*)(this))->hosts != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/hosts[%s]", parent, ((ContainerNode*)(this))->super->super->name);
+		
+		/* hosts */
+		hashmap_map* m = ((ContainerNode*)(this))->hosts;
+
+		/* compare hosts */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				ContainerNode* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
+	
+	if(((ContainerNode*)(this))->host != NULL)
+	{
+		sprintf(path, "%s/host[%s]", parent, ((ContainerNode*)(this))->host->super->super->name);
+		((ContainerNode*)(this))->host->VisitAttributes(((ContainerNode*)(this))->host, parent, visitor);
+	}
+	
+	if(((ContainerNode*)(this))->networkInformation != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/networkInformation[%s]", parent, ((ContainerNode*)(this))->super->super->name);
+		
+		/* networkInformation */
+		hashmap_map* m = ((ContainerNode*)(this))->networkInformation;
+
+		/* compare networkInformation */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				NetworkInfo* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
+	
+	if(((ContainerNode*)(this))->groups != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/groups[%s]", parent, ((ContainerNode*)(this))->super->super->name);
+		
+		/* groups */
+		hashmap_map* m = ((ContainerNode*)(this))->groups;
+
+		/* compare groups */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				Group* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
 			}
 		}
 	}

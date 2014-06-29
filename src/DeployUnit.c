@@ -15,8 +15,6 @@ NamedElement* newPoly_DeployUnit()
 	}
 
 	pObj->pDerivedObj = pDepUnitObj; /* Pointing to derived object */
-	pObj->MetaClassName = DeployUnit_MetaClassName;
-	pObj->InternalGetKey = DeployUnit_InternalGetKey;
 	
 	/*pDepUnitObj->requiredLibs = hashmap_new();*/
 	pDepUnitObj->requiredLibs = NULL;
@@ -24,6 +22,11 @@ NamedElement* newPoly_DeployUnit()
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
 	pDepUnitObj->FindRequiredLibsByID = DeployUnit_FindRequiredLibsByID;
+	
+	pObj->MetaClassName = DeployUnit_MetaClassName;
+	pObj->InternalGetKey = DeployUnit_InternalGetKey;
+	pObj->VisitAttributes = DeployUnit_VisitAttributes;
+	pObj->VisitReferences = DeployUnit_VisitReferences;
 	
 	pObj->Delete = deletePoly_DeployUnit;
 
@@ -49,15 +52,17 @@ DeployUnit* new_DeployUnit()
 	/*pObj->pDerivedObj = pDepUnitObj;  Pointing to derived object */
 	pDepUnitObj->super = pObj; /* Pointing to the base object */
 	
-	pDepUnitObj->MetaClassName = DeployUnit_MetaClassName;
-	pDepUnitObj->InternalGetKey = DeployUnit_InternalGetKey;
-	
 	/*pDepUnitObj->requiredLibs = hashmap_new();*/
 	pDepUnitObj->requiredLibs = NULL;
 	
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
 	pDepUnitObj->FindRequiredLibsByID = DeployUnit_FindRequiredLibsByID;
+	
+	pDepUnitObj->MetaClassName = DeployUnit_MetaClassName;
+	pDepUnitObj->InternalGetKey = DeployUnit_InternalGetKey;
+	pDepUnitObj->VisitAttributes = DeployUnit_VisitAttributes;
+	pDepUnitObj->VisitReferences = DeployUnit_VisitReferences;
 	
 	pDepUnitObj->Delete = delete_DeployUnit;
 
@@ -183,6 +188,60 @@ void delete_DeployUnit(DeployUnit* const this)
 	free(this->type);
 	hashmap_free(this->requiredLibs);
 	free(this);
+}
+
+void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path, "%s/%s", parent, ((DeployUnit*)(this))->super->name);
+
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((DeployUnit*)(this))->super->name);
+	
+	sprintf(path,"%s\\groupName",parent);
+	visitor->action(path, STRING, ((DeployUnit*)(this))->groupName);
+	
+	sprintf(path, "%s\\version", parent);
+	visitor->action(path, STRING, ((DeployUnit*)(this))->version);
+	
+	sprintf(path,"%s\\url",parent);
+	visitor->action(path, STRING, ((DeployUnit*)(this))->url);
+	
+	/*sprintf(path, "%s\\hashcode", parent);
+	visitor->action(path, STRING, ((DeployUnit*)(this))->hashcode);*/
+	
+	sprintf(path, "%s\\type", parent);
+	visitor->action(path, STRING, ((DeployUnit*)(this))->type);
+}
+
+void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[128];
+	memset(&path[0], 0, sizeof(path));
+	
+	if(((DeployUnit*)(this))->requiredLibs != NULL)
+	{
+		int i;
+		
+		sprintf(path,"%s/requiredLibs[%s]", parent, ((DeployUnit*)(this))->super->name);
+		
+		/* requiredLibs */
+		hashmap_map* m = ((DeployUnit*)(this))->requiredLibs;
+
+		/* compare requiredLibs */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				DeployUnit* n = data;
+				n->VisitAttributes(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
+			}
+		}
+	}
 }
 
 /*int _acceptDeployUnit(DeployUnit* this, DeployUnit* c, Visitor* visitor)
