@@ -110,10 +110,18 @@ void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s/%s", parent, ((Instance*)(this))->super->name);
+	/*sprintf(path, "%s/%s", parent, ((Instance*)(this))->super->name);*/
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((Instance*)(this))->super->name);
+	/*sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((Instance*)(this))->super->name);*/
+	sprintf(path, "%s", parent);
+	NamedElement_VisitAttributes(((Instance*)(this))->super, path, visitor);
+	
+	sprintf(path,"%s\\metaData", parent);
+	visitor->action(path, STRING, ((Instance*)(this))->metaData);
+	
+	sprintf(path,"%s\\started", parent);
+	visitor->action(path, BOOL, (void*)((Instance*)(this))->started);
 }
 
 void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -124,7 +132,7 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
 	if(((Instance*)(this))->typeDefinition != NULL)
 	{
 		sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->super->name);
-		((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, parent, visitor);
+		((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor);
 	}
 }
 

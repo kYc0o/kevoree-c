@@ -18,7 +18,7 @@ Repository* new_Repository()
 	pObj->MetaClassName = Repository_MetaClassName;
 	pObj->Delete = delete_Repository;
 	pObj->VisitAttributes = Repository_VisitAttributes;
-	pObj->VisitReferences = Repository_VisitAttributes;
+	/*pObj->VisitReferences = Repository_VisitAttributes;*/
 	
 	return pObj;
 }

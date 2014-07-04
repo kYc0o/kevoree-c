@@ -177,8 +177,9 @@ void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 
 	sprintf(path,"%s/%s",parent, ((TypedElement*)(this))->super->name);
 
-	sprintf(path,"%s\\name",parent);
-	visitor->action(path, STRING, ((TypedElement*)(this))->super->name);
+	/*sprintf(path,"%s\\name",parent);
+	visitor->action(path, STRING, ((TypedElement*)(this))->super->name);*/
+	NamedElement_VisitAttributes(((TypedElement*)(this))->super, parent, visitor);
 }
 
 void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -203,7 +204,7 @@ void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visit
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement* n = data;
 				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				n->VisitReferences(n, parent, visitor);
 			}
 		}
 	}

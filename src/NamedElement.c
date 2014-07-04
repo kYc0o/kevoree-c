@@ -64,7 +64,7 @@ void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s\\name", path);
+	sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((NamedElement*)(this))->name);
 }
 

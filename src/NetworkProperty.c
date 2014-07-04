@@ -110,8 +110,9 @@ void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* vi
 
 	sprintf(path, "%s/%s", parent, ((NetworkProperty*)(this))->super->name);
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((NetworkProperty*)(this))->super->name);
+	/*sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((NetworkProperty*)(this))->super->name);*/
+	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, parent, visitor);
 }
 
 /*int _acceptNetworkProperty(NetworkProperty* this, NetworkProperty* c, Visitor* visitor)

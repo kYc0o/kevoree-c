@@ -181,8 +181,9 @@ void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visito
 
 	sprintf(path, "%s/%s", parent, ((NetworkInfo*)(this))->super->name);
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((NetworkInfo*)(this))->super->name);
+	/*sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((NetworkInfo*)(this))->super->name);*/
+	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, parent, visitor);
 }
 
 void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -207,7 +208,7 @@ void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visito
 				any_t data = (any_t) (m->data[i].data);
 				NetworkProperty* n = data;
 				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				n->VisitReferences(n, parent, visitor);
 			}
 		}
 	}

@@ -197,8 +197,9 @@ void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor
 
 	sprintf(path, "%s/%s", parent, ((DeployUnit*)(this))->super->name);
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((DeployUnit*)(this))->super->name);
+	/*sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((DeployUnit*)(this))->super->name);*/
+	NamedElement_VisitAttributes(((DeployUnit*)(this))->super, parent, visitor);
 	
 	sprintf(path,"%s\\groupName",parent);
 	visitor->action(path, STRING, ((DeployUnit*)(this))->groupName);
@@ -238,7 +239,7 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
 				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				n->VisitReferences(n, parent, visitor);
 			}
 		}
 	}

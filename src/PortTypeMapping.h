@@ -13,7 +13,7 @@ typedef char* (*fptrPortTypMapMetaClassName)(PortTypeMapping*);
 typedef char* (*fptrPortTypMapInternalGetKey)(PortTypeMapping*);
 typedef void (*fptrDeletePortTypeMapping)(PortTypeMapping*);
 typedef void (*fptrVisitAttrPortTypeMapping)(void*, char*, Visitor*);
-typedef void (*fptrVisitRefsPortTypeMapping)(void*, char*, Visitor*);
+/*typedef void (*fptrVisitRefsPortTypeMapping)(void*, char*, Visitor*);*/
 
 typedef struct _PortTypeMapping {
 	void* pDerivedObj;
@@ -25,7 +25,7 @@ typedef struct _PortTypeMapping {
 	fptrPortTypMapInternalGetKey InternalGetKey;
 	fptrDeletePortTypeMapping Delete;
 	fptrVisitAttrPortTypeMapping VisitAttributes;
-	fptrVisitRefsPortTypeMapping VisitReferences;
+	/*fptrVisitRefsPortTypeMapping VisitReferences;*/
 } PortTypeMapping;
 
 PortTypeMapping* new_PortTypeMapping(void);

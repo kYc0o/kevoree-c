@@ -103,7 +103,11 @@ char* TypeDefinition_MetaClassName(TypeDefinition* const this)
 
 void TypeDefinition_AddDeployUnit(TypeDefinition* const this, DeployUnit* ptr)
 {
-	this->deployUnits = ptr;
+	if(ptr != NULL)
+	{
+		this->deployUnits = ptr;
+		printf("DeployUnit %s added to TypeDefinition %s Result: 0\n", ptr->super->name, this->super->name);
+	}
 }
 
 void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit* ptr)
@@ -186,8 +190,9 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 
 	sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((TypeDefinition*)(this))->super->name);
+	/*sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((TypeDefinition*)(this))->super->name);*/
+	NamedElement_VisitAttributes(((TypeDefinition*)(this))->super, parent, visitor);
 	
 	sprintf(path, "%s\\version", parent);
 	visitor->action(path, STRING, ((TypeDefinition*)(this))->version);
@@ -199,7 +204,7 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 	visitor->action(path, STRING, ((TypeDefinition*)(this))->bean);*/
 	
 	sprintf(path, "%s\\abstract", parent);
-	visitor->action(path, BOOL, ((TypeDefinition*)(this))->abstract);
+	visitor->action(path, BOOL, (void*)((TypeDefinition*)(this))->abstract);
 }
 
 void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -210,6 +215,9 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 	if(((TypeDefinition*)(this))->deployUnits != NULL)
 	{
 		sprintf(path, "%s/deployUnits[%s]", parent, ((TypeDefinition*)(this))->deployUnits->super->name);
+		DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
+		n->VisitAttributes(n, path, visitor);
+		n->VisitReferences(n, path, visitor);
 		/*((TypeDefinition*)(this))->deployUnits->VisitAttributes(((TypeDefinition*)(this))->deployUnits, parent, visitor);*/
 	}
 	
@@ -230,8 +238,9 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				sprintf(path,"%s/superTypes[%s]", parent, n->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}

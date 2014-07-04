@@ -19,7 +19,7 @@ TypeDefinition* newPoly_GroupType()
 	pObj->MetaClassName = GroupType_MetaClassName;
 	pObj->InternalGetKey = GroupType_InternalGetKey;
 	pObj->VisitAttributes = GroupType_VisitAttributes;
-	pObj->VisitReferences = GroupType_VisitAttributes;
+	pObj->VisitReferences = TypeDefinition_VisitAttributes;
 	
 	pObj->Delete = deletePoly_GroupType;
 
@@ -48,7 +48,7 @@ GroupType* new_GroupType()
 	pGroupTypeObj->MetaClassName = GroupType_MetaClassName;
 	pGroupTypeObj->InternalGetKey = GroupType_InternalGetKey;
 	pGroupTypeObj->VisitAttributes = GroupType_VisitAttributes;
-	pGroupTypeObj->VisitReferences = GroupType_VisitAttributes;
+	pGroupTypeObj->VisitReferences = TypeDefinition_VisitAttributes;
 	
 	pGroupTypeObj->Delete = delete_GroupType;
 
@@ -108,6 +108,7 @@ void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 
 	sprintf(path, "%s/%s", parent, ((GroupType*)(this))->super->super->name);
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((GroupType*)(this))->super->super->name);
+	/*sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((GroupType*)(this))->super->super->name);*/
+	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
 }

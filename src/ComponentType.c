@@ -1,5 +1,7 @@
 #include "ComponentType.h"
 
+int result;
+
 TypeDefinition* newPoly_ComponentType(void)
 {
 	ComponentType* pCompTypeObj = NULL;
@@ -18,7 +20,7 @@ TypeDefinition* newPoly_ComponentType(void)
 	}
 
 	pObj->pDerivedObj = pCompTypeObj; /* Pointing to derived object */
-	
+	pCompTypeObj->super = pObj;
 	
 	/*pCompTypeObj->required = hashmap_new();
 	pCompTypeObj->provided = hashmap_new();*/
@@ -60,6 +62,7 @@ ComponentType* new_ComponentType(void)
 	}
 
 	/*pObj->pDerivedObj = pCompTypeObj;  Pointing to derived object */
+	pObj->pDerivedObj = NULL;
 	pCompTypeObj->super = pObj;
 	
 	pCompTypeObj->required = NULL;
@@ -82,7 +85,7 @@ ComponentType* new_ComponentType(void)
 	return pCompTypeObj;
 }
 
-char* ComponentType_MetaClassName(ComponentType* const this)
+char* ComponentType_InternalGetKey(ComponentType* const this)
 {
 	char* internalKey;
 
@@ -101,7 +104,7 @@ char* ComponentType_MetaClassName(ComponentType* const this)
 	return internalKey;
 }
 
-char* ComponentType_InternalGetKey(ComponentType* const this)
+char* ComponentType_MetaClassName(ComponentType* const this)
 {
 	char* name;
 
@@ -150,6 +153,7 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 		{
 			container = (PortTypeRef*)ptr;
 			hashmap_put(this->required, container->InternalGetKey(container), ptr);
+			printf("PortTypeRef %s added to ComponentType %s Result: %i\n", ptr->super->name, this->super->super->name, result);
 		}
 	}
 }
@@ -232,24 +236,25 @@ void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visi
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 	
-	sprintf(path, "%s/%s", parent, ((ComponentType*)(this))->super->super->name);
-	
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((ComponentType*)(this))->super->super->name);
+	/*sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);*/
+	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
 }
 void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
-	if(((ComponentType*)(this))->required != NULL)
+	TypeDefinition* pObj = (TypeDefinition*)this;
+	ComponentType* pDerivedObj = (ComponentType*)(pObj->pDerivedObj);
+	
+	TypeDefinition_VisitReferences(pObj, parent, visitor);
+		
+	if(pDerivedObj->required != NULL)
 	{
 		int i;
-		
-		sprintf(path, "%s/required[%s]", parent, ((ComponentType*)(this))->super->super->name);
-		
+				
 		/* required */
-		hashmap_map* m = ((ComponentType*)(this))->required;
+		hashmap_map* m = pDerivedObj->required;
 
 		/* compare required */
 		for(i = 0; i< m->table_size; i++)
@@ -258,20 +263,19 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				sprintf(path, "%s/required[%s]", parent, n->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}
 	
-	if(((ComponentType*)(this))->provided != NULL)
+	if(pDerivedObj->provided != NULL)
 	{
 		int i;
-		
-		sprintf(path, "%s/provided[%s]", parent, ((ComponentType*)(this))->super->super->name);
-		
+				
 		/* provided */
-		hashmap_map* m = ((ComponentType*)(this))->provided;
+		hashmap_map* m = pDerivedObj->provided;
 
 		/* compare provided */
 		for(i = 0; i< m->table_size; i++)
@@ -280,8 +284,9 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				sprintf(path, "%s/required[%s]", parent, n->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}

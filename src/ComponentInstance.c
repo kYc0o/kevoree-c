@@ -99,18 +99,14 @@ void delete_ComponentInstance(ComponentInstance* const this)
 	
 }
 
-void ComponentInstance_VisitAttributes(ComponentInstance* const this, char *parent, Visitor* visitor)
+void ComponentInstance_VisitAttributes(void* const this, char *parent, Visitor* visitor)
 {
-	char path[128];
-	memset(&path[0], 0, sizeof(path));
-	sprintf(path, "%s/components[%s]", parent, this->super->super->name);
-
-	sprintf(path, "%s\\name", path);
-
-	visitor->action(path, STRING, this->super->super->name);
+	/*char path[128];
+	memset(&path[0], 0, sizeof(path));*/
 	
-	sprintf(path, "%s\\started", path);
-	visitor->action(path, BOOL, (int)(this->super->started));
+	ComponentInstance* pObj = (ComponentInstance*)this;
+	
+	Instance_VisitAttributes(pObj->super, parent, visitor);
 }
 
 /*void ComponentInstance_VisitReferences*/

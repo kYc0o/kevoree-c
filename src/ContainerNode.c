@@ -15,6 +15,7 @@ Instance* newPoly_ContainerNode()
 	}
 
 	pObj->pDerivedObj = pContNodeObj; /* Pointing to derived object */
+	/*pContNodeObj->super = pObj;*/
 	
 	/*pContNodeObj->components = hashmap_new();
 	pContNodeObj->hosts = hashmap_new();
@@ -422,19 +423,22 @@ void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visi
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 	
-	sprintf(path, "%s/%s", parent, ((ContainerNode*)(this))->super->super->name);
+	/*sprintf(path, "%s/%s", parent, ((ContainerNode*)(this))->super->super->name);*/
 	
-	sprintf(path, "%s\\name", parent);
+	/*sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((ContainerNode*)(this))->super->super->name);
 
 	sprintf(path,"%s\\started", parent);
-	visitor->action(path, BOOL, ((ContainerNode*)(this))->super->started);
+	visitor->action(path, BOOL, (void*)((ContainerNode*)(this))->super->started);*/
+	Instance_VisitAttributes(((ContainerNode*)(this))->super, parent, visitor);
 }
 
 void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
+	
+	Instance_VisitReferences(((ContainerNode*)(this))->super, parent, visitor);
 	
 	if(((ContainerNode*)(this))->components != NULL)
 	{
@@ -452,7 +456,8 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ComponentInstance* n = data;
-				n->VisitAttributes(n, parent, visitor);
+				sprintf(path,"%s/components[%s]", parent, n->super->super->name);
+				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}
 		}
@@ -475,7 +480,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
 				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				n->VisitReferences(n, parent, visitor);
 			}
 		}
 	}
@@ -503,7 +508,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				any_t data = (any_t) (m->data[i].data);
 				NetworkInfo* n = data;
 				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				n->VisitReferences(n, parent, visitor);
 			}
 		}
 	}
@@ -524,7 +529,8 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Group* n = data;
-				n->VisitAttributes(n, parent, visitor);
+				sprintf(path, "%s/groups[%s]", parent, n->super->super->name);
+				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}
 		}

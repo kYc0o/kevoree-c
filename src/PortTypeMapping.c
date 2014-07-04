@@ -21,7 +21,7 @@ PortTypeMapping* new_PortTypeMapping()
 	pObj->MetaClassName = PortTypeMapping_MetaClassName;
 	pObj->Delete = delete_PortTypeMapping;
 	pObj->VisitAttributes = PortTypeMapping_VisitAttributes;
-	pObj->VisitReferences = PortTypeMapping_VisitAttributes;
+	/*pObj->VisitReferences = PortTypeMapping_VisitAttributes;*/
 	
 	return pObj;
 }

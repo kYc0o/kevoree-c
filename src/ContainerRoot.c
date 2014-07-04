@@ -1,5 +1,7 @@
 #include "ContainerRoot.h"
 
+int result;
+
 ContainerRoot* new_ContainerRoot(void)
 {
 	ContainerRoot* pObj;
@@ -221,13 +223,14 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 		if(hashmap_get(this->nodes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (ContainerNode*)ptr;
-			hashmap_put(this->nodes, container->InternalGetKey(container), ptr);
+			result = hashmap_put(this->nodes, container->InternalGetKey(container), ptr);
+			printf("ContainerNode %s added to ContainerRoot %s Result: %i \n", ptr->super->super->name, this->generated_KMF_ID, result);
 		}
 	}
 }
 
 void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition* ptr)
-{
+{  
 	TypeDefinition* container = (TypeDefinition*)ptr;
 
 	if(container->InternalGetKey(container) == NULL)
@@ -243,7 +246,8 @@ void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition*
 		if(hashmap_get(this->typeDefinitions, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (TypeDefinition*)ptr;
-			hashmap_put(this->typeDefinitions, container->InternalGetKey(container), ptr);
+			result = hashmap_put(this->typeDefinitions, container->InternalGetKey(container), ptr);
+			printf("TypeDefinition %s added to ContainerRoot %s Result: %i\n", ptr->super->name, this->generated_KMF_ID, result);
 		}
 	}
 }
@@ -265,7 +269,8 @@ void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 		if(hashmap_get(this->repositories, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (Repository*)ptr;
-			hashmap_put(this->repositories, container->InternalGetKey(container), ptr);
+			result = hashmap_put(this->repositories, container->InternalGetKey(container), ptr);
+			printf("Repository %s added to ContainerRoot %s Result: %i\n", ptr->url, this->generated_KMF_ID, result);
 		}
 	}
 }
@@ -288,6 +293,7 @@ void ContainerRoot_AddDataTypes(ContainerRoot* const this, TypedElement* ptr)
 		{
 			container = (TypedElement*)ptr;
 			hashmap_put(this->dataTypes, container->InternalGetKey(container), ptr);
+			printf("TypedElement %s added to ContainerRoot %s Result: %i\n", ptr->super->name, this->generated_KMF_ID, result);
 		}
 	}
 }
@@ -310,6 +316,7 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		{
 			container = (TypeLibrary*)ptr;
 			hashmap_put(this->libraries, container->InternalGetKey(container), ptr);
+			printf("TypeLibrary %s added to ContainerRoot %s Result: %i\n", ptr->super->name, this->generated_KMF_ID, result);
 		}
 	}
 }
@@ -331,6 +338,7 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		{
 			container = (Channel*)ptr;
 			hashmap_put(this->hubs, container->InternalGetKey(container), ptr);
+			printf("Channel %s added to ContainerRoot %s\n", ptr->super->super->name, this->generated_KMF_ID);
 		}
 	}
  * }
@@ -352,6 +360,7 @@ void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 		{
 			container = (MBinding*)ptr;
 			hashmap_put(this->mBindings, container->InternalGetKey(container), ptr);
+			printf("TypeDefinition %s added to ContainerRoot %s\n", ptr->generated_KMF_ID, this->generated_KMF_ID);
 		}
 	}
 }*/
@@ -373,7 +382,8 @@ void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 		if(hashmap_get(this->deployUnits, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (DeployUnit*)ptr;
-			hashmap_put(this->deployUnits, container->InternalGetKey(container), ptr);
+			result = hashmap_put(this->deployUnits, container->InternalGetKey(container), ptr);
+			printf("DeployUnit %s added to ContainerRoot %s Result: %i\n", ptr->super->name, this->generated_KMF_ID, result);
 		}
 	}
 }
@@ -395,7 +405,8 @@ void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 		if(hashmap_get(this->nodeNetworks, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (NodeNetwork*)ptr;
-			hashmap_put(this->nodeNetworks, container->InternalGetKey(container), ptr);
+			result = hashmap_put(this->nodeNetworks, container->InternalGetKey(container), ptr);
+			printf("NodeNetwork %s added to ContainerRoot %s Result: %i\n", ptr->generated_KMF_ID, this->generated_KMF_ID, result);
 		}
 	}
 }
@@ -417,7 +428,8 @@ void ContainerRoot_AddGroups(ContainerRoot* const this, Group* ptr)
 		if(hashmap_get(this->groups, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (Group*)ptr;
-			hashmap_put(this->groups, container->InternalGetKey(container), ptr);
+			result = hashmap_put(this->groups, container->InternalGetKey(container), ptr);
+			printf("Group %s added to ContainerRoot %s Result: %i\n", ptr->super->super->name, this->generated_KMF_ID, result);
 		}
 	}
 }
@@ -604,12 +616,14 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				ContainerNode* n = data;
 				sprintf(path, "nodes[%s]", n->super->super->name);
 				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->typeDefinitions) != NULL)
 	{
+		
 		/* compare typeDefinitions*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -619,6 +633,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				TypeDefinition* n = data;
 				sprintf(path, "typeDefinitions[%s]", n->super->name);
 				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}
@@ -633,6 +648,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				Repository* n = data;
 				sprintf(path, "repositories[%s]", n->url);
 				n->VisitAttributes(n, path, visitor);
+				n->VisitAttributes(n, path, visitor);
 			}
 		}
 	
@@ -646,6 +662,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				TypedElement* n = data;
 				sprintf(path, "dataTypes[%s]", n->super->name);
 				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	
@@ -659,6 +676,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				TypeLibrary* n = data;
 				sprintf(path, "libraries[%s]", n->super->name);
 				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	
@@ -672,6 +690,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				DeployUnit* n = data;
 				sprintf(path, "deployUnits[%s]", n->super->name);
 				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	
@@ -684,6 +703,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				any_t data = (any_t) (m->data[i].data);
 				NodeNetwork* n = data;
 				sprintf(path, "nodeNetworks[%s]", n->generated_KMF_ID);
+				n->VisitAttributes(n, path, visitor);
 				n->VisitAttributes(n, path, visitor);
 			}
 		}
@@ -698,6 +718,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				Group* n = data;
 				sprintf(path, "groups[%s]", n->super->super->name);
 				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 }

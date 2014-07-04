@@ -19,7 +19,7 @@ TypeDefinition* newPoly_NodeType()
 	pObj->MetaClassName = NodeType_MetaClassName;
 	pObj->InternalGetKey = NodeType_InternalGetKey;
 	pObj->VisitAttributes = NodeType_VisitAttributes;
-	pObj->VisitReferences = NodeType_VisitAttributes;
+	pObj->VisitReferences = TypeDefinition_VisitReferences;
 	
 	pObj->Delete = deletePoly_NodeType;
 
@@ -48,7 +48,7 @@ NodeType* new_NodeType()
 	pNodeTypeObj->MetaClassName = NodeType_MetaClassName;
 	pNodeTypeObj->InternalGetKey = NodeType_InternalGetKey;
 	pNodeTypeObj->VisitAttributes = NodeType_VisitAttributes;
-	pNodeTypeObj->VisitReferences = NodeType_VisitAttributes;
+	pNodeTypeObj->VisitReferences = TypeDefinition_VisitAttributes;
 	
 	pNodeTypeObj->Delete = delete_NodeType;
 
@@ -110,6 +110,7 @@ void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 
 	sprintf(path,"%s/%s",parent, ((NodeType*)(this))->super->super->name);
 
-	sprintf(path,"%s\\name",parent);
-	visitor->action(path, STRING, ((NodeType*)(this))->super->super->name);
+	/*sprintf(path,"%s\\name",parent);
+	visitor->action(path, STRING, ((NodeType*)(this))->super->super->name);*/
+	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
 }

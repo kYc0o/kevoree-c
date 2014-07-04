@@ -67,6 +67,8 @@ PortTypeRef* new_PortTypeRef(void)
 	pPortTypeRefObj->MetaClassName = PortTypeRef_MetaClassName;
 	pPortTypeRefObj->InternalGetKey = PortTypeRef_InternalGetKey;
 	pPortTypeRefObj->Delete = delete_PortTypeRef;
+	pPortTypeRefObj->VisitAttributes = PortTypeRef_VisitAttributes;
+	pPortTypeRefObj->VisitReferences = PortTypeRef_VisitReferences;
 
 	return pPortTypeRefObj;
 }
@@ -179,13 +181,10 @@ void delete_PortTypeRef(PortTypeRef* const this)
 
 void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s/%s",parent, ((PortTypeRef*)(this))->super->name);
-
-	sprintf(path,"%s\\name",parent);
-	visitor->action(path, STRING, ((PortTypeRef*)(this))->super->name);
+	NamedElement_VisitAttributes(((PortTypeRef*)(this))->super, parent, visitor);
 	
 	sprintf(path,"%s\\optional",parent);
 	visitor->action(path, BOOL, ((PortTypeRef*)(this))->optional);
@@ -196,7 +195,7 @@ void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visito
 
 void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	if(((PortTypeRef*)(this))->ref != NULL)

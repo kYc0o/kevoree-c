@@ -179,7 +179,7 @@ void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)
 				any_t data = (any_t) (m->data[i].data);
 				NetworkProperty* n = data;
 				n->VisitAttributes(n, parent, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				n->VisitReferences(n, parent, visitor);
 			}
 		}
 	}

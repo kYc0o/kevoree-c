@@ -164,10 +164,9 @@ void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s/%s", parent, ((Group*)(this))->super->super->name);
+	sprintf(path, "%s", parent, ((Group*)(this))->super->super->name);
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((Group*)(this))->super->super->name);
+	Instance_VisitAttributes(((Group*)(this))->super, path, visitor);
 }
 
 void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -175,11 +174,11 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 	
+	Instance_VisitReferences(((Group*)(this))->super, parent, visitor);
+	
 	if(((Group*)(this))->subNodes != NULL)
 	{
 		int i;
-		
-		sprintf(path,"%s/subNodes[%s]", parent, ((Group*)(this))->super->super->name);
 		
 		/* subNodes */
 		hashmap_map* m = ((Group*)(this))->subNodes;
@@ -191,7 +190,8 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				n->VisitAttributes(n, parent, visitor);
+				sprintf(path,"%s/subNodes[%s]", parent, n->super->super->name);
+				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}
 		}

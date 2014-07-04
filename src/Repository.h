@@ -13,7 +13,7 @@ typedef char* (*fptrRepoMetaClassName)(Repository*);
 typedef char* (*fptrRepoInternalGetKey)(Repository*);
 typedef void (*fptrDeleteRepository)(Repository*);
 typedef void (*fptrVisitAttrRepository)(void*, char*, Visitor*);
-typedef void (*fptrVisitRefsRepository)(void*, char*, Visitor*);
+/*typedef void (*fptrVisitRefsRepository)(void*, char*, Visitor*);*/
 
 typedef struct _Repository {
 	void* pDerivedObj;
@@ -22,7 +22,7 @@ typedef struct _Repository {
 	fptrRepoMetaClassName MetaClassName;
 	fptrDeleteRepository Delete;
 	fptrVisitAttrRepository VisitAttributes;
-	fptrVisitRefsRepository VisitReferences;
+	/*fptrVisitRefsRepository VisitReferences;*/
 } Repository;
 
 Repository* new_Repository(void);
