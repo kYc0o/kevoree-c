@@ -13,6 +13,7 @@ NamedElement* new_NamedElement()
 
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
+	pObj->name = NULL;
 
 	pObj->InternalGetKey = NamedElement_InternalGetKey;
 	pObj->MetaClassName = NamedElement_MetaClassName;

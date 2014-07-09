@@ -14,6 +14,8 @@ Repository* new_Repository()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 	
+	pObj->url = NULL;
+	
 	pObj->InternalGetKey = Repository_InternalGetKey;
 	pObj->MetaClassName = Repository_MetaClassName;
 	pObj->Delete = delete_Repository;
@@ -65,7 +67,7 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s/%s",parent, ((Repository*)(this))->url);
+	/*sprintf(path,"%s/%s",parent, ((Repository*)(this))->url);*/
 
 	sprintf(path,"%s\\url",parent);
 	visitor->action(path, STRING, ((Repository*)(this))->url);

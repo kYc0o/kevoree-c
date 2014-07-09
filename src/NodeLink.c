@@ -17,6 +17,9 @@ NodeLink* new_NodeLink()
 	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_NodeLink") + 1));/*Uuid::getSingleton().generateUUID();*/
 	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeLink");
 	/*pObj->networkProperties = hashmap_new();*/
+	pObj->networkType = NULL;
+	pObj->lastCheck = NULL;
+	pObj->zoneID = NULL;
 	pObj->networkProperties = NULL;
 	
 	pObj->InternalGetKey = NodeLink_InternalGetKey;
@@ -139,7 +142,7 @@ void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s/%s", parent, ((NodeLink*)(this))->generated_KMF_ID);
+	/*sprintf(path, "%s/%s", parent, ((NodeLink*)(this))->generated_KMF_ID);*/
 
 	sprintf(path, "%s\\ID", parent);
 	visitor->action(path, STRING, ((NodeLink*)(this))->generated_KMF_ID);
@@ -166,7 +169,7 @@ void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)
 	{
 		int i;
 		
-		sprintf(path,"%s/networkProperties[%s]", parent, ((NodeLink*)(this))->generated_KMF_ID);
+		/*sprintf(path,"%s/networkProperties[%s]", parent, ((NodeLink*)(this))->generated_KMF_ID);*/
 		
 		/* networkProperties */
 		hashmap_map* m = ((NodeLink*)(this))->networkProperties;
@@ -178,8 +181,9 @@ void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NetworkProperty* n = data;
+				sprintf(path,"%s/networkProperties[%s]", parent, n->super->name);
 				n->VisitAttributes(n, parent, visitor);
-				n->VisitReferences(n, parent, visitor);
+				/*n->VisitReferences(n, parent, visitor);*/
 			}
 		}
 	}

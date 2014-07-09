@@ -11,7 +11,7 @@ typedef char* (*fptrNetPropMetaClassName)(NetworkProperty*);
 typedef char* (*fptrNetPropInternalGetKey)(NetworkProperty*);
 typedef void (*fptrDeleteNetworkProperty)(NetworkProperty*);
 typedef void (*fptrVisitAttrNetworkProperty)(void*, char*, Visitor*);
-typedef void (*fptrVisitRefsNetworkProperty)(void*, char*, Visitor*);
+/*typedef void (*fptrVisitRefsNetworkProperty)(void*, char*, Visitor*);*/
 
 typedef struct _NetworkProperty {
 	NamedElement* super;
@@ -21,7 +21,7 @@ typedef struct _NetworkProperty {
 	fptrNetPropInternalGetKey InternalGetKey;
 	fptrDeleteNetworkProperty Delete;
 	fptrVisitAttrNetworkProperty VisitAttributes;
-	fptrVisitRefsNetworkProperty VisitReferences;
+	/*fptrVisitRefsNetworkProperty VisitReferences;*/
 } NetworkProperty;
 
 NamedElement* newPoly_NetworkProperty(void);

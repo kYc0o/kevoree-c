@@ -17,6 +17,10 @@ PortTypeMapping* new_PortTypeMapping()
 	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_PortTypeMapping") + 1));/*Uuid::getSingleton().generateUUID();*/
 	strcpy(pObj->generated_KMF_ID, "dummyKMFID_PortTypeMapping");
 	
+	pObj->beanMethodName = NULL;
+	pObj->serviceMethodName = NULL;
+	pObj->paramTypes = NULL;
+	
 	pObj->InternalGetKey = PortTypeMapping_InternalGetKey;
 	pObj->MetaClassName = PortTypeMapping_MetaClassName;
 	pObj->Delete = delete_PortTypeMapping;
@@ -71,7 +75,7 @@ void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* vi
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s/%s", parent, ((PortTypeMapping*)(this))->generated_KMF_ID);
+	/*sprintf(path, "%s/%s", parent, ((PortTypeMapping*)(this))->generated_KMF_ID);*/
 
 	sprintf(path,"%s\\ID",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->generated_KMF_ID);

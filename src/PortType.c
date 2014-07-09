@@ -19,7 +19,7 @@ TypeDefinition* newPoly_PortType()
 	pObj->MetaClassName = PortType_MetaClassName;
 	pObj->InternalGetKey = PortType_InternalGetKey;
 	pObj->VisitAttributes = PortType_VisitAttributes;
-	pObj->VisitReferences = TypeDefinition_VisitAttributes;
+	pObj->VisitReferences = TypeDefinition_VisitReferences;
 	
 	pObj->Delete = deletePoly_PortType;
 
@@ -48,7 +48,7 @@ PortType* new_PortType()
 	pPortTypeObj->MetaClassName = PortType_MetaClassName;
 	pPortTypeObj->InternalGetKey = PortType_InternalGetKey;
 	pPortTypeObj->VisitAttributes = PortType_VisitAttributes;
-	pPortTypeObj->VisitReferences = TypeDefinition_VisitAttributes;
+	pPortTypeObj->VisitReferences = TypeDefinition_VisitReferences;
 	
 	pPortTypeObj->Delete = delete_PortType;
 
@@ -113,6 +113,6 @@ void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	visitor->action(path, STRING, ((PortType*)(this))->super->super->name);*/
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), path, visitor);
 	
-	/*sprintf(path, "%s\\synchrone", parent);
-	visitor->action(path, BOOL, ((PortType*)(this))->synchrone);*/
+	sprintf(path, "%s\\synchrone", parent);
+	visitor->action(path, BOOL, ((PortType*)(this))->synchrone);
 }

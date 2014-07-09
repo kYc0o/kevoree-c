@@ -9,7 +9,7 @@
 typedef struct _ComponentType ComponentType;
 
 typedef char* (*fptrCompTypeMetaClassName)(ComponentType*);
-typedef char* (*fptrCompTypeInternalGetKey)(ComponentType*);
+typedef char* (*fptrCompTypeInternalGetKey)(void*);
 typedef PortTypeRef* (*fptrCompTypeFindRequiredByID)(ComponentType*, char*);
 typedef PortTypeRef* (*fptrCompTypeFindProvidedByID)(ComponentType*, char*);
 typedef void (*fptrCompTypeAddRequired)(ComponentType*, PortTypeRef*);
@@ -40,7 +40,7 @@ typedef struct _ComponentType {
 TypeDefinition* newPoly_ComponentType(void);
 ComponentType* new_ComponentType(void);
 char* ComponentType_MetaClassName(ComponentType* const this);
-char* ComponentType_InternalGetKey(ComponentType* const this);
+char* ComponentType_InternalGetKey(void* const this);
 PortTypeRef* ComponentType_FindRequiredByID(ComponentType* const this, char*);
 PortTypeRef* ComponentType_FindProvidedByID(ComponentType* const this, char*);
 void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr);

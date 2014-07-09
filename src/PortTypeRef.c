@@ -183,7 +183,9 @@ void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visito
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-
+	
+	
+	/*sprintf(path,"%s",parent);*/
 	NamedElement_VisitAttributes(((PortTypeRef*)(this))->super, parent, visitor);
 	
 	sprintf(path,"%s\\optional",parent);
@@ -202,14 +204,14 @@ void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visito
 	{
 		sprintf(path, "%s/ref[%s]", parent, ((PortTypeRef*)(this))->ref->super->super->name);
 		((PortTypeRef*)(this))->ref->VisitAttributes(((PortTypeRef*)(this))->ref, parent, visitor);
+		((PortTypeRef*)(this))->ref->VisitReferences(((PortTypeRef*)(this))->ref, parent, visitor);
 	}
 	
 	if(((PortTypeRef*)(this))->mappings != NULL)
 	{
 		int i;
 		
-		
-		sprintf(path,"%s/mappings[%s]", parent, ((PortTypeRef*)(this))->super->name);
+		/*sprintf(path,"%s/mappings[%s]", parent, ((PortTypeRef*)(this))->super->name);*/
 		
 		/* mappings */
 		hashmap_map* m = ((PortTypeRef*)(this))->mappings;
@@ -221,6 +223,7 @@ void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeMapping* n = data;
+				sprintf(path,"%s/mappings[%s]", parent, n->generated_KMF_ID);
 				n->VisitAttributes(n, parent, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}

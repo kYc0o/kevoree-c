@@ -55,9 +55,9 @@ NodeType* new_NodeType()
 	return pNodeTypeObj;
 }
 
-char* NodeType_InternalGetKey(NodeType* const this)
+char* NodeType_InternalGetKey(void* const this)
 {
-	char* internalKey;
+	/*char* internalKey;
 
 	if (this == NULL)
 		return NULL;
@@ -71,7 +71,8 @@ char* NodeType_InternalGetKey(NodeType* const this)
 	strcat(internalKey, "/");
 	strcat(internalKey, this->super->version);
 
-	return internalKey;
+	return internalKey;*/
+	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
 }
 
 char* NodeType_MetaClassName(NodeType* const this)
@@ -108,7 +109,7 @@ void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s/%s",parent, ((NodeType*)(this))->super->super->name);
+	sprintf(path,"%s",parent, ((NodeType*)(this))->super->super->name);
 
 	/*sprintf(path,"%s\\name",parent);
 	visitor->action(path, STRING, ((NodeType*)(this))->super->super->name);*/

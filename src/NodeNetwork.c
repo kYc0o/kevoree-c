@@ -170,7 +170,7 @@ void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visito
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s/%s",parent, ((NodeNetwork*)(this))->generated_KMF_ID);
+	/*sprintf(path,"%s/%s",parent, ((NodeNetwork*)(this))->generated_KMF_ID);*/
 
 	sprintf(path,"%s\\ID",parent);
 	visitor->action(path, STRING, ((NodeNetwork*)(this))->generated_KMF_ID);
@@ -183,20 +183,22 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 	if(((NodeNetwork*)(this))->target != NULL)
 	{
 		sprintf(path, "%s/target[%s]", parent, ((NodeNetwork*)(this))->target->super->super->name);
-		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, parent, visitor);
+		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor);
+		((NodeNetwork*)(this))->target->VisitReferences(((NodeNetwork*)(this))->target, path, visitor);
 	}
 	
 	if(((NodeNetwork*)(this))->initBy != NULL)
 	{
 		sprintf(path, "%s/initBy[%s]", parent, ((NodeNetwork*)(this))->initBy->super->super->name);
-		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, parent, visitor);
+		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor);
+		((NodeNetwork*)(this))->initBy->VisitReferences(((NodeNetwork*)(this))->initBy, path, visitor);
 	}
 	
 	if(((NodeNetwork*)(this))->link != NULL)
 	{
 		int i;
 		
-		sprintf(path,"%s/link[%s]", parent, ((NodeNetwork*)(this))->generated_KMF_ID);
+		/*sprintf(path,"%s/link[%s]", parent, ((NodeNetwork*)(this))->generated_KMF_ID);*/
 		
 		/* link */
 		hashmap_map* m = ((NodeNetwork*)(this))->link;
@@ -208,8 +210,9 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NodeLink* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				n->VisitReferences(n, parent, visitor);
+				sprintf(path,"%s/link[%s]", parent, n->generated_KMF_ID);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}

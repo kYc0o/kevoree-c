@@ -13,7 +13,8 @@ char* Substring(char* string, int position, int length)
 	if (pointer == NULL)
 	{
 		printf("Unable to allocate memory.\n");
-		exit(EXIT_FAILURE);
+		/*exit(EXIT_FAILURE);*/
+		return NULL;
 	}
 	
 	for (c = 0 ; c < position -1 ; c++)

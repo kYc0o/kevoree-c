@@ -16,6 +16,8 @@ NamedElement* newPoly_Instance()
 
 	pObj->pDerivedObj = pInstanceObj; /* Pointing to derived object */
 	
+	pInstanceObj->metaData = NULL;
+	
 	pInstanceObj->AddTypeDefinition = Instance_AddTypeDefinition;
 	pObj->MetaClassName = Instance_MetaClassName;
 	pObj->InternalGetKey = Instance_InternalGetKey;
@@ -41,6 +43,8 @@ Instance* new_Instance()
 
 	/*pObj->pDerivedObj = pInstanceObj; Pointing to derived object */
 	pInstanceObj->super = pObj;
+	
+	pInstanceObj->metaData = NULL;
 	
 	pInstanceObj->AddTypeDefinition = Instance_AddTypeDefinition;
 	pInstanceObj->MetaClassName = Instance_MetaClassName;
@@ -114,8 +118,8 @@ void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 
 	/*sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((Instance*)(this))->super->name);*/
-	sprintf(path, "%s", parent);
-	NamedElement_VisitAttributes(((Instance*)(this))->super, path, visitor);
+	/*sprintf(path, "%s", parent);*/
+	NamedElement_VisitAttributes(((Instance*)(this))->super, parent, visitor);
 	
 	sprintf(path,"%s\\metaData", parent);
 	visitor->action(path, STRING, ((Instance*)(this))->metaData);
@@ -133,6 +137,7 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
 	{
 		sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->super->name);
 		((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor);
+		((Instance*)(this))->typeDefinition->VisitReferences(((Instance*)(this))->typeDefinition, path, visitor);
 	}
 }
 

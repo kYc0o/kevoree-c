@@ -15,6 +15,10 @@ NamedElement* newPoly_TypeDefinition()
 	}
 
 	pObj->pDerivedObj = pTypeDefObj; /* Pointing to derived object */
+	
+	pTypeDefObj->version = NULL;
+	pTypeDefObj->factoryBean = NULL;
+	pTypeDefObj->bean = NULL;
 
 	pTypeDefObj->deployUnits = NULL;
 	/*pTypeDefObj->superTypes = hashmap_new();*/
@@ -53,6 +57,9 @@ TypeDefinition* new_TypeDefinition()
 	/*pObj->pDerivedObj = pTypeDefObj; Pointing to derived object */
 	pTypeDefObj->super = pObj; /* Pointing to base object */
 	
+	pTypeDefObj->version = NULL;
+	pTypeDefObj->factoryBean = NULL;
+	pTypeDefObj->bean = NULL;
 
 	pTypeDefObj->deployUnits = NULL;
 	/*pTypeDefObj->superTypes = hashmap_new();*/
@@ -188,7 +195,7 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);
+	/*sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);*/
 
 	/*sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((TypeDefinition*)(this))->super->name);*/

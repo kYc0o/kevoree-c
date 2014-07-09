@@ -85,21 +85,24 @@ ComponentType* new_ComponentType(void)
 	return pCompTypeObj;
 }
 
-char* ComponentType_InternalGetKey(ComponentType* const this)
+char* ComponentType_InternalGetKey(void* const this)
 {
 	char* internalKey;
 
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name) + strlen("/") + strlen(this->super->version)) + 1);
+	/*internalKey = malloc(sizeof(char) * (strlen(this->super->super->name) + strlen("/") + strlen(this->super->version)) + 1);
 
 	if (internalKey == NULL)
-		return NULL;
+		return NULL;*/
 
-	strcpy(internalKey, this->super->super->name);
+	/*strcpy(internalKey, this->super->super->name);
 	strcat(internalKey, "/");
 	strcat(internalKey, this->super->version);
+	sprintf(internalKey, "%s/%s", this->super->super->name, this->super->version);*/
+	
+	internalKey = TypeDefinition_InternalGetKey((TypeDefinition*)this);
 
 	return internalKey;
 }
@@ -233,15 +236,15 @@ void delete_ComponentType(ComponentType* const this)
 
 void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
-	memset(&path[0], 0, sizeof(path));
+	/*char path[128];
+	memset(&path[0], 0, sizeof(path));*/
 	
 	/*sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);*/
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
 }
 void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[256];
+	char path[128];
 	memset(&path[0], 0, sizeof(path));
 	
 	TypeDefinition* pObj = (TypeDefinition*)this;

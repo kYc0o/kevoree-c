@@ -175,7 +175,7 @@ void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visito
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s/%s",parent, ((TypeLibrary*)(this))->super->name);
+	/*sprintf(path,"%s/%s",parent, ((TypeLibrary*)(this))->super->name);*/
 
 	/*sprintf(path,"%s\\name",parent);
 	visitor->action(path, STRING, ((TypeLibrary*)(this))->super->name);*/
@@ -191,7 +191,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 	{
 		int i;
 		
-		sprintf(path,"%s/subTypes[%s]", parent, ((TypeLibrary*)(this))->super->name);
+		/*sprintf(path,"%s/subTypes[%s]", parent, ((TypeLibrary*)(this))->super->name);*/
 		
 		/* subTypes */
 		hashmap_map* m = ((TypeLibrary*)(this))->subTypes;
@@ -203,8 +203,9 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				n->VisitReferences(n, parent, visitor);
+				sprintf(path,"%s/subTypes[%s]", parent, n->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}

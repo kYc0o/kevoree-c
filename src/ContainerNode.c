@@ -23,6 +23,7 @@ Instance* newPoly_ContainerNode()
 	pContNodeObj->networkInformation = hashmap_new();*/
 	pContNodeObj->components = NULL;
 	pContNodeObj->hosts = NULL;
+	pContNodeObj->host = NULL;
 	pContNodeObj->groups = NULL;
 	pContNodeObj->networkInformation = NULL;
 	
@@ -77,6 +78,7 @@ ContainerNode* new_ContainerNode()
 	pContNodeObj->networkInformation = hashmap_new();*/
 	pContNodeObj->components = NULL;
 	pContNodeObj->hosts = NULL;
+	pContNodeObj->host = NULL;
 	pContNodeObj->groups = NULL;
 	pContNodeObj->networkInformation = NULL;
 	
@@ -136,11 +138,18 @@ char* ContainerNode_MetaClassName(ContainerNode* const this)
 ComponentInstance* ContainerNode_FindComponentsByID(ContainerNode* const this, char* id)
 {
 	ComponentInstance* value;
-
-	if(hashmap_get(this->components, id, (void**)(&value)) == MAP_OK)
-		return value;
+	
+	if(this->components != NULL)
+	{
+		if(hashmap_get(this->components, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 
 	/*return components[id];*/
 }
@@ -149,11 +158,18 @@ ComponentInstance* ContainerNode_FindComponentsByID(ContainerNode* const this, c
 ContainerNode* ContainerNode_FindHostsByID(ContainerNode* const this, char* id)
 {
 	ContainerNode* value;
-
-	if(hashmap_get(this->hosts, id, (void**)(&value)) == MAP_OK)
-		return value;
+	
+	if(this->hosts != NULL)
+	{
+		if(hashmap_get(this->hosts, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 
 	/*return hosts[id];*/
 }
@@ -163,10 +179,17 @@ Group* ContainerNode_FindGroupsByID(ContainerNode* const this, char* id)
 {
 	Group* value;
 
-	if(hashmap_get(this->groups, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->groups != NULL)
+	{
+		if(hashmap_get(this->groups, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 
 	/*return groups[id];*/
 }
@@ -176,10 +199,17 @@ NetworkInfo* ContainerNode_FindNetworkInformationByID(ContainerNode* const this,
 {
 	NetworkInfo* value;
 
-	if(hashmap_get(this->networkInformation, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->networkInformation != NULL)
+	{
+		if(hashmap_get(this->networkInformation, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 
 	/*return networkInformation[id];*/
 }
@@ -420,8 +450,8 @@ void delete_ContainerNode(ContainerNode* const this)
 
 void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
-	memset(&path[0], 0, sizeof(path));
+	/*char path[128];
+	memset(&path[0], 0, sizeof(path));*/
 	
 	/*sprintf(path, "%s/%s", parent, ((ContainerNode*)(this))->super->super->name);*/
 	
@@ -444,7 +474,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	{
 		int i;
 		
-		sprintf(path,"%s/components[%s]", parent, ((ContainerNode*)(this))->super->super->name);
+		/*sprintf(path,"%s/components[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
 		
 		/* components */
 		hashmap_map* m = ((ContainerNode*)(this))->components;
@@ -458,7 +488,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				ComponentInstance* n = data;
 				sprintf(path,"%s/components[%s]", parent, n->super->super->name);
 				n->VisitAttributes(n, path, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}
@@ -467,7 +497,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	{
 		int i;
 		
-		sprintf(path,"%s/hosts[%s]", parent, ((ContainerNode*)(this))->super->super->name);
+		/*sprintf(path,"%s/hosts[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
 		
 		/* hosts */
 		hashmap_map* m = ((ContainerNode*)(this))->hosts;
@@ -479,8 +509,9 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				n->VisitReferences(n, parent, visitor);
+				sprintf(path,"%s/hosts[%s]", parent, n->super->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}
@@ -488,14 +519,15 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	if(((ContainerNode*)(this))->host != NULL)
 	{
 		sprintf(path, "%s/host[%s]", parent, ((ContainerNode*)(this))->host->super->super->name);
-		((ContainerNode*)(this))->host->VisitAttributes(((ContainerNode*)(this))->host, parent, visitor);
+		((ContainerNode*)(this))->host->VisitAttributes(((ContainerNode*)(this))->host, path, visitor);
+		((ContainerNode*)(this))->host->VisitReferences(((ContainerNode*)(this))->host, path, visitor);
 	}
 	
 	if(((ContainerNode*)(this))->networkInformation != NULL)
 	{
 		int i;
 		
-		sprintf(path,"%s/networkInformation[%s]", parent, ((ContainerNode*)(this))->super->super->name);
+		/*sprintf(path,"%s/networkInformation[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
 		
 		/* networkInformation */
 		hashmap_map* m = ((ContainerNode*)(this))->networkInformation;
@@ -507,8 +539,9 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NetworkInfo* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				n->VisitReferences(n, parent, visitor);
+				sprintf(path,"%s/networkInformation[%s]", parent, n->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}
@@ -531,7 +564,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				Group* n = data;
 				sprintf(path, "%s/groups[%s]", parent, n->super->super->name);
 				n->VisitAttributes(n, path, visitor);
-				/*n->VisitReferences(n, parent, visitor);*/
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}

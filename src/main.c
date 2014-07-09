@@ -1,5 +1,5 @@
-/*#include "DefaultFactorykevoree.h"*/
-//#include "Comparekevoree.h"
+/*#include "DefaultFactorykevoree.h"
+#include "Comparekevoree.h"*/
 #include <stdlib.h>
 #include <stdio.h>
 #include "kevoree.h"
@@ -61,6 +61,55 @@ void* findbyPath(void *root, char *_path)
 			ContainerRoot* n = (ContainerRoot*)root;
 			return n->FindNodesByID(n, queryID);
 		}
+		
+		if(!strcmp("typeDefinitions",relationName))
+		{
+			/*return  findByIDContainerRootContainerNode(root,queryID);*/
+			ContainerRoot* n = (ContainerRoot*)root;
+			return n->FindTypeDefsByID(n, queryID);
+		}
+		
+		if(!strcmp("repositories",relationName))
+		{
+			/*return  findByIDContainerRootContainerNode(root,queryID);*/
+			ContainerRoot* n = (ContainerRoot*)root;
+			return n->FindRepositoriesByID(n, queryID);
+		}
+		
+		if(!strcmp("dataTypes",relationName))
+		{
+			/*return  findByIDContainerRootContainerNode(root,queryID);*/
+			ContainerRoot* n = (ContainerRoot*)root;
+			return n->FindDataTypesByID(n, queryID);
+		}
+		
+		if(!strcmp("libraries",relationName))
+		{
+			/*return  findByIDContainerRootContainerNode(root,queryID);*/
+			ContainerRoot* n = (ContainerRoot*)root;
+			return n->FindLibrariesByID(n, queryID);
+		}
+		
+		if(!strcmp("deployUnits",relationName))
+		{
+			/*return  findByIDContainerRootContainerNode(root,queryID);*/
+			ContainerRoot* n = (ContainerRoot*)root;
+			return n->FindDeployUnitsByID(n, queryID);
+		}
+		
+		if(!strcmp("nodeNetworks",relationName))
+		{
+			/*return  findByIDContainerRootContainerNode(root,queryID);*/
+			ContainerRoot* n = (ContainerRoot*)root;
+			return n->FindNodeNetworksByID(n, queryID);
+		}
+		
+		if(!strcmp("groups",relationName))
+		{
+			/*return  findByIDContainerRootContainerNode(root,queryID);*/
+			ContainerRoot* n = (ContainerRoot*)root;
+			return n->FindGroupsByID(n, queryID);
+		}
 	}
 	else
 	{
@@ -78,6 +127,16 @@ void* findbyPath(void *root, char *_path)
 				{
 					return node->super->super->name;
 				}
+				
+				if(!strcmp("metaData",attribute))
+				{
+					return node->super->metaData;
+				}
+				
+				if(!strcmp("started",attribute))
+				{
+					return node->super->started;
+				}
 
 				int nodes_i = indexOf(attribute,"[");
 				int nodes_y = lastIndexOf(attribute,"]");
@@ -91,6 +150,83 @@ void* findbyPath(void *root, char *_path)
 					printf("%s %s \n",node_relationName,node_queryID);
 					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
 					return node->FindComponentsByID(node, node_queryID);
+				}
+				
+				if(!strcmp("hosts", node_relationName))
+				{
+					printf("%s %s \n",node_relationName,node_queryID);
+					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+					return node->FindHostsByID(node, node_queryID);
+				}
+				
+				if(!strcmp("host", node_relationName))
+				{
+					printf("%s %s \n",node_relationName,node_queryID);
+					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+					return node->host
+				}
+				
+				if(!strcmp("networkInformation", node_relationName))
+				{
+					printf("%s %s \n",node_relationName,node_queryID);
+					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+					return node->FindNetworkInformationByID(node, node_queryID);
+				}
+				
+				if(!strcmp("groups", node_relationName))
+				{
+					printf("%s %s \n",node_relationName,node_queryID);
+					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+					return node->FindGroupsByID(node, node_queryID);
+				}
+			}
+		}
+		
+		if(!strcmp("typeDefinitions", relationName))
+		{
+			ContainerRoot* n = (ContainerRoot*)root;
+
+			TypeDefinition* typDef = n->FindTypeDefsByID(n, queryID);
+			
+			if(typDef != NULL)
+			{
+				if(!strcmp("name",attribute))
+				{
+					return typDef->super->name;
+				}
+
+				if(!strcmp("version",attribute))
+				{
+					return typDef->version;
+				}
+				
+				if(!strcmp("factoryBean",attribute))
+				{
+					return typDef->factoryBean;
+				}
+				
+				if(!strcmp("bean",attribute))
+				{
+					return typDef->bean;
+				}
+				
+				if(!strcmp("abstract",attribute))
+				{
+					return typDef->abstract;
+				}
+				
+				int nodes_i = indexOf(attribute,"[");
+				int nodes_y = lastIndexOf(attribute,"]");
+
+				char *node_relationName = Substring(attribute, 0, nodes_i);
+
+				char *node_queryID = Substring(attribute,nodes_i + 2, nodes_y - strlen(node_relationName) - 1);
+
+				if(!strcmp("deployUnits", node_relationName))
+				{
+					printf("%s %s \n",node_relationName,node_queryID);
+					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+					return node->deployUnits;
 				}
 			}
 		}
@@ -141,6 +277,8 @@ int main(void)
 	strcpy(d->groupName, "org.kevoree.library");
 	d->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
 	strcpy(d->version,"1.0.0-SNAPSHOT");
+	d->url = malloc(sizeof(char) * (strlen("dummyURL") + 1));
+	strcpy(d->url, "dummyURL");
 	d->type = malloc(sizeof(char) * (strlen("ce") + 1));
 	strcpy(d->type,"ce");
 	/*printf("DeployUnit 'd' initialized -> %i\n", d);*/
@@ -152,6 +290,8 @@ int main(void)
 	TypeDefinition* nodetype = newPoly_NodeType();
 	nodetype->super->name = malloc(sizeof(char) * (strlen("ContikiNode") + 1));
 	strcpy(nodetype->super->name, "ContikiNode");
+	nodetype->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
+	strcpy(nodetype->version, "1.0.0-SNAPSHOT");
 	nodetype->abstract = 0;
 	/*printf("NodeType nodetype created\n");*/
 	nodetype->AddDeployUnit(nodetype, d);
@@ -162,7 +302,7 @@ int main(void)
 	dg->groupName = "org.kevoree.library";
 	dg->version = "1.0.0-SNAPSHOT";
 	dg->type ="so";*/
-	DeployUnit* dg = new_DeployUnit();
+	/*DeployUnit* dg = new_DeployUnit();
 	dg->super->name = malloc(sizeof(char) * (strlen("kevoree-group-websocket") + 1));
 	strcpy(dg->super->name, "kevoree-group-websocket");
 	dg->groupName = malloc(sizeof(char) * (strlen("org.kevoree.library") + 1));
@@ -170,19 +310,19 @@ int main(void)
 	dg->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
 	strcpy(dg->version,"1.0.0-SNAPSHOT");
 	dg->type = malloc(sizeof(char) * (strlen("ce") + 1));
-	strcpy(dg->type,"ce");
+	strcpy(dg->type,"ce");*/
 	/*printf("DeployUnit 'dg' created\n");*/
 	
 	/*TypeDefinition *grouptype = factory.createGroupType();
 	grouptype->abstract= false;
 	grouptype->name ="WebSocketGroup";
 	grouptype->version = "1.0";*/
-	TypeDefinition* grouptype = newPoly_GroupType();
+	/*TypeDefinition* grouptype = newPoly_GroupType();
 	grouptype->abstract = 0;
 	grouptype->super->name = malloc(sizeof(char) * (strlen("WebSocketGroup") + 1));
 	strcpy(grouptype->super->name, "WebSocketGroup");
 	grouptype->version = malloc(sizeof(char) * (strlen("1.0") + 1));
-	strcpy(grouptype->version, "1.0");
+	strcpy(grouptype->version, "1.0");*/
 	/*printf("GroupType 'grouptype' created\n");*/
 
 	/*DictionaryType *typegroup= factory.createDictionaryType();
@@ -228,7 +368,7 @@ int main(void)
 	group->super->metaData = malloc(sizeof(char) * (strlen("dummy_MetaData") + 1));
 	strcpy(group->super->metaData, "dummy_MetaData");
 	group->super->started = 1;
-	group->super->AddTypeDefinition(group->super, grouptype);
+	/*group->super->AddTypeDefinition(group->super, grouptype);*/
 	/*printf("Adding 'grouptype' to 'group'\n");*/
 	
 	/*FragmentDictionary *dico =factory.createFragmentDictionary();
@@ -250,6 +390,8 @@ int main(void)
 	/*printf("ComponentType 'comtype' created\n");*/
 	comtype->super->name = malloc(sizeof(char) * (strlen("Light") + 1));
 	strcpy(comtype->super->name, "Light");
+	comtype->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
+	strcpy(comtype->version, "1.0.0-SNAPSHOT");
 	comtype->abstract = 0;
 	/*printf("'comtype' initialized\n");*/
 	
@@ -385,17 +527,17 @@ int main(void)
 	/*TypeDefinition *gwMQTTtype  = factory.createComponentType();
 	gwMQTTtype->name = "WebSocketGatewayMQTT";
 	gwMQTTtype->abstract = false;*/
-	TypeDefinition* gwMQTTtype = newPoly_ComponentType();
+	/*TypeDefinition* gwMQTTtype = newPoly_ComponentType();
 	gwMQTTtype->super->name = malloc(sizeof(char) * (strlen("WebSocketGatewayMQTT") + 1));
 	strcpy(gwMQTTtype->super->name, "WebSocketGatewayMQTT");
-	gwMQTTtype->abstract = 0;
+	gwMQTTtype->abstract = 0;*/
 
 	/*DeployUnit *dcMQTTgw =factory.createDeployUnit();
 	dcMQTTgw->name = "WebSocketGatewayMQTT";
 	dcMQTTgw->groupName = "org.kevoree.library";
 	dcMQTTgw->version = "1.0.0-SNAPSHOT";
 	dcMQTTgw->type ="so";*/
-	DeployUnit* dcMQTTgw = new_DeployUnit();
+	/*DeployUnit* dcMQTTgw = new_DeployUnit();
 	dcMQTTgw->super->name = malloc(sizeof(char) * (strlen("WebSocketGatewayMQTT") + 1));
 	strcpy(dcMQTTgw->super->name, "WebSocketGatewayMQTT");
 	dcMQTTgw->groupName = malloc(sizeof(char) * (strlen("org.kevoree.library") + 1));
@@ -403,7 +545,7 @@ int main(void)
 	dcMQTTgw->version = malloc(sizeof(char) * (strlen("1.0.0-SNAPSHOT") + 1));
 	strcpy(dcMQTTgw->version,"1.0.0-SNAPSHOT");
 	dcMQTTgw->type = malloc(sizeof(char) * (strlen("ce") + 1));
-	strcpy(dcMQTTgw->type,"ce");
+	strcpy(dcMQTTgw->type,"ce");*/
 
 
 	/*DictionaryType *typegwMQTT= factory.createDictionaryType();
@@ -440,7 +582,7 @@ int main(void)
 
 
 	/*gwMQTTtype->adddeployUnit(dcMQTTgw);*/
-	gwMQTTtype->AddDeployUnit(gwMQTTtype, dcMQTTgw);
+	/*gwMQTTtype->AddDeployUnit(gwMQTTtype, dcMQTTgw);*/
 	/*printf("Adding DeployUnit 'dcMQTTgw' to 'gwMQTTtype'\n");*/
 
 
@@ -450,10 +592,10 @@ int main(void)
 	model->addtypeDefinitions(comtype);
 	model->addtypeDefinitions(gwMQTTtype);*/
 	model->AddTypeDefinitions(model, anenotype);
-	model->AddTypeDefinitions(model, grouptype);
+	/*model->AddTypeDefinitions(model, grouptype);*/
 	model->AddTypeDefinitions(model, nodetype);
 	model->AddTypeDefinitions(model, comtype);
-	model->AddTypeDefinitions(model, gwMQTTtype);
+	/*model->AddTypeDefinitions(model, gwMQTTtype);*/
 	/*printf("Adding TypeDefinition 'anenotype', 'grouptype', 'nodetype', 'comtype', 'gwMQTTtype' to 'model'\n");*/
 
 	/*model->adddeployUnits(d);
@@ -462,10 +604,10 @@ int main(void)
 	model->adddeployUnits(dcano);
 	model->adddeployUnits(dcMQTTgw);*/
 	model->AddDeployUnits(model, d);
-	model->AddDeployUnits(model, dg);
+	/*model->AddDeployUnits(model, dg);*/
 	model->AddDeployUnits(model, dc);
 	model->AddDeployUnits(model, dcano);
-	model->AddDeployUnits(model, dcMQTTgw);
+	/*model->AddDeployUnits(model, dcMQTTgw);*/
 	/*printf("Adding DeployUnit 'd', 'dg', 'dc', 'dcano', 'dcMQTTgw' to 'model'\n");*/
 
 	/*model->addnodes(node0);*/
@@ -504,6 +646,11 @@ int main(void)
 	}
 
 	ContainerNode* result = model->FindNodesByID(model, "node0");
+	
+	if(result != NULL)
+	{
+		printf("ContainerNode: %s\n", result->super->super->name);
+	}
 
 	return 0;
 }

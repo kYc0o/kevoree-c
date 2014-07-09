@@ -17,6 +17,11 @@ NamedElement* newPoly_DeployUnit()
 	pObj->pDerivedObj = pDepUnitObj; /* Pointing to derived object */
 	
 	/*pDepUnitObj->requiredLibs = hashmap_new();*/
+	pDepUnitObj->groupName = NULL;
+	pDepUnitObj->version = NULL;
+	pDepUnitObj->url = NULL;
+	pDepUnitObj->hashcode = NULL;
+	pDepUnitObj->type = NULL;
 	pDepUnitObj->requiredLibs = NULL;
 	
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
@@ -53,6 +58,11 @@ DeployUnit* new_DeployUnit()
 	pDepUnitObj->super = pObj; /* Pointing to the base object */
 	
 	/*pDepUnitObj->requiredLibs = hashmap_new();*/
+	pDepUnitObj->groupName = NULL;
+	pDepUnitObj->version = NULL;
+	pDepUnitObj->url = NULL;
+	pDepUnitObj->hashcode = NULL;
+	pDepUnitObj->type = NULL;
 	pDepUnitObj->requiredLibs = NULL;
 	
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
@@ -195,7 +205,7 @@ void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s/%s", parent, ((DeployUnit*)(this))->super->name);
+	/*sprintf(path, "%s/%s", parent, ((DeployUnit*)(this))->super->name);*/
 
 	/*sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((DeployUnit*)(this))->super->name);*/
@@ -226,7 +236,7 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 	{
 		int i;
 		
-		sprintf(path,"%s/requiredLibs[%s]", parent, ((DeployUnit*)(this))->super->name);
+		/*sprintf(path,"%s/requiredLibs[%s]", parent, ((DeployUnit*)(this))->super->name);*/
 		
 		/* requiredLibs */
 		hashmap_map* m = ((DeployUnit*)(this))->requiredLibs;
@@ -238,8 +248,9 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 			{
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				n->VisitReferences(n, parent, visitor);
+				sprintf(path,"%s/requiredLibs[%s]", parent, n->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}

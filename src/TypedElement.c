@@ -175,7 +175,7 @@ void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s/%s",parent, ((TypedElement*)(this))->super->name);
+	/*sprintf(path,"%s/%s",parent, ((TypedElement*)(this))->super->name);*/
 
 	/*sprintf(path,"%s\\name",parent);
 	visitor->action(path, STRING, ((TypedElement*)(this))->super->name);*/
@@ -191,7 +191,7 @@ void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visit
 	{
 		int i;
 		
-		sprintf(path,"%s/genericTypes[%s]", parent, ((TypedElement*)(this))->super->name);
+		/*sprintf(path,"%s/genericTypes[%s]", parent, ((TypedElement*)(this))->super->name);*/
 		
 		/* genericTypes */
 		hashmap_map* m = ((TypedElement*)(this))->genericTypes;
@@ -203,8 +203,9 @@ void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visit
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement* n = data;
-				n->VisitAttributes(n, parent, visitor);
-				n->VisitReferences(n, parent, visitor);
+				sprintf(path,"%s/genericTypes[%s]", parent, n->super->name);
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}

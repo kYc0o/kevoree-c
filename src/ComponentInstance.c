@@ -15,7 +15,7 @@ Instance* newPoly_ComponentInstance()
 	}
 
 	pObj->pDerivedObj = pCompInstanceObj; /* Pointing to derived object */
-	pCompInstanceObj->VisitAttributes = ComponentInstance_VisitAttributes;
+	pObj->VisitAttributes = ComponentInstance_VisitAttributes;
 	
 	pObj->MetaClassName = ComponentInstance_MetaClassName;
 	pObj->InternalGetKey = ComponentInstance_InternalGetKey;
@@ -44,6 +44,7 @@ ComponentInstance* new_ComponentInstance()
 	/*((Instance*)(pObj->pDerivedObj))->pDerivedObj = pCompInstanceObj; Pointing to derived object */
 	pCompInstanceObj->super = pObj;
 	pCompInstanceObj->VisitAttributes = ComponentInstance_VisitAttributes;
+	pCompInstanceObj->VisitReferences = ComponentInstance_VisitReferences;
 	
 	pCompInstanceObj->MetaClassName = ComponentInstance_MetaClassName;
 	pCompInstanceObj->InternalGetKey = ComponentInstance_InternalGetKey;
@@ -104,12 +105,16 @@ void ComponentInstance_VisitAttributes(void* const this, char *parent, Visitor* 
 	/*char path[128];
 	memset(&path[0], 0, sizeof(path));*/
 	
-	ComponentInstance* pObj = (ComponentInstance*)this;
+	ComponentInstance* pCompInstanceObj = (ComponentInstance*)this;
 	
-	Instance_VisitAttributes(pObj->super, parent, visitor);
+	Instance_VisitAttributes(pCompInstanceObj->super, parent, visitor);
 }
 
-/*void ComponentInstance_VisitReferences*/
+void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor)
+{
+	ComponentInstance* pCompInstanceObj = (ComponentInstance*)this;
+	Instance_VisitReferences(pCompInstanceObj->super, parent, visitor);
+}
 
 /*int _acceptComponentInstance(ComponentInstance* this, ComponentInstance* c, Visitor* visitor)
 {
