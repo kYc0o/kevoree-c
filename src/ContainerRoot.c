@@ -74,6 +74,8 @@ ContainerRoot* new_ContainerRoot(void)
 	pObj->RemoveGroups = ContainerRoot_RemoveGroups;
 	pObj->Delete = delete_ContainerRoot;
 	pObj->Visit = ContainerRoot_Visit;
+	pObj->FindByPath = ContainerRoot_FindByPath;
+	pObj->FindRefsAttrByPath = ContainerRoot_FindRefsAttrByPath;
 	
 	return pObj;
 }
@@ -721,6 +723,79 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				n->VisitReferences(n, path, visitor);
 			}
 		}
+}
+
+void* ContainerRoot_FindByPath(char* relationName, char* queryID, ContainerRoot* root)
+{
+	if(!strcmp("nodes",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		return root->FindNodesByID(root, queryID);
+	}
+	
+	if(!strcmp("typeDefinitions",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		ContainerRoot* n = (ContainerRoot*)root;
+		return n->FindTypeDefsByID(n, queryID);
+	}
+	
+	if(!strcmp("repositories",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		ContainerRoot* n = (ContainerRoot*)root;
+		return n->FindRepositoriesByID(n, queryID);
+	}
+	
+	if(!strcmp("dataTypes",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		ContainerRoot* n = (ContainerRoot*)root;
+		return n->FindDataTypesByID(n, queryID);
+	}
+	
+	if(!strcmp("libraries",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		ContainerRoot* n = (ContainerRoot*)root;
+		return n->FindLibrariesByID(n, queryID);
+	}
+	
+	if(!strcmp("deployUnits",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		ContainerRoot* n = (ContainerRoot*)root;
+		return n->FindDeployUnitsByID(n, queryID);
+	}
+	
+	if(!strcmp("nodeNetworks",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		ContainerRoot* n = (ContainerRoot*)root;
+		return n->FindNodeNetworksByID(n, queryID);
+	}
+	
+	if(!strcmp("groups",relationName))
+	{
+		/*return  findByIDContainerRootContainerNode(root,queryID);*/
+		ContainerRoot* n = (ContainerRoot*)root;
+		return n->FindGroupsByID(n, queryID);
+	}
+}
+
+void* ContainerRoot_FindRefsAttrByPath(char* relationName, char* queryID, char* attribute, void* queryObj)
+{
+	if(!strcmp("nodes", relationName))
+	{
+		ContainerRoot* n = (ContainerRoot*)queryObj;
+
+		ContainerNode* node = n->FindNodesByID(n, queryID);
+		
+		if(node != NULL)
+		{
+			node->FindByPath(attribute, node);
+		}
+	}
 }
 
 /*int _acceptContainerRoot(ContainerRoot* this, ContainerRoot* c, Visitor* visitor)

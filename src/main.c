@@ -55,134 +55,13 @@ void* findbyPath(void *root, char *_path)
 
 	if(attribute == NULL)
 	{
-		if(!strcmp("nodes",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindNodesByID(n, queryID);
-		}
-		
-		if(!strcmp("typeDefinitions",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindTypeDefsByID(n, queryID);
-		}
-		
-		if(!strcmp("repositories",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindRepositoriesByID(n, queryID);
-		}
-		
-		if(!strcmp("dataTypes",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindDataTypesByID(n, queryID);
-		}
-		
-		if(!strcmp("libraries",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindLibrariesByID(n, queryID);
-		}
-		
-		if(!strcmp("deployUnits",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindDeployUnitsByID(n, queryID);
-		}
-		
-		if(!strcmp("nodeNetworks",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindNodeNetworksByID(n, queryID);
-		}
-		
-		if(!strcmp("groups",relationName))
-		{
-			/*return  findByIDContainerRootContainerNode(root,queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-			return n->FindGroupsByID(n, queryID);
-		}
+		return ((ContainerRoot*)(root))->FindByPath(relationName, queryID, ((ContainerRoot*)(root)));
 	}
 	else
 	{
-		if(!strcmp("nodes", relationName))
-		{
-			/*findByIDContainerRootContainerNode(root,queryID);*/
-			/*root->FindNodesByID(root, queryID);*/
-			ContainerRoot* n = (ContainerRoot*)root;
-
-			ContainerNode* node = n->FindNodesByID(n, queryID);
-			
-			if(node != NULL)
-			{
-				if(!strcmp("name",attribute))
-				{
-					return node->super->super->name;
-				}
-				
-				if(!strcmp("metaData",attribute))
-				{
-					return node->super->metaData;
-				}
-				
-				if(!strcmp("started",attribute))
-				{
-					return node->super->started;
-				}
-
-				int nodes_i = indexOf(attribute,"[");
-				int nodes_y = lastIndexOf(attribute,"]");
-
-				char *node_relationName = Substring(attribute, 0, nodes_i);
-
-				char *node_queryID = Substring(attribute,nodes_i + 2, nodes_y - strlen(node_relationName) - 1);
-
-				if(!strcmp("components", node_relationName))
-				{
-					printf("%s %s \n",node_relationName,node_queryID);
-					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-					return node->FindComponentsByID(node, node_queryID);
-				}
-				
-				if(!strcmp("hosts", node_relationName))
-				{
-					printf("%s %s \n",node_relationName,node_queryID);
-					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-					return node->FindHostsByID(node, node_queryID);
-				}
-				
-				if(!strcmp("host", node_relationName))
-				{
-					printf("%s %s \n",node_relationName,node_queryID);
-					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-					return node->host
-				}
-				
-				if(!strcmp("networkInformation", node_relationName))
-				{
-					printf("%s %s \n",node_relationName,node_queryID);
-					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-					return node->FindNetworkInformationByID(node, node_queryID);
-				}
-				
-				if(!strcmp("groups", node_relationName))
-				{
-					printf("%s %s \n",node_relationName,node_queryID);
-					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-					return node->FindGroupsByID(node, node_queryID);
-				}
-			}
-		}
+		return ((ContainerRoot*)(root))->FindRefsAttrByPath(relationName, queryID, attribute, ((ContainerRoot*)(root)));
 		
-		if(!strcmp("typeDefinitions", relationName))
+		/*if(!strcmp("typeDefinitions", relationName))
 		{
 			ContainerRoot* n = (ContainerRoot*)root;
 
@@ -224,12 +103,12 @@ void* findbyPath(void *root, char *_path)
 
 				if(!strcmp("deployUnits", node_relationName))
 				{
-					printf("%s %s \n",node_relationName,node_queryID);
+					printf("%s %s \n",node_relationName,node_queryID);*/
 					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-					return node->deployUnits;
+					/*return typDef->deployUnits;
 				}
 			}
-		}
+		}*/
 	}
 }
 
@@ -639,11 +518,19 @@ int main(void)
 	model->Visit(model, visitor_print);
 	
 	void* r = findbyPath(model, "nodes[node0]/components[fakeconsole]");
+	void* s = findbyPath(model, "nodes[node0]/groups[group0]");
 	
 	if(r != NULL)
 	{
 		printf("OK\n");
 	}
+	
+	if(s != NULL)
+	{
+		printf("OK\n");
+		printf("Group: %s\n", ((Group*)(s))->super->super->name);
+	}
+	
 
 	ContainerNode* result = model->FindNodesByID(model, "node0");
 	

@@ -41,6 +41,7 @@ Instance* newPoly_ContainerNode()
 	pContNodeObj->RemoveHosts = ContainerNode_RemoveHosts;
 	pContNodeObj->RemoveGroups = ContainerNode_RemoveGroups;
 	pContNodeObj->RemoveNetworkInformation = ContainerNode_RemoveNetworkInformation;
+	pContNodeObj->FindByPath = ContainerNode_FindByPath;
 	
 	pObj->MetaClassName = ContainerNode_MetaClassName;
 	pObj->InternalGetKey = ContainerNode_InternalGetKey;
@@ -101,6 +102,7 @@ ContainerNode* new_ContainerNode()
 	pContNodeObj->InternalGetKey = ContainerNode_InternalGetKey;
 	pContNodeObj->VisitAttributes = ContainerNode_VisitAttributes;
 	pContNodeObj->VisitReferences = ContainerNode_VisitReferences;
+	pContNodeObj->FindByPath = ContainerNode_FindByPath;
 	
 	pContNodeObj->Delete = delete_ContainerNode;
 
@@ -567,6 +569,69 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
+	}
+}
+
+void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
+{
+	if(!strcmp("name",attribute))
+	{
+		return this->super->super->name;
+	}
+	
+	if(!strcmp("metaData",attribute))
+	{
+		return this->super->metaData;
+	}
+	
+	if(!strcmp("started",attribute))
+	{
+		return this->super->started;
+	}
+
+	int nodes_i = indexOf(attribute,"[");
+	int nodes_y = lastIndexOf(attribute,"]");
+
+	char *node_relationName = Substring(attribute, 0, nodes_i);
+
+	char *node_queryID = Substring(attribute,nodes_i + 2, nodes_y - strlen(node_relationName) - 1);
+
+	if(!strcmp("components", node_relationName))
+	{
+		printf("%s %s \n",node_relationName,node_queryID);
+		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+		return this->FindComponentsByID(this, node_queryID);
+	}
+	
+	if(!strcmp("hosts", node_relationName))
+	{
+		printf("%s %s \n",node_relationName,node_queryID);
+		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+		return this->FindHostsByID(this, node_queryID);
+	}
+	
+	if(!strcmp("host", node_relationName))
+	{
+		printf("%s %s \n",node_relationName,node_queryID);
+		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+		/* TODO
+		 * Look for host attributes and references
+		 */
+		return this->host;
+	}
+	
+	if(!strcmp("networkInformation", node_relationName))
+	{
+		printf("%s %s \n",node_relationName,node_queryID);
+		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+		return this->FindNetworkInformationByID(this, node_queryID);
+	}
+	
+	if(!strcmp("groups", node_relationName))
+	{
+		printf("%s %s \n",node_relationName,node_queryID);
+		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+		return this->FindGroupsByID(this, node_queryID);
 	}
 }
 
