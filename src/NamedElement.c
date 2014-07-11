@@ -62,7 +62,7 @@ void delete_NamedElement(NamedElement* const this)
 
 void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	sprintf(path, "%s\\name", parent);

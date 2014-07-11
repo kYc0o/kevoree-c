@@ -244,7 +244,7 @@ void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visi
 }
 void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
 	TypeDefinition* pObj = (TypeDefinition*)this;
@@ -266,7 +266,7 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				sprintf(path, "%s/required[%s]", parent, n->super->name);
+				sprintf(path, "%s/required[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -287,7 +287,7 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				sprintf(path, "%s/required[%s]", parent, n->super->name);
+				sprintf(path, "%s/required[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}

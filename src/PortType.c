@@ -57,7 +57,7 @@ PortType* new_PortType()
 
 char* PortType_MetaClassName(PortType* const this)
 {
-	char* internalKey;
+	/*char* internalKey;
 
 	if (this == NULL)
 		return NULL;
@@ -71,7 +71,8 @@ char* PortType_MetaClassName(PortType* const this)
 	strcat(internalKey, "/");
 	strcat(internalKey, this->super->version);
 
-	return internalKey;
+	return internalKey;*/
+	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
 }
 
 char* PortType_InternalGetKey(PortType* const this)
@@ -104,14 +105,14 @@ void delete_PortType(PortType* const this)
 
 void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s",parent, ((PortType*)(this))->super->super->name);
+	/*sprintf(path,"%s",parent, ((PortType*)(this))->super->super->name);
 
-	/*sprintf(path,"%s\\name",parent);
+	sprintf(path,"%s\\name",parent);
 	visitor->action(path, STRING, ((PortType*)(this))->super->super->name);*/
-	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), path, visitor);
+	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
 	
 	sprintf(path, "%s\\synchrone", parent);
 	visitor->action(path, BOOL, ((PortType*)(this))->synchrone);

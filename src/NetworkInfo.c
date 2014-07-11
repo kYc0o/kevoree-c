@@ -176,19 +176,19 @@ void delete_NetworkInfo(NetworkInfo* const this)
 
 void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
-	memset(&path[0], 0, sizeof(path));
+	/*char path[128];
+	memset(&path[0], 0, sizeof(path));*/
 
-	sprintf(path, "%s", parent, ((NetworkInfo*)(this))->super->name);
+	/*sprintf(path, "%s", parent, ((NetworkInfo*)(this))->super->name);*/
 
 	/*sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((NetworkInfo*)(this))->super->name);*/
-	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, path, visitor);
+	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, parent, visitor);
 }
 
 void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
 	if(((NetworkInfo*)(this))->values != NULL)
@@ -207,8 +207,8 @@ void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NetworkProperty* n = data;
-				sprintf(path,"%s/values[%s]", parent, n->super->name);
-				n->VisitAttributes(n, parent, visitor);
+				sprintf(path,"%s/values[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}
 		}

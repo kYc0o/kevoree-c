@@ -467,7 +467,7 @@ void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visi
 
 void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
 	Instance_VisitReferences(((ContainerNode*)(this))->super, parent, visitor);
@@ -488,7 +488,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ComponentInstance* n = data;
-				sprintf(path,"%s/components[%s]", parent, n->super->super->name);
+				sprintf(path,"%s/components[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -511,7 +511,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"%s/hosts[%s]", parent, n->super->super->name);
+				sprintf(path,"%s/hosts[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -520,7 +520,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	
 	if(((ContainerNode*)(this))->host != NULL)
 	{
-		sprintf(path, "%s/host[%s]", parent, ((ContainerNode*)(this))->host->super->super->name);
+		sprintf(path, "%s/host[%s]", parent, /*((ContainerNode*)(this))->host->super->super->name*/((ContainerNode*)(this))->host->InternalGetKey(((ContainerNode*)(this))->host));
 		((ContainerNode*)(this))->host->VisitAttributes(((ContainerNode*)(this))->host, path, visitor);
 		((ContainerNode*)(this))->host->VisitReferences(((ContainerNode*)(this))->host, path, visitor);
 	}
@@ -541,7 +541,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NetworkInfo* n = data;
-				sprintf(path,"%s/networkInformation[%s]", parent, n->super->name);
+				sprintf(path,"%s/networkInformation[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -564,7 +564,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Group* n = data;
-				sprintf(path, "%s/groups[%s]", parent, n->super->super->name);
+				sprintf(path, "%s/groups[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, path, visitor);*/
 			}
@@ -574,11 +574,13 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 
 void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 {
+	/* NamedElement attributes */
 	if(!strcmp("name",attribute))
 	{
 		return this->super->super->name;
 	}
 	
+	/* Instance attributes */
 	if(!strcmp("metaData",attribute))
 	{
 		return this->super->metaData;
@@ -614,6 +616,7 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 	{
 		printf("%s %s \n",node_relationName,node_queryID);
 		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+		
 		/* TODO
 		 * Look for host attributes and references
 		 */

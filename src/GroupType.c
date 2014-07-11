@@ -62,14 +62,15 @@ char* GroupType_MetaClassName(GroupType* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name) + strlen("/") + strlen(this->super->version)) + 1);
+	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name) + strlen("_") + strlen(this->super->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
 
-	strcpy(internalKey, this->super->super->name);
+	sprintf(internalKey, "%s_%s", this->super->super->name, this->super->version);
+	/*strcpy(internalKey, this->super->super->name);
 	strcat(internalKey, "/");
-	strcat(internalKey, this->super->version);
+	strcat(internalKey, this->super->version);*/
 
 	return internalKey;
 }
@@ -103,7 +104,7 @@ void delete_GroupType(GroupType* const this)
 
 void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path, "%s", parent, ((GroupType*)(this))->super->super->name);*/

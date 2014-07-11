@@ -139,7 +139,7 @@ void delete_NodeLink(NodeLink* const this)
 
 void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path, "%s/%s", parent, ((NodeLink*)(this))->generated_KMF_ID);*/
@@ -162,7 +162,7 @@ void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 
 void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
 	if(((NodeLink*)(this))->networkProperties != NULL)
@@ -181,8 +181,8 @@ void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NetworkProperty* n = data;
-				sprintf(path,"%s/networkProperties[%s]", parent, n->super->name);
-				n->VisitAttributes(n, parent, visitor);
+				sprintf(path,"%s/networkProperties[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}
 		}

@@ -161,7 +161,7 @@ void delete_Group(Group* const this)
 
 void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path, "%s", parent, ((Group*)(this))->super->super->name);*/
@@ -171,7 +171,7 @@ void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 
 void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
 	Instance_VisitReferences(((Group*)(this))->super, parent, visitor);
@@ -190,7 +190,7 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"%s/subNodes[%s]", parent, n->super->super->name);
+				sprintf(path,"%s/subNodes[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}

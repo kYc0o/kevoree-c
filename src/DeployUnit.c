@@ -86,21 +86,20 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->groupName) + strlen("/") /*+ strlen(this->hashcode)*/ + strlen("/") + strlen(this->super->name) + strlen("/") + strlen(this->version)) + 1);
+	internalKey = malloc(sizeof(char) * (strlen(this->groupName) + strlen("_") + /*strlen(this->hashcode) + strlen("_") +*/ strlen(this->super->name) + strlen("_") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
 
-	strcpy(internalKey, this->groupName);
+	sprintf(internalKey, "%s_%s_%s", this->groupName, /*this->hashcode,*/ this->super->name, this->version);
+	/*strcpy(internalKey, this->groupName);
+	strcat(internalKey, "_");
+	strcat(internalKey, this->hashcode);
 	strcat(internalKey, "/");
-	/*strcat(internalKey, this->hashcode);
-	strcat(internalKey, "/");*/
 	strcat(internalKey, this->super->name);
-	strcat(internalKey, "/");
-	strcat(internalKey, this->version);
-	
+	strcat(internalKey, "_");
+	strcat(internalKey, this->version);*/
 
-	/*printf("%s\n", internalKey);*/
 	return internalKey;
 }
 
@@ -202,7 +201,7 @@ void delete_DeployUnit(DeployUnit* const this)
 
 void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path, "%s/%s", parent, ((DeployUnit*)(this))->super->name);*/
@@ -229,7 +228,7 @@ void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor
 
 void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
 	if(((DeployUnit*)(this))->requiredLibs != NULL)
@@ -248,7 +247,7 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 			{
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
-				sprintf(path,"%s/requiredLibs[%s]", parent, n->super->name);
+				sprintf(path,"%s/requiredLibs[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}

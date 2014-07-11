@@ -28,6 +28,7 @@ NamedElement* newPoly_TypeDefinition()
 	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
 	pTypeDefObj->RemoveDeployUnit = TypeDefinition_RemoveDeployUnit;
 	pTypeDefObj->RemoveSuperTypes = TypeDefinition_RemoveSuperTypes;
+	pTypeDefObj->FindByPath = TypeDefinition_FindByPath;
 	
 	pObj->MetaClassName = TypeDefinition_MetaClassName;
 	pObj->InternalGetKey = TypeDefinition_InternalGetKey;
@@ -74,6 +75,7 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->Delete = delete_TypeDefinition;
 	pTypeDefObj->VisitAttributes = TypeDefinition_VisitAttributes;
 	pTypeDefObj->VisitReferences = TypeDefinition_VisitReferences;
+	pTypeDefObj->FindByPath = TypeDefinition_FindByPath;
 
 	return pTypeDefObj;
 }
@@ -86,14 +88,16 @@ char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name) + strlen("/") + strlen(this->version)) + 1);
+	internalKey = malloc(sizeof(char) * (strlen(this->super->name) + strlen("_") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
 
-	strcpy(internalKey, this->super->name);
-	strcat(internalKey, "/");
-	strcat(internalKey, this->version);
+	/*strcpy(internalKey, this->super->name);
+	strcat(internalKey, "_");
+	strcat(internalKey, this->version);*/
+	
+	sprintf(internalKey, "%s_%s", this->super->name, this->version);
 
 	return internalKey;
 }
@@ -192,7 +196,7 @@ void delete_TypeDefinition(TypeDefinition* const this)
 
 void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);*/
@@ -216,24 +220,21 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 
 void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	if(((TypeDefinition*)(this))->deployUnits != NULL)
 	{
-		sprintf(path, "%s/deployUnits[%s]", parent, ((TypeDefinition*)(this))->deployUnits->super->name);
+		sprintf(path, "%s/deployUnits[%s]", parent, /*((TypeDefinition*)(this))->deployUnits->super->name*/((TypeDefinition*)(this))->deployUnits->InternalGetKey(((TypeDefinition*)(this))->deployUnits));
 		DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
 		n->VisitAttributes(n, path, visitor);
 		n->VisitReferences(n, path, visitor);
-		/*((TypeDefinition*)(this))->deployUnits->VisitAttributes(((TypeDefinition*)(this))->deployUnits, parent, visitor);*/
 	}
 	
 	if(((TypeDefinition*)(this))->superTypes != NULL)
 	{
+		printf("Visiting superTypes in TypeDefinition\n");
 		int i;
-		
-		
-		sprintf(path,"%s/superTypes[%s]", parent, ((TypeDefinition*)(this))->super->name);
 		
 		/* superTypes */
 		hashmap_map* m = ((TypeDefinition*)(this))->superTypes;
@@ -245,11 +246,53 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path,"%s/superTypes[%s]", parent, n->super->name);
+				sprintf(path,"%s/superTypes[%s]", parent, /*n->super->name*/ n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
 		}
+	}
+}
+
+void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this)
+{
+	if(!strcmp("name",attribute))
+	{
+		return this->super->name;
+	}
+
+	if(!strcmp("version",attribute))
+	{
+		return this->version;
+	}
+	
+	if(!strcmp("factoryBean",attribute))
+	{
+		return this->factoryBean;
+	}
+	
+	if(!strcmp("bean",attribute))
+	{
+		return this->bean;
+	}
+	
+	if(!strcmp("abstract",attribute))
+	{
+		return this->abstract;
+	}
+	
+	int nodes_i = indexOf(attribute,"[");
+	int nodes_y = lastIndexOf(attribute,"]");
+
+	char *node_relationName = Substring(attribute, 0, nodes_i);
+
+	char *node_queryID = Substring(attribute,nodes_i + 2, nodes_y - strlen(node_relationName) - 1);
+
+	if(!strcmp("deployUnits", node_relationName))
+	{
+		printf("%s %s \n",node_relationName,node_queryID);
+		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
+		return this->deployUnits;
 	}
 }
 

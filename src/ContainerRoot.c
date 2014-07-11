@@ -111,20 +111,42 @@ ContainerNode* ContainerRoot_FindNodesByID(ContainerRoot* const this, char* id)
 {
 	ContainerNode* value;
 
-	if(hashmap_get(this->nodes, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->nodes != NULL)
+	{
+		printf("Looking for ContainerNode %s\n", id);
+		if(hashmap_get(this->nodes, id, (void**)(&value)) == MAP_OK)
+		{
+			printf("ContainerNode %s found\n", value->super->super->name);
+			return value;
+		}
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
 TypeDefinition* ContainerRoot_FindTypeDefsByID(ContainerRoot* const this, char* id)
 {
 	TypeDefinition* value;
 
-	if(hashmap_get(this->typeDefinitions, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->typeDefinitions != NULL)
+	{
+		printf("Looking for TypeDefinition %s\n", id);
+		if(hashmap_get(this->typeDefinitions, id, (void**)(&value)) == MAP_OK)
+		{
+			printf("TypeDefinition %s found\n", value->super->name);
+			return value;
+		}
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
 Repository* ContainerRoot_FindRepositoriesByID(ContainerRoot* const this, char* id)
@@ -599,7 +621,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 {
 	int i;
 
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
 	sprintf(path, "%s\\ID", ((ContainerRoot*)(this))->generated_KMF_ID);
@@ -616,7 +638,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path, "nodes[%s]", n->super->super->name);
+				sprintf(path, "nodes[%s]", /*n->super->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -633,7 +655,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path, "typeDefinitions[%s]", n->super->name);
+				sprintf(path, "typeDefinitions[%s]", /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -648,7 +670,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Repository* n = data;
-				sprintf(path, "repositories[%s]", n->url);
+				sprintf(path, "repositories[%s]", /*n->url*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitAttributes(n, path, visitor);
 			}
@@ -662,7 +684,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement* n = data;
-				sprintf(path, "dataTypes[%s]", n->super->name);
+				sprintf(path, "dataTypes[%s]", /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -676,7 +698,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeLibrary* n = data;
-				sprintf(path, "libraries[%s]", n->super->name);
+				sprintf(path, "libraries[%s]", /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -690,7 +712,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
-				sprintf(path, "deployUnits[%s]", n->super->name);
+				sprintf(path, "deployUnits[%s]", /*n->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -704,7 +726,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NodeNetwork* n = data;
-				sprintf(path, "nodeNetworks[%s]", n->generated_KMF_ID);
+				sprintf(path, "nodeNetworks[%s]", /*n->generated_KMF_ID*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitAttributes(n, path, visitor);
 			}
@@ -718,7 +740,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Group* n = data;
-				sprintf(path, "groups[%s]", n->super->super->name);
+				sprintf(path, "groups[%s]", /*n->super->super->name*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -737,7 +759,8 @@ void* ContainerRoot_FindByPath(char* relationName, char* queryID, ContainerRoot*
 	{
 		/*return  findByIDContainerRootContainerNode(root,queryID);*/
 		ContainerRoot* n = (ContainerRoot*)root;
-		return n->FindTypeDefsByID(n, queryID);
+		TypeDefinition* value = n->FindTypeDefsByID(n, queryID);
+		return value;
 	}
 	
 	if(!strcmp("repositories",relationName))
@@ -787,13 +810,26 @@ void* ContainerRoot_FindRefsAttrByPath(char* relationName, char* queryID, char* 
 {
 	if(!strcmp("nodes", relationName))
 	{
-		ContainerRoot* n = (ContainerRoot*)queryObj;
-
-		ContainerNode* node = n->FindNodesByID(n, queryID);
+		ContainerNode* node = ((ContainerRoot*)queryObj)->FindNodesByID(((ContainerRoot*)queryObj), queryID);
 		
 		if(node != NULL)
 		{
-			node->FindByPath(attribute, node);
+			return node->FindByPath(attribute, node);
+		}
+	}
+	
+	if(!strcmp("typeDefinitions", relationName))
+	{
+		printf("Entering typeDefinitions finder...\n");
+		/*ContainerRoot* n = (ContainerRoot*)root;*/
+		printf("Looking for typeDefinition %s...\n", queryID);
+
+		TypeDefinition* typDef = ((ContainerRoot*)queryObj)->FindTypeDefsByID(((ContainerRoot*)queryObj), queryID);
+		
+		
+		if(typDef != NULL)
+		{
+			return typDef->FindByPath(attribute, typDef);
 		}
 	}
 }

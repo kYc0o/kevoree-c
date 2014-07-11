@@ -182,14 +182,14 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 
 	if(((NodeNetwork*)(this))->target != NULL)
 	{
-		sprintf(path, "%s/target[%s]", parent, ((NodeNetwork*)(this))->target->super->super->name);
+		sprintf(path, "%s/target[%s]", parent, /*((NodeNetwork*)(this))->target->super->super->name*/((NodeNetwork*)(this))->target->InternalGetKey(((NodeNetwork*)(this))->target));
 		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor);
 		((NodeNetwork*)(this))->target->VisitReferences(((NodeNetwork*)(this))->target, path, visitor);
 	}
 	
 	if(((NodeNetwork*)(this))->initBy != NULL)
 	{
-		sprintf(path, "%s/initBy[%s]", parent, ((NodeNetwork*)(this))->initBy->super->super->name);
+		sprintf(path, "%s/initBy[%s]", parent, /*((NodeNetwork*)(this))->initBy->super->super->name*/((NodeNetwork*)(this))->initBy->InternalGetKey(((NodeNetwork*)(this))->initBy));
 		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor);
 		((NodeNetwork*)(this))->initBy->VisitReferences(((NodeNetwork*)(this))->initBy, path, visitor);
 	}
@@ -210,7 +210,7 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NodeLink* n = data;
-				sprintf(path,"%s/link[%s]", parent, n->generated_KMF_ID);
+				sprintf(path,"%s/link[%s]", parent, /*n->generated_KMF_ID*/n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}

@@ -172,8 +172,8 @@ void delete_TypedElement(TypedElement* const this)
 
 void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
-	memset(&path[0], 0, sizeof(path));
+	/*char path[128];
+	memset(&path[0], 0, sizeof(path));*/
 
 	/*sprintf(path,"%s/%s",parent, ((TypedElement*)(this))->super->name);*/
 
@@ -184,7 +184,7 @@ void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 
 void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	if(((TypedElement*)(this))->genericTypes != NULL)

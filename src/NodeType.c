@@ -49,6 +49,7 @@ NodeType* new_NodeType()
 	pNodeTypeObj->InternalGetKey = NodeType_InternalGetKey;
 	pNodeTypeObj->VisitAttributes = NodeType_VisitAttributes;
 	pNodeTypeObj->VisitReferences = TypeDefinition_VisitAttributes;
+	pNodeTypeObj->FindByPath = TypeDefinition_FindByPath;
 	
 	pNodeTypeObj->Delete = delete_NodeType;
 
@@ -106,10 +107,10 @@ void delete_NodeType(NodeType* const this)
 
 void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s",parent, ((NodeType*)(this))->super->super->name);
+	/*sprintf(path,"%s",parent, ((NodeType*)(this))->super->super->name);*/
 
 	/*sprintf(path,"%s\\name",parent);
 	visitor->action(path, STRING, ((NodeType*)(this))->super->super->name);*/

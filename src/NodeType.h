@@ -11,6 +11,7 @@ typedef char* (*fptrNodeTypeInternalGetKey)(void*);
 typedef void (*fptrDeleteNodeType)(NodeType*);
 typedef void (*fptrVisitAttrNodeType)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsNodeType)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathNodeType)(char*, void*);
 
 typedef struct _NodeType {
 	TypeDefinition* super;
@@ -20,6 +21,7 @@ typedef struct _NodeType {
 	fptrDeleteNodeType Delete;
 	fptrVisitAttrNodeType VisitAttributes;
 	fptrVisitRefsNodeType VisitReferences;
+	fptrFindByPathNodeType FindByPath;
 } NodeType;
 
 TypeDefinition* newPoly_NodeType(void);

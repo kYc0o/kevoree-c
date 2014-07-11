@@ -64,7 +64,7 @@ void delete_Repository(Repository* const this)
 
 void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s/%s",parent, ((Repository*)(this))->url);*/

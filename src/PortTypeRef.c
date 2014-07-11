@@ -202,9 +202,9 @@ void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visito
 
 	if(((PortTypeRef*)(this))->ref != NULL)
 	{
-		sprintf(path, "%s/ref[%s]", parent, ((PortTypeRef*)(this))->ref->super->super->name);
-		((PortTypeRef*)(this))->ref->VisitAttributes(((PortTypeRef*)(this))->ref, parent, visitor);
-		((PortTypeRef*)(this))->ref->VisitReferences(((PortTypeRef*)(this))->ref, parent, visitor);
+		sprintf(path, "%s/ref[%s]", parent, /*((PortTypeRef*)(this))->ref->super->super->name*/((PortTypeRef*)(this))->ref->InternalGetKey(((PortTypeRef*)(this))->ref));
+		((PortTypeRef*)(this))->ref->VisitAttributes(((PortTypeRef*)(this))->ref, path, visitor);
+		((PortTypeRef*)(this))->ref->VisitReferences(((PortTypeRef*)(this))->ref, path, visitor);
 	}
 	
 	if(((PortTypeRef*)(this))->mappings != NULL)
@@ -223,7 +223,7 @@ void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeMapping* n = data;
-				sprintf(path,"%s/mappings[%s]", parent, n->generated_KMF_ID);
+				sprintf(path,"%s/mappings[%s]", parent, /*n->generated_KMF_ID*/n->InternalGetKey(n));
 				n->VisitAttributes(n, parent, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}

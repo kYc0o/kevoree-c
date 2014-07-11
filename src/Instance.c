@@ -111,7 +111,7 @@ void delete_Instance(Instance* const this)
 
 void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path, "%s/%s", parent, ((Instance*)(this))->super->name);*/
@@ -130,12 +130,12 @@ void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 
 void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	if(((Instance*)(this))->typeDefinition != NULL)
 	{
-		sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->super->name);
+		sprintf(path, "%s/typeDefinition[%s]", parent, /*((Instance*)(this))->typeDefinition->super->name*/((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));
 		((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor);
 		((Instance*)(this))->typeDefinition->VisitReferences(((Instance*)(this))->typeDefinition, path, visitor);
 	}

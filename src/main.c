@@ -52,6 +52,9 @@ void* findbyPath(void *root, char *_path)
 	char* relationName = (char*)Substring(pch, 0, i - 2);
 	char* queryID = (char*)Substring(pch, i, y);
 	char* attribute = strtok(NULL, "/");
+	printf("relationName: %s\n", relationName);
+	printf("queryID: %s\n", queryID);
+	printf("attribute: %s\n", attribute);
 
 	if(attribute == NULL)
 	{
@@ -60,55 +63,6 @@ void* findbyPath(void *root, char *_path)
 	else
 	{
 		return ((ContainerRoot*)(root))->FindRefsAttrByPath(relationName, queryID, attribute, ((ContainerRoot*)(root)));
-		
-		/*if(!strcmp("typeDefinitions", relationName))
-		{
-			ContainerRoot* n = (ContainerRoot*)root;
-
-			TypeDefinition* typDef = n->FindTypeDefsByID(n, queryID);
-			
-			if(typDef != NULL)
-			{
-				if(!strcmp("name",attribute))
-				{
-					return typDef->super->name;
-				}
-
-				if(!strcmp("version",attribute))
-				{
-					return typDef->version;
-				}
-				
-				if(!strcmp("factoryBean",attribute))
-				{
-					return typDef->factoryBean;
-				}
-				
-				if(!strcmp("bean",attribute))
-				{
-					return typDef->bean;
-				}
-				
-				if(!strcmp("abstract",attribute))
-				{
-					return typDef->abstract;
-				}
-				
-				int nodes_i = indexOf(attribute,"[");
-				int nodes_y = lastIndexOf(attribute,"]");
-
-				char *node_relationName = Substring(attribute, 0, nodes_i);
-
-				char *node_queryID = Substring(attribute,nodes_i + 2, nodes_y - strlen(node_relationName) - 1);
-
-				if(!strcmp("deployUnits", node_relationName))
-				{
-					printf("%s %s \n",node_relationName,node_queryID);*/
-					/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-					/*return typDef->deployUnits;
-				}
-			}
-		}*/
 	}
 }
 
@@ -233,6 +187,7 @@ int main(void)
 	c1->super->metaData = malloc(sizeof(char) * (strlen("dummy_MetaData") + 1));
 	strcpy(c1->super->metaData, "dummy_MetaData");
 	c1->super->started = 1;
+	printf("%s\n", c1->InternalGetKey(c1));
 
 	node0->AddComponents(node0, c1);
 	
@@ -519,10 +474,13 @@ int main(void)
 	
 	void* r = findbyPath(model, "nodes[node0]/components[fakeconsole]");
 	void* s = findbyPath(model, "nodes[node0]/groups[group0]");
+	void* t = findbyPath(model, "typeDefinitions[Light_1.0.0-SNAPSHOT]");
+	void* u = findbyPath(model, "deployUnits[org.kevoree.library_TemperatureComponent_1.0.0-SNAPSHOT]");
 	
 	if(r != NULL)
 	{
 		printf("OK\n");
+		printf("ComponentInstance: %s\n", ((ComponentInstance*)(r))->super->super->name);
 	}
 	
 	if(s != NULL)
@@ -531,12 +489,16 @@ int main(void)
 		printf("Group: %s\n", ((Group*)(s))->super->super->name);
 	}
 	
-
-	ContainerNode* result = model->FindNodesByID(model, "node0");
-	
-	if(result != NULL)
+	if(t != NULL)
 	{
-		printf("ContainerNode: %s\n", result->super->super->name);
+		printf("OK\n");
+		printf("TypeDefinition: %s\n", ((TypeDefinition*)t)->super->name);
+	}
+	
+	if(u != NULL)
+	{
+		printf("OK\n");
+		printf("DeployUnit: %s\n", ((DeployUnit*)u)->super->name);
 	}
 
 	return 0;
