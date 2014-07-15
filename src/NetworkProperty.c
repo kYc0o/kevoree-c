@@ -110,11 +110,31 @@ void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* vi
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s", parent, ((NetworkProperty*)(this))->super->name);
-
 	/*sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((NetworkProperty*)(this))->super->name);*/
-	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, path, visitor);
+	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, parent, visitor);
+	
+	sprintf(path, "%s\\value", parent);
+	visitor->action(path, STRING, ((NetworkProperty*)this)->value);
+}
+
+void* NetworkProperty_FindByPath(char* attribute, NetworkProperty* const this)
+{
+	/* NamedElement attributes */
+	if(!strcmp("name", attribute))
+	{
+		return this->super->FindByPath(attribute, this->super);
+	}
+	/* Local attributes */
+	else if(!strcmp("value", attribute))
+	{
+		return this->value;
+	}
+	else
+	{
+		printf("Wrong path\n");
+		return NULL;
+	}
 }
 
 /*int _acceptNetworkProperty(NetworkProperty* this, NetworkProperty* c, Visitor* visitor)

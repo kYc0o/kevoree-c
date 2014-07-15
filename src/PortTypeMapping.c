@@ -26,6 +26,7 @@ PortTypeMapping* new_PortTypeMapping()
 	pObj->Delete = delete_PortTypeMapping;
 	pObj->VisitAttributes = PortTypeMapping_VisitAttributes;
 	/*pObj->VisitReferences = PortTypeMapping_VisitAttributes;*/
+	pObj->FindByPath = PortTypeMapping_FindByPath;
 	
 	return pObj;
 }
@@ -88,4 +89,31 @@ void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* vi
 	
 	sprintf(path,"%s\\paramTypes",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->paramTypes);
+}
+
+void* PortTypeMapping_FindByPath(char* attribute, PortTypeMapping* const this)
+{
+	/* Local attributes */
+	if(!strcmp("beanMethodName", attribute))
+	{
+		return this->beanMethodName;
+	}
+	else if(!strcmp("serviceMethodName", attribute))
+	{
+		return this->serviceMethodName;
+	}
+	else if(!strcmp("paramTypes", attribute))
+	{
+		return this->paramTypes;
+	}
+	else if(!strcmp("generated_KMF_ID", attribute))
+	{
+		return this->generated_KMF_ID;
+	}
+	/* There is no local references */
+	else
+	{
+		printf("Wrong path\n");
+		return NULL;
+	}
 }

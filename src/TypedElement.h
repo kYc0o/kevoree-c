@@ -16,6 +16,7 @@ typedef void (*fptrTypElemRemoveGenericTypes)(TypedElement*, TypedElement*);
 typedef void (*fptrDeleteTypedElement)(TypedElement*);
 typedef void (*fptrVisitAttrTypedElement)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsTypedElement)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathTypedElement)(char*, TypedElement*);
 
 typedef struct _TypedElement {
 	NamedElement* super;
@@ -28,6 +29,7 @@ typedef struct _TypedElement {
 	fptrDeleteTypedElement Delete;
 	fptrVisitAttrTypedElement VisitAttributes;
 	fptrVisitRefsTypedElement VisitReferences;
+	fptrFindByPathTypedElement FindByPath;
 } TypedElement;
 
 NamedElement* newPoly_TypedElement(void);
@@ -41,5 +43,6 @@ void deletePoly_TypedElement(NamedElement* const this);
 void delete_TypedElement(TypedElement* const this);
 void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void* TypedElement_FindByPath(char* attribute, TypedElement* const this);
 
 #endif /* __TypedElement_H */

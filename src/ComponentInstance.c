@@ -48,6 +48,7 @@ ComponentInstance* new_ComponentInstance()
 	
 	pCompInstanceObj->MetaClassName = ComponentInstance_MetaClassName;
 	pCompInstanceObj->InternalGetKey = ComponentInstance_InternalGetKey;
+	pCompInstanceObj->FindByPath = ComponentInstance_FindByPath;
 	
 	pCompInstanceObj->Delete = delete_ComponentInstance;
 
@@ -114,6 +115,14 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 {
 	ComponentInstance* pCompInstanceObj = (ComponentInstance*)this;
 	Instance_VisitReferences(pCompInstanceObj->super, parent, visitor);
+}
+
+void* ComponentInstance_FindByPath(char* attribute, ComponentInstance* const this)
+{
+	/* There is no local attributes */
+	/* There is no local references */
+	/* Instance attributes and references */
+	return Instance_FindByPath(attribute, this->super);
 }
 
 /*int _acceptComponentInstance(ComponentInstance* this, ComponentInstance* c, Visitor* visitor)

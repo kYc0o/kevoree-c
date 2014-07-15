@@ -13,6 +13,7 @@ typedef void (*fptrAddTypeDefinition)(Instance*, TypeDefinition*);
 typedef void (*fptrDeleteInstance)(Instance*);
 typedef void (*fptrVisitAttrInstance)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsInstance)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathInstance)(char*, Instance*);
 
 typedef struct _Instance {
 	NamedElement* super;
@@ -27,6 +28,7 @@ typedef struct _Instance {
 	fptrDeleteInstance Delete;
 	fptrVisitAttrInstance VisitAttributes;
 	fptrVisitRefsInstance VisitReferences;
+	fptrFindByPathInstance FindByPath;
 } Instance;
 
 NamedElement* newPoly_Instance(void);
@@ -39,5 +41,6 @@ void deletePoly_Instance(NamedElement* const this);
 void delete_Instance(Instance* const this);
 void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void* Instance_FindByPath(char* attribute, Instance* const this);
 
 #endif /* H_Instance */

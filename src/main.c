@@ -32,40 +32,6 @@ void actionprintf(char *path, Type type, void* value)
 	}*/
 }
 
-void* findbyPath(void *root, char *_path)
-{
-	char* path = strdup(_path);
-	char* pch;
-
-	if(indexOf(path,"/") != -1)
-	{
-		pch = strtok (path,"/");
-	}
-	else
-	{
-		pch = path;
-	}
-
-	int i = indexOf(pch,"[") + 2;
-	int y = lastIndexOf(pch,"]") - i + 1;
-
-	char* relationName = (char*)Substring(pch, 0, i - 2);
-	char* queryID = (char*)Substring(pch, i, y);
-	char* attribute = strtok(NULL, "/");
-	printf("relationName: %s\n", relationName);
-	printf("queryID: %s\n", queryID);
-	printf("attribute: %s\n", attribute);
-
-	if(attribute == NULL)
-	{
-		return ((ContainerRoot*)(root))->FindByPath(relationName, queryID, ((ContainerRoot*)(root)));
-	}
-	else
-	{
-		return ((ContainerRoot*)(root))->FindRefsAttrByPath(relationName, queryID, attribute, ((ContainerRoot*)(root)));
-	}
-}
-
 ContainerRoot *model = NULL;
 
 /*KevoreeBootStrap *kb=NULL;*/
@@ -187,7 +153,6 @@ int main(void)
 	c1->super->metaData = malloc(sizeof(char) * (strlen("dummy_MetaData") + 1));
 	strcpy(c1->super->metaData, "dummy_MetaData");
 	c1->super->started = 1;
-	printf("%s\n", c1->InternalGetKey(c1));
 
 	node0->AddComponents(node0, c1);
 	
@@ -472,10 +437,7 @@ int main(void)
 
 	model->Visit(model, visitor_print);
 	
-	void* r = findbyPath(model, "nodes[node0]/components[fakeconsole]");
-	void* s = findbyPath(model, "nodes[node0]/groups[group0]");
-	void* t = findbyPath(model, "typeDefinitions[Light_1.0.0-SNAPSHOT]");
-	void* u = findbyPath(model, "deployUnits[org.kevoree.library_TemperatureComponent_1.0.0-SNAPSHOT]");
+	void* r = model->FindByPath("nodes[node0]/components[fakeconsole]", model);
 	
 	if(r != NULL)
 	{
@@ -483,11 +445,15 @@ int main(void)
 		printf("ComponentInstance: %s\n", ((ComponentInstance*)(r))->super->super->name);
 	}
 	
+	void* s = model->FindByPath("nodes[node0]/groups[group0]", model);
+	
 	if(s != NULL)
 	{
 		printf("OK\n");
 		printf("Group: %s\n", ((Group*)(s))->super->super->name);
 	}
+	
+	void* t = model->FindByPath("typeDefinitions[Light_1.0.0-SNAPSHOT]", model);
 	
 	if(t != NULL)
 	{
@@ -495,10 +461,28 @@ int main(void)
 		printf("TypeDefinition: %s\n", ((TypeDefinition*)t)->super->name);
 	}
 	
+	void* u = model->FindByPath("nodes[node0]/typeDefinition[ContikiNode_1.0.0-SNAPSHOT]/deployUnits[org.kevoree.library_ContikiNodeType_1.0.0-SNAPSHOT]", model/*"deployUnits[org.kevoree.library_TemperatureComponent_1.0.0-SNAPSHOT]"*/);
+	
 	if(u != NULL)
 	{
 		printf("OK\n");
 		printf("DeployUnit: %s\n", ((DeployUnit*)u)->super->name);
+	}
+	
+	void* v = model->FindByPath("typeDefinitions[Temperature_1.0.0-SNAPSHOT]/required[port0]", model);
+	
+	if(v != NULL)
+	{
+		printf("OK\n");
+		printf("PortTypeRef: %s\n", ((PortTypeRef*)v)->super->name);
+	}
+	
+	void* w = model->FindByPath("groups[group0]/subNodes[node0]", model);
+	
+	if(w != NULL)
+	{
+		printf("OK\n");
+		printf("SubNode: %s\n", ((ContainerNode*)w)->super->super->name);
 	}
 
 	return 0;

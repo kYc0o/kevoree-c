@@ -233,7 +233,6 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 	
 	if(((TypeDefinition*)(this))->superTypes != NULL)
 	{
-		printf("Visiting superTypes in TypeDefinition\n");
 		int i;
 		
 		/* superTypes */
@@ -256,43 +255,65 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 
 void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this)
 {
+	/* NamedElement attributes */
 	if(!strcmp("name",attribute))
 	{
-		return this->super->name;
+		return this->super->FindByPath(attribute, this->super);
 	}
-
-	if(!strcmp("version",attribute))
+	/* Local attributes */
+	else if(!strcmp("version",attribute))
 	{
 		return this->version;
 	}
-	
-	if(!strcmp("factoryBean",attribute))
+	else if(!strcmp("factoryBean",attribute))
 	{
 		return this->factoryBean;
 	}
-	
-	if(!strcmp("bean",attribute))
+	else if(!strcmp("bean",attribute))
 	{
 		return this->bean;
 	}
-	
-	if(!strcmp("abstract",attribute))
+	else if(!strcmp("abstract",attribute))
 	{
 		return this->abstract;
 	}
-	
-	int nodes_i = indexOf(attribute,"[");
-	int nodes_y = lastIndexOf(attribute,"]");
-
-	char *node_relationName = Substring(attribute, 0, nodes_i);
-
-	char *node_queryID = Substring(attribute,nodes_i + 2, nodes_y - strlen(node_relationName) - 1);
-
-	if(!strcmp("deployUnits", node_relationName))
+	else
 	{
-		printf("%s %s \n",node_relationName,node_queryID);
-		/*return	findByIDContainerNodeComponentInstance(node,node_queryID);*/
-		return this->deployUnits;
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+
+		if(!strcmp("deployUnits", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->deployUnits;
+			}
+			else
+			{
+				return this->deployUnits->FindByPath(nextAttribute, this->deployUnits);
+			}
+		}
 	}
 }
 

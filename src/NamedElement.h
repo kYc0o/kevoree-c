@@ -14,6 +14,7 @@ typedef char* (*fptrNamedElementInternalGetKey)(NamedElement*);
 typedef char* (*fptrNamedElementMetaClassName)(NamedElement*);
 typedef void (*fptrVisitAttrNamedElement)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsNamedElement)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathNamedElement)(char*, NamedElement*);
 
 typedef struct _NamedElement {
 	void* pDerivedObj;
@@ -24,6 +25,7 @@ typedef struct _NamedElement {
 	fptrDeleteNamedElement Delete;
 	fptrVisitAttrNamedElement VisitAttributes;
 	fptrVisitRefsNamedElement VisitReferences;
+	fptrFindByPathNamedElement FindByPath;
 }NamedElement;
 
 NamedElement* new_NamedElement(void);
@@ -31,5 +33,6 @@ char* NamedElement_InternalGetKey(NamedElement* const this);
 char* NamedElement_MetaClassName(NamedElement* const this);
 void delete_NamedElement(NamedElement*);
 void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void* NamedElement_FindByPath(char* attribute, NamedElement* const this);
 
 #endif

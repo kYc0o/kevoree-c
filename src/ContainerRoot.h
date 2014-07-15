@@ -46,8 +46,7 @@ typedef void (*fptrContRootRemoveNodeNetworks)(ContainerRoot*, NodeNetwork*);
 typedef void (*fptrContRootRemoveGroups)(ContainerRoot*, Group*);
 typedef void (*fptrDeleteContainerRoot)(ContainerRoot*);
 typedef void (*fptrVisitContainerRoot)(void*, Visitor*);
-typedef void* (*fptrFindByPathContainerRoot)(char*, char*, ContainerRoot*);
-typedef void* (*fptrFindRefsAttrByPathContainerRoot)(char*, char*, char*, void*);
+typedef void* (*fptrFindByPathContainerRoot)(char*, ContainerRoot*);
 
 typedef struct _ContainerRoot {
 	void* pDerivedObj;
@@ -97,7 +96,6 @@ typedef struct _ContainerRoot {
 	fptrDeleteContainerRoot Delete;
 	fptrVisitContainerRoot Visit;
 	fptrFindByPathContainerRoot FindByPath;
-	fptrFindRefsAttrByPathContainerRoot FindRefsAttrByPath;
 } ContainerRoot;
 
 ContainerRoot* new_ContainerRoot(void);
@@ -135,7 +133,6 @@ void ContainerRoot_RemoveNodeNetworks(ContainerRoot* const this, NodeNetwork* pt
 void ContainerRoot_RemoveGroups(ContainerRoot* const this, Group* ptr);
 void delete_ContainerRoot(ContainerRoot* const this);
 void ContainerRoot_Visit(void* const this, Visitor* visitor);
-void* ContainerRoot_FindByPath(char* relationName, char* queryID, ContainerRoot* root);
-void* ContainerRoot_FindRefsAttrByPath(char* relationName, char* queryID, char* attribute, void* queryObj);
+void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this);
 
 #endif

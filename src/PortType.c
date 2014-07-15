@@ -15,11 +15,13 @@ TypeDefinition* newPoly_PortType()
 	}
 
 	pObj->pDerivedObj = pPortTypeObj; /* Pointing to derived object */
+	pPortTypeObj->super = pObj;
 
 	pObj->MetaClassName = PortType_MetaClassName;
 	pObj->InternalGetKey = PortType_InternalGetKey;
 	pObj->VisitAttributes = PortType_VisitAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
+	pObj->FindByPath = PortType_FindByPath;
 	
 	pObj->Delete = deletePoly_PortType;
 
@@ -49,6 +51,7 @@ PortType* new_PortType()
 	pPortTypeObj->InternalGetKey = PortType_InternalGetKey;
 	pPortTypeObj->VisitAttributes = PortType_VisitAttributes;
 	pPortTypeObj->VisitReferences = TypeDefinition_VisitReferences;
+	pPortTypeObj->FindByPath = PortType_FindByPath;
 	
 	pPortTypeObj->Delete = delete_PortType;
 
@@ -114,6 +117,28 @@ void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	visitor->action(path, STRING, ((PortType*)(this))->super->super->name);*/
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
 	
+	PortType* porttype = ((TypeDefinition*)this)->pDerivedObj;
+	
 	sprintf(path, "%s\\synchrone", parent);
-	visitor->action(path, BOOL, ((PortType*)(this))->synchrone);
+	visitor->action(path, BOOL, porttype->synchrone);
+}
+
+void* PortType_FindByPath(char* attribute, TypeDefinition* const this)
+{
+	/* TypeDefinition attributes */
+	if(!strcmp("name",attribute) ||  !strcmp("version",attribute) || !strcmp("factoryBean",attribute) || !strcmp("bean",attribute) || !strcmp("abstract",attribute))
+	{
+		return TypeDefinition_FindByPath(attribute, this);
+	}
+	/* Local attributes */
+	else if(!strcmp("synchrone",attribute))
+	{
+		PortType* porttype = this->pDerivedObj;
+		return porttype->synchrone;
+	}
+	/* TypeDefinition references */
+	else
+	{
+		return TypeDefinition_FindByPath(attribute, this);
+	}
 }

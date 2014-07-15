@@ -30,6 +30,7 @@ NodeLink* new_NodeLink()
 	pObj->Delete = delete_NodeLink;
 	pObj->VisitAttributes = NodeLink_VisitAttributes;
 	pObj->VisitReferences = NodeLink_VisitReferences;
+	pObj->FindByPath = NodeLink_FindByPath;
 	
 	return pObj;
 }
@@ -185,6 +186,76 @@ void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)
 				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}
+		}
+	}
+}
+
+void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
+{
+	/* Local attributes */
+	if(!strcmp("networkType", attribute))
+	{
+		return this->networkType;
+	}
+	else if(!strcmp("estimatedRate", attribute))
+	{
+		return this->estimatedRate;
+	}
+	else if(!strcmp("lastCheck", attribute))
+	{
+		return this->lastCheck;
+	}
+	else if(!strcmp("zoneID", attribute))
+	{
+		return this->zoneID;
+	}
+	else if(!strcmp("generated_KMF_ID", attribute))
+	{
+		return this->generated_KMF_ID;
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+	  
+		if(!strcmp("networkProperties", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindNetworkPropertiesByID(this, queryID);
+			}
+			else
+			{
+				NetworkProperty* netprop = this->FindNetworkPropertiesByID(this, queryID);
+				return netprop->FindByPath(nextAttribute, netprop);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
 		}
 	}
 }

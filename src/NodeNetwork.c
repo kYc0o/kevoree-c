@@ -33,6 +33,7 @@ NodeNetwork* new_NodeNetwork()
 	pObj->Delete = delete_NodeNetwork;
 	pObj->VisitAttributes = NodeNetwork_VisitAttributes;
 	pObj->VisitReferences = NodeNetwork_VisitReferences;
+	pObj->FindByPath = NodeNetwork_FindByPath;
 	
 	return pObj;
 }
@@ -214,6 +215,82 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
+		}
+	}
+}
+
+void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this)
+{
+	/* NamedElement attributes */
+	if(!strcmp("generated_KMF_ID", attribute))
+	{
+		return this->generated_KMF_ID;
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+		
+		if(!strcmp("link", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindLinkByID(this, queryID);
+			}
+			else
+			{
+				NodeLink* nodelink = this->FindLinkByID(this, queryID);
+				return nodelink->FindByPath(nextAttribute, nodelink);
+			}
+		}
+		else if(!strcmp("initBy", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->initBy;
+			}
+			else
+			{
+				return this->initBy->FindByPath(nextAttribute, this->initBy);
+			}
+		}
+		else if(!strcmp("target", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->target;
+			}
+			else
+			{
+				return this->target->FindByPath(nextAttribute, this->target);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
 		}
 	}
 }

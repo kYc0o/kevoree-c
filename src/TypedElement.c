@@ -28,6 +28,7 @@ NamedElement* newPoly_TypedElement(void)
 	pObj->Delete = deletePoly_TypedElement;
 	pObj->VisitAttributes = TypedElement_VisitAttributes;
 	pObj->VisitReferences = TypedElement_VisitReferences;
+	pObj->FindByPath = TypedElement_FindByPath;
 
 	return pObj;
 }
@@ -63,6 +64,7 @@ TypedElement* new_TypedElement(void)
 	pTypeElemObj->Delete = delete_TypedElement;
 	pTypeElemObj->VisitAttributes = TypedElement_VisitAttributes;
 	pTypeElemObj->VisitReferences = TypedElement_VisitReferences;
+	pTypeElemObj->FindByPath = TypedElement_FindByPath;
 
 	return pTypeElemObj;
 }
@@ -207,6 +209,60 @@ void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visit
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
+		}
+	}
+}
+
+void* TypedElement_FindByPath(char* attribute, TypedElement* const this)
+{
+	/* NamedElement attributes */
+	if(!strcmp("name",attribute))
+	{
+		return this->super->FindByPath(attribute, this->super);
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+	  
+		if(!strcmp("genericTypes", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindGenericTypesByID(this, queryID);
+			}
+			else
+			{
+				TypedElement* typelem = this->FindGenericTypesByID(this, queryID);
+				return typelem->FindByPath(nextAttribute, typelem);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
 		}
 	}
 }

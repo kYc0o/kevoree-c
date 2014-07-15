@@ -32,6 +32,7 @@ NamedElement* newPoly_DeployUnit()
 	pObj->InternalGetKey = DeployUnit_InternalGetKey;
 	pObj->VisitAttributes = DeployUnit_VisitAttributes;
 	pObj->VisitReferences = DeployUnit_VisitReferences;
+	pObj->FindByPath = DeployUnit_FindByPath;
 	
 	pObj->Delete = deletePoly_DeployUnit;
 
@@ -73,6 +74,7 @@ DeployUnit* new_DeployUnit()
 	pDepUnitObj->InternalGetKey = DeployUnit_InternalGetKey;
 	pDepUnitObj->VisitAttributes = DeployUnit_VisitAttributes;
 	pDepUnitObj->VisitReferences = DeployUnit_VisitReferences;
+	pDepUnitObj->FindByPath = DeployUnit_FindByPath;
 	
 	pDepUnitObj->Delete = delete_DeployUnit;
 
@@ -234,9 +236,8 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 	if(((DeployUnit*)(this))->requiredLibs != NULL)
 	{
 		int i;
-		
 		/*sprintf(path,"%s/requiredLibs[%s]", parent, ((DeployUnit*)(this))->super->name);*/
-		
+
 		/* requiredLibs */
 		hashmap_map* m = ((DeployUnit*)(this))->requiredLibs;
 
@@ -255,6 +256,80 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 	}
 }
 
+void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this)
+{	
+	/* NamedElement attributes */
+	if(!strcmp("name",attribute))
+	{
+		return this->super->FindByPath(attribute, this->super);
+	}
+	/* Local attributes */
+	else if(!strcmp("groupName", attribute))
+	{
+		return this->groupName;
+	}
+	else if(!strcmp("version", attribute))
+	{
+		return this->version;
+	}
+	else if(!strcmp("url", attribute))
+	{
+		return this->url;
+	}
+	else if(!strcmp("hashcode", attribute))
+	{
+		return this->hashcode;
+	}
+	else if(!strcmp("type", attribute))
+	{
+		return this->type;
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+	  
+		if(!strcmp("requiredLibs", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindRequiredLibsByID(this, queryID);
+			}
+			else
+			{
+				DeployUnit* reqlibs = this->FindRequiredLibsByID(this, queryID);
+				return reqlibs->FindByPath(nextAttribute, reqlibs);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
+		}
+	}
+}
 /*int _acceptDeployUnit(DeployUnit* this, DeployUnit* c, Visitor* visitor)
 {
 	visitor->action((void*)this->groupName, (void*)c->groupName, 0);

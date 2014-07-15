@@ -12,6 +12,7 @@ typedef char* (*fptrPortTypeInternalGetKey)(PortType*);
 typedef void (*fptrDeletePortType)(PortType*);
 typedef void (*fptrVisitAttrPortType)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsPortType)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathPortType)(char*, TypeDefinition*);
 
 typedef struct _PortType {
 	void* pDerivedObj;
@@ -22,6 +23,7 @@ typedef struct _PortType {
 	fptrDeletePortType Delete;
 	fptrVisitAttrPortType VisitAttributes;
 	fptrVisitRefsPortType VisitReferences;
+	fptrFindByPathPortType FindByPath;
 } PortType;
 
 TypeDefinition* newPoly_PortType(void);
@@ -31,5 +33,6 @@ char* PortType_InternalGetKey(PortType* const this);
 void deletePoly_PortType(TypeDefinition* const this);
 void delete_PortType(PortType* const this);
 void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void* PortType_FindByPath(char* attribute, TypeDefinition* const this);
 
 #endif /*__PortType_H */

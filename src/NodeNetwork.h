@@ -21,6 +21,7 @@ typedef void (*fptrNodeNetRemoveTarget)(NodeNetwork*, ContainerNode*);
 typedef void (*fptrDeleteNodeNetwork)(NodeNetwork*);
 typedef void (*fptrVisitAttrNodeNetwork)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsNodeNetwork)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathNodeNetwork)(char*, NodeNetwork*);
 
 typedef struct _NodeNetwork {
 	void* pDerivedObj;
@@ -43,6 +44,7 @@ typedef struct _NodeNetwork {
 	/*int (*accept)(struct _NodeNetwork* this, struct _NodeNetwork* c, Visitor* visitor);*/
 	fptrVisitAttrNodeNetwork VisitAttributes;
 	fptrVisitRefsNodeNetwork VisitReferences;
+	fptrFindByPathNodeNetwork FindByPath;
 } NodeNetwork;
 
 NodeNetwork* new_NodeNetwork(void);
@@ -59,5 +61,6 @@ void delete_NodeNetwork(NodeNetwork* const this);
 /*int _acceptNodeNetwork(NodeNetwork* this, NodeNetwork* c, Visitor* visitor);*/
 void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this);
 
 #endif

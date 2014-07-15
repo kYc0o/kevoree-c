@@ -19,6 +19,7 @@ typedef void (*fptrPortTypeRefRemoveMappings)(PortTypeRef*, PortTypeMapping*);
 typedef void (*fptrDeletePortTypeRef)(PortTypeRef*);
 typedef void (*fptrVisitAttrPortTypeRef)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsPortTypeRef)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathPortTypeRef)(char*, PortTypeRef*);
 
 typedef struct _PortTypeRef {
 	NamedElement* super;
@@ -36,6 +37,7 @@ typedef struct _PortTypeRef {
 	fptrDeletePortTypeRef Delete;
 	fptrVisitAttrPortTypeRef VisitAttributes;
 	fptrVisitRefsPortTypeRef VisitReferences;
+	fptrFindByPathPortTypeRef FindByPath;
 } PortTypeRef;
 
 NamedElement* newPoly_PortTypeRef(void);
@@ -51,5 +53,6 @@ void deletePoly_PortTypeRef(NamedElement* const this);
 void delete_PortTypeRef(PortTypeRef* const this);
 void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this);
 
 #endif /* __PortTypeRef_H */

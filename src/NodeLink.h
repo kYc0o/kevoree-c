@@ -17,6 +17,7 @@ typedef NetworkProperty* (*fptrNodeLinkFindNetworkPropertiesByID)(NodeLink*, cha
 typedef void (*fptrDeleteNodeLink)(NodeLink*);
 typedef void (*fptrVisitAttrNodeLink)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsNodeLink)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathNodeLink)(char*, NodeLink*);
 
 typedef struct _NodeLink {
 	void* pDerivedObj;
@@ -34,6 +35,7 @@ typedef struct _NodeLink {
 	fptrDeleteNodeLink Delete;
 	fptrVisitAttrNodeLink VisitAttributes;
 	fptrVisitRefsNodeLink VisitReferences;
+	fptrFindByPathNodeLink FindByPath;
 } NodeLink;
 
 NodeLink* new_NodeLink(void);
@@ -45,5 +47,6 @@ char* NodeLink_MetaClassName(NodeLink* const this);
 void delete_NodeLink(NodeLink* const this);
 void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void* NodeLink_FindByPath(char* attribute, NodeLink* const this);
 
 #endif /* __NodeLink_H */

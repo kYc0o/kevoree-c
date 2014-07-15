@@ -11,7 +11,7 @@ typedef char* (*fptrNodeTypeInternalGetKey)(void*);
 typedef void (*fptrDeleteNodeType)(NodeType*);
 typedef void (*fptrVisitAttrNodeType)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsNodeType)(void*, char*, Visitor*);
-typedef void* (*fptrFindByPathNodeType)(char*, void*);
+typedef void* (*fptrFindByPathNodeType)(char*, TypeDefinition*);
 
 typedef struct _NodeType {
 	TypeDefinition* super;

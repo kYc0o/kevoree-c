@@ -13,6 +13,7 @@ typedef char* (*fptrRepoMetaClassName)(Repository*);
 typedef char* (*fptrRepoInternalGetKey)(Repository*);
 typedef void (*fptrDeleteRepository)(Repository*);
 typedef void (*fptrVisitAttrRepository)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathRepo)(char*, Repository*);
 /*typedef void (*fptrVisitRefsRepository)(void*, char*, Visitor*);*/
 
 typedef struct _Repository {
@@ -22,6 +23,7 @@ typedef struct _Repository {
 	fptrRepoMetaClassName MetaClassName;
 	fptrDeleteRepository Delete;
 	fptrVisitAttrRepository VisitAttributes;
+	fptrFindByPathRepo FindByPath;
 	/*fptrVisitRefsRepository VisitReferences;*/
 } Repository;
 
@@ -30,6 +32,7 @@ char* Repository_MetaClassName(Repository* const this);
 char* Repository_InternalGetKey(Repository* const this);
 void delete_Repository(Repository* const this);
 void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void* Repository_FindByPath(char* attribute, Repository* const this);
 /*void Repository_VisitReferences(void* const this, char* parent, Visitor* visitor);*/
 
 #endif

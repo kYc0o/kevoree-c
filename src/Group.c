@@ -21,6 +21,8 @@ Instance* newPoly_Group()
 	
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
+	pGroupObj->FindSubNodesByID = Group_FindSubNodesByID;
+	pGroupObj->FindByPath = Group_FindByPath;
 	
 	pObj->InternalGetKey = Group_InternalGetKey;
 	pObj->MetaClassName = Group_MetaClassName;
@@ -61,6 +63,8 @@ Group* new_Group()
 	pGroupObj->MetaClassName = Group_MetaClassName;
 	pGroupObj->VisitAttributes = Group_VisitAttributes;
 	pGroupObj->VisitReferences = Group_VisitReferences;
+	pGroupObj->FindSubNodesByID = Group_FindSubNodesByID;
+	pGroupObj->FindByPath = Group_FindByPath;
 	pGroupObj->Delete = delete_Group;
 
 	return pGroupObj;
@@ -91,6 +95,23 @@ char* Group_MetaClassName(Group* const this)
 	strcpy(name, "Group");
 	
 	return name;
+}
+
+ContainerNode* Group_FindSubNodesByID(Group* const this, char* id)
+{
+	ContainerNode* value;
+	
+	if(this->subNodes != NULL)
+	{
+		if(hashmap_get(this->subNodes, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
+	else
+	{
+		return NULL;
+	}
 }
 
 /*void Group::addsubNodes(ContainerNode *ptr)*/
@@ -194,6 +215,62 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
+		}
+	}
+}
+
+void* Group_FindByPath(char* attribute, Group* const this)
+{
+	/* There is no local attributes */
+	
+	/* Instance attributes and references */
+	if(!strcmp("name",attribute) ||  !strcmp("metaData",attribute) || !strcmp("started",attribute) || !strcmp("typeDefinition",attribute))
+	{
+		return Instance_FindByPath(attribute, this->super);/*return this->super->metaData;*/
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+	  
+		if(!strcmp("subNodes", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				
+				return this->FindSubNodesByID(this, queryID);
+			}
+			else
+			{
+				ContainerNode* contnode = this->FindSubNodesByID(this, queryID);
+				return contnode->FindByPath(nextAttribute, contnode);
+			}
+		}
+		else
+		{
+			return Instance_FindByPath(attribute, this->super);
 		}
 	}
 }

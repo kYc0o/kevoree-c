@@ -141,6 +141,68 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
 	}
 }
 
+void* Instance_FindByPath(char* attribute, Instance* const this)
+{
+	/* NamedElement attributes */
+	if(!strcmp("name",attribute))
+	{
+		return this->super->FindByPath(attribute, this->super);
+	}
+	/* Local attributes */
+	else if(!strcmp("metaData",attribute))
+	{
+		return this->metaData;
+	}
+	else if(!strcmp("started",attribute))
+	{
+		return this->started;
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+		
+		if(!strcmp("typeDefinition", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->typeDefinition;
+			}
+			else
+			{
+				return this->typeDefinition->FindByPath(nextAttribute, this->typeDefinition);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
+		}
+	}
+}
+
 /*int _acceptInstance(Instance* this, Instance* c, Visitor* visitor)
 {
 	visitor->action((void*)this->metaData, (void*)c->metaData, 0);

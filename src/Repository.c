@@ -20,6 +20,7 @@ Repository* new_Repository()
 	pObj->MetaClassName = Repository_MetaClassName;
 	pObj->Delete = delete_Repository;
 	pObj->VisitAttributes = Repository_VisitAttributes;
+	pObj->FindByPath = Repository_FindByPath;
 	/*pObj->VisitReferences = Repository_VisitAttributes;*/
 	
 	return pObj;
@@ -71,4 +72,17 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 
 	sprintf(path,"%s\\url",parent);
 	visitor->action(path, STRING, ((Repository*)(this))->url);
+}
+
+void* Repository_FindByPath(char* attribute, Repository* const this)
+{
+	if(!strcmp("url",attribute))
+	{
+		return this->url;
+	}
+	else
+	{
+		printf("Wrong path\n");
+		return NULL;
+	}
 }

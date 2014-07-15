@@ -31,6 +31,7 @@ NamedElement* newPoly_PortTypeRef(void)
 	pObj->Delete = deletePoly_PortTypeRef;
 	pObj->VisitAttributes = PortTypeRef_VisitAttributes;
 	pObj->VisitReferences = PortTypeRef_VisitReferences;
+	pObj->FindByPath = PortTypeRef_FindByPath;
 
 	return pObj;
 }
@@ -69,6 +70,7 @@ PortTypeRef* new_PortTypeRef(void)
 	pPortTypeRefObj->Delete = delete_PortTypeRef;
 	pPortTypeRefObj->VisitAttributes = PortTypeRef_VisitAttributes;
 	pPortTypeRefObj->VisitReferences = PortTypeRef_VisitReferences;
+	pPortTypeRefObj->FindByPath = PortTypeRef_FindByPath;
 
 	return pPortTypeRefObj;
 }
@@ -227,6 +229,80 @@ void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visito
 				n->VisitAttributes(n, parent, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
 			}
+		}
+	}
+}
+
+void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this)
+{
+	/* NamedElement attributes */
+	if(!strcmp("name",attribute))
+	{
+		return this->super->FindByPath(attribute, this->super);
+	}
+	/* Local attributes */
+	else if(!strcmp("optional", attribute))
+	{
+		return this->optional;
+	}
+	else if(!strcmp("noDependency", attribute))
+	{
+		return this->noDependency;
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+	  
+		if(!strcmp("mappings", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindMappingsByID(this, queryID);
+			}
+			else
+			{
+				PortTypeMapping* ptmapping = this->FindMappingsByID(this, queryID);
+				return ptmapping->FindByPath(nextAttribute, ptmapping);
+			}
+		}
+		else if(!strcmp("ref", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->ref;
+			}
+			else
+			{
+				return this->ref->FindByPath(attribute, this->ref->super);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
 		}
 	}
 }

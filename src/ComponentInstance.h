@@ -14,6 +14,7 @@ typedef char* (*fptrCompInstMetaClassName)(ComponentInstance*);
 typedef void (*fptrDeleteComponentInstance)(ComponentInstance*);
 typedef void (*fptrVisitAttrComponentInstance)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsComponentInstance)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathComponentInstance)(char*, ComponentInstance*);
 
 typedef struct _ComponentInstance { 
 	Instance* super;
@@ -23,6 +24,7 @@ typedef struct _ComponentInstance {
 	/*int (*accept)(struct _ComponentInstance*,struct _ComponentInstance*, Visitor*);*/
 	fptrVisitAttrComponentInstance VisitAttributes;
 	fptrVisitRefsComponentInstance VisitReferences;
+	fptrFindByPathComponentInstance FindByPath;
 } ComponentInstance ;
 
 Instance* newPoly_ComponentInstance(void);
@@ -34,5 +36,6 @@ char* ComponentInstance_MetaClassName(ComponentInstance* const this);
 char* ComponentInstance_InternalGetKey(ComponentInstance* const this);
 void ComponentInstance_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void* ComponentInstance_FindByPath(char* attribute, ComponentInstance* const this);
 
 #endif /* H_ComponentInstance */

@@ -38,6 +38,7 @@ TypeDefinition* newPoly_ComponentType(void)
 	pObj->InternalGetKey = ComponentType_InternalGetKey;
 	pObj->VisitAttributes = ComponentType_VisitAttributes;
 	pObj->VisitReferences = ComponentType_VisitReferences;
+	pObj->FindByPath = ComponentType_FindByPath;
 	
 	pObj->Delete = deletePoly_ComponentType;
 
@@ -155,8 +156,8 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 		if(hashmap_get(this->required, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (PortTypeRef*)ptr;
-			hashmap_put(this->required, container->InternalGetKey(container), ptr);
-			printf("PortTypeRef %s added to ComponentType %s Result: %i\n", ptr->super->name, this->super->super->name, result);
+			result = hashmap_put(this->required, container->InternalGetKey(container), ptr);
+			printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);
 		}
 	}
 }
@@ -178,7 +179,8 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 		if(hashmap_get(this->provided, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
 		{
 			container = (PortTypeRef*)ptr;
-			hashmap_put(this->provided, container->InternalGetKey(container), ptr);
+			result = hashmap_put(this->provided, container->InternalGetKey(container), ptr);
+			printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);
 		}
 	}
 }
@@ -291,6 +293,78 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
+		}
+	}
+}
+
+void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
+{
+	/* There is no local attributes */
+	/* TypeDefinition attributes */
+	if(!strcmp("name",attribute) ||  !strcmp("version",attribute) || !strcmp("factoryBean",attribute) || !strcmp("bean",attribute) || !strcmp("abstract",attribute))
+	{
+		return TypeDefinition_FindByPath(attribute, this);
+	}
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+		
+		if(!strcmp("required", relationName))
+		{
+			ComponentType* comptype = this->pDerivedObj;
+			
+			if(nextAttribute == NULL)
+			{
+				
+				return comptype->FindRequiredByID(comptype, queryID);
+			}
+			/*else
+			{
+				PortTypeRef* ptypref = comptype->FindRequiredByID(comptype, queryID);
+				return ptypref->FindByPath(nextAttribute, ptypref);
+			}*/
+		}
+		else if(!strcmp("provided", relationName))
+		{
+			ComponentType* comptype = this->pDerivedObj;
+			
+			if(nextAttribute == NULL)
+			{
+				
+				return comptype->FindProvidedByID(comptype, queryID);
+			}
+			/*else
+			{
+				PortTypeRef* ptypref = comptype->FindProvidedByID(comptype, queryID);
+				return ptypref->FindByPath(nextAttribute, ptypref);
+			}*/
+		}
+		/* TypeDefinition references */
+		else
+		{
+			return TypeDefinition_FindByPath(attribute, this);
 		}
 	}
 }

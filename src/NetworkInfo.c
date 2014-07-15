@@ -215,6 +215,60 @@ void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visito
 	}
 }
 
+void* NetworkInfo_FindByPath(char* attribute, NetworkInfo* const this)
+{
+	/* NamedElement attributes */
+	if(!strcmp("name",attribute))
+	{
+		return this->super->FindByPath(attribute, this->super);
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+		
+		if(!strcmp("values", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindValuesByID(this, queryID);
+			}
+			else
+			{
+				NetworkProperty* netprop = this->FindValuesByID(this, queryID);
+				return netprop->FindByPath(nextAttribute, netprop);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
+		}
+	}
+}
+
 /*int _acceptNetworkInfo(NetworkInfo* this, NetworkInfo* c, Visitor* visitor)
 {
 	int i;

@@ -20,6 +20,7 @@ NamedElement* new_NamedElement()
 	pObj->Delete = delete_NamedElement;
 	pObj->VisitAttributes = NamedElement_VisitAttributes;
 	pObj->VisitReferences = NamedElement_VisitAttributes;
+	pObj->FindByPath = NamedElement_FindByPath;
 	
 	return pObj;
 }
@@ -67,6 +68,19 @@ void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 
 	sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((NamedElement*)(this))->name);
+}
+
+void* NamedElement_FindByPath(char* attribute, NamedElement* const this)
+{
+	if(!strcmp("name",attribute))
+	{
+		return this->name;
+	}
+	else
+	{
+		printf("Wrong attribute\n");
+		return NULL;
+	}
 }
 
 /*int _acceptNamedElement(NamedElement* this, NamedElement* c, Visitor* visitor)

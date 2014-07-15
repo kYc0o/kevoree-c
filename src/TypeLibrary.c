@@ -210,3 +210,57 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 		}
 	}
 }
+
+void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
+{
+	/* NamedElement attributes */
+	if(!strcmp("name",attribute))
+	{
+		return this->super->FindByPath(attribute, this->super);
+	}
+	/* Local references */
+	else
+	{
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+		}
+		else
+		{
+			pch = path;
+		}
+		
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		char* nextAttribute = strtok(NULL, "\\");
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+	  
+		if(!strcmp("subTypes", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindSubTypesByID(this, queryID);
+			}
+			else
+			{
+				TypeDefinition* typdef = this->FindSubTypesByID(this, queryID);
+				return typdef->FindByPath(nextAttribute, typdef);
+			}
+		}
+		else
+		{
+			printf("Wrong attribute or reference\n");
+			return NULL;
+		}
+	}
+}

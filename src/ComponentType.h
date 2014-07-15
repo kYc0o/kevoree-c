@@ -19,6 +19,7 @@ typedef void (*fptrCompTypeRemoveProvided)(ComponentType*, PortTypeRef*);
 typedef void (*fptrDeleteComponentType)(ComponentType*);
 typedef void (*fptrVisitAttrComponentType)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsComponentType)(void*, char*, Visitor*);
+typedef void* (*fptrFindByPathComponentType)(char*, TypeDefinition*);
 
 typedef struct _ComponentType {
 	TypeDefinition* super;
@@ -35,6 +36,7 @@ typedef struct _ComponentType {
 	fptrDeleteComponentType Delete;
 	fptrVisitAttrComponentType VisitAttributes;
 	fptrVisitRefsComponentType VisitReferences;
+	fptrFindByPathComponentType FindByPath;
 } ComponentType;
 
 TypeDefinition* newPoly_ComponentType(void);
@@ -51,5 +53,6 @@ void deletePoly_ComponentType(TypeDefinition* const this);
 void delete_ComponentType(ComponentType* const this);
 void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this);
  
 #endif /* __ComponentType_H */
