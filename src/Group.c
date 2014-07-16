@@ -182,8 +182,8 @@ void delete_Group(Group* const this)
 
 void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));*/
 
 	/*sprintf(path, "%s", parent, ((Group*)(this))->super->super->name);*/
 
@@ -231,16 +231,21 @@ void* Group_FindByPath(char* attribute, Group* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -250,7 +255,7 @@ void* Group_FindByPath(char* attribute, Group* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -265,7 +270,10 @@ void* Group_FindByPath(char* attribute, Group* const this)
 			else
 			{
 				ContainerNode* contnode = this->FindSubNodesByID(this, queryID);
-				return contnode->FindByPath(nextAttribute, contnode);
+				if(contnode != NULL)
+					return contnode->FindByPath(nextAttribute, contnode);
+				else
+					return NULL;
 			}
 		}
 		else

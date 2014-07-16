@@ -19,6 +19,8 @@ NamedElement* newPoly_PortTypeRef(void)
 	/*pPortTypeRefObj->mappings = hashmap_new();*/
 	pPortTypeRefObj->mappings = NULL;
 	pPortTypeRefObj->ref = NULL;
+	pPortTypeRefObj->optional = -1;
+	pPortTypeRefObj->noDependency = -1;
 	
 	pPortTypeRefObj->FindMappingsByID = PortTypeRef_FindMappingsByID;
 	pPortTypeRefObj->AddRef = PortTypeRef_AddRef;
@@ -58,6 +60,8 @@ PortTypeRef* new_PortTypeRef(void)
 	/*pPortTypeRefObj->mappings = hashmap_new();*/
 	pPortTypeRefObj->mappings = NULL;
 	pPortTypeRefObj->ref = NULL;
+	pPortTypeRefObj->optional = -1;
+	pPortTypeRefObj->noDependency = -1;
 	
 	pPortTypeRefObj->FindMappingsByID = PortTypeRef_FindMappingsByID;
 	pPortTypeRefObj->AddRef = PortTypeRef_AddRef;
@@ -252,16 +256,21 @@ void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -271,7 +280,7 @@ void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -285,7 +294,10 @@ void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this)
 			else
 			{
 				PortTypeMapping* ptmapping = this->FindMappingsByID(this, queryID);
-				return ptmapping->FindByPath(nextAttribute, ptmapping);
+				if(ptmapping != NULL)
+					return ptmapping->FindByPath(nextAttribute, ptmapping);
+				else
+					return NULL;
 			}
 		}
 		else if(!strcmp("ref", relationName))

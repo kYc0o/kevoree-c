@@ -221,16 +221,21 @@ void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -240,7 +245,7 @@ void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -254,7 +259,10 @@ void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
 			else
 			{
 				TypeDefinition* typdef = this->FindSubTypesByID(this, queryID);
-				return typdef->FindByPath(nextAttribute, typdef);
+				if(typdef != NULL)
+					return typdef->FindByPath(nextAttribute, typdef);
+				else
+					return NULL;
 			}
 		}
 		else

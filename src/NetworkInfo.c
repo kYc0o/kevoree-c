@@ -225,16 +225,21 @@ void* NetworkInfo_FindByPath(char* attribute, NetworkInfo* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -244,7 +249,7 @@ void* NetworkInfo_FindByPath(char* attribute, NetworkInfo* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -258,7 +263,10 @@ void* NetworkInfo_FindByPath(char* attribute, NetworkInfo* const this)
 			else
 			{
 				NetworkProperty* netprop = this->FindValuesByID(this, queryID);
-				return netprop->FindByPath(nextAttribute, netprop);
+				if(netprop != NULL)
+					return netprop->FindByPath(nextAttribute, netprop);
+				else
+					return NULL;
 			}
 		}
 		else

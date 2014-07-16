@@ -577,23 +577,28 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 	/* There is no local attributes */
 	
 	/* Instance attributes and references */
-	if(!strcmp("name",attribute) ||  !strcmp("metaData",attribute) || !strcmp("started",attribute) || !strcmp("typeDefinition",attribute))
+	if(!strcmp("name", attribute) ||  !strcmp("metaData", attribute) || !strcmp("started", attribute) || !strcmp("typeDefinition", attribute))
 	{
 		return Instance_FindByPath(attribute, this->super);/*return this->super->metaData;*/
 	}
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -603,7 +608,17 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
+		/*if(nextAttribute == NULL)
+		{
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
+		}
+		else
+		{
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+		}*/
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -618,7 +633,10 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 			else
 			{
 				ComponentInstance* compins = this->FindComponentsByID(this, queryID);
-				return compins->FindByPath(nextAttribute, compins);
+				if(compins != NULL)
+					return compins->FindByPath(nextAttribute, compins);
+				else
+					return NULL;
 			}
 		}
 		else if(!strcmp("hosts", relationName))
@@ -630,7 +648,10 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 			else
 			{
 				ContainerNode* contnode = this->FindHostsByID(this, queryID);
-				return contnode->FindByPath(nextAttribute, contnode);
+				if(contnode != NULL)
+					return contnode->FindByPath(nextAttribute, contnode);
+				else
+					return NULL;
 			}
 		}
 		else if(!strcmp("host", relationName))
@@ -653,7 +674,10 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 			else
 			{
 				NetworkInfo* netinfo = this->FindNetworkInformationByID(this, queryID);
-				return netinfo->FindByPath(nextAttribute, netinfo);
+				if(netinfo != NULL)
+					return netinfo->FindByPath(nextAttribute, netinfo);
+				else
+					return NULL;
 			}
 		}
 		else if(!strcmp("groups", relationName))
@@ -665,7 +689,10 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 			else
 			{
 				Group* group = this->FindGroupsByID(this, queryID);
-				return group->FindByPath(nextAttribute, group);
+				if(group != NULL)
+					return group->FindByPath(nextAttribute, group);
+				else
+					return NULL;
 			}
 		}
 		/* Instance references */

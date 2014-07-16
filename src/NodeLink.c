@@ -18,6 +18,7 @@ NodeLink* new_NodeLink()
 	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeLink");
 	/*pObj->networkProperties = hashmap_new();*/
 	pObj->networkType = NULL;
+	pObj->estimatedRate = -1;
 	pObj->lastCheck = NULL;
 	pObj->zoneID = NULL;
 	pObj->networkProperties = NULL;
@@ -216,16 +217,21 @@ void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -235,7 +241,7 @@ void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -249,7 +255,10 @@ void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
 			else
 			{
 				NetworkProperty* netprop = this->FindNetworkPropertiesByID(this, queryID);
-				return netprop->FindByPath(nextAttribute, netprop);
+				if(netprop != NULL)
+					return netprop->FindByPath(nextAttribute, netprop);
+				else
+					return NULL;
 			}
 		}
 		else

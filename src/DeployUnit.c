@@ -259,7 +259,7 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this)
 {	
 	/* NamedElement attributes */
-	if(!strcmp("name",attribute))
+	if(!strcmp("name", attribute))
 	{
 		return this->super->FindByPath(attribute, this->super);
 	}
@@ -287,16 +287,21 @@ void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -306,7 +311,7 @@ void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -320,7 +325,10 @@ void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this)
 			else
 			{
 				DeployUnit* reqlibs = this->FindRequiredLibsByID(this, queryID);
-				return reqlibs->FindByPath(nextAttribute, reqlibs);
+				if(reqlibs != NULL)
+					return reqlibs->FindByPath(nextAttribute, reqlibs);
+				else
+					return NULL;
 			}
 		}
 		else

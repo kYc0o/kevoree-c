@@ -16,6 +16,8 @@ TypeDefinition* newPoly_PortType()
 
 	pObj->pDerivedObj = pPortTypeObj; /* Pointing to derived object */
 	pPortTypeObj->super = pObj;
+	
+	pPortTypeObj->synchrone = -1;
 
 	pObj->MetaClassName = PortType_MetaClassName;
 	pObj->InternalGetKey = PortType_InternalGetKey;
@@ -47,6 +49,8 @@ PortType* new_PortType()
 	/*pObj->pDerivedObj = pPortTypeObj;  Pointing to derived object */
 	pPortTypeObj->super = pObj;
 
+	pPortTypeObj->synchrone = -1;
+	
 	pPortTypeObj->MetaClassName = PortType_MetaClassName;
 	pPortTypeObj->InternalGetKey = PortType_InternalGetKey;
 	pPortTypeObj->VisitAttributes = PortType_VisitAttributes;

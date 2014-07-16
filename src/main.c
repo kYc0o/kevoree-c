@@ -4,35 +4,62 @@
 #include <stdio.h>
 #include "kevoree.h"
 
+ContainerRoot* model = NULL;
+ContainerRoot* model2 = NULL;
+
 void actionprintf(char *path, Type type, void* value)
 {
 	switch(type)
 	{
 		case STRING:
 			printf("path = %s  value = %s\n",path,(char*)value);
+			char* string = model2->FindByPath(path, model2);
+			printf("Attribute value: %s\n", string);
+			if(string == NULL)
+			{
+				printf("Path %s does not exist in model, removing...\n", path);
+			}
+			else
+			{
+				char* string2 = model->FindByPath(path, model);
+				printf("Current attribute value: %s\n", string2);
+				if(!strcmp(string2, string))
+				{
+					printf("Identical attributes, nothing to change...\n");
+				}
+				else
+				{
+					printf("Changing attribute to %s in current model\n", string2);
+				}
+			}
 			break;
 		
 		case BOOL:
-			printf("path = %s  value = %d\n",path,(int)value);
+			printf("path = %s  value = %d\n", path, (int)value);
+			int v = model2->FindByPath(path, model2);
+			printf("Attribute value: %d\n", v);
+			if((void*)v == NULL)
+			{
+				printf("Path %s does not exist in model, removing..\n", path);
+			}
+			else
+			{
+				int v2 = model->FindByPath(path, model);
+				printf("Current attribute value: %d\n", v2);
+				if(v == v2)
+				{
+					printf("Identical attributes, nothing to change...\n");
+				}
+				else
+				{
+					printf("Changing attribute to %s in current model\n", v2);
+				}
+			}
 			break;
 	}
 
-	/*if(findbyPath(root2,path) == NULL)
-	{*/
-		/* no exist
-		 * TraceRemove* = n
-		 */
-	/*}
-	else
-	{
-		if(sttrmp(a, b))
-		{
-			TraceSet
-		}
-	}*/
+	
 }
-
-ContainerRoot *model = NULL;
 
 /*KevoreeBootStrap *kb=NULL;*/
 
@@ -61,6 +88,7 @@ int main(void)
 
 	/*model = factory.createContainerRoot();*/
 	model = new_ContainerRoot();
+	model2 = new_ContainerRoot();
 	printf("ContainerRoot 'model' created\n");
 
 	/*DeployUnit *d =factory.createDeployUnit();
@@ -147,14 +175,28 @@ int main(void)
 	strcpy(node0->super->super->name, "node0");
 	node0->super->started = 1;
 	
+	ContainerNode* node1 = new_ContainerNode();
+	/*printf("ContainerNode 'node0' created\n");*/
+	node1->super->super->name = malloc(sizeof(char) * (strlen("node1") + 1));
+	strcpy(node1->super->super->name, "node1");
+	node1->super->started = 1;
+	
 	ComponentInstance* c1 = new_ComponentInstance();
 	c1->super->super->name = malloc(sizeof(char) * (strlen("fakeconsole") + 1));
 	strcpy(c1->super->super->name, "fakeconsole");
 	c1->super->metaData = malloc(sizeof(char) * (strlen("dummy_MetaData") + 1));
 	strcpy(c1->super->metaData, "dummy_MetaData");
 	c1->super->started = 1;
+	
+	ComponentInstance* c2 = new_ComponentInstance();
+	c2->super->super->name = malloc(sizeof(char) * (strlen("fakeconsole") + 1));
+	strcpy(c2->super->super->name, "fakeconsole");
+	c2->super->metaData = malloc(sizeof(char) * (strlen("dummy_MetaDataChanged") + 1));
+	strcpy(c2->super->metaData, "dummy_MetaDataChanged");
+	c2->super->started = 1;
 
 	node0->AddComponents(node0, c1);
+	node1->AddComponents(node1, c2);
 	
 	/*Group *group = factory.createGroup();
 	group->name ="group0";
@@ -413,6 +455,8 @@ int main(void)
 	model->AddNodes(model, node0);
 	/*model->AddNodes(model, node1->pDerivedObj);*/
 	/*printf("Adding 'node0' -> %s to 'model' -> %i\n", node0->super->super->name, model);*/
+	model2->AddNodes(model2, node0);
+	model2->AddNodes(model2, node1);
 
 	/*model->addgroups(group);
 	group->addsubNodes(node0);
@@ -436,8 +480,9 @@ int main(void)
 	visitor_print->action =  actionprintf;
 
 	model->Visit(model, visitor_print);
+	/*model2->Visit(model2, visitor_print);*/
 	
-	void* r = model->FindByPath("nodes[node0]/components[fakeconsole]", model);
+	/*void* r = model->FindByPath("nodes[node0]/components[fakeconsole]", model);
 	
 	if(r != NULL)
 	{
@@ -461,7 +506,7 @@ int main(void)
 		printf("TypeDefinition: %s\n", ((TypeDefinition*)t)->super->name);
 	}
 	
-	void* u = model->FindByPath("nodes[node0]/typeDefinition[ContikiNode_1.0.0-SNAPSHOT]/deployUnits[org.kevoree.library_ContikiNodeType_1.0.0-SNAPSHOT]", model/*"deployUnits[org.kevoree.library_TemperatureComponent_1.0.0-SNAPSHOT]"*/);
+	void* u = model->FindByPath("nodes[node0]/typeDefinition[ContikiNode_1.0.0-SNAPSHOT]/deployUnits[org.kevoree.library_ContikiNodeType_1.0.0-SNAPSHOT]", model);
 	
 	if(u != NULL)
 	{
@@ -483,7 +528,7 @@ int main(void)
 	{
 		printf("OK\n");
 		printf("SubNode: %s\n", ((ContainerNode*)w)->super->super->name);
-	}
+	}*/
 
 	return 0;
 }

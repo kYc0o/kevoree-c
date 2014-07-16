@@ -17,6 +17,7 @@ NamedElement* newPoly_Instance()
 	pObj->pDerivedObj = pInstanceObj; /* Pointing to derived object */
 	
 	pInstanceObj->metaData = NULL;
+	pInstanceObj->started = -1;
 	
 	pInstanceObj->AddTypeDefinition = Instance_AddTypeDefinition;
 	pObj->MetaClassName = Instance_MetaClassName;
@@ -45,6 +46,7 @@ Instance* new_Instance()
 	pInstanceObj->super = pObj;
 	
 	pInstanceObj->metaData = NULL;
+	pInstanceObj->started = -1;
 	
 	pInstanceObj->AddTypeDefinition = Instance_AddTypeDefinition;
 	pInstanceObj->MetaClassName = Instance_MetaClassName;
@@ -160,16 +162,21 @@ void* Instance_FindByPath(char* attribute, Instance* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -179,7 +186,7 @@ void* Instance_FindByPath(char* attribute, Instance* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);

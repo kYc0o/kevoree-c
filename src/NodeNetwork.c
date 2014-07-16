@@ -229,16 +229,21 @@ void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -248,7 +253,7 @@ void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -262,7 +267,10 @@ void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this)
 			else
 			{
 				NodeLink* nodelink = this->FindLinkByID(this, queryID);
-				return nodelink->FindByPath(nextAttribute, nodelink);
+				if(nodelink != NULL)
+					return nodelink->FindByPath(nextAttribute, nodelink);
+				else
+					return NULL;
 			}
 		}
 		else if(!strcmp("initBy", relationName))

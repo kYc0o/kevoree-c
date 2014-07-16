@@ -104,8 +104,8 @@ void delete_GroupType(GroupType* const this)
 
 void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));*/
 
 	/*sprintf(path, "%s", parent, ((GroupType*)(this))->super->super->name);*/
 

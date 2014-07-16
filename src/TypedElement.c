@@ -223,16 +223,21 @@ void* TypedElement_FindByPath(char* attribute, TypedElement* const this)
 	/* Local references */
 	else
 	{
+		char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
+			nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 		}
 		else
 		{
 			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
 		}
 		
 		printf("Token: %s\n", pch);
@@ -242,7 +247,7 @@ void* TypedElement_FindByPath(char* attribute, TypedElement* const this)
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
-		char* nextAttribute = strtok(NULL, "\\");
+		
 		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
 		printf("next attribute: %s\n", nextAttribute);
@@ -256,7 +261,10 @@ void* TypedElement_FindByPath(char* attribute, TypedElement* const this)
 			else
 			{
 				TypedElement* typelem = this->FindGenericTypesByID(this, queryID);
-				return typelem->FindByPath(nextAttribute, typelem);
+				if(typelem != NULL)
+					return typelem->FindByPath(nextAttribute, typelem);
+				else
+					return NULL;
 			}
 		}
 		else
