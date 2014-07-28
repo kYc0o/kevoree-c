@@ -13,52 +13,90 @@ void actionprintf(char *path, Type type, void* value)
 	{
 		case STRING:
 			printf("path = %s  value = %s\n",path,(char*)value);
-			char* string = model2->FindByPath(path, model2);
-			printf("Attribute value: %s\n", string);
-			if(string == NULL)
+			break;
+		
+		case BOOL:
+			printf("path = %s  value = %d\n", path, (int)value);
+			break;
+	}
+}
+
+void ActionCompare(char* _path, Type type, void* value, ContainerRoot* model1, ContainerRoot* model2)
+{
+	char* path = strdup(_path);
+	switch(type)
+	{
+		case STRING:
+			printf("path = %s  value = %s\n", path, (char*)value);
+			/*if(indexOf(path,"/") != -1)*/
+			path = strtok(path, "\\");
+			/*printf("Simple path: %s\n", path);*/
+			/*char* string = model2->FindByPath(path, model2);
+			printf("Attribute value: %s\n", string);*/
+			if(model2->FindByPath(path, model2) == NULL)
 			{
-				printf("Path %s does not exist in model, removing...\n", path);
+				printf("Path %s does not exist in model, removing...\n\n", path);
 			}
 			else
 			{
-				char* string2 = model->FindByPath(path, model);
-				printf("Current attribute value: %s\n", string2);
-				if(!strcmp(string2, string))
+				printf("path = %s  value = %s\n", _path, (char*)value);
+				char* string = model->FindByPath(_path, model);
+				char* string2 = model2->FindByPath(_path, model2);
+				printf("Current attribute value: %s\n", string);
+				printf("New attribute value: %s\n", string2);
+				if(string != NULL && string2 != NULL)
 				{
-					printf("Identical attributes, nothing to change...\n");
+					if(!strcmp(string2, string))
+					{
+						printf("Identical attributes, nothing to change...\n\n");
+					}
+					else
+					{
+						printf("Changing attribute to %s in current model\n\n", string2);
+					}
+				}
+				else if(string == NULL && string2 != NULL)
+				{
+					printf("Current attribute is NULL, changing to new attribute '%s'\n\n", string2);
+				}
+				else if(string != NULL && string2 == NULL)
+				{
+					printf("Changing attribute to NULL\n\n");
 				}
 				else
 				{
-					printf("Changing attribute to %s in current model\n", string2);
+					printf("Both attributes are NULL, nothing to change\n\n");
 				}
 			}
 			break;
 		
 		case BOOL:
 			printf("path = %s  value = %d\n", path, (int)value);
-			int v = model2->FindByPath(path, model2);
-			printf("Attribute value: %d\n", v);
-			if((void*)v == NULL)
+			path = strtok(path, "\\");
+			/*printf("Simple path: %s\n", path);*/
+			/*int v = model->FindByPath(path, model);*/
+			if(model2->FindByPath(path, model2) == NULL)
 			{
-				printf("Path %s does not exist in model, removing..\n", path);
+				printf("Path %s does not exist in model, removing...\n\n", path);
 			}
 			else
 			{
-				int v2 = model->FindByPath(path, model);
-				printf("Current attribute value: %d\n", v2);
+				int v = model->FindByPath(_path, model);
+				int v2 = model2->FindByPath(_path, model2);
+				printf("Current attribute value: %d\n", v);
+				printf("New attribute value: %d\n", v2);
 				if(v == v2)
 				{
-					printf("Identical attributes, nothing to change...\n");
+					printf("Identical attributes, nothing to change...\n\n");
 				}
 				else
 				{
-					printf("Changing attribute to %s in current model\n", v2);
+					printf("Changing attribute to %s in current model\n\n", v2);
 				}
+				
 			}
 			break;
 	}
-
-	
 }
 
 /*KevoreeBootStrap *kb=NULL;*/
@@ -432,10 +470,10 @@ int main(void)
 	model->addtypeDefinitions(nodetype);
 	model->addtypeDefinitions(comtype);
 	model->addtypeDefinitions(gwMQTTtype);*/
-	model->AddTypeDefinitions(model, anenotype);
+	/*model->AddTypeDefinitions(model, anenotype);*/
 	/*model->AddTypeDefinitions(model, grouptype);*/
-	model->AddTypeDefinitions(model, nodetype);
-	model->AddTypeDefinitions(model, comtype);
+	/*model->AddTypeDefinitions(model, nodetype);*/
+	/*model->AddTypeDefinitions(model, comtype);*/
 	/*model->AddTypeDefinitions(model, gwMQTTtype);*/
 	/*printf("Adding TypeDefinition 'anenotype', 'grouptype', 'nodetype', 'comtype', 'gwMQTTtype' to 'model'\n");*/
 
@@ -477,10 +515,12 @@ int main(void)
 	
 	Visitor* visitor_print = (Visitor*)malloc(sizeof(Visitor));
 
-	visitor_print->action =  actionprintf;
+	/*visitor_print->action =  actionprintf;*/
+	visitor_print->action =  ActionCompare;
 
 	model->Visit(model, visitor_print);
-	/*model2->Visit(model2, visitor_print);*/
+	/*printf("\n\n");
+	model2->Visit(model2, visitor_print);*/
 	
 	/*void* r = model->FindByPath("nodes[node0]/components[fakeconsole]", model);
 	

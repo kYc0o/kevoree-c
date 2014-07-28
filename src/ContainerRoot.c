@@ -15,19 +15,12 @@ ContainerRoot* new_ContainerRoot(void)
 
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
+	
+	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	rand_str(pObj->generated_KMF_ID, 8);
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_ContainerRoot") + 1));/*Uuid::getSingleton().generateUUID();*/
-	strcpy(pObj->generated_KMF_ID, "dummyKMFID_ContainerRoot");
-	/*pObj->nodes = hashmap_new();
-	pObj->typeDefinitions = hashmap_new();
-	pObj->repositories = hashmap_new();
-	pObj->dataTypes = hashmap_new();
-	pObj->libraries = hashmap_new();*/
-	/*pObj->hubs = hashmap_new();
-	pObj->mBindings = hashmap_new();*/
-	/*pObj->deployUnits = hashmap_new();
-	pObj->nodeNetworks = hashmap_new();
-	pObj->groups = hashmap_new();*/
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_ContainerRoot") + 1));
+	strcpy(pObj->generated_KMF_ID, "dummyKMFID_ContainerRoot");*/
 	pObj->nodes = NULL;
 	pObj->typeDefinitions = NULL;
 	pObj->repositories = NULL;
@@ -287,7 +280,7 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 		{
 			container = (ContainerNode*)ptr;
 			result = hashmap_put(this->nodes, container->InternalGetKey(container), ptr);
-			printf("ContainerNode %s added to ContainerRoot %s Result: %d \n", ptr->super->super->name, this->generated_KMF_ID, result);
+			/*printf("ContainerNode %s added to ContainerRoot %s Result: %d \n", ptr->super->super->name, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -310,7 +303,7 @@ void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition*
 		{
 			container = (TypeDefinition*)ptr;
 			result = hashmap_put(this->typeDefinitions, container->InternalGetKey(container), ptr);
-			printf("TypeDefinition %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);
+			/*printf("TypeDefinition %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -333,7 +326,7 @@ void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 		{
 			container = (Repository*)ptr;
 			result = hashmap_put(this->repositories, container->InternalGetKey(container), ptr);
-			printf("Repository %s added to ContainerRoot %s Result: %d\n", ptr->url, this->generated_KMF_ID, result);
+			/*printf("Repository %s added to ContainerRoot %s Result: %d\n", ptr->url, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -356,7 +349,7 @@ void ContainerRoot_AddDataTypes(ContainerRoot* const this, TypedElement* ptr)
 		{
 			container = (TypedElement*)ptr;
 			hashmap_put(this->dataTypes, container->InternalGetKey(container), ptr);
-			printf("TypedElement %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);
+			/*printf("TypedElement %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -379,7 +372,7 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		{
 			container = (TypeLibrary*)ptr;
 			hashmap_put(this->libraries, container->InternalGetKey(container), ptr);
-			printf("TypeLibrary %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);
+			/*printf("TypeLibrary %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -446,7 +439,7 @@ void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 		{
 			container = (DeployUnit*)ptr;
 			result = hashmap_put(this->deployUnits, container->InternalGetKey(container), ptr);
-			printf("DeployUnit %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);
+			/*printf("DeployUnit %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -469,7 +462,7 @@ void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 		{
 			container = (NodeNetwork*)ptr;
 			result = hashmap_put(this->nodeNetworks, container->InternalGetKey(container), ptr);
-			printf("NodeNetwork %s added to ContainerRoot %s Result: %d\n", ptr->generated_KMF_ID, this->generated_KMF_ID, result);
+			/*printf("NodeNetwork %s added to ContainerRoot %s Result: %d\n", ptr->generated_KMF_ID, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -492,7 +485,7 @@ void ContainerRoot_AddGroups(ContainerRoot* const this, Group* ptr)
 		{
 			container = (Group*)ptr;
 			result = hashmap_put(this->groups, container->InternalGetKey(container), ptr);
-			printf("Group %s added to ContainerRoot %s Result: %d\n", ptr->super->super->name, this->generated_KMF_ID, result);
+			/*printf("Group %s added to ContainerRoot %s Result: %d\n", ptr->super->super->name, this->generated_KMF_ID, result);*/
 		}
 	}
 }
@@ -663,8 +656,8 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
-	/*sprintf(path, "%s\\ID", ((ContainerRoot*)(this))->generated_KMF_ID);
-	visitor->action(path, STRING, ((ContainerRoot*)(this))->generated_KMF_ID);*/
+	sprintf(path, "%s\\generated_KMF_ID", ((ContainerRoot*)(this))->generated_KMF_ID);
+	visitor->action(path, STRING, ((ContainerRoot*)(this))->generated_KMF_ID);
 
 	hashmap_map* m = NULL;
 	
@@ -788,160 +781,184 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 
 void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this)
 {
-	/* There is only references in ContainerRoot */
-	char* attribute = NULL;
-	char* path = strdup(_path);
-	char* pch;
-
-	if(indexOf(path,"/") != -1)
+	/*printf("CONTAINER ROOT\n\n");*/
+	/* ContainerRoot attributes */
+	char* root = strdup(_path);
+	char* root2 = strtok(root, "\\");
+	/*printf("Root: %s\n", root);*/
+	if(!strcmp(this->generated_KMF_ID, root))
 	{
-		pch = strtok (path,"/");
-		attribute = strtok(NULL, "\\");
-		sprintf(attribute, "%s\\%s", attribute, strtok(NULL, "\\"));
+		return this->generated_KMF_ID;
 	}
+	/* ContainerRoot references */
 	else
 	{
-		pch = path;
-		attribute = strtok(pch, "\\");
-		attribute = strtok(NULL, "\\");
-	}
-	
-	printf("Token: %s\n", pch);
+		char* path = strdup(_path);
+		char* pch;
+		char* attribute = NULL;/*strtok(path, "\\");*/
+		
+		/*attribute = strtok(NULL, "\\");*/
 
-	int i = indexOf(pch,"[") + 2;
-	int y = lastIndexOf(pch,"]") - i + 1;
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path, "/");
+			/*printf("pch: %s\n", pch);*/
+			if(strchr(_path,'\\') != NULL)
+			{
+				/*printf("Attribute found at: %d\n", strchr(_path,'\\')-_path+1);*/
+				attribute = strtok(NULL, "\\");
+				sprintf(attribute, "%s\\%s", attribute, strtok(NULL, "\\"));
+			}
+			else
+			{
+				/*printf("Attribute not present in path\n");*/
+				attribute = strtok(NULL, "\\");
+			}
+		}
+		else
+		{
+			pch = path;
+			attribute = strtok(pch, "\\");
+			attribute = strtok(NULL, "\\");
+		}
+		
+		/*printf("Token: %s\n", pch);*/
 
-	char* relationName = (char*)Substring(pch, 0, i - 2);
-	char* queryID = (char*)Substring(pch, i, y);
-	
-	printf("relationName: %s\n", relationName);
-	printf("queryID: %s\n", queryID);
-	printf("attribute: %s\n", attribute);
-	
-	if(!strcmp("nodes", relationName))
-	{
-		if(attribute == NULL)
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+		
+		/*printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("attribute: %s\n", attribute);*/
+		
+		if(!strcmp("nodes", relationName))
 		{
-			return this->FindNodesByID(this, queryID);
+			if(attribute == NULL)
+			{
+				return this->FindNodesByID(this, queryID);
+			}
+			else
+			{
+				ContainerNode* node = this->FindNodesByID(this, queryID);
+				if(node != NULL)
+					return node->FindByPath(attribute, node);
+				else
+					return NULL;
+			}
+		}	
+		else if(!strcmp("typeDefinitions", relationName))
+		{
+			if(attribute == NULL)
+			{
+				return this->FindTypeDefsByID(this, queryID);
+			}
+			else
+			{
+				TypeDefinition* typDef = this->FindTypeDefsByID(this, queryID);
+				if(typDef != NULL)
+					return typDef->FindByPath(attribute, typDef);
+				else
+					return NULL;
+			}
+		}
+		else if(!strcmp("repositories", relationName))
+		{
+			if(attribute == NULL)
+			{
+				return this->FindRepositoriesByID(this, queryID);
+			}
+			else
+			{
+				Repository* repo = this->FindRepositoriesByID(this, queryID);
+				if(repo != NULL)
+					return repo->FindByPath(attribute, repo);
+				else
+					return NULL;
+			}
+		}
+		else if(!strcmp("dataTypes", relationName))
+		{
+			if(attribute == NULL)
+			{
+				return this->FindDataTypesByID(this, queryID);
+			}
+			else
+			{
+				TypedElement* typel = this->FindDataTypesByID(this, queryID);
+				if(typel != NULL)
+					return typel->FindByPath(attribute, typel);
+				else
+					return NULL;
+			}
+		}
+		else if(!strcmp("libraries", relationName))
+		{
+			if(attribute == NULL)
+			{
+				return this->FindLibrariesByID(this, queryID);
+			}
+			else
+			{
+				TypeLibrary* typlib = this->FindLibrariesByID(this, queryID);
+				if(typlib != NULL)
+					return typlib->FindByPath(attribute, typlib);
+				else
+					return NULL;
+			}
+		}
+		else if(!strcmp("deployUnits", relationName))
+		{
+			if(attribute == NULL)
+			{
+				return this->FindDeployUnitsByID(this, queryID);
+			}
+			else
+			{
+				DeployUnit* depunit = this->FindDeployUnitsByID(this, queryID);
+				if(depunit != NULL)
+					return depunit->FindByPath(attribute, depunit);
+				else
+					return NULL;
+			}
+		}
+		else if(!strcmp("nodeNetworks", relationName))
+		{
+			if(attribute == NULL)
+			{
+				return this->FindNodeNetworksByID(this, queryID);
+			}
+			else
+			{
+				NodeNetwork* nodenet = this->FindNodeNetworksByID(this, queryID);
+				if(nodenet != NULL)
+					return nodenet->FindByPath(attribute, nodenet);
+				else
+					return NULL;
+			}
+		}
+		else if(!strcmp("groups", relationName))
+		{
+			if(attribute == NULL)
+			{
+				return this->FindGroupsByID(this, queryID);
+			}
+			else
+			{
+				Group* group = this->FindGroupsByID(this, queryID);
+				if(group != NULL)
+					return group->FindByPath(attribute, group);
+				else
+					return NULL;
+			}
 		}
 		else
 		{
-			ContainerNode* node = this->FindNodesByID(this, queryID);
-			if(node != NULL)
-				return node->FindByPath(attribute, node);
-			else
-				return NULL;
+			printf("Path %s does not exist in this model...\n\n", _path);
+			return NULL;
 		}
-	}	
-	else if(!strcmp("typeDefinitions", relationName))
-	{
-		if(attribute == NULL)
-		{
-			return this->FindTypeDefsByID(this, queryID);
-		}
-		else
-		{
-			TypeDefinition* typDef = this->FindTypeDefsByID(this, queryID);
-			if(typDef != NULL)
-				return typDef->FindByPath(attribute, typDef);
-			else
-				return NULL;
-		}
-	}
-	else if(!strcmp("repositories", relationName))
-	{
-		if(attribute == NULL)
-		{
-			return this->FindRepositoriesByID(this, queryID);
-		}
-		else
-		{
-			Repository* repo = this->FindRepositoriesByID(this, queryID);
-			if(repo != NULL)
-				return repo->FindByPath(attribute, repo);
-			else
-				return NULL;
-		}
-	}
-	else if(!strcmp("dataTypes", relationName))
-	{
-		if(attribute == NULL)
-		{
-			return this->FindDataTypesByID(this, queryID);
-		}
-		else
-		{
-			TypedElement* typel = this->FindDataTypesByID(this, queryID);
-			if(typel != NULL)
-				return typel->FindByPath(attribute, typel);
-			else
-				return NULL;
-		}
-	}
-	else if(!strcmp("libraries", relationName))
-	{
-		if(attribute == NULL)
-		{
-			return this->FindLibrariesByID(this, queryID);
-		}
-		else
-		{
-			TypeLibrary* typlib = this->FindLibrariesByID(this, queryID);
-			if(typlib != NULL)
-				return typlib->FindByPath(attribute, typlib);
-			else
-				return NULL;
-		}
-	}
-	else if(!strcmp("deployUnits", relationName))
-	{
-		if(attribute == NULL)
-		{
-			return this->FindDeployUnitsByID(this, queryID);
-		}
-		else
-		{
-			DeployUnit* depunit = this->FindDeployUnitsByID(this, queryID);
-			if(depunit != NULL)
-				return depunit->FindByPath(attribute, depunit);
-			else
-				return NULL;
-		}
-	}
-	else if(!strcmp("nodeNetworks", relationName))
-	{
-		if(attribute == NULL)
-		{
-			return this->FindNodeNetworksByID(this, queryID);
-		}
-		else
-		{
-			NodeNetwork* nodenet = this->FindNodeNetworksByID(this, queryID);
-			if(nodenet != NULL)
-				return nodenet->FindByPath(attribute, nodenet);
-			else
-				return NULL;
-		}
-	}
-	else if(!strcmp("groups",relationName))
-	{
-		if(attribute == NULL)
-		{
-			return this->FindGroupsByID(this, queryID);
-		}
-		else
-		{
-			Group* group = this->FindGroupsByID(this, queryID);
-			if(group != NULL)
-				return group->FindByPath(attribute, group);
-			else
-				return NULL;
-		}
-	}
-	else
-	{
-		printf("Wrong path\n");
-		return NULL;
 	}
 }
 

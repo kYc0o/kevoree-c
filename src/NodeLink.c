@@ -210,10 +210,10 @@ void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
 	{
 		return this->zoneID;
 	}
-	else if(!strcmp("generated_KMF_ID", attribute))
+	/*else if(!strcmp("generated_KMF_ID", attribute))
 	{
 		return this->generated_KMF_ID;
-	}
+	}*/
 	/* Local references */
 	else
 	{
@@ -224,8 +224,19 @@ void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
-			nextAttribute = strtok(NULL, "\\");
-			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+			/*nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));*/
+			if(strchr(attribute,'\\') != NULL)
+			{
+				/*printf("Attribute found at: %d\n", strchr(attribute,'\\')-attribute+1);*/
+				nextAttribute = strtok(NULL, "\\");
+				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+			}
+			else
+			{
+				/*printf("Attribute not found, looking for path\n");*/
+				nextAttribute = strtok(NULL, "\\");
+			}
 		}
 		else
 		{
@@ -234,7 +245,7 @@ void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
 			nextAttribute = strtok(NULL, "\\");
 		}
 		
-		printf("Token: %s\n", pch);
+		/*printf("Token: %s\n", pch);*/
 
 		int i = indexOf(pch,"[") + 2;
 		int y = lastIndexOf(pch,"]") - i + 1;
@@ -242,9 +253,9 @@ void* NodeLink_FindByPath(char* attribute, NodeLink* const this)
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
 		
-		printf("relationName: %s\n", relationName);
+		/*printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
-		printf("next attribute: %s\n", nextAttribute);
+		printf("next attribute: %s\n", nextAttribute);*/
 	  
 		if(!strcmp("networkProperties", relationName))
 		{

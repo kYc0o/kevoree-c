@@ -157,7 +157,7 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 		{
 			container = (PortTypeRef*)ptr;
 			result = hashmap_put(this->required, container->InternalGetKey(container), ptr);
-			printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);
+			/*printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);*/
 		}
 	}
 }
@@ -180,7 +180,7 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 		{
 			container = (PortTypeRef*)ptr;
 			result = hashmap_put(this->provided, container->InternalGetKey(container), ptr);
-			printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);
+			/*printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);*/
 		}
 	}
 }
@@ -314,8 +314,19 @@ void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
-			nextAttribute = strtok(NULL, "\\");
-			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+			/*nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));*/
+			if(strchr(attribute,'\\') != NULL)
+			{
+				/*printf("Attribute found at: %d\n", strchr(attribute,'\\')-attribute+1);*/
+				nextAttribute = strtok(NULL, "\\");
+				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+			}
+			else
+			{
+				/*printf("Attribute not found, looking for path\n");*/
+				nextAttribute = strtok(NULL, "\\");
+			}
 		}
 		else
 		{
@@ -324,7 +335,7 @@ void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
 			nextAttribute = strtok(NULL, "\\");
 		}
 		
-		printf("Token: %s\n", pch);
+		/*printf("Token: %s\n", pch);*/
 
 		int i = indexOf(pch,"[") + 2;
 		int y = lastIndexOf(pch,"]") - i + 1;
@@ -332,9 +343,9 @@ void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
 		
-		printf("relationName: %s\n", relationName);
+		/*printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
-		printf("next attribute: %s\n", nextAttribute);
+		printf("next attribute: %s\n", nextAttribute);*/
 		
 		if(!strcmp("required", relationName))
 		{

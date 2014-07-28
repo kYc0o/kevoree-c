@@ -7,7 +7,7 @@ int IndexOf (char* base, char* str);
 int IndexOf_shift (char* base, char* str, int startIndex);
 int LastIndexOf (char* base, char* str);
 char* Substring(char *string, int position, int length);
-
+void rand_str(char *dest, size_t length);
 
 
 #endif
