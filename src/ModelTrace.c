@@ -27,12 +27,12 @@ ModelTrace* new_ModelTrace()
 	pObj->Delete = delete_ModelTrace;
 }
 
-void delete_ModelTrace(ModelTrace* const this)
+void delete_ModelTrace(void* const this)
 {
 	if(this != NULL)
 	{
-		free(this->srcPath);
-		free(this->refName);
+		free(((ModelTrace*)this)->srcPath);
+		free(((ModelTrace*)this)->refName);
 		free(this);
 	}
 }
@@ -119,10 +119,10 @@ ModelSetTrace* new_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath,
 	return pModSetTraceObj;
 }
 
-void deletePoly_ModelSetTrace(ModelTrace* const this)
+void deletePoly_ModelSetTrace(void* const this)
 {
 	ModelSetTrace* pModSetTraceObj;
-	pModSetTraceObj = this->pDerivedObj;
+	pModSetTraceObj = ((ModelTrace*)this)->pDerivedObj;
 	/*destroy derived obj*/
 	free(pModSetTraceObj->objPath);
 	free(pModSetTraceObj->content);
@@ -132,43 +132,43 @@ void deletePoly_ModelSetTrace(ModelTrace* const this)
 	delete_ModelTrace(this);
 }
 
-void delete_ModelSetTrace(ModelSetTrace* const this)
+void delete_ModelSetTrace(void* const this)
 {
 	/* destroy base object */
-	delete_ModelTrace(this->super);
+	delete_ModelTrace(((ModelSetTrace*)this)->super);
 	/* destroy data memebers */
-	free(this->objPath);
-	free(this->content);
-	free(this->typeName);
+	free(((ModelSetTrace*)this)->objPath);
+	free(((ModelSetTrace*)this)->content);
+	free(((ModelSetTrace*)this)->typeName);
 	free(this);
 }
 
 /*std::string ModelSetTrace::toString ()*/
-char* ModelSetTrace_ToString(ModelSetTrace* const this)
+char* ModelSetTrace_ToString(void* const this)
 {
 	/*string buffer = "";*/
 	char* buffer = NULL;
 	
 	/*buffer.append ("{ \"traceType\" : " + ActionType (SET) + " , \"src\" : \"" + srcPath + "\", \"refname\" : \"" + refName + "\"");*/
-	sprintf(buffer, "{ \"traceType\" : %s, \"src\" : \"%s\", \"refname\" : \"%s\"", ActionType(SET), this->super->srcPath, this->super->refName);
+	sprintf(buffer, "{ \"traceType\" : %s, \"src\" : \"%s\", \"refname\" : \"%s\"", ActionType(SET), ((ModelSetTrace*)this)->super->srcPath, ((ModelSetTrace*)this)->super->refName);
 	
 	/*if (!objPath.empty ())*/
-	if(this->objPath != NULL)
+	if(((ModelSetTrace*)this)->objPath != NULL)
 	{
 		/*buffer.append (", \"objpath\" : \"" + objPath + "\"");*/
-		sprintf(buffer, "%s, \"objpath\" : \"%s\"", buffer, this->objPath);
+		sprintf(buffer, "%s, \"objpath\" : \"%s\"", buffer, ((ModelSetTrace*)this)->objPath);
 	}
 	/*if (!content.empty ())*/
-	if(this->content != NULL)
+	if(((ModelSetTrace*)this)->content != NULL)
 	{
 		/*buffer.append (", \"content\" : \"" + content + "\"");*/
-		sprintf(buffer, "%s, \"content\" : \" %s \"", buffer, this->content);
+		sprintf(buffer, "%s, \"content\" : \" %s \"", buffer, ((ModelSetTrace*)this)->content);
 	}
 	/*if (!typeName.empty ())*/
-	if(this->typeName != NULL)
+	if(((ModelSetTrace*)this)->typeName != NULL)
 	{
 		/*buffer.append (", \"typename\" : \"" + typeName + "\"");*/
-		sprintf(buffer, "%s, \"typename\" : \"%s\"", buffer, this->typeName);
+		sprintf(buffer, "%s, \"typename\" : \"%s\"", buffer, ((ModelSetTrace*)this)->typeName);
 	}
 	
 	/*buffer.append ("}\n");*/
@@ -249,10 +249,10 @@ ModelAddTrace* new_ModelAddTrace(char* _srcPath, char* _refName, char* _previous
 	return pModAddTraceObj;
 }
 
-void deletePoly_ModelAddTrace(ModelTrace* const this)
+void deletePoly_ModelAddTrace(void* const this)
 {
 	ModelAddTrace* pModAddTraceObj;
-	pModAddTraceObj = this->pDerivedObj;
+	pModAddTraceObj = ((ModelTrace*)this)->pDerivedObj;
 	/*destroy derived obj*/
 	free(pModAddTraceObj->previousPath);
 	free(pModAddTraceObj->typeName);
@@ -260,36 +260,36 @@ void deletePoly_ModelAddTrace(ModelTrace* const this)
 	delete_ModelTrace(this);
 }
 
-void delete_ModelAddTrace(ModelAddTrace* const this)
+void delete_ModelAddTrace(void* const this)
 {
 	/* destroy base object */
-	delete_ModelTrace(this->super);
+	delete_ModelTrace(((ModelAddTrace*)this)->super);
 	/* destroy data memebers */
-	free(this->previousPath);
-	free(this->typeName);
+	free(((ModelAddTrace*)this)->previousPath);
+	free(((ModelAddTrace*)this)->typeName);
 	free(this);
 }
 
 /*std::string ModelAddTrace::toString ()*/
-char* ModelAddTrace_ToString(ModelAddTrace* const this)
+char* ModelAddTrace_ToString(void* const this)
 {
 	/*string buffer = "";*/
 	char* buffer = NULL;
 
 	/*buffer.append ("{ \"traceType\" : " + ActionType (ADD) + " , \"src\" : \"" + srcPath + "\", \"refname\" : \"" + refName + "\"");*/
-	sprintf(buffer, "{ \"traceType\" : %s, \"src\" : \"%s\", \"refname\" : \"%s\"", ActionType(ADD), this->super->srcPath, this->super->refName);
+	sprintf(buffer, "{ \"traceType\" : %s, \"src\" : \"%s\", \"refname\" : \"%s\"", ActionType(ADD), ((ModelAddTrace*)this)->super->srcPath, ((ModelAddTrace*)this)->super->refName);
 	
 	/*if (!previousPath.empty ())*/
-	if(this->previousPath != NULL)
+	if(((ModelAddTrace*)this)->previousPath != NULL)
 	{
 		/*buffer.append (", \"previouspath\" : \"" + previousPath + "\"");*/
-		sprintf(buffer, "%s, \"previouspath\" : \"%s\"", buffer, this->previousPath);
+		sprintf(buffer, "%s, \"previouspath\" : \"%s\"", buffer, ((ModelAddTrace*)this)->previousPath);
 	}
 	/*if (!typeName.empty ())*/
-	if(this->typeName != NULL)
+	if(((ModelAddTrace*)this)->typeName != NULL)
 	{
 		/*buffer.append (", \"typename\" : \"" + typeName + "\"");*/
-		sprintf(buffer, "%s, \"typename\" : \"%s\"", buffer, this->typeName);
+		sprintf(buffer, "%s, \"typename\" : \"%s\"", buffer, ((ModelAddTrace*)this)->typeName);
 	}
 	/*buffer.append ("}\n");*/
 	sprintf(buffer, "%s }\n", buffer);
@@ -391,22 +391,22 @@ ModelTrace* newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objP
 
 }*/
 
-void deletePoly_ModelRemoveTrace(ModelTrace* const this)
+void deletePoly_ModelRemoveTrace(void* const this)
 {
 	ModelSetTrace* pModSetTraceObj;
-	pModSetTraceObj = this->pDerivedObj;
+	pModSetTraceObj = ((ModelTrace*)this)->pDerivedObj;
 	/*destroy derived obj*/
 	free(pModSetTraceObj->objPath);
 	/*destroy base Obj*/
 	delete_ModelTrace(this);
 }
 
-void delete_ModelRemoveTrace(ModelRemoveTrace* const this)
+void delete_ModelRemoveTrace(void* const this)
 {
 	/* destroy base object */
-	delete_ModelTrace(this->super);
+	delete_ModelTrace(((ModelRemoveTrace*)this)->super);
 	/* destroy data memebers */
-	free(this->objPath);
+	free(((ModelRemoveTrace*)this)->objPath);
 	free(this);
 }
 
@@ -440,10 +440,10 @@ ModelRemoveTrace* new_ModelRemoveTrace(char* _srcPath, char* _refName, char* _ob
 }
 
 /*std::string ModelRemoveTrace::toString ()*/
-char* ModelRemoveTrace_ToString(ModelRemoveTrace* const this)
+char* ModelRemoveTrace_ToString(void* const this)
 {
 	/*return "{ \"traceType\" : " + ActionType (REMOVE) + " , \"src\" : \"" + srcPath + "\", \"refname\" : \"" + refName + "\", \"objpath\" : \"" + objPath + "\" }\n";*/
 	char* buffer = NULL;
 
-	sprintf("{ \"traceType\" : %s , \"src\" : \" %s \", \"refname\" : \" %s \", \"objpath\" : \" %s \" }\n", ActionType(REMOVE), this->super->srcPath, this->objPath, this->objPath);
+	sprintf("{ \"traceType\" : %s , \"src\" : \" %s \", \"refname\" : \" %s \", \"objpath\" : \" %s \" }\n", ActionType(REMOVE), ((ModelRemoveTrace*)this)->super->srcPath, ((ModelRemoveTrace*)this)->super->refName, ((ModelRemoveTrace*)this)->objPath);
 }

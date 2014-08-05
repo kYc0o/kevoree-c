@@ -190,26 +190,39 @@ TypeLibrary* ContainerRoot_FindLibrariesByID(ContainerRoot* const this, char* id
 	}
 }
 
-/*Channel* ContainerRoot_FindHubsByID(ContainerRoot* const this, char* id)
- * {
- * 	Channel* value;
+Channel* ContainerRoot_FindHubsByID(ContainerRoot* const this, char* id)
+{
+	Channel* value;
 
-	if(hashmap_get(this->hubs, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->hubs != NULL)
+	{
+		if(hashmap_get(this->hubs, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
- * }
+	}
+}
 
 MBinding* ContainerRoot_FindBndingsByID(ContainerRoot* const this, char* id)
 {
 	MBinding* value;
 
-	if(hashmap_get(this->mBindings, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->mBindings != NULL)
+	{
+		if(hashmap_get(this->mBindings, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 }
-*/
 
 DeployUnit* ContainerRoot_FindDeployUnitsByID(ContainerRoot* const this, char* id)
 {
@@ -372,13 +385,12 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		{
 			container = (TypeLibrary*)ptr;
 			hashmap_put(this->libraries, container->InternalGetKey(container), ptr);
-			/*printf("TypeLibrary %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
 		}
 	}
 }
-/*void ContainerRoot_AddHubs(ContainerRoot* const this, Channel* ptr)
- * {
- * 	Channel* container = (Channel*)ptr;
+void ContainerRoot_AddHubs(ContainerRoot* const this, Channel* ptr)
+{
+	Channel* container = (Channel*)ptr;
 
 	if(container->InternalGetKey(container) == NULL)
 	{
@@ -394,10 +406,9 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		{
 			container = (Channel*)ptr;
 			hashmap_put(this->hubs, container->InternalGetKey(container), ptr);
-			printf("Channel %s added to ContainerRoot %s\n", ptr->super->super->name, this->generated_KMF_ID);
 		}
 	}
- * }
+}
 void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 {
 	MBinding* container = (MBinding*)ptr;
@@ -416,10 +427,9 @@ void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 		{
 			container = (MBinding*)ptr;
 			hashmap_put(this->mBindings, container->InternalGetKey(container), ptr);
-			printf("TypeDefinition %s added to ContainerRoot %s\n", ptr->generated_KMF_ID, this->generated_KMF_ID);
 		}
 	}
-}*/
+}
 
 void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 {
@@ -559,9 +569,9 @@ void ContainerRoot_RemoveLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 	}
 }
 
-/*void ContainerRoot_RemoveHubs(ContainerRoot* const this, Channel* ptr)
- * {
- * 	Channel* container = (Channel*)ptr;
+void ContainerRoot_RemoveHubs(ContainerRoot* const this, Channel* ptr)
+{
+	Channel* container = (Channel*)ptr;
 
 	if(container->InternalGetKey(container) == NULL)
 	{
@@ -571,7 +581,7 @@ void ContainerRoot_RemoveLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 	{
 		hashmap_remove(this->hubs, container->InternalGetKey(container));
 	}
- * }
+}
  
 void ContainerRoot_RemoveBindings(ContainerRoot* const this, MBinding* ptr)
 {
@@ -585,7 +595,7 @@ void ContainerRoot_RemoveBindings(ContainerRoot* const this, MBinding* ptr)
 	{
 		hashmap_remove(this->mBindings, container->InternalGetKey(container));
 	}
-}*/
+}
 
 void ContainerRoot_RemoveDeployUnits(ContainerRoot* const this,  DeployUnit* ptr)
 {
@@ -695,6 +705,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->repositories) != NULL)
+	{
 		/* compare repositories*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -707,8 +718,10 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				n->VisitAttributes(n, path, visitor);
 			}
 		}
+	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->dataTypes) != NULL)
+	{
 		/* compare dataTypes*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -721,8 +734,10 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				n->VisitReferences(n, path, visitor);
 			}
 		}
+	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->libraries) != NULL)
+	{
 		/* compare libraries*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -735,8 +750,12 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				n->VisitReferences(n, path, visitor);
 			}
 		}
+	}
+	
+	/* TODO visit hubs and mBindings */
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->deployUnits) != NULL)
+	{
 		/* compare deployUnits*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -749,8 +768,10 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				n->VisitReferences(n, path, visitor);
 			}
 		}
+	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->nodeNetworks) != NULL)
+	{
 		/* compare nodeNetworks*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -763,8 +784,10 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				n->VisitAttributes(n, path, visitor);
 			}
 		}
+	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->groups) != NULL)
+	{
 		/* compare groups*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -777,6 +800,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				n->VisitReferences(n, path, visitor);
 			}
 		}
+	}
 }
 
 void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this)

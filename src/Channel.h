@@ -3,11 +3,11 @@
 
 #include "hashmap.h"
 #include <string.h>
-#include "Instance.h"
 #include "MBinding.h"
+#include "Instance.h"
 
+typedef struct _MBinding MBinding;
 typedef struct _Channel Channel;
-typedef struct _MBinding Mbinding;
 
 typedef char* (*fptrChannelInternalGetKey)(Channel*);
 typedef char* (*fptrChannelMetaClassName)(Channel*);
@@ -22,6 +22,8 @@ typedef void (*fptrDeleteChannel)(void*);
 typedef struct _Channel {
 	Instance* super;
 	map_t bindings;
+	fptrChannelMetaClassName MetaClassName;
+	fptrChannelInternalGetKey InternalGetKey;
 	fptrChannelFindBindingsByID FindBindingsByID;
 	fptrChannelAddBindings AddBindings;
 	fptrChannelRemoveBindings RemoveBindings;
@@ -39,7 +41,7 @@ char* Channel_MetaClassName(Channel* const this);
 char* Channel_InternalGetKey(Channel* const this);
 void Channel_AddBindings(Channel* const this, MBinding* ptr);
 void Channel_RemoveBindings(Channel* const this, MBinding* ptr);
-MBinding* Channel_FindBindingsByID(Channel* const this, char* ID);
+MBinding* Channel_FindBindingsByID(Channel* const this, char* id);
 void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* Channel_FindByPath(char* attribute, Channel* const this);

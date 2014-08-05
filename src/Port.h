@@ -2,15 +2,14 @@
 #define __Port_H
 
 #include <string.h>
+#include <stdlib.h>
 #include "hashmap.h"
+#include "Visitor.h"
+#include "MBinding.h"
 #include "PortTypeRef.h"
 
-/*class MBinding;*/
 typedef struct _MBinding MBinding;
-
-/*class PortTypeRef;
-typedef struct _PortTypeRef PortTypeRef;*/
-
+typedef struct _PortTypeRef PortTypeRef;
 typedef struct _Port Port;
 
 typedef char* (*fptrPortInternalGetKey)(Port*);
@@ -20,8 +19,8 @@ typedef void (*fptrPortAddBindings)(Port*, MBinding*);
 typedef void (*fptrPortAddPortTypeRef)(Port*, PortTypeRef*);
 typedef void (*fptrPortRemoveBindings)(Port*, MBinding*);
 typedef void (*fptrPortRemovePortTypeRef)(Port*, PortTypeRef*);
-typedef void (*fptrVisitAttrPort)(void*, char*, Visitor*);
-typedef void (*fptrVisitRefsPort)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrPort)(Port*, char*, Visitor*);
+typedef void (*fptrVisitRefsPort)(Port*, char*, Visitor*);
 typedef void* (*fptrFindByPathPort)(char*, Port*);
 typedef void (*fptrDeletePort)(void*);
 
@@ -46,7 +45,7 @@ Port* new_Port(void);
 void delete_Port(void*);
 char* Port_InternalGetKey(Port* const this);
 char* Port_MetaClassName(Port* const this);
-MBinding* Port_FindBindingsByID(Port* const this, char* ID);
+MBinding* Port_FindBindingsByID(Port* const this, char* id);
 void Port_AddBindings(Port* const this, MBinding* ptr);
 void Port_AddPortTypeRef(Port* const this, PortTypeRef* ptr);
 void Port_RemoveBindings(Port* const this, MBinding* ptr);

@@ -2,13 +2,15 @@
 #define __MBinding_H
 
 #include <string.h>
+#include "MBinding.h"
+#include "Channel.h"
 #include "Port.h"
 
-/*class Port;
-typedef struct _Port Port;*/
+/*class Port;*/
 
 /*class Channel;*/
 typedef struct _Channel Channel;
+typedef struct _Port Port;
 typedef struct _MBinding MBinding;
 
 typedef char* (*fptrMBindingInternalGetKey)(MBinding*);

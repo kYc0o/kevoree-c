@@ -8,6 +8,7 @@
 #include "GroupType.h"
 #include "Instance.h"
 #include "MBinding.h"
+#include "ModelTrace.h"
 #include "NamedElement.h"
 #include "NetworkInfo.h"
 #include "NetworkProperty.h"

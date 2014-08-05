@@ -39,7 +39,7 @@ typedef struct _ModelTrace {
 
 ModelTrace* new_ModelTrace(void);
 char* ModelTrace_ToString(void* const this);
-void delete_ModelTrace(ModelTrace* const this);
+void delete_ModelTrace(void* const this);
 
 
 /*class ModelAddTrace : public ModelTrace
@@ -67,9 +67,9 @@ typedef struct _ModelAddTrace {
 
 ModelAddTrace* new_ModelAddTrace(char* _srcPath, char* _refName, char* _previousPath, char* _typeName);
 ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previousPath, char* _typeName);
-char* ModelAddTrace_ToString(ModelAddTrace* const this);
-void delete_ModelAddTrace(ModelAddTrace* const this);
-void deletePoly_ModelAddTrace(ModelTrace* const this);
+char* ModelAddTrace_ToString(void* const this);
+void delete_ModelAddTrace(void* const this);
+void deletePoly_ModelAddTrace(void* const this);
 
 /*class ModelSetTrace:public ModelTrace
 {
@@ -97,9 +97,9 @@ typedef struct _ModelSetTrace {
 
 ModelTrace* newPoly_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath, char* _content, char* _typeName);
 ModelSetTrace* new_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath, char* _content, char* _typeName);
-char* ModelSetTrace_ToString(ModelSetTrace* const this);
-void delete_ModelSetTrace(ModelSetTrace* const this);
-void deletePoly_ModelSetTrace(ModelTrace* const this);
+char* ModelSetTrace_ToString(void* const this);
+void delete_ModelSetTrace(void* const this);
+void deletePoly_ModelSetTrace(void* const this);
 
 /*class ModelRemoveTrace:public ModelTrace
 {
@@ -120,7 +120,7 @@ typedef struct _ModelRemoveTrace {
 } ModelRemoveTrace;
 
 ModelRemoveTrace* new_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objPath);
-char* ModelRemoveTrace_ToString(ModelRemoveTrace* const this);
-void delete_ModelRemoveTrace(ModelRemoveTrace* const this);
+char* ModelRemoveTrace_ToString(void* const this);
+void delete_ModelRemoveTrace(void* const this);
 
 #endif /*MODEL_TRACE_H */

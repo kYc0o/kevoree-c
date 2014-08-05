@@ -21,7 +21,7 @@ void actionprintf(char *path, Type type, void* value)
 	}
 }
 
-void ActionCompare(char* _path, Type type, void* value, ContainerRoot* model1, ContainerRoot* model2)
+void ActionCompare(char* _path, Type type, void* value)
 {
 	char* path = strdup(_path);
 	switch(type)
@@ -127,7 +127,7 @@ int main(void)
 	/*model = factory.createContainerRoot();*/
 	model = new_ContainerRoot();
 	model2 = new_ContainerRoot();
-	printf("ContainerRoot 'model' created\n");
+	printf("ContainerRoot '%s' created\n", model2->InternalGetKey(model2));
 
 	/*DeployUnit *d =factory.createDeployUnit();
 	d->name = "CPPNodeType";
@@ -495,6 +495,7 @@ int main(void)
 	/*printf("Adding 'node0' -> %s to 'model' -> %i\n", node0->super->super->name, model);*/
 	model2->AddNodes(model2, node0);
 	model2->AddNodes(model2, node1);
+	printf("node0 and node1 added to \"%s\"\n", model2->InternalGetKey(model2));
 
 	/*model->addgroups(group);
 	group->addsubNodes(node0);
