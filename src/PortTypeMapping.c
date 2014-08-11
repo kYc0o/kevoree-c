@@ -14,8 +14,10 @@ PortTypeMapping* new_PortTypeMapping()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_PortTypeMapping") + 1));/*Uuid::getSingleton().generateUUID();*/
-	strcpy(pObj->generated_KMF_ID, "dummyKMFID_PortTypeMapping");
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_PortTypeMapping") + 1));Uuid::getSingleton().generateUUID();
+	strcpy(pObj->generated_KMF_ID, "dummyKMFID_PortTypeMapping");*/
+	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->beanMethodName = NULL;
 	pObj->serviceMethodName = NULL;

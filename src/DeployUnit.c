@@ -93,7 +93,7 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 	if (internalKey == NULL)
 		return NULL;
 
-	sprintf(internalKey, "%s_%s_%s", this->groupName, /*this->hashcode,*/ this->super->name, this->version);
+	sprintf(internalKey, "%s/%s/%s", this->groupName, /*this->hashcode,*/ this->super->name, this->version);
 	/*strcpy(internalKey, this->groupName);
 	strcat(internalKey, "_");
 	strcat(internalKey, this->hashcode);

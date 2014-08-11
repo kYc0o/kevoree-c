@@ -83,11 +83,14 @@ void deletePoly_Channel(void* const this)
 
 void delete_Channel(void* const this)
 {
-	/* destroy base object */
-	delete_Instance(((Channel*)this)->super);
-	/* destroy data memebers */
-	hashmap_free(((Channel*)this)->bindings);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_Instance(((Channel*)this)->super);
+		/* destroy data memebers */
+		hashmap_free(((Channel*)this)->bindings);
+		free(this);
+	}
 }
 
 char* Channel_MetaClassName(Channel* const this)

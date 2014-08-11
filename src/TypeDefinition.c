@@ -90,7 +90,7 @@ char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name) + strlen("_") + strlen(this->version)) + 1);
+	internalKey = malloc(sizeof(char) * (strlen(this->super->name) + strlen("/") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
@@ -99,7 +99,7 @@ char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 	strcat(internalKey, "_");
 	strcat(internalKey, this->version);*/
 	
-	sprintf(internalKey, "%s_%s", this->super->name, this->version);
+	sprintf(internalKey, "%s/%s", this->super->name, this->version);
 
 	return internalKey;
 }

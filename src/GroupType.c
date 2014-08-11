@@ -67,7 +67,7 @@ char* GroupType_MetaClassName(GroupType* const this)
 	if (internalKey == NULL)
 		return NULL;
 
-	sprintf(internalKey, "%s_%s", this->super->super->name, this->super->version);
+	sprintf(internalKey, "%s/%s", this->super->super->name, this->super->version);
 	/*strcpy(internalKey, this->super->super->name);
 	strcat(internalKey, "/");
 	strcat(internalKey, this->super->version);*/

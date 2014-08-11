@@ -516,8 +516,8 @@ int main(void)
 	
 	Visitor* visitor_print = (Visitor*)malloc(sizeof(Visitor));
 
-	/*visitor_print->action =  actionprintf;*/
-	visitor_print->action =  ActionCompare;
+	visitor_print->action =  actionprintf;
+	/*visitor_print->action =  ActionCompare;*/
 
 	model->Visit(model, visitor_print);
 	/*printf("\n\n");

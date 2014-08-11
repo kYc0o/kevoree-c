@@ -14,8 +14,10 @@ NodeLink* new_NodeLink()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_NodeLink") + 1));/*Uuid::getSingleton().generateUUID();*/
-	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeLink");
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_NodeLink") + 1));Uuid::getSingleton().generateUUID();
+	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeLink");*/
+	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	rand_str(pObj->generated_KMF_ID, 8);
 	/*pObj->networkProperties = hashmap_new();*/
 	pObj->networkType = NULL;
 	pObj->estimatedRate = -1;

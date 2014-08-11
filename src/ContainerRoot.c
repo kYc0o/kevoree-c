@@ -846,7 +846,7 @@ void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this)
 			attribute = strtok(NULL, "\\");
 		}
 		
-		/*printf("Token: %s\n", pch);*/
+		printf("Token: %s\n", pch);
 
 		int i = indexOf(pch,"[") + 2;
 		int y = lastIndexOf(pch,"]") - i + 1;
@@ -854,9 +854,9 @@ void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this)
 		char* relationName = (char*)Substring(pch, 0, i - 2);
 		char* queryID = (char*)Substring(pch, i, y);
 		
-		/*printf("relationName: %s\n", relationName);
+		printf("relationName: %s\n", relationName);
 		printf("queryID: %s\n", queryID);
-		printf("attribute: %s\n", attribute);*/
+		printf("attribute: %s\n", attribute);
 		
 		if(!strcmp("nodes", relationName))
 		{

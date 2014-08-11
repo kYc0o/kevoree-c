@@ -20,6 +20,7 @@ typedef void* (*fptrFindByPathTypedElement)(char*, TypedElement*);
 
 typedef struct _TypedElement {
 	NamedElement* super;
+	void* pDerivedObj;
 	map_t genericTypes;
 	fptrTypElemMetaClassName MetaClassName;
 	fptrTypElemInternalGetKey InternalGetKey;

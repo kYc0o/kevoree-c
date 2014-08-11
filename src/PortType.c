@@ -64,6 +64,16 @@ PortType* new_PortType()
 
 char* PortType_MetaClassName(PortType* const this)
 {
+	char* name;
+
+	name = malloc(sizeof(char) * (strlen("PortType") + 1));
+	strcpy(name, "PortType");
+	
+	return name;
+}
+
+char* PortType_InternalGetKey(PortType* const this)
+{
 	/*char* internalKey;
 
 	if (this == NULL)
@@ -80,16 +90,7 @@ char* PortType_MetaClassName(PortType* const this)
 
 	return internalKey;*/
 	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
-}
-
-char* PortType_InternalGetKey(PortType* const this)
-{
-	char* name;
-
-	name = malloc(sizeof(char) * (strlen("PortType") + 1));
-	strcpy(name, "PortType");
 	
-	return name;
 }
 
 void deletePoly_PortType(TypeDefinition* const this)

@@ -49,7 +49,7 @@ TypedElement* new_TypedElement(void)
 		return NULL;
 	}
 
-	/*pObj->pDerivedObj = pTypeElemObj;  Pointing to derived object */
+	pObj->pDerivedObj = pObj;  /*Pointing to derived object */
 	pTypeElemObj->super = pObj;
 	
 	/*pTypeElemObj->genericTypes = hashmap_new();*/

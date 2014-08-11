@@ -106,6 +106,7 @@ char* ComponentType_InternalGetKey(void* const this)
 	internalKey = TypeDefinition_InternalGetKey((TypeDefinition*)this);
 
 	return internalKey;
+	/*return ((TypeDefinition*)this)->InternalGetKey(((TypeDefinition*)this));*/
 }
 
 char* ComponentType_MetaClassName(ComponentType* const this)
