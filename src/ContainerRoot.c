@@ -26,8 +26,8 @@ ContainerRoot* new_ContainerRoot(void)
 	pObj->repositories = NULL;
 	pObj->dataTypes = NULL;
 	pObj->libraries = NULL;
-	/*pObj->hubs = NULL;
-	pObj->mBindings = NULL;*/
+	pObj->hubs = NULL;
+	pObj->mBindings = NULL;
 	pObj->deployUnits = NULL;
 	pObj->nodeNetworks = NULL;
 	pObj->groups = NULL;
@@ -40,8 +40,8 @@ ContainerRoot* new_ContainerRoot(void)
 	pObj->FindRepositoriesByID = ContainerRoot_FindRepositoriesByID;
 	pObj->FindDataTypesByID = ContainerRoot_FindDataTypesByID;
 	pObj->FindLibrariesByID = ContainerRoot_FindLibrariesByID;
-	/*pObj->FindHubsByID = ContainerRoot_FindHubsByID;
-	pObj->FindBindingsByID = ContainerRoot_FindBndingsByID;*/
+	pObj->FindHubsByID = ContainerRoot_FindHubsByID;
+	pObj->FindBindingsByID = ContainerRoot_FindBndingsByID;
 	pObj->FindDeployUnitsByID = ContainerRoot_FindDeployUnitsByID;
 	pObj->FindNodeNetworksByID = ContainerRoot_FindNodeNetworksByID;
 	pObj->FindGroupsByID = ContainerRoot_FindGroupsByID;
@@ -50,8 +50,8 @@ ContainerRoot* new_ContainerRoot(void)
 	pObj->AddRepositories = ContainerRoot_AddRepositories;
 	pObj->AddDataTypes = ContainerRoot_AddDataTypes;
 	pObj->AddLibraries = ContainerRoot_AddLibraries;
-	/*pObj->AddHubs = ContainerRoot_AddHubs;
-	pObj->AddBindings = ContainerRoot_AddBindings*/
+	pObj->AddHubs = ContainerRoot_AddHubs;
+	pObj->AddBindings = ContainerRoot_AddBindings;
 	pObj->AddDeployUnits = ContainerRoot_AddDeployUnits;
 	pObj->AddNodeNetworks = ContainerRoot_AddNodeNetworks;
 	pObj->AddGroups = ContainerRoot_AddGroups;
@@ -60,8 +60,8 @@ ContainerRoot* new_ContainerRoot(void)
 	pObj->RemoveRepositories = ContainerRoot_RemoveRepositories;
 	pObj->RemoveDataTypes = ContainerRoot_RemoveDataTypes;
 	pObj->RemoveLibraries = ContainerRoot_RemoveLibraries;
-	/*pObj->RemoveHubs = ContainerRoot_RemoveHubs;
-	pObj->RemoveBindings = ContainerRoot_RemoveBindings;*/
+	pObj->RemoveHubs = ContainerRoot_RemoveHubs;
+	pObj->RemoveBindings = ContainerRoot_RemoveBindings;
 	pObj->RemoveDeployUnits = ContainerRoot_RemoveDeployUnits;
 	pObj->RemoveNodeNetworks = ContainerRoot_RemoveNodeNetworks;
 	pObj->RemoveGroups = ContainerRoot_RemoveGroups;
@@ -390,6 +390,7 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 }
 void ContainerRoot_AddHubs(ContainerRoot* const this, Channel* ptr)
 {
+	printf("Adding %s channel\n", ptr->super->super->name);
 	Channel* container = (Channel*)ptr;
 
 	if(container->InternalGetKey(container) == NULL)
@@ -753,6 +754,37 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 	}
 	
 	/* TODO visit hubs and mBindings */
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->hubs) != NULL)
+	{
+		/* compare hubs */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				Channel* n = data;
+				sprintf(path, "hubs[%s]", /*n->super->name*/n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
+			}
+		}
+	}
+	
+	if((m = (hashmap_map*) ((ContainerRoot*)(this))->mBindings) != NULL)
+	{
+		/* compare mBindings*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				MBinding* n = data;
+				sprintf(path, "mBindings[%s]", /*n->super->name*/n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
+			}
+		}
+	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->deployUnits) != NULL)
 	{

@@ -22,12 +22,14 @@ NamedElement* newPoly_TypeDefinition()
 	pTypeDefObj->abstract = -1;
 
 	pTypeDefObj->deployUnits = NULL;
-	/*pTypeDefObj->superTypes = hashmap_new();*/
+	pTypeDefObj->dictionaryType = NULL;
 	pTypeDefObj->superTypes = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
+	pTypeDefObj->AddDictionaryType = TypeDefinition_AddDictionaryType;
 	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
 	pTypeDefObj->RemoveDeployUnit = TypeDefinition_RemoveDeployUnit;
+	pTypeDefObj->RemoveDictionaryType = TypeDefinition_RemoveDictionaryType;
 	pTypeDefObj->RemoveSuperTypes = TypeDefinition_RemoveSuperTypes;
 	pTypeDefObj->FindByPath = TypeDefinition_FindByPath;
 	
@@ -65,12 +67,14 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->abstract = -1;
 
 	pTypeDefObj->deployUnits = NULL;
-	/*pTypeDefObj->superTypes = hashmap_new();*/
+	pTypeDefObj->dictionaryType = NULL;
 	pTypeDefObj->superTypes = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
+	pTypeDefObj->AddDictionaryType = TypeDefinition_AddDictionaryType;
 	pTypeDefObj->AddSuperTypes = TypeDefinition_AddSuperTypes;
 	pTypeDefObj->RemoveDeployUnit = TypeDefinition_RemoveDeployUnit;
+	pTypeDefObj->RemoveDictionaryType = TypeDefinition_RemoveDictionaryType;
 	pTypeDefObj->RemoveSuperTypes = TypeDefinition_RemoveSuperTypes;
 	pTypeDefObj->MetaClassName = TypeDefinition_MetaClassName;
 	pTypeDefObj->InternalGetKey = TypeDefinition_InternalGetKey;
@@ -119,13 +123,27 @@ void TypeDefinition_AddDeployUnit(TypeDefinition* const this, DeployUnit* ptr)
 	if(ptr != NULL)
 	{
 		this->deployUnits = ptr;
-		/*printf("DeployUnit %s added to TypeDefinition %s Result: 0\n", ptr->super->name, this->super->name);*/
+	}
+}
+
+void TypeDefinition_AddDictionaryType(TypeDefinition* const this, DictionaryType *ptr)
+{
+	if(ptr != NULL)
+	{
+		this->dictionaryType = ptr;
 	}
 }
 
 void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit* ptr)
 {
 	free(ptr);
+	this->deployUnits = NULL;
+}
+
+void TypeDefinition_RemoveDictionaryType(TypeDefinition* const this, DictionaryType *ptr)
+{
+	free(ptr);
+	this->dictionaryType = NULL;
 }
 
 void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)

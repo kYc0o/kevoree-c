@@ -4,12 +4,20 @@
 #include <stdlib.h>
 #include "NamedElement.h"
 #include "TypeDefinition.h"
+#include "Dictionary.h"
+#include "FragmentDictionary.h"
 
 typedef struct _Instance Instance;
 
 typedef char* (*fptrInstInternalGetKey)(Instance*);
 typedef char* (*fptrInstMetaClassName)(Instance*);
-typedef void (*fptrAddTypeDefinition)(Instance*, TypeDefinition*);
+typedef FragmentDictionary* (*fptrInstFindFragDictByID)(Instance*, char*);
+typedef void (*fptrInstAddTypeDefinition)(Instance*, TypeDefinition*);
+typedef void (*fptrInstAddDictionary)(Instance*, Dictionary*);
+typedef void (*fptrInstAddFragmentDictionary)(Instance*, FragmentDictionary*);
+typedef void (*fptrInstRemoveTypeDefinition)(Instance*, TypeDefinition*);
+typedef void (*fptrInstRemoveDictionary)(Instance*, Dictionary*);
+typedef void (*fptrInstRemoveFragmentDictionary)(Instance*, FragmentDictionary*);
 typedef void (*fptrDeleteInstance)(Instance*);
 typedef void (*fptrVisitAttrInstance)(void*, char*, Visitor*);
 typedef void (*fptrVisitRefsInstance)(void*, char*, Visitor*);
@@ -21,8 +29,15 @@ typedef struct _Instance {
 	char* metaData;
 	int started;
 	TypeDefinition* typeDefinition;
-	fptrAddTypeDefinition AddTypeDefinition;
-	/*int (*accept)(struct _Instance*, struct _Instance*, Visitor*);*/
+	Dictionary* dictionary;
+	map_t fragmentDictionary;
+	fptrInstFindFragDictByID FindFragmentDictionaryByID;
+	fptrInstAddTypeDefinition AddTypeDefinition;
+	fptrInstAddDictionary AddDictionary;
+	fptrInstAddFragmentDictionary AddFragmentDictionary;
+	fptrInstRemoveTypeDefinition RemoveTypeDefinition;
+	fptrInstRemoveDictionary RemoveDictionary;
+	fptrInstRemoveFragmentDictionary RemoveFragmentDictionary;
 	fptrInstInternalGetKey InternalGetKey;
 	fptrInstMetaClassName MetaClassName;
 	fptrDeleteInstance Delete;
@@ -33,8 +48,13 @@ typedef struct _Instance {
 
 NamedElement* newPoly_Instance(void);
 Instance* new_Instance(void);
-void Instance_AddTypeDefinition(Instance* this, TypeDefinition* ptr);
-/*int _acceptInstance(Instance* this, Instance* c, Visitor* visitor);*/
+FragmentDictionary* Instance_FindFragmentDictionaryByID(Instance* const this, char* id);
+void Instance_AddTypeDefinition(Instance* const this, TypeDefinition* ptr);
+void Instance_AddDictionary(Instance* const this, Dictionary* ptr);
+void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* ptr);
+void Instance_RemoveTypeDefinition(Instance* const this, TypeDefinition* ptr);
+void Instance_RemoveDictionary(Instance* const this, Dictionary* ptr);
+void Instance_RemoveFragmentDictionary(Instance* const this, FragmentDictionary* ptr);
 char* Instance_InternalGetKey(Instance* const this);
 char* Instance_MetaClassName(Instance* const this);
 void deletePoly_Instance(NamedElement* const this);

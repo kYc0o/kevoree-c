@@ -1,4 +1,5 @@
 #include "Channel.h"
+#include "ChannelType.h"
 #include "ComponentInstance.h"
 #include "ComponentType.h"
 #include "ContainerNode.h"
