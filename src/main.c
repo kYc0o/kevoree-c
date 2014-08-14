@@ -259,6 +259,15 @@ int main(void)
 	
 	/* GroupType DictionaryAttribute port */
 	DictionaryAttribute* gtDicAttrPort = new_DictionaryAttribute();
+	gtDicAttrPort->fragmentDependant = 1;
+	gtDicAttrPort->optional = 1;
+	gtDicAttrPort->super->super->name = malloc(sizeof(char) * (strlen("port") + 1));
+	strcpy(gtDicAttrPort->super->super->name, "port");
+	gtDicAttrPort->state = 0;
+	gtDicAttrPort->datatype = malloc(sizeof(char) * (strlen("number") + 1));
+	strcpy(gtDicAttrPort->datatype, "number");
+	gtDicAttrPort->defaultValue = malloc(sizeof(char) * (strlen("") + 1));
+	strcpy(gtDicAttrPort->defaultValue, "");
 	
 	/* Channel DictionaryType */
 	DictionaryType* chanDicType = new_DictionaryType();
