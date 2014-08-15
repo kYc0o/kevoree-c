@@ -37,16 +37,10 @@ typedef void* (*fptrFindByPathContainerNode)(char*, ContainerNode*);
 
 typedef struct _ContainerNode {
 	Instance* super;
-	/*int count_components;
-	struct ComponentInstance** components;*/
 	map_t components;
 	map_t hosts;
 	ContainerNode* host;
-	/*int count_networkInformation;
-	struct NetworkInfo** networkInformation;*/
 	map_t networkInformation;
-	/*int count_groups;
-	struct Group** groups;*/
 	map_t groups;
 	fptrContNodeMetaClassName MetaClassName;
 	fptrContNodeInternalGetKey InternalGetKey;
@@ -67,7 +61,6 @@ typedef struct _ContainerNode {
 	fptrDeleteContNode Delete;
 	fptrVisitAttrContainerNode VisitAttributes;
 	fptrVisitRefsContainerNode VisitReferences;
-	/*int (*accept)(struct _ContainerNode*, struct _ContainerNode*, Visitor*);*/
 	fptrFindByPathContainerNode FindByPath;
 } ContainerNode ;
 

@@ -172,6 +172,7 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor)
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
+	/* Local references */
 	hashmap_map* m = NULL;
 	
 	if((m = (hashmap_map*) ((Channel*)(this))->bindings) != NULL)
@@ -189,6 +190,9 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor)
 			}
 		}
 	}
+	
+	/* Instance references */
+	Instance_VisitReferences(((Instance*)this)->super, parent, visitor);
 }
 void* Channel_FindByPath(char* attribute, Channel* const this)
 {

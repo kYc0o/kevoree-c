@@ -23,10 +23,7 @@ typedef void* (*fptrFindByPathGroup)(char*, Group*);
 
 typedef struct _Group { 
 	Instance* super;
-	/*int count_subNodes;
-	struct ContainerNode **subNodes;*/
 	map_t subNodes;
-	/*int (*accept)(struct _Group*, struct _Group*, Visitor*);*/
 	fptrGroupAddSubNodes AddSubNodes;
 	fptrGroupRemoveSubNodes RemoveSubNodes;
 	fptrGroupInternalGetKey InternalGetKey;
@@ -45,7 +42,6 @@ char* Group_MetaClassName(Group* const this);
 ContainerNode* Group_FindSubNodesByID(Group* const this, char* id);
 void Group_AddSubNodes(Group* const this, ContainerNode* ptr);
 void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr);
-/*int _acceptGroup(Group* this, Group* c, Visitor* visitor);*/
 void deletePoly_Group(Instance*);
 void delete_Group(Group*);
 void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor);

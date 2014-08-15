@@ -57,7 +57,17 @@ GroupType* new_GroupType()
 
 char* GroupType_MetaClassName(GroupType* const this)
 {
-	char* internalKey;
+	char* name;
+
+	name = malloc(sizeof(char) * (strlen("GroupType") + 1));
+	strcpy(name, "GroupType");
+	
+	return name;
+}
+
+char* GroupType_InternalGetKey(void* const this)
+{
+	/*char* internalKey;
 
 	if (this == NULL)
 		return NULL;
@@ -67,22 +77,13 @@ char* GroupType_MetaClassName(GroupType* const this)
 	if (internalKey == NULL)
 		return NULL;
 
-	sprintf(internalKey, "%s/%s", this->super->super->name, this->super->version);
+	sprintf(internalKey, "%s/%s", this->super->super->name, this->super->version);*/
 	/*strcpy(internalKey, this->super->super->name);
 	strcat(internalKey, "/");
-	strcat(internalKey, this->super->version);*/
+	strcat(internalKey, this->super->version);
 
-	return internalKey;
-}
-
-char* GroupType_InternalGetKey(GroupType* const this)
-{
-	char* name;
-
-	name = malloc(sizeof(char) * (strlen("GroupType") + 1));
-	strcpy(name, "GroupType");
-	
-	return name;
+	return internalKey;*/
+	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
 }
 
 void deletePoly_GroupType(TypeDefinition* const this)

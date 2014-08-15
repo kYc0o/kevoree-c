@@ -172,10 +172,10 @@ void delete_TypeLibrary(TypeLibrary* const this)
 
 void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	/*char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path,"%s/%s",parent, ((TypeLibrary*)(this))->super->name);*/
+	sprintf(path,"%s/%s",parent, ((TypeLibrary*)(this))->super->name);*/
 
 	/*sprintf(path,"%s\\name",parent);
 	visitor->action(path, STRING, ((TypeLibrary*)(this))->super->name);*/
@@ -184,7 +184,7 @@ void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visito
 
 void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	if(((TypeLibrary*)(this))->subTypes != NULL)
@@ -205,7 +205,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 				TypeDefinition* n = data;
 				sprintf(path,"%s/subTypes[%s]", parent, n->super->name);
 				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}

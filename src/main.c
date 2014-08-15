@@ -199,21 +199,21 @@ int main(void)
 	chanValueHost->name = malloc(sizeof(char) * (strlen("host") + 1));
 	strcpy(chanValueHost->name, "host");
 	chanValueHost->value = malloc(sizeof(char) * (strlen("contiki.kevoree.org") + 1));
-	strcpy(chanValueHost->name, "contiki.kevoree.org");
+	strcpy(chanValueHost->value, "contiki.kevoree.org");
 	
 	/* Channel DictionaryValue port */
 	DictionaryValue* chanValuePort = new_DictionaryValue();
 	chanValuePort->name = malloc(sizeof(char) * (strlen("Port") + 1));
 	strcpy(chanValuePort->name, "Port");
 	chanValuePort->value = malloc(sizeof(char) * (strlen("5683") + 1));
-	strcpy(chanValuePort->name, "5683");
+	strcpy(chanValuePort->value, "5683");
 	
 	/* Channel DictionaryValue path */
 	DictionaryValue* chanValuePath = new_DictionaryValue();
 	chanValuePath->name = malloc(sizeof(char) * (strlen("path") + 1));
 	strcpy(chanValuePath->name, "path");
 	chanValuePath->value = malloc(sizeof(char) * (strlen("DefaultChannel") + 1));
-	strcpy(chanValuePath->name, "DefaultChannel");
+	strcpy(chanValuePath->value, "DefaultChannel");
 	
 	/* Channel Dictionary */
 	Dictionary* chanDico = new_Dictionary();
@@ -221,7 +221,10 @@ int main(void)
 	chanDico->AddValues(chanDico, chanValuePort);
 	chanDico->AddValues(chanDico, chanValuePath);
 	
-	/* Channel DictionaryAttribute host */
+	defaultChannel->super->AddDictionary(defaultChannel->super, chanDico);
+	defaultChannel->super->AddTypeDefinition(defaultChannel->super, coapChanType);
+	
+	/* ChannelType DictionaryAttribute host */
 	DictionaryAttribute* chanDicoAttrHost = new_DictionaryAttribute();
 	chanDicoAttrHost->fragmentDependant = 0;
 	chanDicoAttrHost->optional = 0;
@@ -233,7 +236,7 @@ int main(void)
 	chanDicoAttrHost->defaultValue = malloc(sizeof(char) * (strlen("") + 1));
 	strcpy(chanDicoAttrHost->defaultValue, "");
 	
-	/* Channel DictionaryAttribute port */
+	/* ChannelType DictionaryAttribute port */
 	DictionaryAttribute* chanDicoAttrPort = new_DictionaryAttribute();
 	chanDicoAttrPort->fragmentDependant = 0;
 	chanDicoAttrPort->optional = 0;
@@ -245,7 +248,7 @@ int main(void)
 	chanDicoAttrPort->defaultValue = malloc(sizeof(char) * (strlen("") + 1));
 	strcpy(chanDicoAttrPort->defaultValue, "");
 	
-	/* Channel DictionaryAttribute path */
+	/* ChannelType DictionaryAttribute path */
 	DictionaryAttribute* chanDicoAttrPath = new_DictionaryAttribute();
 	chanDicoAttrPath->fragmentDependant = 0;
 	chanDicoAttrPath->optional = 0;
@@ -269,7 +272,37 @@ int main(void)
 	gtDicAttrPort->defaultValue = malloc(sizeof(char) * (strlen("") + 1));
 	strcpy(gtDicAttrPort->defaultValue, "");
 	
-	/* Channel DictionaryType */
+	/* GroupType DictionaryAttribute path */
+	DictionaryAttribute* gtDicAttrPath = new_DictionaryAttribute();
+	gtDicAttrPath->fragmentDependant = 1;
+	gtDicAttrPath->optional = 1;
+	gtDicAttrPath->super->super->name = malloc(sizeof(char) * (strlen("path") + 1));
+	strcpy(gtDicAttrPath->super->super->name, "path");
+	gtDicAttrPath->state = 0;
+	gtDicAttrPath->datatype = malloc(sizeof(char) * (strlen("string") + 1));
+	strcpy(gtDicAttrPath->datatype, "string");
+	gtDicAttrPath->defaultValue = malloc(sizeof(char) * (strlen("") + 1));
+	strcpy(gtDicAttrPath->defaultValue, "");
+	
+	/* GroupType DictionaryAttribute proxy_port */
+	DictionaryAttribute* gtDicAttrProxy = new_DictionaryAttribute();
+	gtDicAttrProxy->fragmentDependant = 1;
+	gtDicAttrProxy->optional = 1;
+	gtDicAttrProxy->super->super->name = malloc(sizeof(char) * (strlen("proxy_port") + 1));
+	strcpy(gtDicAttrProxy->super->super->name, "proxy_port");
+	gtDicAttrProxy->state = 0;
+	gtDicAttrProxy->datatype = malloc(sizeof(char) * (strlen("number") + 1));
+	strcpy(gtDicAttrProxy->datatype, "number");
+	gtDicAttrProxy->defaultValue = malloc(sizeof(char) * (strlen("") + 1));
+	strcpy(gtDicAttrProxy->defaultValue, "");
+	
+	/* GroupType DictionaryType */
+	DictionaryType* gtDicType = new_DictionaryType();
+	gtDicType->AddAttributes(gtDicType, gtDicAttrPort);
+	gtDicType->AddAttributes(gtDicType, gtDicAttrPath);
+	gtDicType->AddAttributes(gtDicType, gtDicAttrProxy);
+	
+	/* ChannelType DictionaryType */
 	DictionaryType* chanDicType = new_DictionaryType();
 	chanDicType->AddAttributes(chanDicType, chanDicoAttrHost);
 	chanDicType->AddAttributes(chanDicType, chanDicoAttrPort);
@@ -323,33 +356,42 @@ int main(void)
 	strcpy(coapGroup->super->metaData, "");
 	
 	/* FragmentDictionary contiki-node */
-	FragmentDictionary* contikiFragDico = new_FragmentDictionary();
-	contikiFragDico->name = malloc(sizeof(char) * (strlen("contiki-node") + 1));
-	strcpy(contikiFragDico->name, "contiki-node");
+	FragmentDictionary* contikiNodeFragDico = new_FragmentDictionary();
+	contikiNodeFragDico->name = malloc(sizeof(char) * (strlen("contiki-node") + 1));
+	strcpy(contikiNodeFragDico->name, "contiki-node");
+	
+	/* Group DictionaryValue port */
+	DictionaryValue* groupValuePort = new_DictionaryValue();
+	groupValuePort->name = malloc(sizeof(char) * (strlen("port") + 1));
+	strcpy(groupValuePort->name, "port");
+	groupValuePort->value = malloc(sizeof(char) * (strlen("5683") + 1));
+	strcpy(groupValuePort->value, "5683");
 	
 	/* Group DictionaryValue proxy_port */
 	DictionaryValue* groupValueProxy = new_DictionaryValue();
 	groupValueProxy->name = malloc(sizeof(char) * (strlen("proxy_port") + 1));
 	strcpy(groupValueProxy->name, "proxy_port");
 	groupValueProxy->value = malloc(sizeof(char) * (strlen("9000") + 1));
-	strcpy(groupValueProxy->name, "9000");
+	strcpy(groupValueProxy->value, "9000");
 	
 	/* Group DictionaryValue path */
 	DictionaryValue* groupValuePath = new_DictionaryValue();
 	groupValuePath->name = malloc(sizeof(char) * (strlen("path") + 1));
 	strcpy(groupValuePath->name, "path");
 	groupValuePath->value = malloc(sizeof(char) * (strlen("CoAPGroup") + 1));
-	strcpy(groupValuePath->name, "CoAPGroup");
+	strcpy(groupValuePath->value, "CoAPGroup");
 	
-	contikiFragDico->super->AddValues(contikiFragDico->super, chanValuePort);
-	contikiFragDico->super->AddValues(contikiFragDico->super, groupValueProxy);
-	contikiFragDico->super->AddValues(contikiFragDico->super, groupValuePath);
+	
+	contikiNodeFragDico->super->AddValues(contikiNodeFragDico->super, groupValuePort);
+	contikiNodeFragDico->super->AddValues(contikiNodeFragDico->super, groupValueProxy);
+	contikiNodeFragDico->super->AddValues(contikiNodeFragDico->super, groupValuePath);
+	
+	coapGroup->super->AddFragmentDictionary(coapGroup->super, contikiNodeFragDico);
 	
 	coapGroup->super->AddTypeDefinition(coapGroup->super, coapGroupType);
 	
 	/* DictionaryType contikiNodeDicType */
 	DictionaryType* contikiNodeDicType = new_DictionaryType();
-	
 	contikiNodeType->AddDictionaryType(contikiNodeType, contikiNodeDicType);
 	
 	ComponentInstance* c1 = new_ComponentInstance();
@@ -383,9 +425,12 @@ int main(void)
 	coapGroupType->AddDeployUnit(coapGroupType, kevGroupCoap);
 	coapChanType->AddDeployUnit(coapChanType, kevChanCoap);
 	
-	coapGroupType->super->AddDictionaryType(
+	coapGroupType->AddDictionaryType(coapGroupType, gtDicType);
+	coapChanType->AddDictionaryType(coapChanType, chanDicType);
 	
 	model->AddTypeDefinitions(model, contikiNodeType);
+	model->AddTypeDefinitions(model, coapGroupType);
+	model->AddTypeDefinitions(model, coapChanType);
 	model->AddNodes(model, contikiNode);
 	model->AddLibraries(model, contiki);
 	model->AddHubs(model, defaultChannel);

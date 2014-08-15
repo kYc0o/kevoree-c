@@ -367,10 +367,3 @@ void* Instance_FindByPath(char* attribute, Instance* const this)
 		}
 	}
 }
-
-/*int _acceptInstance(Instance* this, Instance* c, Visitor* visitor)
-{
-	visitor->action((void*)this->metaData, (void*)c->metaData, 0);
-	visitor->action((void*)this->started, (void*)c->started, 1);
-	visitor->action((void*)this->typeDefinition, (void*)c->typeDefinition, 0);
-}*/

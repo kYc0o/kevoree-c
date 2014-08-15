@@ -1,0 +1,314 @@
+{
+    "eClass": "org.kevoree.ContainerRoot",
+    "generated_KMF_ID": "0.30700066243298351405090962743",
+    "nodes": [
+        {
+            "eClass": "org.kevoree.ContainerNode",
+            "name": "server-node",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[JavascriptNode/0.9.6]"
+            ],
+            "hosts": [],
+            "host": [],
+            "groups": [
+                "groups[sync]"
+            ],
+            "dictionary": [],
+            "fragmentDictionary": [],
+            "components": [],
+            "networkInformation": [
+                {
+                    "eClass": "org.kevoree.NetworkInfo",
+                    "name": "ip",
+                    "values": [
+                        {
+                            "eClass": "org.kevoree.NetworkProperty",
+                            "name": "front",
+                            "value": "runjs.kevoree.org"
+                        },
+                        {
+                            "eClass": "org.kevoree.NetworkProperty",
+                            "name": "local",
+                            "value": "127.0.0.1"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "typeDefinitions": [
+        {
+            "eClass": "org.kevoree.NodeType",
+            "abstract": "false",
+            "bean": "",
+            "name": "JavascriptNode",
+            "factoryBean": "",
+            "version": "0.9.6",
+            "deployUnit": [
+                "deployUnits[//kevoree-node-javascript/0.9.6]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.54850290878675881406902219416",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "logLevel",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "DEBUG",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "true",
+                            "name": "logFilter",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "eClass": "org.kevoree.GroupType",
+            "abstract": "false",
+            "bean": "",
+            "name": "WebSocketGroup",
+            "factoryBean": "",
+            "version": "0.9.3",
+            "deployUnit": [
+                "deployUnits[//kevoree-group-websocket/0.9.3]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.182252555154263971406636010545",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "true",
+                            "optional": "true",
+                            "name": "port",
+                            "state": "false",
+                            "datatype": "number",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "true",
+                            "optional": "true",
+                            "name": "path",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "true",
+                            "optional": "true",
+                            "name": "proxy_port",
+                            "state": "false",
+                            "datatype": "number",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "eClass": "org.kevoree.ChannelType",
+            "upperFragments": "0",
+            "abstract": "false",
+            "upperBindings": "0",
+            "lowerBindings": "0",
+            "bean": "",
+            "lowerFragments": "0",
+            "name": "RemoteWSChan",
+            "factoryBean": "",
+            "version": "0.9.2",
+            "deployUnit": [
+                "deployUnits[//kevoree-chan-remotews/0.9.2]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "0.37102452688850461405090962760",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "host",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "port",
+                            "state": "false",
+                            "datatype": "number",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "path",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "repositories": [],
+    "dataTypes": [],
+    "libraries": [
+        {
+            "eClass": "org.kevoree.TypeLibrary",
+            "name": "Javascript",
+            "subTypes": [
+                "typeDefinitions[JavascriptNode/0.9.6]",
+                "typeDefinitions[WebSocketGroup/0.9.3]",
+                "typeDefinitions[RemoteWSChan/0.9.2]"
+            ]
+        },
+        {
+            "eClass": "org.kevoree.TypeLibrary",
+            "name": "Default",
+            "subTypes": []
+        }
+    ],
+    "hubs": [
+        {
+            "eClass": "org.kevoree.Channel",
+            "name": "sharedChan",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[RemoteWSChan/0.9.2]"
+            ],
+            "bindings": [],
+            "dictionary": [
+                {
+                    "eClass": "org.kevoree.Dictionary",
+                    "generated_KMF_ID": "0.53094083094038071407312153180",
+                    "values": [
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "host",
+                            "value": "runjs.kevoree.org"
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "port",
+                            "value": "80"
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "path",
+                            "value": "sharedChan"
+                        }
+                    ]
+                }
+            ],
+            "fragmentDictionary": []
+        }
+    ],
+    "mBindings": [],
+    "deployUnits": [
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-node-javascript",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "0.9.6",
+            "requiredLibs": []
+        },
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-group-websocket",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "0.9.3",
+            "requiredLibs": []
+        },
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "",
+            "name": "kevoree-chan-remotews",
+            "hashcode": "",
+            "type": "npm",
+            "url": "",
+            "version": "0.9.2",
+            "requiredLibs": []
+        }
+    ],
+    "nodeNetworks": [],
+    "groups": [
+        {
+            "eClass": "org.kevoree.Group",
+            "name": "sync",
+            "started": "true",
+            "metaData": "",
+            "typeDefinition": [
+                "typeDefinitions[WebSocketGroup/0.9.3]"
+            ],
+            "subNodes": [
+                "nodes[server-node]"
+            ],
+            "dictionary": [],
+            "fragmentDictionary": [
+                {
+                    "eClass": "org.kevoree.FragmentDictionary",
+                    "name": "server-node",
+                    "generated_KMF_ID": "",
+                    "values": [
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "port",
+                            "value": "80"
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "proxy_port",
+                            "value": "9000"
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryValue",
+                            "name": "path",
+                            "value": "sharedGroup"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

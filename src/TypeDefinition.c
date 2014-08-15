@@ -228,11 +228,11 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 	sprintf(path, "%s\\version", parent);
 	visitor->action(path, STRING, ((TypeDefinition*)(this))->version);
 	
-	/*sprintf(path,"%s\\factoryBean",parent);
+	sprintf(path,"%s\\factoryBean",parent);
 	visitor->action(path, STRING, ((TypeDefinition*)(this))->factoryBean);
 	
 	sprintf(path,"%s\\bean",parent);
-	visitor->action(path, STRING, ((TypeDefinition*)(this))->bean);*/
+	visitor->action(path, STRING, ((TypeDefinition*)(this))->bean);
 	
 	sprintf(path, "%s\\abstract", parent);
 	visitor->action(path, BOOL, (void*)((TypeDefinition*)(this))->abstract);
@@ -245,8 +245,16 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 
 	if(((TypeDefinition*)(this))->deployUnits != NULL)
 	{
-		sprintf(path, "%s/deployUnits[%s]", parent, /*((TypeDefinition*)(this))->deployUnits->super->name*/((TypeDefinition*)(this))->deployUnits->InternalGetKey(((TypeDefinition*)(this))->deployUnits));
+		sprintf(path, "%s/deployUnits[%s]", parent, ((TypeDefinition*)(this))->deployUnits->InternalGetKey(((TypeDefinition*)(this))->deployUnits));
 		DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
+		n->VisitAttributes(n, path, visitor);
+		/*n->VisitReferences(n, path, visitor);*/
+	}
+	
+	if(((TypeDefinition*)(this))->dictionaryType != NULL)
+	{
+		sprintf(path, "%s/dictionaryType[%s]", parent, ((TypeDefinition*)(this))->dictionaryType->InternalGetKey(((TypeDefinition*)(this))->dictionaryType));
+		DictionaryType* n = ((TypeDefinition*)(this))->dictionaryType;
 		n->VisitAttributes(n, path, visitor);
 		n->VisitReferences(n, path, visitor);
 	}
@@ -349,6 +357,17 @@ void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this)
 			else
 			{
 				return this->deployUnits->FindByPath(nextAttribute, this->deployUnits);
+			}
+		}
+		else if(!strcmp("dictionaryType", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->dictionaryType;
+			}
+			else
+			{
+				return this->dictionaryType->FindByPath(nextAttribute, this->dictionaryType);
 			}
 		}
 		else

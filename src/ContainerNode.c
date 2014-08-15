@@ -15,12 +15,8 @@ Instance* newPoly_ContainerNode()
 	}
 
 	pObj->pDerivedObj = pContNodeObj; /* Pointing to derived object */
-	/*pContNodeObj->super = pObj;*/
-	
-	/*pContNodeObj->components = hashmap_new();
-	pContNodeObj->hosts = hashmap_new();
-	pContNodeObj->groups = hashmap_new();
-	pContNodeObj->networkInformation = hashmap_new();*/
+	pContNodeObj->super = pObj;
+
 	pContNodeObj->components = NULL;
 	pContNodeObj->hosts = NULL;
 	pContNodeObj->host = NULL;
@@ -73,10 +69,6 @@ ContainerNode* new_ContainerNode()
 	/*pObj->pDerivedObj = pContNodeObj; Pointing to derived object */
 	pContNodeObj->super = pObj;
 	
-	/*pContNodeObj->components = hashmap_new();
-	pContNodeObj->hosts = hashmap_new();
-	pContNodeObj->groups = hashmap_new();
-	pContNodeObj->networkInformation = hashmap_new();*/
 	pContNodeObj->components = NULL;
 	pContNodeObj->hosts = NULL;
 	pContNodeObj->host = NULL;

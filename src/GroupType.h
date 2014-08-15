@@ -25,7 +25,7 @@ typedef struct _GroupType {
 TypeDefinition* newPoly_GroupType(void);
 GroupType* new_GroupType(void);
 char* GroupType_MetaClassName(GroupType* const this);
-char* GroupType_InternalGetKey(GroupType* const this);
+char* GroupType_InternalGetKey(void* const this);
 void deletePoly_GroupType(TypeDefinition* const this);
 void delete_GroupType(GroupType* const this);
 void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
