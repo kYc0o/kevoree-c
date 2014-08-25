@@ -9,7 +9,7 @@ typedef struct _NodeType NodeType;
 typedef char* (*fptrNodeTypeMetaClassName)(NodeType*);
 typedef char* (*fptrNodeTypeInternalGetKey)(void*);
 typedef void (*fptrDeleteNodeType)(NodeType*);
-typedef void (*fptrVisitAttrNodeType)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrNodeType)(void*, char*, Visitor*, int);
 typedef void (*fptrVisitRefsNodeType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNodeType)(char*, TypeDefinition*);
 
@@ -31,6 +31,6 @@ void deletePoly_NodeType(TypeDefinition*);
 void delete_NodeType(NodeType*);
 char* NodeType_MetaClassName(NodeType* const this);
 char* NodeType_InternalGetKey(void* const this);
-void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
 
 #endif /* H_NodeType */

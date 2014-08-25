@@ -5,6 +5,9 @@ TypeDefinition* newPoly_GroupType()
 	GroupType* pGroupTypeObj = NULL;
 	TypeDefinition* pObj = new_TypeDefinition();
 
+	if(pObj == NULL)
+		return NULL;
+
 	/* Allocating memory */
 	pGroupTypeObj = (GroupType*)malloc(sizeof(GroupType));
 
@@ -57,9 +60,10 @@ GroupType* new_GroupType()
 
 char* GroupType_MetaClassName(GroupType* const this)
 {
-	char* name;
+	char name[10];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("GroupType") + 1));
+	/*name = malloc(sizeof(char) * (strlen("GroupType") + 1));*/
 	strcpy(name, "GroupType");
 	
 	return name;
@@ -67,22 +71,6 @@ char* GroupType_MetaClassName(GroupType* const this)
 
 char* GroupType_InternalGetKey(void* const this)
 {
-	/*char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name) + strlen("_") + strlen(this->super->version)) + 1);
-
-	if (internalKey == NULL)
-		return NULL;
-
-	sprintf(internalKey, "%s/%s", this->super->super->name, this->super->version);*/
-	/*strcpy(internalKey, this->super->super->name);
-	strcat(internalKey, "/");
-	strcat(internalKey, this->super->version);
-
-	return internalKey;*/
 	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
 }
 
@@ -103,14 +91,7 @@ void delete_GroupType(GroupType* const this)
 	free(this);
 }
 
-void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	/*char path[256];
-	memset(&path[0], 0, sizeof(path));*/
-
-	/*sprintf(path, "%s", parent, ((GroupType*)(this))->super->super->name);*/
-
-	/*sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((GroupType*)(this))->super->super->name);*/
-	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
+	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }

@@ -17,7 +17,7 @@ typedef void (*fptrPortTypeRefAddMappings)(PortTypeRef*, PortTypeMapping*);
 typedef void (*fptrPortTypeRefRemoveRef)(PortTypeRef*, PortType*);
 typedef void (*fptrPortTypeRefRemoveMappings)(PortTypeRef*, PortTypeMapping*);
 typedef void (*fptrDeletePortTypeRef)(PortTypeRef*);
-typedef void (*fptrVisitAttrPortTypeRef)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrPortTypeRef)(void*, char*, Visitor*, int);
 typedef void (*fptrVisitRefsPortTypeRef)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathPortTypeRef)(char*, PortTypeRef*);
 
@@ -51,7 +51,7 @@ void PortTypeRef_RemoveRef(PortTypeRef* const this, PortType* ptr);
 void PortTypeRef_RemoveMappings(PortTypeRef* const this, PortTypeMapping* ptr);
 void deletePoly_PortTypeRef(NamedElement* const this);
 void delete_PortTypeRef(PortTypeRef* const this);
-void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
 void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this);
 

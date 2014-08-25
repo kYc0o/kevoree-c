@@ -16,7 +16,6 @@ NamedElement* newPoly_TypeLibrary(void)
 
 	pObj->pDerivedObj = pTypeLibObj; /* Pointing to derived object */
 	
-	/*pTypeLibObj->subTypes = hashmap_new();*/
 	pTypeLibObj->subTypes = NULL;
 	
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
@@ -51,7 +50,6 @@ TypeLibrary* new_TypeLibrary(void)
 	/* pObj->pDerivedObj = pTypeLibObj; Pointing to derived object */
 	pTypeLibObj->super = pObj;
 	
-	/*pTypeLibObj->subTypes = hashmap_new();*/
 	pTypeLibObj->subTypes = NULL;
 	
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
@@ -69,9 +67,10 @@ TypeLibrary* new_TypeLibrary(void)
 
 char* TypeLibrary_MetaClassname(TypeLibrary* const this)
 {
-	char* name;
+	char name[12];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("TypeLibrary") + 1));
+	/*name = malloc(sizeof(char) * (strlen("TypeLibrary") + 1));*/
 	strcpy(name, "TypeLibrary");
 	
 	return name;
@@ -79,74 +78,57 @@ char* TypeLibrary_MetaClassname(TypeLibrary* const this)
 
 char* TypeLibrary_InternalGetKey(TypeLibrary* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 TypeDefinition* TypeLibrary_FindSubTypesByID(TypeLibrary* const this, char* id)
 {
-	TypeDefinition* value;
+	TypeDefinition* value = NULL;
 
-	if(hashmap_get(this->subTypes, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->subTypes != NULL)
+	{
+		if(hashmap_get(this->subTypes, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
-/*void TypeLibrary::addsubTypes(TypeDefinition *ptr)*/
 void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 {
-	TypeDefinition* container = (TypeDefinition*)ptr;
+	TypeDefinition* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The TypeDefinition cannot be added in TypeLibrary because the key is not defined");*/
 		printf("The TypeDefinition cannot be added in TypeLibrary because the key is not defined\n");
 	}
 	else
 	{
-		/*if(subTypes.find(container->internalGetKey()) == subTypes.end())*/
 		if(this->subTypes == NULL)
 		{
 			this->subTypes = hashmap_new();
 		}
-		if(hashmap_get(this->subTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->subTypes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*subTypes[container->internalGetKey()]=ptr;*/
-			container = (TypeDefinition*)ptr;
-			hashmap_put(this->subTypes, container->InternalGetKey(container), ptr);
+			/*container = (TypeDefinition*)ptr;*/
+			hashmap_put(this->subTypes, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void TypeLibrary::removesubTypes(TypeDefinition *ptr)*/
 void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 {
-	TypeDefinition* container = (TypeDefinition*)ptr;
-
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The TypeDefinition cannot be removed in TypeLibrary because the key is not defined");*/
 		printf("The TypeDefinition cannot be removed in TypeLibrary because the key is not defined\n");
 	}
 	else
 	{
-		/*subTypes.erase( subTypes.find(container->internalGetKey()));*/
-		hashmap_remove(this->subTypes, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->subTypes, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -172,13 +154,6 @@ void delete_TypeLibrary(TypeLibrary* const this)
 
 void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	/*char path[128];
-	memset(&path[0], 0, sizeof(path));
-
-	sprintf(path,"%s/%s",parent, ((TypeLibrary*)(this))->super->name);*/
-
-	/*sprintf(path,"%s\\name",parent);
-	visitor->action(path, STRING, ((TypeLibrary*)(this))->super->name);*/
 	NamedElement_VisitAttributes(((TypeLibrary*)(this))->super, parent, visitor);
 }
 
@@ -191,8 +166,6 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 	{
 		int i;
 		
-		/*sprintf(path,"%s/subTypes[%s]", parent, ((TypeLibrary*)(this))->super->name);*/
-		
 		/* subTypes */
 		hashmap_map* m = ((TypeLibrary*)(this))->subTypes;
 
@@ -203,8 +176,8 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path,"%s/subTypes[%s]", parent, n->super->name);
-				n->VisitAttributes(n, path, visitor);
+				sprintf(path,"%s/subTypes[%s]", parent, n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 0);
 				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}

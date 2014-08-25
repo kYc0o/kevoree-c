@@ -95,9 +95,10 @@ void delete_Channel(void* const this)
 
 char* Channel_MetaClassName(Channel* const this)
 {
-	char* name;
+	char name[8];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("Channel") + 1));
+	/*name = malloc(sizeof(char) * (strlen("Channel") + 1));*/
 	strcpy(name, "Channel");
 	
 	return name;
@@ -110,9 +111,9 @@ char* Channel_InternalGetKey(Channel* const this)
 
 void Channel_AddBindings(Channel* const this, MBinding* ptr)
 {
-	MBinding* container = (MBinding*)ptr;
+	MBinding* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The MBinding cannot be added in Channel because the key is not defined\n");
 	}
@@ -122,30 +123,28 @@ void Channel_AddBindings(Channel* const this, MBinding* ptr)
 		{
 			this->bindings = hashmap_new();
 		}
-		if(hashmap_get(this->bindings, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->bindings, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (MBinding*)ptr;
-			hashmap_put(this->bindings, container->InternalGetKey(container), ptr);
+			/*container = (MBinding*)ptr;*/
+			hashmap_put(this->bindings, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 void Channel_RemoveBindings(Channel* const this, MBinding* ptr)
 {
-	MBinding* container = (MBinding*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The MBinding cannot be removed in Channel because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->bindings, container->InternalGetKey(container));
+		hashmap_remove(this->bindings, ptr->InternalGetKey(ptr));
 	}
 }
 
 MBinding* Channel_FindBindingsByID(Channel* const this, char* id)
 {
-	MBinding* value;
+	MBinding* value = NULL;
 
 	if(this->bindings != NULL)
 	{
@@ -160,12 +159,12 @@ MBinding* Channel_FindBindingsByID(Channel* const this, char* id)
 	}
 }
 
-void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	Instance_VisitAttributes(((Channel*)this)->super, parent, visitor);
+	Instance_VisitAttributes(((Channel*)this)->super, parent, visitor, recursive);
 }
 
-void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	int i;
 
@@ -177,7 +176,7 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor)
 	
 	if((m = (hashmap_map*) ((Channel*)(this))->bindings) != NULL)
 	{
-		/* compare nodes*/
+		/* compare bindings*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
@@ -186,13 +185,13 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor)
 				MBinding* n = data;
 				sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}
 	
 	/* Instance references */
-	Instance_VisitReferences(((Instance*)this)->super, parent, visitor);
+	Instance_VisitReferences(((Instance*)this)->super, parent, visitor, 0);
 }
 void* Channel_FindByPath(char* attribute, Channel* const this)
 {

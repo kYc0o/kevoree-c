@@ -6,9 +6,6 @@
 #include "Channel.h"
 #include "Port.h"
 
-/*class Port;*/
-
-/*class Channel;*/
 typedef struct _Channel Channel;
 typedef struct _Port Port;
 typedef struct _MBinding MBinding;
@@ -20,12 +17,12 @@ typedef void (*fptrMbindingAddHub)(MBinding*, Channel*);
 typedef void (*fptrMBindingRemovePort)(MBinding*, Port*);
 typedef void (*fptrMbindingRemoveHub)(MBinding*, Channel*);
 typedef void (*fptrVisitAttrMBinding)(void*, char*, Visitor*);
-typedef void (*fptrVisitRefsMbinding)(void*, char*, Visitor*);
+typedef void (*fptrVisitRefsMbinding)(void*, char*, Visitor*, int);
 typedef void* (*fptrFindByPathMBinding)(char*, MBinding*);
 typedef void (*fptrDeleteMBinding)(void*);
 
 typedef struct _MBinding {
-	char* generated_KMF_ID;
+	char generated_KMF_ID[9];
 	Port* port;
 	Channel* channel;
 	fptrMBindingInternalGetKey InternalGetKey;
@@ -49,7 +46,7 @@ void MBinding_AddHub(MBinding* const this, Channel* ptr);
 void MBinding_RemovePort(MBinding* const this, Port* ptr);
 void MBinding_RemoveHub(MBinding* const this, Channel* ptr);
 void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive);
 void* MBinding_FindByPath(char* attribute, MBinding* const this);
 
 #endif /* __MBinding_H */

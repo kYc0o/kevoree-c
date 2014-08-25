@@ -103,35 +103,23 @@ ContainerNode* new_ContainerNode()
 
 char* ContainerNode_InternalGetKey(ContainerNode* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 char* ContainerNode_MetaClassName(ContainerNode* const this)
 {
-	char* name;
+	char name[14];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("ContainerNode") + 1));
+	/*name = malloc(sizeof(char) * (strlen("ContainerNode") + 1));*/
 	strcpy(name, "ContainerNode");
 	
 	return name;
 }
 
-/*ComponentInstance* ContainerNode::findcomponentsByID(std::string id){*/
 ComponentInstance* ContainerNode_FindComponentsByID(ContainerNode* const this, char* id)
 {
-	ComponentInstance* value;
+	ComponentInstance* value = NULL;
 	
 	if(this->components != NULL)
 	{
@@ -145,13 +133,11 @@ ComponentInstance* ContainerNode_FindComponentsByID(ContainerNode* const this, c
 		return NULL;
 	}
 
-	/*return components[id];*/
 }
 
-/*ContainerNode* ContainerNode::findhostsByID(std::string id)*/
 ContainerNode* ContainerNode_FindHostsByID(ContainerNode* const this, char* id)
 {
-	ContainerNode* value;
+	ContainerNode* value = NULL;
 	
 	if(this->hosts != NULL)
 	{
@@ -165,13 +151,11 @@ ContainerNode* ContainerNode_FindHostsByID(ContainerNode* const this, char* id)
 		return NULL;
 	}
 
-	/*return hosts[id];*/
 }
 
-/*Group* ContainerNode::findgroupsByID(std::string id)*/
 Group* ContainerNode_FindGroupsByID(ContainerNode* const this, char* id)
 {
-	Group* value;
+	Group* value = NULL;
 
 	if(this->groups != NULL)
 	{
@@ -185,13 +169,11 @@ Group* ContainerNode_FindGroupsByID(ContainerNode* const this, char* id)
 		return NULL;
 	}
 
-	/*return groups[id];*/
 }
 
-/*NetworkInfo* ContainerNode::findnetworkInformationByID(std::string id)*/
 NetworkInfo* ContainerNode_FindNetworkInformationByID(ContainerNode* const this, char* id)
 {
-	NetworkInfo* value;
+	NetworkInfo* value = NULL;
 
 	if(this->networkInformation != NULL)
 	{
@@ -205,212 +187,151 @@ NetworkInfo* ContainerNode_FindNetworkInformationByID(ContainerNode* const this,
 		return NULL;
 	}
 
-	/*return networkInformation[id];*/
 }
 
-/*void ContainerNode::addcomponents(ComponentInstance *ptr)*/
 void ContainerNode_AddComponents(ContainerNode* const this, ComponentInstance* ptr)
 {
-	ComponentInstance* container = (ComponentInstance*)ptr;
+	ComponentInstance* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The ComponentInstance cannot be added in ContainerNode because the key is not defined");*/
 		printf("The ComponentInstance cannot be added in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*if(components.find(container->internalGetKey()) == components.end())*/
 		if(this->components == NULL)
 		{
 			this->components = hashmap_new();
 		}
-		if(hashmap_get(this->components, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->components, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*components[container->internalGetKey()]=ptr;*/
-			container = (ComponentInstance*)ptr;
-			hashmap_put(this->components, container->InternalGetKey(container), ptr);
-			/*any ptr_any = container;
-			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"components",ptr_any);
-			container->setEContainer(this,cmd,"components");*/
+			/*container = (ComponentInstance*)ptr;*/
+			hashmap_put(this->components, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void ContainerNode::addhosts(ContainerNode *ptr)*/
 void ContainerNode_AddHosts(ContainerNode* const this, ContainerNode* ptr)
 {
-	ContainerNode* container = (ContainerNode*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	ContainerNode* container = NULL;
+
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The ContainerNode cannot be added in ContainerNode because the key is not defined");*/
 		printf("The ContainerNode cannot be added in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*if(hosts.find(container->internalGetKey()) == hosts.end())*/
 		if(this->hosts == NULL)
 		{
 			this->hosts = hashmap_new();
 		}
-		if(hashmap_get(this->hosts, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->hosts, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*hosts[container->internalGetKey()]=ptr;*/
-			container = (ContainerNode*)ptr;
-			hashmap_put(this->hosts, container->InternalGetKey(container), ptr);
+			/*container = (ContainerNode*)ptr;*/
+			hashmap_put(this->hosts, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void ContainerNode::addhost(ContainerNode *ptr)*/
 void ContainerNode_AddHost(ContainerNode* const this, ContainerNode* ptr)
 {
 	this->host = ptr;
-	/*host =ptr;*/
 }
 
-/*void ContainerNode::addgroups(Group *ptr)*/
 void ContainerNode_AddGroups(ContainerNode* const this, Group* ptr)
 {
-	Group* container = (Group*)ptr;
+	Group* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The Group cannot be added in ContainerNode because the key is not defined");*/
 		printf("The Group cannot be added in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*if(groups.find(container->internalGetKey()) == groups.end())*/
 		if(this->groups == NULL)
 		{
 			this->groups = hashmap_new();
 		}
-		if(hashmap_get(this->groups, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->groups, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*groups[container->internalGetKey()]=ptr;*/
-			container = (Group*)ptr;
-			hashmap_put(this->groups, container->InternalGetKey(container), ptr);
+			/*container = (Group*)ptr;*/
+			hashmap_put(this->groups, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void ContainerNode::addnetworkInformation(NetworkInfo *ptr)*/
 void ContainerNode_AddNetworkInformation(ContainerNode* const this, NetworkInfo* ptr)
 {
-	NetworkInfo* container = (NetworkInfo*)ptr;
+	NetworkInfo* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NetworkInfo cannot be added in ContainerNode because the key is not defined");*/
 		printf("The NetworkInfo cannot be added in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*if(networkInformation.find(container->internalGetKey()) == networkInformation.end())*/
 		if(this->networkInformation == NULL)
 		{
 			this->networkInformation = hashmap_new();
 		}
-		if(hashmap_get(this->networkInformation, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->networkInformation, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*networkInformation[container->internalGetKey()]=ptr;*/
-			container = (NetworkInfo*)ptr;
-			hashmap_put(this->networkInformation, container->InternalGetKey(container), ptr);
-			/*any ptr_any = container;
-			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"networkInformation",ptr_any);
-			container->setEContainer(this,cmd,"networkInformation");*/
+			/*container = (NetworkInfo*)ptr;*/
+			hashmap_put(this->networkInformation, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void ContainerNode::removecomponents(ComponentInstance *ptr)*/
 void ContainerNode_RemoveComponents(ContainerNode* const this, ComponentInstance* ptr)
 {
-	ComponentInstance* container = (ComponentInstance*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The ComponentInstance cannot be removed in ContainerNode because the key is not defined");*/
 		printf("The ComponentInstance cannot be removed in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*components.erase( components.find(container->internalGetKey()));*/
-		hashmap_remove(this->components, container->InternalGetKey(container));
-		/*delete container;
-		container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->components, ptr->InternalGetKey(ptr));
 	}
 }
 
-/*void ContainerNode::removehosts(ContainerNode *ptr)*/
 void ContainerNode_RemoveHosts(ContainerNode* const this, ContainerNode* ptr)
 {
-	ContainerNode* container = (ContainerNode*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The ContainerNode cannot be removed in ContainerNode because the key is not defined");*/
 		printf("The ContainerNode cannot be removed in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*hosts.erase( hosts.find(container->internalGetKey()));*/
-		hashmap_remove(this->hosts, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->hosts, ptr->InternalGetKey(ptr));
 	}
 }
 
-/*void ContainerNode::removehost(ContainerNode *ptr)*/
 void ContainerNode_RemoveHost(ContainerNode* const this, ContainerNode* ptr)
 {
-	/*delete ptr;*/
 	free(ptr);
 }
 
-/*void ContainerNode::removegroups(Group *ptr)*/
 void ContainerNode_RemoveGroups(ContainerNode* const this, Group* ptr)
 {
-	Group* container = (Group*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The Group cannot be removed in ContainerNode because the key is not defined");*/
 		printf("The Group cannot be removed in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*groups.erase( groups.find(container->internalGetKey()));*/
-		hashmap_remove(this->groups, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->groups, ptr->InternalGetKey(ptr));
 	}
 }
 
-/*void ContainerNode::removenetworkInformation(NetworkInfo *ptr)*/
 void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkInfo* ptr)
 {
-	NetworkInfo* container = (NetworkInfo*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NetworkInfo cannot be removed in ContainerNode because the key is not defined");*/
 		printf("The NetworkInfo cannot be removed in ContainerNode because the key is not defined\n");
 	}
 	else
 	{
-		/*networkInformation.erase( networkInformation.find(container->internalGetKey()));*/
-		hashmap_remove(this->networkInformation, container->InternalGetKey(container));
-		/*delete container;
-		container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->networkInformation, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -442,19 +363,9 @@ void delete_ContainerNode(ContainerNode* const this)
 	free(this);
 }
 
-void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	/*char path[128];
-	memset(&path[0], 0, sizeof(path));*/
-	
-	/*sprintf(path, "%s/%s", parent, ((ContainerNode*)(this))->super->super->name);*/
-	
-	/*sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((ContainerNode*)(this))->super->super->name);
-
-	sprintf(path,"%s\\started", parent);
-	visitor->action(path, BOOL, (void*)((ContainerNode*)(this))->super->started);*/
-	Instance_VisitAttributes(((ContainerNode*)(this))->super, parent, visitor);
+	Instance_VisitAttributes(((ContainerNode*)(this))->super, parent, visitor, recursive);
 }
 
 void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -462,7 +373,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
-	Instance_VisitReferences(((ContainerNode*)(this))->super, parent, visitor);
+	Instance_VisitReferences(((ContainerNode*)(this))->super, parent, visitor, 0);
 	
 	if(((ContainerNode*)(this))->components != NULL)
 	{
@@ -480,7 +391,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ComponentInstance* n = data;
-				sprintf(path,"%s/components[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
+				sprintf(path,"%s/components[%s]", parent, n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -503,18 +414,41 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"%s/hosts[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				sprintf(path,"%s/hosts[%s]", parent, n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 0);
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}
 	
 	if(((ContainerNode*)(this))->host != NULL)
 	{
-		sprintf(path, "%s/host[%s]", parent, /*((ContainerNode*)(this))->host->super->super->name*/((ContainerNode*)(this))->host->InternalGetKey(((ContainerNode*)(this))->host));
-		((ContainerNode*)(this))->host->VisitAttributes(((ContainerNode*)(this))->host, path, visitor);
-		((ContainerNode*)(this))->host->VisitReferences(((ContainerNode*)(this))->host, path, visitor);
+		sprintf(path, "%s/host[%s]", parent, ((ContainerNode*)(this))->host->InternalGetKey(((ContainerNode*)(this))->host));
+		((ContainerNode*)(this))->host->VisitAttributes(((ContainerNode*)(this))->host, path, visitor, 0);
+		/*((ContainerNode*)(this))->host->VisitReferences(((ContainerNode*)(this))->host, path, visitor);*/
+	}
+	
+	if(((ContainerNode*)(this))->groups != NULL)
+	{
+		int i;
+		
+		/*sprintf(path,"%s/groups[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
+		
+		/* groups */
+		hashmap_map* m = ((ContainerNode*)(this))->groups;
+
+		/* compare groups */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				Group* n = data;
+				sprintf(path, "%s/groups[%s]", parent, n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 0);
+				/*n->VisitReferences(n, path, visitor);*/
+			}
+		}
 	}
 	
 	if(((ContainerNode*)(this))->networkInformation != NULL)
@@ -539,29 +473,6 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			}
 		}
 	}
-	
-	if(((ContainerNode*)(this))->groups != NULL)
-	{
-		int i;
-		
-		sprintf(path,"%s/groups[%s]", parent, ((ContainerNode*)(this))->super->super->name);
-		
-		/* groups */
-		hashmap_map* m = ((ContainerNode*)(this))->groups;
-
-		/* compare groups */
-		for(i = 0; i< m->table_size; i++)
-		{
-			if(m->data[i].in_use != 0)
-			{
-				any_t data = (any_t) (m->data[i].data);
-				Group* n = data;
-				sprintf(path, "%s/groups[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				/*n->VisitReferences(n, path, visitor);*/
-			}
-		}
-	}
 }
 
 void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
@@ -569,7 +480,7 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 	/* There is no local attributes */
 	
 	/* Instance attributes and references */
-	if(!strcmp("name", attribute) ||  !strcmp("metaData", attribute) || !strcmp("started", attribute) || !strcmp("typeDefinition", attribute))
+	if(!strcmp("name", attribute) ||  !strcmp("metaData", attribute) || !strcmp("started", attribute) /*|| !strcmp("typeDefinition", attribute)*/)
 	{
 		return Instance_FindByPath(attribute, this->super);/*return this->super->metaData;*/
 	}
@@ -696,23 +607,3 @@ void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)
 		}
 	}
 }
-
-/*int _acceptContainerNode(ContainerNode* this, ContainerNode* c, Visitor* visitor)
-{
-	int i;
-
-	for(i = 0; i < this->count_components; i++)
-	{
-		visitor->action((void*)this->components, (void*)c->components, 0);
-	}
-	
-	for(i = 0; i < this->count_groups; i++)
-	{
-		visitor->action((void*)this->groups, (void*)c->groups, 0);
-	}
-
-	for(i = 0; i < this->count_networkInformation; i++)
-	{
-		visitor->action((void*)this->networkInformation, (void*)c->networkInformation, 0);
-	}
-}*/

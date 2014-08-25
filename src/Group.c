@@ -72,26 +72,15 @@ Group* new_Group()
 
 char* Group_InternalGetKey(Group* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 char* Group_MetaClassName(Group* const this)
 {
-	char* name;
+	char name[6];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("Group") + 1));
+	/*name = malloc(sizeof(char) * (strlen("Group") + 1));*/
 	strcpy(name, "Group");
 	
 	return name;
@@ -99,7 +88,7 @@ char* Group_MetaClassName(Group* const this)
 
 ContainerNode* Group_FindSubNodesByID(Group* const this, char* id)
 {
-	ContainerNode* value;
+	ContainerNode* value = NULL;
 	
 	if(this->subNodes != NULL)
 	{
@@ -114,49 +103,37 @@ ContainerNode* Group_FindSubNodesByID(Group* const this, char* id)
 	}
 }
 
-/*void Group::addsubNodes(ContainerNode *ptr)*/
 void Group_AddSubNodes(Group* const this, ContainerNode* ptr)
 {
-	ContainerNode* container = (ContainerNode*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	ContainerNode* container = NULL;
+
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The ContainerNode cannot be added in Group because the key is not defined");*/
 		printf("The ContainerNode cannot be added in Group because the key is not defined\n");
 	}
 	else
 	{
-		/*if(subNodes.find(container->internalGetKey()) == subNodes.end())*/
 		if(this->subNodes == NULL)
 		{
 			this->subNodes = hashmap_new();
 		}
-		if(hashmap_get(this->subNodes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->subNodes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*subNodes[container->internalGetKey()]=ptr;*/
-			container = (ContainerNode*)ptr;
-			hashmap_put(this->subNodes, container->InternalGetKey(container), ptr);
+			/*container = (ContainerNode*)ptr;*/
+			hashmap_put(this->subNodes, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void Group::removesubNodes(ContainerNode *ptr)*/
 void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr)
 {
-	ContainerNode* container = (ContainerNode*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The ContainerNode cannot be removed in Group because the key is not defined");*/
 		printf("The ContainerNode cannot be removed in Group because the key is not defined\n");
 	}
 	else
 	{
-		/*subNodes.erase( subNodes.find(container->internalGetKey()));*/
-		hashmap_remove(this->subNodes, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->subNodes, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -180,22 +157,17 @@ void delete_Group(Group* const this)
 	free(this);
 }
 
-void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	/*char path[256];
-	memset(&path[0], 0, sizeof(path));*/
-
-	/*sprintf(path, "%s", parent, ((Group*)(this))->super->super->name);*/
-
-	Instance_VisitAttributes(((Group*)(this))->super, parent, visitor);
+	Instance_VisitAttributes(((Group*)(this))->super, parent, visitor, recursive);
 }
 
-void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
-	Instance_VisitReferences(((Group*)(this))->super, parent, visitor);
+	Instance_VisitReferences(((Group*)(this))->super, parent, visitor, 0);
 	
 	if(((Group*)(this))->subNodes != NULL)
 	{
@@ -212,8 +184,8 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor)
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
 				sprintf(path,"%s/subNodes[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 0);
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}
@@ -293,13 +265,3 @@ void* Group_FindByPath(char* attribute, Group* const this)
 		}
 	}
 }
-
-/*int _acceptGroup(Group* this, Group* c, Visitor* visitor)
-{
-	int i;
-
-	for(i = 0; i < this->count_subNodes; i++)
-	{
-		visitor->action((void*)this->subNodes, (void*)c->subNodes, 0);
-	}
-}*/

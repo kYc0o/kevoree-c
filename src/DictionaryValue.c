@@ -35,26 +35,15 @@ void delete_DictionaryValue(DictionaryValue* const this)
 
 char* DictionaryValue_InternalGetKey(DictionaryValue* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->name);
-
-	return internalKey;
+	return this->name;
 }
 
 char* DictionaryValue_MetaClassName(DictionaryValue* const this)
 {
-	char* name;
+	char name[16];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("DictionaryValue") + 1));
+	/*name = malloc(sizeof(char) * (strlen("DictionaryValue") + 1));*/
 	strcpy(name, "DictionaryValue");
 	
 	return name;

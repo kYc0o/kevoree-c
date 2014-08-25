@@ -11,7 +11,8 @@ DictionaryType* new_DictionaryType()
 		return NULL;
 	}
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->attributes = NULL;
@@ -43,26 +44,15 @@ void delete_DictionaryType(DictionaryType* const this)
 
 char* DictionaryType_InternalGetKey(DictionaryType* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->generated_KMF_ID;
 }
 
 char* DictionaryType_MetaClassName(DictionaryType* const this)
 {
-	char* name;
+	char name[15];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("DictionaryType") + 1));
+	/*name = malloc(sizeof(char) * (strlen("DictionaryType") + 1));*/
 	strcpy(name, "DictionaryType");
 	
 	return name;
@@ -70,7 +60,7 @@ char* DictionaryType_MetaClassName(DictionaryType* const this)
 
 DictionaryAttribute* DictionaryType_FindAttributesByID(DictionaryType* const this, char* id)
 {
-	DictionaryAttribute* value;
+	DictionaryAttribute* value = NULL;
 
 	if(this->attributes != NULL)
 	{
@@ -87,9 +77,9 @@ DictionaryAttribute* DictionaryType_FindAttributesByID(DictionaryType* const thi
 
 void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribute* ptr)
 {
-	DictionaryAttribute* container = (DictionaryAttribute*)ptr;
+	DictionaryAttribute* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The DictionaryAttribute cannot be added in DictionaryType because the key is not defined\n");
 	}
@@ -99,25 +89,23 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 		{
 			this->attributes = hashmap_new();
 		}
-		if(hashmap_get(this->attributes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->attributes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (DictionaryAttribute*)ptr;
-			hashmap_put(this->attributes, container->InternalGetKey(container), ptr);
+			/*container = (DictionaryAttribute*)ptr;*/
+			hashmap_put(this->attributes, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttribute* ptr)
 {
-	DictionaryAttribute* container = (DictionaryAttribute*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The DictionaryValue cannot be removed in Dictionary because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->attributes, container->InternalGetKey(container));
+		hashmap_remove(this->attributes, ptr->InternalGetKey(ptr));
 	}
 }
 

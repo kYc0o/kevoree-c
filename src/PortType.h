@@ -10,7 +10,7 @@ typedef struct _PortType PortType;
 typedef char* (*fptrPortTypeMetaClassName)(PortType*);
 typedef char* (*fptrPortTypeInternalGetKey)(PortType*);
 typedef void (*fptrDeletePortType)(PortType*);
-typedef void (*fptrVisitAttrPortType)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrPortType)(void*, char*, Visitor*, int);
 typedef void (*fptrVisitRefsPortType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathPortType)(char*, TypeDefinition*);
 
@@ -32,7 +32,7 @@ char* PortType_MetaClassName(PortType* const this);
 char* PortType_InternalGetKey(PortType* const this);
 void deletePoly_PortType(TypeDefinition* const this);
 void delete_PortType(PortType* const this);
-void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
 void* PortType_FindByPath(char* attribute, TypeDefinition* const this);
 
 #endif /*__PortType_H */

@@ -17,6 +17,14 @@ Instance* newPoly_ComponentInstance()
 	pObj->pDerivedObj = pCompInstanceObj; /* Pointing to derived object */
 	pObj->VisitAttributes = ComponentInstance_VisitAttributes;
 	
+	pCompInstanceObj->provided = NULL;
+	pCompInstanceObj->required = NULL;
+
+	pCompInstanceObj->AddProvided = ComponentInstance_AddProvided;
+	pCompInstanceObj->AddRequired = ComponentInstance_AddRequired;
+	pCompInstanceObj->RemoveProvided = ComponentInstance_RemoveProvided;
+	pCompInstanceObj->RemoveRequired = ComponentInstance_RemoveRequired;
+
 	pObj->MetaClassName = ComponentInstance_MetaClassName;
 	pObj->InternalGetKey = ComponentInstance_InternalGetKey;
 	
@@ -43,9 +51,17 @@ ComponentInstance* new_ComponentInstance()
 
 	/*((Instance*)(pObj->pDerivedObj))->pDerivedObj = pCompInstanceObj; Pointing to derived object */
 	pCompInstanceObj->super = pObj;
+
+	pCompInstanceObj->provided = NULL;
+	pCompInstanceObj->required = NULL;
+
+	pCompInstanceObj->AddProvided = ComponentInstance_AddProvided;
+	pCompInstanceObj->AddRequired = ComponentInstance_AddRequired;
+	pCompInstanceObj->RemoveProvided = ComponentInstance_RemoveProvided;
+	pCompInstanceObj->RemoveRequired = ComponentInstance_RemoveRequired;
+
 	pCompInstanceObj->VisitAttributes = ComponentInstance_VisitAttributes;
 	pCompInstanceObj->VisitReferences = ComponentInstance_VisitReferences;
-	
 	pCompInstanceObj->MetaClassName = ComponentInstance_MetaClassName;
 	pCompInstanceObj->InternalGetKey = ComponentInstance_InternalGetKey;
 	pCompInstanceObj->FindByPath = ComponentInstance_FindByPath;
@@ -57,26 +73,15 @@ ComponentInstance* new_ComponentInstance()
 
 char* ComponentInstance_InternalGetKey(ComponentInstance* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 char* ComponentInstance_MetaClassName(ComponentInstance* const this)
 {
-	char* name;
+	char name[18];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("ComponentInstance") + 1));
+	/*name = malloc(sizeof(char) * (strlen("ComponentInstance") + 1));*/
 	strcpy(name, "ComponentInstance");
 	
 	return name;
@@ -101,33 +106,254 @@ void delete_ComponentInstance(ComponentInstance* const this)
 	
 }
 
+Port* ComponentInstance_FindProvidedByID(ComponentInstance* const this, char* id)
+{
+	Port* value = NULL;
+
+	if(this->provided != NULL)
+	{
+		if(hashmap_get(this->provided, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+Port* ComponentInstance_FindRequiredByID(ComponentInstance* const this, char* id)
+{
+	Port* value = NULL;
+
+	if(this->required != NULL)
+	{
+		if(hashmap_get(this->required, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
+{
+	Port* container = NULL;
+
+	if(ptr->InternalGetKey(ptr) == NULL)
+	{
+		printf("The Port cannot be added in ComponentInstance because the key is not defined\n");
+	}
+	else
+	{
+		if(this->provided == NULL)
+		{
+			this->provided = hashmap_new();
+		}
+		if(hashmap_get(this->provided, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		{
+			/*container = (MBinding*)ptr;*/
+			hashmap_put(this->provided, ptr->InternalGetKey(ptr), ptr);
+		}
+	}
+}
+
+void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
+{
+	Port* container = NULL;
+
+	if(ptr->InternalGetKey(ptr) == NULL)
+	{
+		printf("The Port cannot be added in ComponentInstance because the key is not defined\n");
+	}
+	else
+	{
+		if(this->required == NULL)
+		{
+			this->required = hashmap_new();
+		}
+		if(hashmap_get(this->required, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		{
+			/*container = (MBinding*)ptr;*/
+			hashmap_put(this->required, ptr->InternalGetKey(ptr), ptr);
+		}
+	}
+}
+
+void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr)
+{
+	if(ptr->InternalGetKey(ptr) == NULL)
+	{
+		printf("The Port cannot be removed in ComponentInstance because the key is not defined\n");
+	}
+	else
+	{
+		hashmap_remove(this->provided, ptr->InternalGetKey(ptr));
+	}
+}
+
+void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
+{
+	if(ptr->InternalGetKey(ptr) == NULL)
+	{
+		printf("The Port cannot be removed in ComponentInstance because the key is not defined\n");
+	}
+	else
+	{
+		hashmap_remove(this->required, ptr->InternalGetKey(ptr));
+	}
+}
+
 void ComponentInstance_VisitAttributes(void* const this, char *parent, Visitor* visitor)
 {
-	/*char path[128];
-	memset(&path[0], 0, sizeof(path));*/
-	
 	ComponentInstance* pCompInstanceObj = (ComponentInstance*)this;
 	
-	Instance_VisitAttributes(pCompInstanceObj->super, parent, visitor);
+	Instance_VisitAttributes(pCompInstanceObj->super, parent, visitor, 1);
 }
 
 void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	ComponentInstance* pCompInstanceObj = (ComponentInstance*)this;
-	Instance_VisitReferences(pCompInstanceObj->super, parent, visitor);
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	/* Instance references */
+	Instance_VisitReferences(((ComponentInstance*)(this))->super, parent, visitor, 0);
+
+	if(((ComponentInstance*)(this))->provided != NULL)
+	{
+		int i;
+
+		/* provided */
+		hashmap_map* m = ((ComponentInstance*)(this))->provided;
+
+		/* compare provided */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				Port* n = data;
+				sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
+			}
+		}
+	}
+
+	if(((ComponentInstance*)(this))->required != NULL)
+	{
+		int i;
+
+		/* required */
+		hashmap_map* m = ((ComponentInstance*)(this))->required;
+
+		/* compare required */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				Port* n = data;
+				sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);
+			}
+		}
+	}
 }
 
 void* ComponentInstance_FindByPath(char* attribute, ComponentInstance* const this)
 {
 	/* There is no local attributes */
-	/* There is no local references */
-	/* Instance attributes and references */
-	return Instance_FindByPath(attribute, this->super);
-}
 
-/*int _acceptComponentInstance(ComponentInstance* this, ComponentInstance* c, Visitor* visitor)
-{
-	int i;
-	visitor->action((void*)this->name, (void*)c->name, 0);
-	visitor->action((void*)this->typedefinition, (void*)c->typedefinition, 0);
-}*/
+	/* Instance attributes */
+	if(!strcmp("name", attribute) ||  !strcmp("metaData", attribute) || !strcmp("started", attribute) /*|| !strcmp("typeDefinition", attribute)*/)
+	{
+		return Instance_FindByPath(attribute, this->super);/*return this->super->metaData;*/
+	}
+	/* Local references */
+	else
+	{
+		char* nextAttribute = NULL;
+		char* path = strdup(attribute);
+		char* pch;
+
+		if(indexOf(path,"/") != -1)
+		{
+			pch = strtok (path,"/");
+			/*nextAttribute = strtok(NULL, "\\");
+			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));*/
+			/*printf("pch: %s\n", pch);*/
+			if(strchr(attribute,'\\') != NULL)
+			{
+				/*printf("Attribute found at: %d\n", strchr(attribute,'\\')-attribute+1);*/
+				nextAttribute = strtok(NULL, "\\");
+				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+			}
+			else
+			{
+				/*printf("Attribute not found...\n");*/
+				nextAttribute = strtok(NULL, "\\");
+			}
+		}
+		else
+		{
+			pch = path;
+			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(NULL, "\\");
+		}
+
+		printf("Token: %s\n", pch);
+
+		int i = indexOf(pch,"[") + 2;
+		int y = lastIndexOf(pch,"]") - i + 1;
+
+		char* relationName = (char*)Substring(pch, 0, i - 2);
+		char* queryID = (char*)Substring(pch, i, y);
+
+		printf("relationName: %s\n", relationName);
+		printf("queryID: %s\n", queryID);
+		printf("next attribute: %s\n", nextAttribute);
+
+		if(!strcmp("provided", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+
+				return this->FindProvidedByID(this, queryID);
+			}
+			else
+			{
+				Port* port = this->FindProvidedByID(this, queryID);
+				if(port != NULL)
+					return port->FindByPath(nextAttribute, port);
+				else
+					return NULL;
+			}
+		}
+		else if(!strcmp("required", relationName))
+		{
+			if(nextAttribute == NULL)
+			{
+				return this->FindRequiredByID(this, queryID);
+			}
+			else
+			{
+				Port* port = this->FindRequiredByID(this, queryID);
+				if(port != NULL)
+					return port->FindByPath(nextAttribute, port);
+				else
+					return NULL;
+			}
+		}
+		/* Instance references */
+		else
+		{
+			return Instance_FindByPath(attribute, this->super);
+		}
+	}
+}

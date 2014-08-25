@@ -107,14 +107,15 @@ void delete_DictionaryAttribute(void* const this)
 
 char* DictionaryAttribute_InternalGetKey(DictionaryAttribute* const this)
 {
-	return TypedElement_InternalGetKey(this->super);
+	return this->super->InternalGetKey(this->super);
 }
 
 char* DictionaryAttribute_MetaClassName(DictionaryAttribute* const this)
 {
-	char* name;
+	char name[20];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("DictionaryAttribute") + 1));
+	/*name = malloc(sizeof(char) * (strlen("DictionaryAttribute") + 1));*/
 	strcpy(name, "DictionaryAttribute");
 	
 	return name;

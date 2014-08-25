@@ -28,7 +28,8 @@ Repository* new_Repository()
 
 char* Repository_MetaClassName(Repository* const this)
 {
-	char* name;
+	char name[11];
+	memset(&name[0], 0, sizeof(name));
 
 	name = malloc(sizeof(char) * (strlen("Repository") + 1));
 	strcpy(name, "Repository");
@@ -38,19 +39,7 @@ char* Repository_MetaClassName(Repository* const this)
 
 char* Repository_InternalGetKey(Repository* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->url)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->url);
-
-	return internalKey;
+	return this->url;
 }
 
 void delete_Repository(Repository* const this)
@@ -67,8 +56,6 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-
-	/*sprintf(path,"%s/%s",parent, ((Repository*)(this))->url);*/
 
 	sprintf(path,"%s\\url",parent);
 	visitor->action(path, STRING, ((Repository*)(this))->url);

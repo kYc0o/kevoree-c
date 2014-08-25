@@ -25,9 +25,7 @@ typedef void* (*fptrFindByPathNodeNetwork)(char*, NodeNetwork*);
 
 typedef struct _NodeNetwork {
 	void* pDerivedObj;
-	char* generated_KMF_ID;
-	/*int count_links;
-	NodeLink** links;*/
+	char generated_KMF_ID[9];
 	map_t link;
 	ContainerNode* initBy;
 	ContainerNode* target;
@@ -41,7 +39,6 @@ typedef struct _NodeNetwork {
 	fptrNodeNetRemoveInitBy RemoveInitBy;
 	fptrNodeNetRemoveTarget RemoveTarget;
 	fptrDeleteNodeNetwork Delete;
-	/*int (*accept)(struct _NodeNetwork* this, struct _NodeNetwork* c, Visitor* visitor);*/
 	fptrVisitAttrNodeNetwork VisitAttributes;
 	fptrVisitRefsNodeNetwork VisitReferences;
 	fptrFindByPathNodeNetwork FindByPath;
@@ -58,9 +55,8 @@ void NodeNetwork_RemoveLink(NodeNetwork* const this, NodeLink* ptr);
 void NodeNetwork_RemoveInitBy(NodeNetwork* const this, ContainerNode* ptr);
 void NodeNetwork_RemoveTarget(NodeNetwork* const this, ContainerNode* ptr);
 void delete_NodeNetwork(NodeNetwork* const this);
-/*int _acceptNodeNetwork(NodeNetwork* this, NodeNetwork* c, Visitor* visitor);*/
 void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor);
 void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this);
 
-#endif
+#endif /* H_NodeNetwork */

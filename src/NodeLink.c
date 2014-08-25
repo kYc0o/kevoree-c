@@ -14,11 +14,10 @@ NodeLink* new_NodeLink()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_NodeLink") + 1));Uuid::getSingleton().generateUUID();
-	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeLink");*/
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
+	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
-	/*pObj->networkProperties = hashmap_new();*/
+
 	pObj->networkType = NULL;
 	pObj->estimatedRate = -1;
 	pObj->lastCheck = NULL;
@@ -40,90 +39,69 @@ NodeLink* new_NodeLink()
 
 char* NodeLink_InternalGetKey(NodeLink* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->generated_KMF_ID;
 }
 
 char* NodeLink_MetaClassName(NodeLink* const this)
 {
-	char* name;
+	char name[9];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("NodeLink") + 1));
+	/*name = malloc(sizeof(char) * (strlen("NodeLink") + 1));*/
 	strcpy(name, "NodeLink");
 	
 	return name;
 }
 
-/*NetworkProperty* NodeLink::findnetworkPropertiesByID(std::string id)*/
 NetworkProperty* NodeLink_FindNetworkPropertiesByID(NodeLink* const this, char* id)
 {
-	NetworkProperty* value;
+	NetworkProperty* value = NULL;
 
-	if(hashmap_get(this->networkProperties, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->networkProperties != NULL)
+	{
+		if(hashmap_get(this->networkProperties, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
-	/*return networkProperties[id];*/
+	}
+
 }
 
-/*void NodeLink::addnetworkProperties(NetworkProperty *ptr)*/
 void NodeLink_AddNetworkProperties(NodeLink* const this, NetworkProperty* ptr)
 {
-	NetworkProperty* container = (NetworkProperty*)ptr;
+	NetworkProperty* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NetworkProperty cannot be added in NodeLink because the key is not defined");*/
 		printf("The NetworkProperty cannot be added in NodeLink because the key is not defined\n");
 	}
 	else
 	{
-		/*if(networkProperties.find(container->internalGetKey()) == networkProperties.end())*/
 		if(this->networkProperties == NULL)
 		{
 			this->networkProperties = hashmap_new();
 		}
-		if(hashmap_get(this->networkProperties, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->networkProperties, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*networkProperties[container->internalGetKey()]=ptr;*/
-			container = (NetworkProperty*)ptr;
-			hashmap_put(this->networkProperties, container->InternalGetKey(container), ptr);
-			/*any ptr_any = container;
-			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"networkProperties",ptr_any);
-			container->setEContainer(this,cmd,"networkProperties");*/
+			/*container = (NetworkProperty*)ptr;*/
+			hashmap_put(this->networkProperties, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void NodeLink::removenetworkProperties(NetworkProperty *ptr)*/
 void NodeLink_RemoveNetworkProperties(NodeLink* const this, NetworkProperty* ptr)
 {
-	NetworkProperty* container = (NetworkProperty*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NetworkProperty cannot be removed in NodeLink because the key is not defined");*/
 		printf("The NetworkProperty cannot be removed in NodeLink because the key is not defined\n");
 	}
 	else
 	{
-		/*networkProperties.erase( networkProperties.find(container->internalGetKey()));*/
-		hashmap_remove(this->networkProperties, container->InternalGetKey(container));
-		/*delete container;
-		container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->networkProperties, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -145,8 +123,6 @@ void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-
-	/*sprintf(path, "%s/%s", parent, ((NodeLink*)(this))->generated_KMF_ID);*/
 
 	sprintf(path, "%s\\ID", parent);
 	visitor->action(path, STRING, ((NodeLink*)(this))->generated_KMF_ID);

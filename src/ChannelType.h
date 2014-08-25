@@ -8,7 +8,7 @@ typedef struct _ChannelType ChannelType;
 typedef char* (*fptrChanTypeMetaClassName)(ChannelType*);
 typedef char* (*fptrChanTypeInternalGetKey)(void*);
 typedef void (*fptrDeleteChannelType)(void*);
-typedef void (*fptrVisitAttrChanType)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrChanType)(void*, char*, Visitor*, int);
 typedef void (*fptrVisitRefsChanType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathChanType)(char*, TypeDefinition*);
 
@@ -32,7 +32,7 @@ void deletePoly_ChannelType(void* const this);
 void delete_ChannelType(void* const this);
 char* ChannelType_InternalGetKey(void* const this);
 char* ChannelType_MetaClassName(ChannelType* const this);
-void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
 void ChannelType_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* ChannelType_FindByPath(char* attribute, TypeDefinition* const this);
 

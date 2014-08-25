@@ -17,8 +17,8 @@ typedef ContainerNode* (*fptrGroupFindSubNodesByID)(Group*, char*);
 typedef void (*fptrGroupAddSubNodes)(Group*, ContainerNode*);
 typedef void (*fptrGroupRemoveSubNodes)(Group*, ContainerNode*);
 typedef void (*fptrDeleteGroup)(Group*);
-typedef void (*fptrVisitAttrGroup)(void*, char*, Visitor*);
-typedef void (*fptrVisitRefsGroup)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrGroup)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitRefsGroup)(void*, char*, Visitor*, int);
 typedef void* (*fptrFindByPathGroup)(char*, Group*);
 
 typedef struct _Group { 
@@ -44,8 +44,8 @@ void Group_AddSubNodes(Group* const this, ContainerNode* ptr);
 void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr);
 void deletePoly_Group(Instance*);
 void delete_Group(Group*);
-void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void Group_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive);
 void* Group_FindByPath(char* attribute, Group* const this);
 
 #endif /* H_Group */

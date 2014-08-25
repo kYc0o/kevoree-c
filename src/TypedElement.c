@@ -71,9 +71,10 @@ TypedElement* new_TypedElement(void)
 
 char* TypedElement_MetaClassName(TypedElement* const this)
 {
-	char* name;
+	char name[13];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("TypedElement") + 1));
+	/*name = malloc(sizeof(char) * (strlen("TypedElement") + 1));*/
 	strcpy(name, "TypedElement");
 	
 	return name;
@@ -81,74 +82,57 @@ char* TypedElement_MetaClassName(TypedElement* const this)
 
 char* TypedElement_InternalGetKey(TypedElement* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 TypedElement* TypedElement_FindGenericTypesByID(TypedElement* const this, char* id)
 {
-	TypedElement* value;
+	TypedElement* value = NULL;
 
-	if(hashmap_get(this->genericTypes, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->genericTypes)
+	{
+		if(hashmap_get(this->genericTypes, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
-/*void TypedElement::addgenericTypes(TypedElement *ptr)*/
 void TypedElement_AddGenericTypes(TypedElement* const this, TypedElement* ptr)
 {
-	TypedElement* container = (TypedElement*)ptr;
+	TypedElement* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The TypedElement cannot be added in TypedElement because the key is not defined");*/
 		printf("The TypedElement cannot be added in TypedElement because the key is not defined");
 	}
 	else
 	{
-		/*if(genericTypes.find(container->internalGetKey()) == genericTypes.end())*/
 		if(this->genericTypes == NULL)
 		{
 			this->genericTypes = hashmap_new();
 		}
-		if(hashmap_get(this->genericTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->genericTypes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*genericTypes[container->internalGetKey()]=ptr;*/
-			container = (TypedElement*)ptr;
-			hashmap_put(this->genericTypes, container->InternalGetKey(container), ptr);
+			/*container = (TypedElement*)ptr;*/
+			hashmap_put(this->genericTypes, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void TypedElement::removegenericTypes(TypedElement *ptr)*/
 void TypedElement_RemoveGenericTypes(TypedElement* const this, TypedElement* ptr)
 {
-	TypedElement* container = (TypedElement*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The TypedElement cannot be removed in TypedElement because the key is not defined");*/
 		printf("The TypedElement cannot be removed in TypedElement because the key is not defined\n");
 	}
 	else
 	{
-		/*genericTypes.erase( genericTypes.find(container->internalGetKey()));*/
-		hashmap_remove(this->genericTypes, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->genericTypes, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -174,13 +158,6 @@ void delete_TypedElement(TypedElement* const this)
 
 void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	/*char path[128];
-	memset(&path[0], 0, sizeof(path));*/
-
-	/*sprintf(path,"%s/%s",parent, ((TypedElement*)(this))->super->name);*/
-
-	/*sprintf(path,"%s\\name",parent);
-	visitor->action(path, STRING, ((TypedElement*)(this))->super->name);*/
 	NamedElement_VisitAttributes(((TypedElement*)(this))->super, parent, visitor);
 }
 
@@ -192,8 +169,6 @@ void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visit
 	if(((TypedElement*)(this))->genericTypes != NULL)
 	{
 		int i;
-		
-		/*sprintf(path,"%s/genericTypes[%s]", parent, ((TypedElement*)(this))->super->name);*/
 		
 		/* genericTypes */
 		hashmap_map* m = ((TypedElement*)(this))->genericTypes;

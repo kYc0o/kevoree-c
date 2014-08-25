@@ -14,7 +14,8 @@ Dictionary* new_Dictionary()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->values = NULL;
@@ -46,7 +47,7 @@ void delete_Dictionary(Dictionary* const this)
 
 DictionaryValue* Dictionary_FindValuesByID(Dictionary* const this, char* id)
 {
-	DictionaryValue* value;
+	DictionaryValue* value = NULL;
 
 	if(this->values != NULL)
 	{
@@ -63,9 +64,9 @@ DictionaryValue* Dictionary_FindValuesByID(Dictionary* const this, char* id)
 
 void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 {
-	DictionaryValue* container = (DictionaryValue*)ptr;
+	DictionaryValue* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The DictionaryValue cannot be added in Dictionary because the key is not defined\n");
 	}
@@ -75,50 +76,37 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 		{
 			this->values = hashmap_new();
 		}
-		if(hashmap_get(this->values, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->values, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (DictionaryValue*)ptr;
-			hashmap_put(this->values, container->InternalGetKey(container), ptr);
+			/*container = (DictionaryValue*)ptr;*/
+			hashmap_put(this->values, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void Dictionary_RemoveValues(Dictionary* const this, DictionaryValue* ptr)
 {
-	DictionaryValue* container = (DictionaryValue*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The DictionaryValue cannot be removed in Dictionary because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->values, container->InternalGetKey(container));
+		hashmap_remove(this->values, ptr->InternalGetKey(ptr));
 	}
 }
 
 char* Dictionary_InternalGetKey(Dictionary* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->generated_KMF_ID;
 }
 
 char* Dictionary_MetaClassName(Dictionary* const this)
 {
 	char* name;
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("Dictionary") + 1));
+	/*name = malloc(sizeof(char) * (strlen("Dictionary") + 1));*/
 	strcpy(name, "Dictionary");
 	
 	return name;

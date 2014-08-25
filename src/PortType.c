@@ -64,9 +64,10 @@ PortType* new_PortType()
 
 char* PortType_MetaClassName(PortType* const this)
 {
-	char* name;
+	char name[9];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("PortType") + 1));
+	/*name = malloc(sizeof(char) * (strlen("PortType") + 1));*/
 	strcpy(name, "PortType");
 	
 	return name;
@@ -74,23 +75,7 @@ char* PortType_MetaClassName(PortType* const this)
 
 char* PortType_InternalGetKey(PortType* const this)
 {
-	/*char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->super->name) + strlen("/") + strlen(this->super->version)) + 1);
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->super->name);
-	strcat(internalKey, "/");
-	strcat(internalKey, this->super->version);
-
-	return internalKey;*/
 	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
-	
 }
 
 void deletePoly_PortType(TypeDefinition* const this)
@@ -111,21 +96,20 @@ void delete_PortType(PortType* const this)
 	free(this);
 }
 
-void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path,"%s",parent, ((PortType*)(this))->super->super->name);
-
-	sprintf(path,"%s\\name",parent);
-	visitor->action(path, STRING, ((PortType*)(this))->super->super->name);*/
-	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
+	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 	
 	PortType* porttype = ((TypeDefinition*)this)->pDerivedObj;
 	
-	sprintf(path, "%s\\synchrone", parent);
-	visitor->action(path, BOOL, porttype->synchrone);
+	if(recursive)
+	{
+		sprintf(path, "%s\\synchrone", parent);
+		visitor->action(path, BOOL, porttype->synchrone);
+	}
 }
 
 void* PortType_FindByPath(char* attribute, TypeDefinition* const this)

@@ -10,7 +10,7 @@ typedef struct _GroupType GroupType;
 typedef char* (*fptrGroupTypeMetaClassName)(GroupType*);
 typedef char* (*fptrGroupTypeInternalGetKey)(GroupType*);
 typedef void (*fptrDeleteGroupType)(GroupType*);
-typedef void (*fptrVisitAttrGroupType)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrGroupType)(void*, char*, Visitor*, int);
 typedef void (*fptrVisitRefsGroupType)(void*, char*, Visitor*);
 
 typedef struct _GroupType {
@@ -28,6 +28,6 @@ char* GroupType_MetaClassName(GroupType* const this);
 char* GroupType_InternalGetKey(void* const this);
 void deletePoly_GroupType(TypeDefinition* const this);
 void delete_GroupType(GroupType* const this);
-void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
 
 #endif /* __GroupType_H */

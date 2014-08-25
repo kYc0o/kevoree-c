@@ -1,7 +1,5 @@
 #include "ComponentType.h"
 
-int result;
-
 TypeDefinition* newPoly_ComponentType(void)
 {
 	ComponentType* pCompTypeObj = NULL;
@@ -22,8 +20,6 @@ TypeDefinition* newPoly_ComponentType(void)
 	pObj->pDerivedObj = pCompTypeObj; /* Pointing to derived object */
 	pCompTypeObj->super = pObj;
 	
-	/*pCompTypeObj->required = hashmap_new();
-	pCompTypeObj->provided = hashmap_new();*/
 	pCompTypeObj->required = NULL;
 	pCompTypeObj->provided = NULL;
 	
@@ -88,32 +84,18 @@ ComponentType* new_ComponentType(void)
 
 char* ComponentType_InternalGetKey(void* const this)
 {
-	char* internalKey;
-
 	if (this == NULL)
 		return NULL;
-
-	/*internalKey = malloc(sizeof(char) * (strlen(this->super->super->name) + strlen("/") + strlen(this->super->version)) + 1);
-
-	if (internalKey == NULL)
-		return NULL;*/
-
-	/*strcpy(internalKey, this->super->super->name);
-	strcat(internalKey, "/");
-	strcat(internalKey, this->super->version);
-	sprintf(internalKey, "%s/%s", this->super->super->name, this->super->version);*/
 	
-	internalKey = TypeDefinition_InternalGetKey((TypeDefinition*)this);
-
-	return internalKey;
-	/*return ((TypeDefinition*)this)->InternalGetKey(((TypeDefinition*)this));*/
+	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
 }
 
 char* ComponentType_MetaClassName(ComponentType* const this)
 {
-	char* name;
+	char name[14];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("ComponentType") + 1));
+	/*name = malloc(sizeof(char) * (strlen("ComponentType") + 1));*/
 	strcpy(name, "ComponentType");
 	
 	return name;
@@ -121,7 +103,7 @@ char* ComponentType_MetaClassName(ComponentType* const this)
 
 PortTypeRef* ComponentType_FindRequiredByID(ComponentType* const this, char* id)
 {
-	PortTypeRef* value;
+	PortTypeRef* value = NULL;
 
 	if(hashmap_get(this->required, id, (void**)(&value)) == MAP_OK)
 		return value;
@@ -131,7 +113,7 @@ PortTypeRef* ComponentType_FindRequiredByID(ComponentType* const this, char* id)
 
 PortTypeRef* ComponentType_FindProvidedByID(ComponentType* const this, char* id)
 {
-	PortTypeRef* value;
+	PortTypeRef* value = NULL;
 
 	if(hashmap_get(this->provided, id, (void**)(&value)) == MAP_OK)
 		return value;
@@ -141,9 +123,9 @@ PortTypeRef* ComponentType_FindProvidedByID(ComponentType* const this, char* id)
 
 void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 {
-	PortTypeRef* container = (PortTypeRef*)ptr;
+	PortTypeRef* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The PortTypeRef cannot be added in ComponentType because the key is not defined");
 	}
@@ -154,20 +136,19 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 			this->required = hashmap_new();
 		}
 
-		if(hashmap_get(this->required, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->required, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (PortTypeRef*)ptr;
-			result = hashmap_put(this->required, container->InternalGetKey(container), ptr);
-			/*printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);*/
+			/*container = (PortTypeRef*)ptr;*/
+			hashmap_put(this->required, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 {
-	PortTypeRef* container = (PortTypeRef*)ptr;
+	PortTypeRef* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The PortTypeRef cannot be added in ComponentType because the key is not defined");
 	}
@@ -177,42 +158,35 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 		{
 			this->provided = hashmap_new();
 		}
-		if(hashmap_get(this->provided, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->provided, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (PortTypeRef*)ptr;
-			result = hashmap_put(this->provided, container->InternalGetKey(container), ptr);
-			/*printf("PortTypeRef %s added to ComponentType %s Result: %d\n", ptr->super->name, this->super->super->name, result);*/
+			/*container = (PortTypeRef*)ptr;*/
+			hashmap_put(this->provided, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ComponentType_RemoveRequired(ComponentType* const this, PortTypeRef* ptr)
 {
-	PortTypeRef* container = (PortTypeRef*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->required, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->required, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ComponentType_RemoveProvided(ComponentType* const this, PortTypeRef* ptr)
 {
-	PortTypeRef* container = (PortTypeRef*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->provided, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->provided, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -237,14 +211,11 @@ void delete_ComponentType(ComponentType* const this)
 	free(this);
 }
 
-void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	/*char path[128];
-	memset(&path[0], 0, sizeof(path));*/
-	
-	/*sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);*/
-	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor);
+	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }
+
 void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
@@ -269,8 +240,8 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				sprintf(path, "%s/required[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				sprintf(path, "%s/required[%s]", parent, n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 			}
 		}
@@ -290,8 +261,8 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				sprintf(path, "%s/required[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				sprintf(path, "%s/provided[%s]", parent, n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 			}
 		}

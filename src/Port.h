@@ -25,7 +25,7 @@ typedef void* (*fptrFindByPathPort)(char*, Port*);
 typedef void (*fptrDeletePort)(void*);
 
 typedef struct _Port {
-	char* generated_KMF_ID;
+	NamedElement* super;
 	map_t bindings;
 	PortTypeRef* portTypeRef;
 	fptrPortInternalGetKey InternalGetKey;

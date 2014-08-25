@@ -71,26 +71,15 @@ NetworkInfo* new_NetworkInfo()
 
 char* NetworkInfo_InternalGetKey(NetworkInfo* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 char* NetworkInfo_MetaClassName(NetworkInfo* const this)
 {
-	char* name;
+	char name[12];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("NetworkInfo") + 1));
+	/*name = malloc(sizeof(char) * (strlen("NetworkInfo") + 1));*/
 	strcpy(name, "NetworkInfo");
 	
 	return name;
@@ -98,59 +87,53 @@ char* NetworkInfo_MetaClassName(NetworkInfo* const this)
 
 void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr)
 {
-	NetworkProperty* container = (NetworkProperty*)ptr;
+	NetworkProperty* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NetworkProperty cannot be added in NetworkInfo because the key is not defined");*/
 		printf("The NetworkProperty cannot be added in NetworkInfo because the key is not defined\n");
-	}else
+	}
+	else
 	{
-		/*if(values.find(container->internalGetKey()) == values.end())*/
 		if(this->values == NULL)
 		{
 			this->values = hashmap_new();
 		}
-		if(hashmap_get(this->values, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->values, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*values[container->internalGetKey()]=ptr;*/
-			container = (NetworkProperty*)ptr;
-			hashmap_put(this->values, container->InternalGetKey(container), ptr);
-			/*any ptr_any = container;
-			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"values",ptr_any);
-			container->setEContainer(this,cmd,"values");*/
+			/*container = (NetworkProperty*)ptr;*/
+			hashmap_put(this->values, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void NetworkInfo_RemoveValues(NetworkInfo* const this, NetworkProperty* ptr)
 {
-	NetworkProperty* container = (NetworkProperty*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NetworkProperty cannot be removed in NetworkInfo because the key is not defined");*/
 		printf("The NetworkProperty cannot be removed in NetworkInfo because the key is not defined\n");
 	}
 	else
 	{
-		/*values.erase( values.find(container->internalGetKey()));*/
-		hashmap_remove(this->values, container->InternalGetKey(container));
-		/*delete container;
-		container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->values, ptr->InternalGetKey(ptr));
 	}
 }
 
-NetworkInfo* NetworkInfo_FindValuesByID(NetworkInfo* const this, char* id)
+NetworkProperty* NetworkInfo_FindValuesByID(NetworkInfo* const this, char* id)
 {
-	NetworkInfo* value;
+	NetworkProperty* value = NULL;
 
-	if(hashmap_get(this->values, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->values != NULL)
+	{
+		if(hashmap_get(this->values, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
 void deletePoly_NetworkInfo(NamedElement* const this)
@@ -176,13 +159,6 @@ void delete_NetworkInfo(NetworkInfo* const this)
 
 void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	/*char path[128];
-	memset(&path[0], 0, sizeof(path));*/
-
-	/*sprintf(path, "%s", parent, ((NetworkInfo*)(this))->super->name);*/
-
-	/*sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((NetworkInfo*)(this))->super->name);*/
 	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, parent, visitor);
 }
 

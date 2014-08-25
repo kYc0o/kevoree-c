@@ -50,7 +50,7 @@ typedef void* (*fptrFindByPathContainerRoot)(char*, ContainerRoot*);
 
 typedef struct _ContainerRoot {
 	void* pDerivedObj;
-	char* generated_KMF_ID;
+	char generated_KMF_ID[9];
 	map_t nodes;
 	map_t typeDefinitions;
 	map_t repositories;

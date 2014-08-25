@@ -16,7 +16,6 @@ NamedElement* newPoly_DeployUnit()
 
 	pObj->pDerivedObj = pDepUnitObj; /* Pointing to derived object */
 	
-	/*pDepUnitObj->requiredLibs = hashmap_new();*/
 	pDepUnitObj->groupName = NULL;
 	pDepUnitObj->version = NULL;
 	pDepUnitObj->url = NULL;
@@ -58,7 +57,6 @@ DeployUnit* new_DeployUnit()
 	/*pObj->pDerivedObj = pDepUnitObj;  Pointing to derived object */
 	pDepUnitObj->super = pObj; /* Pointing to the base object */
 	
-	/*pDepUnitObj->requiredLibs = hashmap_new();*/
 	pDepUnitObj->groupName = NULL;
 	pDepUnitObj->version = NULL;
 	pDepUnitObj->url = NULL;
@@ -88,82 +86,68 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->groupName) + strlen("_") + /*strlen(this->hashcode) + strlen("_") +*/ strlen(this->super->name) + strlen("_") + strlen(this->version)) + 1);
+	internalKey = malloc(sizeof(char) * (strlen("groupName=") + strlen(this->groupName) + strlen(",") +
+										strlen("hashcode=") + strlen(this->hashcode) + strlen(",") +
+										strlen("name=") + strlen(this->super->name) + strlen(",") +
+										strlen("version=") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
 
-	sprintf(internalKey, "%s/%s/%s", this->groupName, /*this->hashcode,*/ this->super->name, this->version);
-	/*strcpy(internalKey, this->groupName);
-	strcat(internalKey, "_");
-	strcat(internalKey, this->hashcode);
-	strcat(internalKey, "/");
-	strcat(internalKey, this->super->name);
-	strcat(internalKey, "_");
-	strcat(internalKey, this->version);*/
+	sprintf(internalKey, "groupName=%s,hashcode=%s,name=%s,version=%s",
+						this->groupName, this->hashcode, this->super->name, this->version);
 
 	return internalKey;
 }
 
 char* DeployUnit_MetaClassName(DeployUnit* const this)
 {
-	char* name;
+	char name[11];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("DeployUnit") + 1));
+	/*name = malloc(sizeof(char) * (strlen("DeployUnit") + 1));*/
 	strcpy(name, "DeployUnit");
 	
 	return name;
 }
 
-/*void DeployUnit::addrequiredLibs(DeployUnit *ptr)*/
 void DeployUnit_AddRequiredLibs(DeployUnit* const this, DeployUnit* ptr)
 {
-	DeployUnit* container = (DeployUnit*)ptr;
+	DeployUnit* container = NULL;
 	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The DeployUnit cannot be added in DeployUnit because the key is not defined");*/
 		printf("The DeployUnit cannot be added in DeployUnit because the key is not defined\n");
 	}
 	else
 	{
-		/*if(requiredLibs.find(container->internalGetKey()) == requiredLibs.end())*/
 		if(this->requiredLibs == NULL)
 		{
 			this->requiredLibs = hashmap_new();
 		}
-		if(hashmap_get(this->requiredLibs, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->requiredLibs, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*requiredLibs[container->internalGetKey()]=ptr;*/
-			container = (DeployUnit*)ptr;
-			hashmap_put(this->requiredLibs, container->InternalGetKey(container), ptr);
+			/*container = (DeployUnit*)ptr;*/
+			hashmap_put(this->requiredLibs, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void DeployUnit::removerequiredLibs(DeployUnit *ptr)*/
 void DeployUnit_RemoveRequiredLibs(DeployUnit* const this, DeployUnit *ptr)
 {
-	DeployUnit* container = (DeployUnit*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The DeployUnit cannot be removed in DeployUnit because the key is not defined");*/
 		printf("The DeployUnit cannot be removed in DeployUnit because the key is not defined\n");
 	}
 	else
 	{
-		/*requiredLibs.erase( requiredLibs.find(container->internalGetKey()));*/
-		hashmap_remove(this->requiredLibs, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->requiredLibs, ptr->InternalGetKey(ptr));
 	}
 }
 
 DeployUnit* DeployUnit_FindRequiredLibsByID(DeployUnit* const this, char* id)
 {
-	DeployUnit* value;
+	DeployUnit* value = NULL;
 
 	if(hashmap_get(this->requiredLibs, id, (void**)(&value)) == MAP_OK)
 		return value;
@@ -201,31 +185,30 @@ void delete_DeployUnit(DeployUnit* const this)
 	free(this);
 }
 
-void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path, "%s/%s", parent, ((DeployUnit*)(this))->super->name);*/
-
-	/*sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((DeployUnit*)(this))->super->name);*/
 	NamedElement_VisitAttributes(((DeployUnit*)(this))->super, parent, visitor);
 	
-	sprintf(path,"%s\\groupName",parent);
-	visitor->action(path, STRING, ((DeployUnit*)(this))->groupName);
-	
-	sprintf(path, "%s\\version", parent);
-	visitor->action(path, STRING, ((DeployUnit*)(this))->version);
-	
-	sprintf(path,"%s\\url",parent);
-	visitor->action(path, STRING, ((DeployUnit*)(this))->url);
-	
-	/*sprintf(path, "%s\\hashcode", parent);
-	visitor->action(path, STRING, ((DeployUnit*)(this))->hashcode);*/
-	
-	sprintf(path, "%s\\type", parent);
-	visitor->action(path, STRING, ((DeployUnit*)(this))->type);
+	if(recursive)
+	{
+		sprintf(path,"%s\\groupName",parent);
+		visitor->action(path, STRING, ((DeployUnit*)(this))->groupName);
+
+		sprintf(path, "%s\\version", parent);
+		visitor->action(path, STRING, ((DeployUnit*)(this))->version);
+
+		sprintf(path,"%s\\url",parent);
+		visitor->action(path, STRING, ((DeployUnit*)(this))->url);
+
+		sprintf(path, "%s\\hashcode", parent);
+		visitor->action(path, STRING, ((DeployUnit*)(this))->hashcode);
+
+		sprintf(path, "%s\\type", parent);
+		visitor->action(path, STRING, ((DeployUnit*)(this))->type);
+	}
 }
 
 void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -249,8 +232,8 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
 				sprintf(path,"%s/requiredLibs[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 0);
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}
@@ -349,11 +332,3 @@ void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this)
 		}
 	}
 }
-/*int _acceptDeployUnit(DeployUnit* this, DeployUnit* c, Visitor* visitor)
-{
-	visitor->action((void*)this->groupName, (void*)c->groupName, 0);
-	visitor->action((void*)this->version, (void*)c->version, 0);
-	visitor->action((void*)this->url, (void*)c->url, 0);
-	visitor->action((void*)this->hashcode, (void*)c->hashcode, 0);
-	visitor->action((void*)this->type, (void*)c->type, 0);
-}*/

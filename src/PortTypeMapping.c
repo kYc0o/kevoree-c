@@ -14,9 +14,8 @@ PortTypeMapping* new_PortTypeMapping()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_PortTypeMapping") + 1));Uuid::getSingleton().generateUUID();
-	strcpy(pObj->generated_KMF_ID, "dummyKMFID_PortTypeMapping");*/
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
+	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->beanMethodName = NULL;
@@ -27,7 +26,6 @@ PortTypeMapping* new_PortTypeMapping()
 	pObj->MetaClassName = PortTypeMapping_MetaClassName;
 	pObj->Delete = delete_PortTypeMapping;
 	pObj->VisitAttributes = PortTypeMapping_VisitAttributes;
-	/*pObj->VisitReferences = PortTypeMapping_VisitAttributes;*/
 	pObj->FindByPath = PortTypeMapping_FindByPath;
 	
 	return pObj;
@@ -35,9 +33,10 @@ PortTypeMapping* new_PortTypeMapping()
 
 char* PortTypeMapping_MetaClassName(PortTypeMapping* const this)
 {
-	char* name;
+	char name[16];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("PortTypeMapping") + 1));
+	/*name = malloc(sizeof(char) * (strlen("PortTypeMapping") + 1));*/
 	strcpy(name, "PortTypeMapping");
 	
 	return name;
@@ -45,19 +44,7 @@ char* PortTypeMapping_MetaClassName(PortTypeMapping* const this)
 
 char* PortTypeMapping_InternalGetKey(PortTypeMapping* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->generated_KMF_ID;
 }
 
 void delete_PortTypeMapping(PortTypeMapping* const this)
@@ -77,8 +64,6 @@ void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* vi
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-
-	/*sprintf(path, "%s/%s", parent, ((PortTypeMapping*)(this))->generated_KMF_ID);*/
 
 	sprintf(path,"%s\\ID",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->generated_KMF_ID);

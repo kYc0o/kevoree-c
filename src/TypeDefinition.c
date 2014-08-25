@@ -89,30 +89,27 @@ TypeDefinition* new_TypeDefinition()
 char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 {
 	char* internalKey;
-	/*TypeDefinition* pChildTypeDef = (TypeDefinition*)pTypeDefObj->pDerivedObj;*/
 
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name) + strlen("/") + strlen(this->version)) + 1);
+	internalKey = malloc(sizeof(char) * (strlen("name=") + strlen(this->super->name) + strlen(",") +
+										strlen("version=") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
-
-	/*strcpy(internalKey, this->super->name);
-	strcat(internalKey, "_");
-	strcat(internalKey, this->version);*/
 	
-	sprintf(internalKey, "%s/%s", this->super->name, this->version);
+	sprintf(internalKey, "name=%s,version=%s", this->super->name, this->version);
 
 	return internalKey;
 }
 
 char* TypeDefinition_MetaClassName(TypeDefinition* const this)
 {
-	char* name;
+	char name[15];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("TypeDefinition") + 1));
+	/*name = malloc(sizeof(char) * (strlen("TypeDefinition") + 1));*/
 	strcpy(name, "TypeDefinition");
 	
 	return name;
@@ -148,42 +145,35 @@ void TypeDefinition_RemoveDictionaryType(TypeDefinition* const this, DictionaryT
 
 void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
 {
-	TypeDefinition* container = (TypeDefinition*)ptr;
+	TypeDefinition* container = NULL;
 	
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypeDefinition cannot be added in TypeDefinition because the key is not defined\n");
 	}
 	else
 	{
-		/*if(superTypes.find(container->internalGetKey()) == superTypes.end())*/
 		if(this->superTypes == NULL)
 		{
 			this->superTypes = hashmap_new();
 		}
-		if(hashmap_get(this->superTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->superTypes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*superTypes[container->internalGetKey()]=ptr;*/
-			container = (TypeDefinition*)ptr;
-			hashmap_put(this->superTypes, container->InternalGetKey(container), ptr);
+			/*container = (TypeDefinition*)ptr;*/
+			hashmap_put(this->superTypes, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
 {
-    TypeDefinition* container = (TypeDefinition*)ptr;
-    
-    /*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypeDefinition cannot be removed in TypeDefinition because the key is not defined\n");
 	}
 	else
 	{
-		/*superTypes.erase( superTypes.find(container->internalGetKey()));*/
-		hashmap_remove(this->superTypes, container->InternalGetKey(container));
-		/*container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->superTypes, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -214,28 +204,27 @@ void delete_TypeDefinition(TypeDefinition* const this)
 	
 }
 
-void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path, "%s/%s", parent, ((TypeDefinition*)(this))->super->name);*/
-
-	/*sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((TypeDefinition*)(this))->super->name);*/
 	NamedElement_VisitAttributes(((TypeDefinition*)(this))->super, parent, visitor);
 	
-	sprintf(path, "%s\\version", parent);
-	visitor->action(path, STRING, ((TypeDefinition*)(this))->version);
-	
-	sprintf(path,"%s\\factoryBean",parent);
-	visitor->action(path, STRING, ((TypeDefinition*)(this))->factoryBean);
-	
-	sprintf(path,"%s\\bean",parent);
-	visitor->action(path, STRING, ((TypeDefinition*)(this))->bean);
-	
-	sprintf(path, "%s\\abstract", parent);
-	visitor->action(path, BOOL, (void*)((TypeDefinition*)(this))->abstract);
+	if(recursive)
+	{
+		sprintf(path, "%s\\version", parent);
+		visitor->action(path, STRING, ((TypeDefinition*)(this))->version);
+
+		sprintf(path,"%s\\factoryBean",parent);
+		visitor->action(path, STRING, ((TypeDefinition*)(this))->factoryBean);
+
+		sprintf(path,"%s\\bean",parent);
+		visitor->action(path, STRING, ((TypeDefinition*)(this))->bean);
+
+		sprintf(path, "%s\\abstract", parent);
+		visitor->action(path, BOOL, (void*)((TypeDefinition*)(this))->abstract);
+	}
 }
 
 void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -247,7 +236,7 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 	{
 		sprintf(path, "%s/deployUnits[%s]", parent, ((TypeDefinition*)(this))->deployUnits->InternalGetKey(((TypeDefinition*)(this))->deployUnits));
 		DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
-		n->VisitAttributes(n, path, visitor);
+		n->VisitAttributes(n, path, visitor, 0);
 		/*n->VisitReferences(n, path, visitor);*/
 	}
 	
@@ -274,8 +263,8 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
 				sprintf(path,"%s/superTypes[%s]", parent, /*n->super->name*/ n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 0);
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}
@@ -377,17 +366,3 @@ void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this)
 		}
 	}
 }
-
-/*int _acceptTypeDefinition(TypeDefinition* this, TypeDefinition* c, Visitor* visitor)
-{
-	int i;
-
-	visitor->action((void*)this->version, (void*)c->version, 0);
-	visitor->action((void*)this->abstract, (void*)c->abstract, 1);
-	visitor->action((void*)this->deployUnits, (void*)c->deployUnits, 0);
-
-	for(i = 0; i < this->count_superTypes; i++)
-	{
-		visitor->action((void*)this->superTypes, (void*)c->superTypes, 0);
-	}
-}*/

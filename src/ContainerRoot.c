@@ -1,7 +1,5 @@
 #include "ContainerRoot.h"
 
-int result;
-
 ContainerRoot* new_ContainerRoot(void)
 {
 	ContainerRoot* pObj;
@@ -16,11 +14,10 @@ ContainerRoot* new_ContainerRoot(void)
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 	
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
 	rand_str(pObj->generated_KMF_ID, 8);
 
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_ContainerRoot") + 1));
-	strcpy(pObj->generated_KMF_ID, "dummyKMFID_ContainerRoot");*/
 	pObj->nodes = NULL;
 	pObj->typeDefinitions = NULL;
 	pObj->repositories = NULL;
@@ -74,9 +71,10 @@ ContainerRoot* new_ContainerRoot(void)
 
 char* ContainerRoot_MetaClassName(ContainerRoot* const this)
 {
-	char* name;
+	char name[14];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("ContainerRoot") + 1));
+	/*name = malloc(sizeof(char) * (strlen("ContainerRoot") + 1));*/
 	strcpy(name, "ContainerRoot");
 	
 	return name;
@@ -84,19 +82,10 @@ char* ContainerRoot_MetaClassName(ContainerRoot* const this)
 
 char* ContainerRoot_InternalGetKey(ContainerRoot* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
+	if(this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->generated_KMF_ID;
 }
 
 ContainerNode* ContainerRoot_FindNodesByID(ContainerRoot* const this, char* id)
@@ -120,7 +109,7 @@ ContainerNode* ContainerRoot_FindNodesByID(ContainerRoot* const this, char* id)
 
 TypeDefinition* ContainerRoot_FindTypeDefsByID(ContainerRoot* const this, char* id)
 {
-	TypeDefinition* value;
+	TypeDefinition* value = NULL;
 
 	if(this->typeDefinitions != NULL)
 	{
@@ -141,7 +130,7 @@ TypeDefinition* ContainerRoot_FindTypeDefsByID(ContainerRoot* const this, char* 
 
 Repository* ContainerRoot_FindRepositoriesByID(ContainerRoot* const this, char* id)
 {
-	Repository* value;
+	Repository* value = NULL;
 
 	if(this->repositories != NULL)
 	{
@@ -158,7 +147,7 @@ Repository* ContainerRoot_FindRepositoriesByID(ContainerRoot* const this, char* 
 
 TypedElement* ContainerRoot_FindDataTypesByID(ContainerRoot* const this, char* id)
 {
-	TypedElement* value;
+	TypedElement* value = NULL;
 
 	if(this->dataTypes != NULL)
 	{
@@ -175,7 +164,7 @@ TypedElement* ContainerRoot_FindDataTypesByID(ContainerRoot* const this, char* i
 
 TypeLibrary* ContainerRoot_FindLibrariesByID(ContainerRoot* const this, char* id)
 {
-	TypeLibrary* value;
+	TypeLibrary* value = NULL;
 
 	if(this->libraries != NULL)
 	{
@@ -192,7 +181,7 @@ TypeLibrary* ContainerRoot_FindLibrariesByID(ContainerRoot* const this, char* id
 
 Channel* ContainerRoot_FindHubsByID(ContainerRoot* const this, char* id)
 {
-	Channel* value;
+	Channel* value = NULL;
 
 	if(this->hubs != NULL)
 	{
@@ -209,7 +198,7 @@ Channel* ContainerRoot_FindHubsByID(ContainerRoot* const this, char* id)
 
 MBinding* ContainerRoot_FindBndingsByID(ContainerRoot* const this, char* id)
 {
-	MBinding* value;
+	MBinding* value = NULL;
 
 	if(this->mBindings != NULL)
 	{
@@ -226,7 +215,7 @@ MBinding* ContainerRoot_FindBndingsByID(ContainerRoot* const this, char* id)
 
 DeployUnit* ContainerRoot_FindDeployUnitsByID(ContainerRoot* const this, char* id)
 {
-	DeployUnit* value;
+	DeployUnit* value = NULL;
 
 	if(this->deployUnits != NULL)
 	{
@@ -243,7 +232,7 @@ DeployUnit* ContainerRoot_FindDeployUnitsByID(ContainerRoot* const this, char* i
 
 NodeNetwork* ContainerRoot_FindNodeNetworksByID(ContainerRoot* const this, char* id)
 {
-	NodeNetwork* value;
+	NodeNetwork* value = NULL;
 
 	if(this->nodeNetworks != NULL)
 	{
@@ -260,7 +249,7 @@ NodeNetwork* ContainerRoot_FindNodeNetworksByID(ContainerRoot* const this, char*
 
 Group* ContainerRoot_FindGroupsByID(ContainerRoot* const this, char* id)
 {
-	Group* value;
+	Group* value = NULL;
 
 	if(this->groups != NULL)
 	{
@@ -277,9 +266,9 @@ Group* ContainerRoot_FindGroupsByID(ContainerRoot* const this, char* id)
 
 void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 {
-	ContainerNode* container = (ContainerNode*)ptr;
+	ContainerNode* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The ContainerNode cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -289,20 +278,19 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 		{
 			this->nodes = hashmap_new();
 		}
-		if(hashmap_get(this->nodes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->nodes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (ContainerNode*)ptr;
-			result = hashmap_put(this->nodes, container->InternalGetKey(container), ptr);
-			/*printf("ContainerNode %s added to ContainerRoot %s Result: %d \n", ptr->super->super->name, this->generated_KMF_ID, result);*/
+			/*container = (ContainerNode*)ptr;*/
+			hashmap_put(this->nodes, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition* ptr)
 {  
-	TypeDefinition* container = (TypeDefinition*)ptr;
+	TypeDefinition* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypeDefinition cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -312,20 +300,19 @@ void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition*
 		{
 			this->typeDefinitions = hashmap_new();
 		}
-		if(hashmap_get(this->typeDefinitions, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->typeDefinitions, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (TypeDefinition*)ptr;
-			result = hashmap_put(this->typeDefinitions, container->InternalGetKey(container), ptr);
-			/*printf("TypeDefinition %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
+			/*container = (TypeDefinition*)ptr;*/
+			hashmap_put(this->typeDefinitions, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 {
-	Repository* container = (Repository*)ptr;
+	Repository* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The Repository cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -335,20 +322,19 @@ void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 		{
 			this->repositories = hashmap_new();
 		}
-		if(hashmap_get(this->repositories, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->repositories, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (Repository*)ptr;
-			result = hashmap_put(this->repositories, container->InternalGetKey(container), ptr);
-			/*printf("Repository %s added to ContainerRoot %s Result: %d\n", ptr->url, this->generated_KMF_ID, result);*/
+			/*container = (Repository*)ptr;*/
+			hashmap_put(this->repositories, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ContainerRoot_AddDataTypes(ContainerRoot* const this, TypedElement* ptr)
 {
-	TypedElement* container = (TypedElement*)ptr;
+	TypedElement* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypedElement cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -358,20 +344,19 @@ void ContainerRoot_AddDataTypes(ContainerRoot* const this, TypedElement* ptr)
 		{
 			this->dataTypes = hashmap_new();
 		}
-		if(hashmap_get(this->dataTypes, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->dataTypes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (TypedElement*)ptr;
-			hashmap_put(this->dataTypes, container->InternalGetKey(container), ptr);
-			/*printf("TypedElement %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
+			/*container = (TypedElement*)ptr;*/
+			hashmap_put(this->dataTypes, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 {
-	TypeLibrary* container = (TypeLibrary*)ptr;
+	TypeLibrary* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypeLibrary cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -381,19 +366,18 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		{
 			this->libraries = hashmap_new();
 		}
-		if(hashmap_get(this->libraries, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->libraries, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (TypeLibrary*)ptr;
-			hashmap_put(this->libraries, container->InternalGetKey(container), ptr);
+			/*container = (TypeLibrary*)ptr;*/
+			hashmap_put(this->libraries, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 void ContainerRoot_AddHubs(ContainerRoot* const this, Channel* ptr)
 {
-	printf("Adding %s channel\n", ptr->super->super->name);
-	Channel* container = (Channel*)ptr;
+	Channel* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The Channel cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -403,18 +387,18 @@ void ContainerRoot_AddHubs(ContainerRoot* const this, Channel* ptr)
 		{
 			this->hubs = hashmap_new();
 		}
-		if(hashmap_get(this->hubs, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->hubs, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (Channel*)ptr;
-			hashmap_put(this->hubs, container->InternalGetKey(container), ptr);
+			/*container = (Channel*)ptr;*/
+			hashmap_put(this->hubs, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 {
-	MBinding* container = (MBinding*)ptr;
+	MBinding* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The MBinding cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -424,19 +408,21 @@ void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 		{
 			this->mBindings = hashmap_new();
 		}
-		if(hashmap_get(this->mBindings, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->mBindings, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (MBinding*)ptr;
-			hashmap_put(this->mBindings, container->InternalGetKey(container), ptr);
+			/*container = (MBinding*)ptr;*/
+			hashmap_put(this->mBindings, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 {
-	DeployUnit* container = (DeployUnit*)ptr;
+	DeployUnit* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	char* internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The DeployUnit cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -446,20 +432,22 @@ void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 		{
 			this->deployUnits = hashmap_new();
 		}
-		if(hashmap_get(this->deployUnits, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->deployUnits, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
-			container = (DeployUnit*)ptr;
-			result = hashmap_put(this->deployUnits, container->InternalGetKey(container), ptr);
-			/*printf("DeployUnit %s added to ContainerRoot %s Result: %d\n", ptr->super->name, this->generated_KMF_ID, result);*/
+			/*container = (DeployUnit*)ptr;*/
+			hashmap_put(this->deployUnits, internalKey, ptr);
 		}
+
+		/*free(internalKey);*/
 	}
+
 }
 
 void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 {
-	NodeNetwork* container = (NodeNetwork*)ptr;
+	NodeNetwork* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The NodeNetwork cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -469,20 +457,19 @@ void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 		{
 			this->nodeNetworks = hashmap_new();
 		}
-		if(hashmap_get(this->nodeNetworks, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->nodeNetworks, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (NodeNetwork*)ptr;
-			result = hashmap_put(this->nodeNetworks, container->InternalGetKey(container), ptr);
-			/*printf("NodeNetwork %s added to ContainerRoot %s Result: %d\n", ptr->generated_KMF_ID, this->generated_KMF_ID, result);*/
+			/*container = (NodeNetwork*)ptr;*/
+			hashmap_put(this->nodeNetworks, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ContainerRoot_AddGroups(ContainerRoot* const this, Group* ptr)
 {
-	Group* container = (Group*)ptr;
+	Group* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The Group cannot be added in ContainerRoot because the key is not defined\n");
 	}
@@ -492,151 +479,130 @@ void ContainerRoot_AddGroups(ContainerRoot* const this, Group* ptr)
 		{
 			this->groups = hashmap_new();
 		}
-		if(hashmap_get(this->groups, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->groups, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (Group*)ptr;
-			result = hashmap_put(this->groups, container->InternalGetKey(container), ptr);
-			/*printf("Group %s added to ContainerRoot %s Result: %d\n", ptr->super->super->name, this->generated_KMF_ID, result);*/
+			/*container = (Group*)ptr;*/
+			hashmap_put(this->groups, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
 void ContainerRoot_RemoveNodes(ContainerRoot* const this, ContainerNode* ptr)
 {
-	ContainerNode* container = (ContainerNode*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The ContainerNode cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->nodes, container->InternalGetKey(container));
+		hashmap_remove(this->nodes, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ContainerRoot_RemoveTypeDefinitions(ContainerRoot* const this, TypeDefinition* ptr)
 {
-	TypeDefinition* container = (TypeDefinition*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypeDefinition cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->nodes, container->InternalGetKey(container));
+		hashmap_remove(this->nodes, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ContainerRoot_RemoveRepositories(ContainerRoot* const this, Repository* ptr)
 {
-	Repository* container = (Repository*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The Repository cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->repositories, container->InternalGetKey(container));
+		hashmap_remove(this->repositories, ptr->InternalGetKey(ptr));
 	}
 }
 void ContainerRoot_RemoveDataTypes(ContainerRoot* const this, TypedElement* ptr)
 {
-	TypedElement* container = (TypedElement*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypedElement cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->dataTypes, container->InternalGetKey(container));
+		hashmap_remove(this->dataTypes, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ContainerRoot_RemoveLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 {
-	TypeLibrary* container = (TypeLibrary*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The TypeLibrary cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->libraries, container->InternalGetKey(container));
+		hashmap_remove(this->libraries, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ContainerRoot_RemoveHubs(ContainerRoot* const this, Channel* ptr)
 {
-	Channel* container = (Channel*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The Channel cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->hubs, container->InternalGetKey(container));
+		hashmap_remove(this->hubs, ptr->InternalGetKey(ptr));
 	}
 }
  
 void ContainerRoot_RemoveBindings(ContainerRoot* const this, MBinding* ptr)
 {
-	MBinding* container = (MBinding*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The MBinding cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->mBindings, container->InternalGetKey(container));
+		hashmap_remove(this->mBindings, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ContainerRoot_RemoveDeployUnits(ContainerRoot* const this,  DeployUnit* ptr)
 {
-	DeployUnit* container = (DeployUnit*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The DeployUnit cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->deployUnits, container->InternalGetKey(container));
+		hashmap_remove(this->deployUnits, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ContainerRoot_RemoveNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 {
-	NodeNetwork* container = (NodeNetwork*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The NodeNetwork cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->nodeNetworks, container->InternalGetKey(container));
+		hashmap_remove(this->nodeNetworks, ptr->InternalGetKey(ptr));
 	}
 }
 
 void ContainerRoot_RemoveGroups(ContainerRoot* const this, Group* ptr)
 {
-	Group* container = (Group*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The Group cannot be removed in ContainerRoot because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->groups, container->InternalGetKey(container));
+		hashmap_remove(this->groups, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -651,8 +617,8 @@ void delete_ContainerRoot(ContainerRoot* const this)
 		hashmap_free(this->repositories);
 		hashmap_free(this->dataTypes);
 		hashmap_free(this->libraries);
-		/*hashmap_free(this->hubs);
-		hashmap_free(this->mBindings);*/
+		hashmap_free(this->hubs);
+		hashmap_free(this->mBindings);
 		hashmap_free(this->deployUnits);
 		hashmap_free(this->nodeNetworks);
 		hashmap_free(this->groups);
@@ -681,8 +647,8 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path, "nodes[%s]", /*n->super->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				sprintf(path, "nodes[%s]", n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 			}
 		}
@@ -698,8 +664,8 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path, "typeDefinitions[%s]", /*n->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				sprintf(path, "typeDefinitions[%s]", n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 			}
 		}
@@ -714,7 +680,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Repository* n = data;
-				sprintf(path, "repositories[%s]", /*n->url*/n->InternalGetKey(n));
+				sprintf(path, "repositories[%s]", n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitAttributes(n, path, visitor);
 			}
@@ -730,7 +696,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement* n = data;
-				sprintf(path, "dataTypes[%s]", /*n->super->name*/n->InternalGetKey(n));
+				sprintf(path, "dataTypes[%s]", n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
@@ -746,14 +712,13 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeLibrary* n = data;
-				sprintf(path, "libraries[%s]", /*n->super->name*/n->InternalGetKey(n));
+				sprintf(path, "libraries[%s]", n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
 			}
 		}
 	}
-	
-	/* TODO visit hubs and mBindings */
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->hubs) != NULL)
 	{
 		/* compare hubs */
@@ -763,9 +728,9 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Channel* n = data;
-				sprintf(path, "hubs[%s]", /*n->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				sprintf(path, "hubs[%s]", n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 1);
+				n->VisitReferences(n, path, visitor, 1);
 			}
 		}
 	}
@@ -779,9 +744,9 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				sprintf(path, "mBindings[%s]", /*n->super->name*/n->InternalGetKey(n));
+				sprintf(path, "mBindings[%s]", n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				n->VisitReferences(n, path, visitor, 1);
 			}
 		}
 	}
@@ -795,8 +760,8 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
-				sprintf(path, "deployUnits[%s]", /*n->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				sprintf(path, "deployUnits[%s]", n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 			}
 		}
@@ -811,7 +776,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NodeNetwork* n = data;
-				sprintf(path, "nodeNetworks[%s]", /*n->generated_KMF_ID*/n->InternalGetKey(n));
+				sprintf(path, "nodeNetworks[%s]", n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitAttributes(n, path, visitor);
 			}
@@ -827,9 +792,9 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Group* n = data;
-				sprintf(path, "groups[%s]", /*n->super->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				sprintf(path, "groups[%s]", n->InternalGetKey(n));
+				n->VisitAttributes(n, path, visitor, 1);
+				n->VisitReferences(n, path, visitor, 1);
 			}
 		}
 	}
@@ -844,7 +809,8 @@ void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this)
 	/*printf("Root: %s\n", root);*/
 	if(!strcmp(this->generated_KMF_ID, root))
 	{
-		return this->generated_KMF_ID;
+		/*return this->generated_KMF_ID;*/
+		return this;
 	}
 	/* ContainerRoot references */
 	else
@@ -1017,33 +983,3 @@ void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this)
 		}
 	}
 }
-
-/*int _acceptContainerRoot(ContainerRoot* this, ContainerRoot* c, Visitor* visitor)
-{
-	int i;
-
-	for(i = 0; i < this->count_groups; i++)
-	{
-		visitor->action((void*)this->groups, (void*)c->groups, 0);
-	}
-
-	for(i = 0; i < this->count_nodes; i++)
-	{
-		visitor->action((void*)this->nodes, (void*)c->nodes, 0);
-	}
-
-	for(i = 0; i < this->count_nodeNetworks; i++)
-	{
-		visitor->action((void*)this->nodeNetworks, (void*)c->nodeNetworks, 0);
-	}
-
-	for(i = 0; i < this->count_typedefintions; i++)
-	{
-		visitor->action((void*)this->typedefintions, (void*)c->typedefintions, 0);
-	}
-	
-	for(i = 0; i < this->count_deployUnits; i++)
-	{
-		visitor->action((void*)this->deployUnits, (void*)c->deployUnits, 0);
-	}
-}*/

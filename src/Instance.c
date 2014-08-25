@@ -18,6 +18,7 @@ NamedElement* newPoly_Instance()
 	
 	pInstanceObj->metaData = NULL;
 	pInstanceObj->started = -1;
+	pInstanceObj->typeDefinition = NULL;
 	pInstanceObj->dictionary = NULL;
 	pInstanceObj->fragmentDictionary = NULL;
 	
@@ -56,6 +57,7 @@ Instance* new_Instance()
 	
 	pInstanceObj->metaData = NULL;
 	pInstanceObj->started = -1;
+	pInstanceObj->typeDefinition = NULL;
 	pInstanceObj->dictionary = NULL;
 	pInstanceObj->fragmentDictionary = NULL;
 	
@@ -78,7 +80,7 @@ Instance* new_Instance()
 
 FragmentDictionary* Instance_FindFragmentDictionaryByID(Instance* const this, char* id)
 {
-	FragmentDictionary* value;
+	FragmentDictionary* value = NULL;
 
 	if(this->fragmentDictionary != NULL)
 	{
@@ -105,9 +107,9 @@ void Instance_AddDictionary(Instance* const this, Dictionary* ptr)
 
 void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* ptr)
 {
-	FragmentDictionary* container = (FragmentDictionary*)ptr;
+	FragmentDictionary* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The FragmentDictionary cannot be added in Instance because the key is not defined\n");
 	}
@@ -117,10 +119,10 @@ void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* pt
 		{
 			this->fragmentDictionary = hashmap_new();
 		}
-		if(hashmap_get(this->fragmentDictionary, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->fragmentDictionary, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (FragmentDictionary*)ptr;
-			hashmap_put(this->fragmentDictionary, container->InternalGetKey(container), ptr);
+			/*container = (FragmentDictionary*)ptr;*/
+			hashmap_put(this->fragmentDictionary, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
@@ -139,40 +141,27 @@ void Instance_RemoveDictionary(Instance* const this, Dictionary* ptr)
 
 void Instance_RemoveFragmentDictionary(Instance* const this, FragmentDictionary* ptr)
 {
-	FragmentDictionary* container = (FragmentDictionary*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The FragmentDictionary cannot be removed in Instance because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->fragmentDictionary, container->InternalGetKey(container));
+		hashmap_remove(this->fragmentDictionary, ptr->InternalGetKey(ptr));
 	}
 }
 
 char* Instance_InternalGetKey(Instance* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 char* Instance_MetaClassName(Instance* const this)
 {
-	char* name;
+	char name[9];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("Instance") + 1));
+	/*name = malloc(sizeof(char) * (strlen("Instance") + 1));*/
 	strcpy(name, "Instance");
 	
 	return name;
@@ -205,7 +194,7 @@ void delete_Instance(Instance* const this)
 	
 }
 
-void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -214,46 +203,85 @@ void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	NamedElement_VisitAttributes(((Instance*)(this))->super, parent, visitor);
 	
 	/* Local attributes */
-	sprintf(path,"%s\\metaData", parent);
-	visitor->action(path, STRING, ((Instance*)(this))->metaData);
-	
-	sprintf(path,"%s\\started", parent);
-	visitor->action(path, BOOL, (void*)((Instance*)(this))->started);
+	if(recursive)
+	{
+		sprintf(path,"%s\\metaData", parent);
+		visitor->action(path, STRING, ((Instance*)(this))->metaData);
+
+		sprintf(path,"%s\\started", parent);
+		visitor->action(path, BOOL, (void*)((Instance*)(this))->started);
+	}
 }
 
-void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	if(((Instance*)(this))->typeDefinition != NULL)
+	if(recursive)
 	{
-		sprintf(path, "%s/typeDefinition[%s]", parent, /*((Instance*)(this))->typeDefinition->super->name*/((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));
-		((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor);
-		((Instance*)(this))->typeDefinition->VisitReferences(((Instance*)(this))->typeDefinition, path, visitor);
-	}
-	if(((Instance*)(this))->dictionary != NULL)
-	{
-		sprintf(path, "%s/dictionary[%s]", parent, ((Instance*)(this))->dictionary->InternalGetKey(((Instance*)(this))->dictionary));
-		((Instance*)(this))->dictionary->VisitAttributes(((Instance*)(this))->dictionary, path, visitor);
-		((Instance*)(this))->dictionary->VisitReferences(((Instance*)(this))->dictionary, path, visitor);
-	}
-	
-	hashmap_map* m = NULL;
-	int i;
-	
-	if((m = (hashmap_map*) ((Instance*)(this))->fragmentDictionary) != NULL)
-	{
-		/* compare fragmentDictionary*/
-		for(i = 0; i< m->table_size; i++)
+		if(((Instance*)(this))->typeDefinition != NULL)
 		{
-			if(m->data[i].in_use != 0)
+			sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));
+			((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor, recursive);
+			((Instance*)(this))->typeDefinition->VisitReferences(((Instance*)(this))->typeDefinition, path, visitor);
+		}
+		if(((Instance*)(this))->dictionary != NULL)
+		{
+			sprintf(path, "%s/dictionary[%s]", parent, ((Instance*)(this))->dictionary->InternalGetKey(((Instance*)(this))->dictionary));
+			((Instance*)(this))->dictionary->VisitAttributes(((Instance*)(this))->dictionary, path, visitor);
+			((Instance*)(this))->dictionary->VisitReferences(((Instance*)(this))->dictionary, path, visitor);
+		}
+
+		hashmap_map* m = NULL;
+		int i;
+
+		if((m = (hashmap_map*) ((Instance*)(this))->fragmentDictionary) != NULL)
+		{
+			/* compare fragmentDictionary*/
+			for(i = 0; i< m->table_size; i++)
 			{
-				any_t data = (any_t) (m->data[i].data);
-				FragmentDictionary* n = data;
-				sprintf(path, "%s/fragmentDictionary[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				if(m->data[i].in_use != 0)
+				{
+					any_t data = (any_t) (m->data[i].data);
+					FragmentDictionary* n = data;
+					sprintf(path, "%s/fragmentDictionary[%s]", parent, n->InternalGetKey(n));
+					n->VisitAttributes(n, path, visitor);
+					n->VisitReferences(n, path, visitor);
+				}
+			}
+		}
+	}
+	else
+	{
+		if(((Instance*)(this))->typeDefinition != NULL)
+		{
+			sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));
+			((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor, recursive);
+		}
+		if(((Instance*)(this))->dictionary != NULL)
+		{
+			sprintf(path, "%s/dictionary[%s]", parent, ((Instance*)(this))->dictionary->InternalGetKey(((Instance*)(this))->dictionary));
+			((Instance*)(this))->dictionary->VisitAttributes(((Instance*)(this))->dictionary, path, visitor);
+			((Instance*)(this))->dictionary->VisitReferences(((Instance*)(this))->dictionary, path, visitor);
+		}
+
+		hashmap_map* m = NULL;
+		int i;
+
+		if((m = (hashmap_map*) ((Instance*)(this))->fragmentDictionary) != NULL)
+		{
+			/* compare fragmentDictionary*/
+			for(i = 0; i< m->table_size; i++)
+			{
+				if(m->data[i].in_use != 0)
+				{
+					any_t data = (any_t) (m->data[i].data);
+					FragmentDictionary* n = data;
+					sprintf(path, "%s/fragmentDictionary[%s]", parent, n->InternalGetKey(n));
+					n->VisitAttributes(n, path, visitor);
+					n->VisitReferences(n, path, visitor);
+				}
 			}
 		}
 	}
@@ -262,7 +290,7 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor)
 void* Instance_FindByPath(char* attribute, Instance* const this)
 {
 	/* NamedElement attributes */
-	if(!strcmp("name",attribute))
+	if(!strcmp("name", attribute))
 	{
 		return this->super->FindByPath(attribute, this->super);
 	}

@@ -50,7 +50,6 @@ NetworkProperty* new_NetworkProperty()
 	pNetPropObj->MetaClassName = NetworkProperty_MetaClassName;
 	pNetPropObj->InternalGetKey = NetworkProperty_InternalGetKey;
 	pNetPropObj->VisitAttributes = NetworkProperty_VisitAttributes;
-	/*pNetPropObj->VisitReferences = NetworkProperty_VisitAttributes;*/
 	
 	pNetPropObj->Delete = delete_NetworkProperty;
 
@@ -59,26 +58,15 @@ NetworkProperty* new_NetworkProperty()
 
 char* NetworkProperty_InternalGetKey(NetworkProperty* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->super->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->super->name);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 char* NetworkProperty_MetaClassName(NetworkProperty* const this)
 {
-	char* name;
+	char name[16];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("NetworkProperty") + 1));
+	/*name = malloc(sizeof(char) * (strlen("NetworkProperty") + 1));*/
 	strcpy(name, "NetworkProperty");
 	
 	return name;
@@ -110,8 +98,6 @@ void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* vi
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((NetworkProperty*)(this))->super->name);*/
 	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, parent, visitor);
 	
 	sprintf(path, "%s\\value", parent);
@@ -137,7 +123,3 @@ void* NetworkProperty_FindByPath(char* attribute, NetworkProperty* const this)
 	}
 }
 
-/*int _acceptNetworkProperty(NetworkProperty* this, NetworkProperty* c, Visitor* visitor)
-{
-	visitor->action((void*)this->value, (void*)c->value, 0);
-}*/

@@ -11,8 +11,12 @@ Port* new_Port()
 		return NULL;
 	}
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
-	rand_str(pObj->generated_KMF_ID, 8);
+	pObj->super = new_NamedElement();
+
+	if(pObj->super == NULL)
+	{
+		return NULL;
+	}
 	
 	pObj->bindings = NULL;
 	pObj->portTypeRef = NULL;
@@ -36,7 +40,7 @@ void delete_Port(void* this)
 {
 	if((Port*)this != NULL)
 	{
-		free(((Port*)this)->generated_KMF_ID);
+		delete_NamedElement(((Port*)this)->super);
 		hashmap_free(((Port*)this)->bindings);
 		free(((Port*)this)->portTypeRef);
 	}
@@ -44,26 +48,15 @@ void delete_Port(void* this)
 
 char* Port_InternalGetKey(Port* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->super->InternalGetKey(this->super);
 }
 
 char* Port_MetaClassName(Port* const this)
 {
-	char* name;
+	char name[5];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("Port") + 1));
+	/*name = malloc(sizeof(char) * (strlen("Port") + 1));*/
 	strcpy(name, "Port");
 	
 	return name;
@@ -71,7 +64,7 @@ char* Port_MetaClassName(Port* const this)
 
 MBinding* Port_FindBindingsByID(Port* const this, char* id)
 {
-	MBinding* value;
+	MBinding* value = NULL;
 
 	if(this->bindings != NULL)
 	{
@@ -88,9 +81,9 @@ MBinding* Port_FindBindingsByID(Port* const this, char* id)
 
 void Port_AddBindings(Port* const this, MBinding* ptr)
 {
-	MBinding* container = (MBinding*)ptr;
+	MBinding* container = NULL;
 
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The MBinding cannot be added in Port because the key is not defined\n");
 	}
@@ -101,10 +94,10 @@ void Port_AddBindings(Port* const this, MBinding* ptr)
 			this->bindings = hashmap_new();
 		}
 
-		if(hashmap_get(this->bindings, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->bindings, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			container = (MBinding*)ptr;
-			hashmap_put(this->bindings, container->InternalGetKey(container), ptr);
+			/*container = (MBinding*)ptr;*/
+			hashmap_put(this->bindings, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
@@ -116,15 +109,13 @@ void Port_AddPortTypeRef(Port* const this, PortTypeRef* ptr)
 
 void Port_RemoveBindings(Port* const this, MBinding* ptr)
 {
-	MBinding* container = (MBinding*)ptr;
-
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
 		printf("The MBinding cannot be removed in Port because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->bindings, container->InternalGetKey(container));
+		hashmap_remove(this->bindings, ptr->InternalGetKey(ptr));
 	}
 }
 
@@ -136,11 +127,7 @@ void Port_RemovePortTypeRef(Port* const this, PortTypeRef* ptr)
 
 void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
-
-	sprintf(path, "%s\\generated_KMF_ID", parent);
-	visitor->action(path, STRING, this->generated_KMF_ID);
+	NamedElement_VisitAttributes(this->super, parent, visitor);
 }
 
 void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
@@ -161,7 +148,7 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 				MBinding* n = data;
 				sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}
@@ -169,16 +156,16 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 	if(this->portTypeRef != NULL)
 	{
 		sprintf(path, "%s/portTypeRef[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
-		this->portTypeRef->VisitAttributes(this->portTypeRef, path, visitor);
-		this->portTypeRef->VisitReferences(this->portTypeRef, path, visitor);
+		this->portTypeRef->VisitAttributes(this->portTypeRef, path, visitor, 0);
+		/*this->portTypeRef->VisitReferences(this->portTypeRef, path, visitor);*/
 	}
 }
 void* Port_FindByPath(char* attribute, Port* const this)
 {
-	/* Local attributes */
-	if(!strcmp("generated_KMF_ID", attribute))
+	/* NamedElement attributes */
+	if(!strcmp("name", attribute))
 	{
-		return this->generated_KMF_ID;
+		return this->super->FindByPath(attribute, this->super);
 	}
 	/* Local references */
 	else

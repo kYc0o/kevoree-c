@@ -27,26 +27,15 @@ NamedElement* new_NamedElement()
 
 char* NamedElement_InternalGetKey(NamedElement* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->name);
-
-	return internalKey;
+	return this->name;
 }
 
 char* NamedElement_MetaClassName(NamedElement* const this)
 {
-	char* name;
+	char name[13];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("NamedElement") + 1));
+	/*name = malloc(sizeof(char) * (strlen("NamedElement") + 1));*/
 	strcpy(name, "NamedElement");
 	
 	return name;
@@ -82,8 +71,3 @@ void* NamedElement_FindByPath(char* attribute, NamedElement* const this)
 		return NULL;
 	}
 }
-
-/*int _acceptNamedElement(NamedElement* this, NamedElement* c, Visitor* visitor)
-{
-	visitor->action((void*)this->name, (void*)c->name, 0);
-}*/

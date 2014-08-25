@@ -21,7 +21,7 @@ typedef struct _PortTypeMapping {
 	char* beanMethodName;
 	char* serviceMethodName;
 	char* paramTypes;
-	char* generated_KMF_ID;
+	char generated_KMF_ID[9];
 	fptrPortTypMapMetaClassName MetaClassName;
 	fptrPortTypMapInternalGetKey InternalGetKey;
 	fptrDeletePortTypeMapping Delete;

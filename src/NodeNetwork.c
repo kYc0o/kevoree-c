@@ -14,13 +14,11 @@ NodeNetwork* new_NodeNetwork()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * (strlen("dummyKMFID_NodeNetwork") + 1));Uuid::getSingleton().generateUUID();
-	strcpy(pObj->generated_KMF_ID, "dummyKMFID_NodeNetwork");*/
 	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
 	rand_str(pObj->generated_KMF_ID, 8);
+
 	pObj->initBy = NULL;
 	pObj->target = NULL;
-	/*pObj->link = hashmap_new();*/
 	pObj->link = NULL;
 	
 	pObj->InternalGetKey = NodeNetwork_InternalGetKey;
@@ -42,26 +40,15 @@ NodeNetwork* new_NodeNetwork()
 
 char* NodeNetwork_InternalGetKey(NodeNetwork* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->generated_KMF_ID;
 }
 
 char* NodeNetwork_MetaClassName(NodeNetwork* const this)
 {
-	char* name;
+	char name[12];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("NodeNetwork") + 1));
+	/*name = malloc(sizeof(char) * (strlen("NodeNetwork") + 1));*/
 	strcpy(name, "NodeNetwork");
 	
 	return name;
@@ -69,90 +56,75 @@ char* NodeNetwork_MetaClassName(NodeNetwork* const this)
 
 NodeLink* NodeNetwork_FindLinkByID(NodeNetwork* const this, char* id)
 {
-	NodeLink* value;
+	NodeLink* value = NULL;
 
-	if(hashmap_get(this->link, id, (void**)(&value)) == MAP_OK)
-		return value;
+	if(this->link != NULL)
+	{
+		if(hashmap_get(this->link, id, (void**)(&value)) == MAP_OK)
+			return value;
+		else
+			return NULL;
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
-/*void NodeNetwork::addlink(NodeLink *ptr)*/
 void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 {
-	NodeLink* container = (NodeLink*)ptr;
+	NodeLink* container = NULL;
 
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NodeLink cannot be added in NodeNetwork because the key is not defined");*/
 		printf("The NodeLink cannot be added in NodeNetwork because the key is not defined\n");
 	}
 	else
 	{
-		/*if(link.find(container->internalGetKey()) == link.end())*/
 		if(this->link == NULL)
 		{
 			this->link = hashmap_new();
 		}
-		if(hashmap_get(this->link, container->InternalGetKey(container), (void**)(&container)) == MAP_MISSING);
+		if(hashmap_get(this->link, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
 		{
-			/*link[container->internalGetKey()]=ptr;*/
-			container = (NodeLink*)ptr;
-			hashmap_put(this->link, container->InternalGetKey(container), ptr);
-			/*any ptr_any = container;
-			RemoveFromContainerCommand  *cmd = new  RemoveFromContainerCommand(this,REMOVE,"link",ptr_any);
-			container->setEContainer(this,cmd,"link");*/
+			/*container = (NodeLink*)ptr;*/
+			hashmap_put(this->link, ptr->InternalGetKey(ptr), ptr);
 		}
 	}
 }
 
-/*void NodeNetwork::addinitBy(ContainerNode *ptr)*/
 void NodeNetwork_AddInitBy(NodeNetwork* const this, ContainerNode* ptr)
 {
-	/*initBy =ptr;*/
 	this->initBy = ptr;
 }
 
-/*void NodeNetwork::addtarget(ContainerNode *ptr)*/
 void NodeNetwork_AddTarget(NodeNetwork* const this, ContainerNode* ptr)
 {
-	/*target =ptr;*/
 	this->target = ptr;
 }
 
-/*void NodeNetwork::removelink(NodeLink *ptr)*/
 void NodeNetwork_RemoveLink(NodeNetwork* const this, NodeLink* ptr)
 {
-	NodeLink *container = (NodeLink*)ptr;
-	
-	/*if(container->internalGetKey().empty())*/
-	if(container->InternalGetKey(container) == NULL)
+	if(ptr->InternalGetKey(ptr) == NULL)
 	{
-		/*LOGGER_WRITE(Logger::WARNING,"The NodeLink cannot be removed in NodeNetwork because the key is not defined");*/
 		printf("The NodeLink cannot be removed in NodeNetwork because the key is not defined\n");
 	}
 	else
 	{
-		/*link.erase( link.find(container->internalGetKey()));*/
-		hashmap_remove(this->link, container->InternalGetKey(container));
-		/*delete container;
-		container->setEContainer(NULL,NULL,"");*/
+		hashmap_remove(this->link, ptr->InternalGetKey(ptr));
 	}
 }
 
-/*void NodeNetwork::removeinitBy(ContainerNode *ptr)*/
 void NodeNetwork_RemoveInitBy(NodeNetwork* const this, ContainerNode *ptr)
 {
-	/*delete ptr;*/
 	free(ptr);
+	this->initBy = NULL;
 }
 
-/*void NodeNetwork::removetarget(ContainerNode *ptr)*/
 void NodeNetwork_RemoveTarget(NodeNetwork* const this, ContainerNode* ptr)
 {
-	/*delete ptr;*/
 	free(ptr);
+	this->target = NULL;
 }
 
 void delete_NodeNetwork(NodeNetwork* const this)
@@ -173,8 +145,6 @@ void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visito
 	char path[128];
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path,"%s/%s",parent, ((NodeNetwork*)(this))->generated_KMF_ID);*/
-
 	sprintf(path,"%s\\ID", parent);
 	visitor->action(path, STRING, ((NodeNetwork*)(this))->generated_KMF_ID);
 }
@@ -186,15 +156,15 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 	if(((NodeNetwork*)(this))->target != NULL)
 	{
 		sprintf(path, "%s/target[%s]", parent, /*((NodeNetwork*)(this))->target->super->super->name*/((NodeNetwork*)(this))->target->InternalGetKey(((NodeNetwork*)(this))->target));
-		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor);
-		((NodeNetwork*)(this))->target->VisitReferences(((NodeNetwork*)(this))->target, path, visitor);
+		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, 0);
+		/*((NodeNetwork*)(this))->target->VisitReferences(((NodeNetwork*)(this))->target, path, visitor);*/
 	}
 	
 	if(((NodeNetwork*)(this))->initBy != NULL)
 	{
 		sprintf(path, "%s/initBy[%s]", parent, /*((NodeNetwork*)(this))->initBy->super->super->name*/((NodeNetwork*)(this))->initBy->InternalGetKey(((NodeNetwork*)(this))->initBy));
-		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor);
-		((NodeNetwork*)(this))->initBy->VisitReferences(((NodeNetwork*)(this))->initBy, path, visitor);
+		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor, 0);
+		/*((NodeNetwork*)(this))->initBy->VisitReferences(((NodeNetwork*)(this))->initBy, path, visitor);*/
 	}
 	
 	if(((NodeNetwork*)(this))->link != NULL)
@@ -315,16 +285,3 @@ void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this)
 		}
 	}
 }
-
-/*int _acceptNodeNetwork(NodeNetwork* this, NodeNetwork* c, Visitor* visitor)
-{
-	int i;
-	
-	for(i = 0; i < this->count_links; i++)
-	{
-		visitor->action((void*)this->links, (void*)c->links, 0);
-	}
-	
-	visitor->action((void*)this->initBy, (void*)c->initBy, 0);
-	visitor->action((void*)this->target, (void*)c->target, 0);
-}*/

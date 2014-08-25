@@ -11,7 +11,8 @@ MBinding* new_MBinding(void)
 		return NULL;
 	}
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
+	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->port = NULL;
@@ -44,9 +45,10 @@ void delete_MBinding(void* const this)
 
 char* MBinding_MetaClassName(MBinding* const this)
 {
-	char* name;
+	char name[9];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("MBinding") + 1));
+	/*name = malloc(sizeof(char) * (strlen("MBinding") + 1));*/
 	strcpy(name, "MBinding");
 	
 	return name;
@@ -54,19 +56,7 @@ char* MBinding_MetaClassName(MBinding* const this)
 
 char* MBinding_InternalGetKey(MBinding* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->generated_KMF_ID)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->generated_KMF_ID);
-
-	return internalKey;
+	return this->generated_KMF_ID;
 }
 
 void MBinding_AddPort(MBinding* const this, Port* ptr)
@@ -82,11 +72,13 @@ void MBinding_AddHub(MBinding* const this, Channel* ptr)
 void MBinding_RemovePort(MBinding* const this, Port* ptr)
 {
 	free(ptr);
+	this->port = NULL;
 }
 
 void MBinding_RemoveHub(MBinding* const this, Channel* ptr)
 {
 	free(ptr);
+	this->channel = NULL;
 }
 
 void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor)
@@ -98,23 +90,26 @@ void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	visitor->action(path, STRING, ((MBinding*)(this))->generated_KMF_ID);
 }
 
-void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
-	
-	if(((MBinding*)(this))->port != NULL)
+	if(recursive)
 	{
-		sprintf(path, "%s/port[%s]", parent, ((MBinding*)(this))->port->InternalGetKey(((MBinding*)(this))->port));
-		((MBinding*)(this))->port->VisitAttributes(((MBinding*)(this))->port, path, visitor);
-		((MBinding*)(this))->port->VisitReferences(((MBinding*)(this))->port, path, visitor);
-	}
-	
-	if(((MBinding*)(this))->channel != NULL)
-	{
-		sprintf(path, "%s/channel[%s]", parent, ((MBinding*)(this))->channel->InternalGetKey(((MBinding*)(this))->channel));
-		((MBinding*)(this))->channel->VisitAttributes(((MBinding*)(this))->channel, path, visitor);
-		((MBinding*)(this))->channel->VisitReferences(((MBinding*)(this))->channel, path, visitor);
+		char path[256];
+		memset(&path[0], 0, sizeof(path));
+
+		if(((MBinding*)(this))->port != NULL)
+		{
+			sprintf(path, "%s/port[%s]", parent, ((MBinding*)(this))->port->InternalGetKey(((MBinding*)(this))->port));
+			((MBinding*)(this))->port->VisitAttributes(((MBinding*)(this))->port, path, visitor);
+			/*((MBinding*)(this))->port->VisitReferences(((MBinding*)(this))->port, path, visitor);*/
+		}
+
+		if(((MBinding*)(this))->channel != NULL)
+		{
+			sprintf(path, "%s/hub[%s]", parent, ((MBinding*)(this))->channel->InternalGetKey(((MBinding*)(this))->channel));
+			((MBinding*)(this))->channel->VisitAttributes(((MBinding*)(this))->channel, path, visitor, 0);
+			/*((MBinding*)(this))->channel->VisitReferences(((MBinding*)(this))->channel, path, visitor);*/
+		}
 	}
 }
 

@@ -91,26 +91,15 @@ void delete_FragmentDictionary(void* const this)
 
 char* FragmentDictionary_InternalGetKey(FragmentDictionary* const this)
 {
-	char* internalKey;
-
-	if (this == NULL)
-		return NULL;
-
-	internalKey = malloc(sizeof(char) * (strlen(this->name)));
-
-	if (internalKey == NULL)
-		return NULL;
-
-	strcpy(internalKey, this->name);
-
-	return internalKey;
+	return this->name;
 }
 
 char* FragmentDictionary_MetaClassName(FragmentDictionary* const this)
 {
-	char* name;
+	char name[19];
+	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("FragmentDictionary") + 1));
+	/*name = malloc(sizeof(char) * (strlen("FragmentDictionary") + 1));*/
 	strcpy(name, "FragmentDictionary");
 	
 	return name;

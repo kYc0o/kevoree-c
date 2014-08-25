@@ -19,7 +19,7 @@ typedef void (*fptrVisitRefsDicType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathDicType)(char*, DictionaryType*);
 
 typedef struct _DictionaryType {
-	char* generated_KMF_ID;
+	char generated_KMF_ID[9];
 	map_t attributes;
 	fptrDicTypeFindAttrByID FindAttributesByID;
 	fptrDicTypeAddAttr AddAttributes;

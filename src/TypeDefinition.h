@@ -22,7 +22,7 @@ typedef void (*fptrTypeDefRemoveDictionaryType)(TypeDefinition*, DictionaryType*
 typedef void (*fptrTypeDefRemoveSuperTypes)(TypeDefinition*, TypeDefinition*);
 typedef char* (*fptrTypeDefMetaClassName)(TypeDefinition*);
 typedef void (*fptrDeleteTypeDef)(TypeDefinition*);
-typedef void (*fptrVisitAttrTypeDefinition)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrTypeDefinition)(void*, char*, Visitor*, int recursive);
 typedef void (*fptrVisitRefsTypeDefinition)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathTypeDefinition)(char*, TypeDefinition*);
 
@@ -62,7 +62,7 @@ NamedElement* newPoly_TypeDefinition(void);
 TypeDefinition* new_TypeDefinition(void);
 void deletePoly_TypeDefinition(NamedElement* const this);
 void delete_TypeDefinition(TypeDefinition* const this);
-void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
 void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this);
 

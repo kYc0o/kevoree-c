@@ -19,7 +19,6 @@ typedef void* (*fptrFindByPathNamedElement)(char*, NamedElement*);
 typedef struct _NamedElement {
 	void* pDerivedObj;
 	char* name;
-	/*int (*accept)(struct _NamedElement*, struct _NamedElement*, Visitor*);*/
 	fptrNamedElementInternalGetKey InternalGetKey;
 	fptrNamedElementMetaClassName MetaClassName;
 	fptrDeleteNamedElement Delete;

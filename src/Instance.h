@@ -19,8 +19,8 @@ typedef void (*fptrInstRemoveTypeDefinition)(Instance*, TypeDefinition*);
 typedef void (*fptrInstRemoveDictionary)(Instance*, Dictionary*);
 typedef void (*fptrInstRemoveFragmentDictionary)(Instance*, FragmentDictionary*);
 typedef void (*fptrDeleteInstance)(Instance*);
-typedef void (*fptrVisitAttrInstance)(void*, char*, Visitor*);
-typedef void (*fptrVisitRefsInstance)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrInstance)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitRefsInstance)(void*, char*, Visitor*, int);
 typedef void* (*fptrFindByPathInstance)(char*, Instance*);
 
 typedef struct _Instance {
@@ -59,8 +59,8 @@ char* Instance_InternalGetKey(Instance* const this);
 char* Instance_MetaClassName(Instance* const this);
 void deletePoly_Instance(NamedElement* const this);
 void delete_Instance(Instance* const this);
-void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive);
 void* Instance_FindByPath(char* attribute, Instance* const this);
 
 #endif /* H_Instance */

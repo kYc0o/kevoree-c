@@ -25,7 +25,7 @@ typedef struct _NodeLink {
 	int estimatedRate;
 	char* lastCheck;
 	char* zoneID;
-	char* generated_KMF_ID;
+	char generated_KMF_ID[9];
 	map_t networkProperties;
 	fptrNodeLinkInternalGetKey InternalGetKey;
 	fptrNodeLinkFindNetworkPropertiesByID FindNetworkPropertiesByID;
