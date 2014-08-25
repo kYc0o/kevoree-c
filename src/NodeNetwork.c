@@ -14,7 +14,8 @@ NodeNetwork* new_NodeNetwork()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);
+	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
+	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 
 	pObj->initBy = NULL;

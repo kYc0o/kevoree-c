@@ -31,7 +31,7 @@ char* Repository_MetaClassName(Repository* const this)
 	char name[11];
 	memset(&name[0], 0, sizeof(name));
 
-	name = malloc(sizeof(char) * (strlen("Repository") + 1));
+	/*name = malloc(sizeof(char) * (strlen("Repository") + 1));*/
 	strcpy(name, "Repository");
 	
 	return name;
