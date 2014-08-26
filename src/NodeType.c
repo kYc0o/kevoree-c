@@ -17,7 +17,7 @@ TypeDefinition* newPoly_NodeType()
 	pObj->pDerivedObj = pNodeTypeObj; /* Pointing to derived object */
 	pNodeTypeObj->super = pObj;
 
-	pObj->MetaClassName = NodeType_MetaClassName;
+	pObj->super->MetaClassName = NodeType_MetaClassName;
 	pObj->InternalGetKey = NodeType_InternalGetKey;
 	pObj->VisitAttributes = NodeType_VisitAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
@@ -64,11 +64,13 @@ char* NodeType_InternalGetKey(void* const this)
 
 char* NodeType_MetaClassName(NodeType* const this)
 {
-	char name[9];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("NodeType") + 1));*/
-	strcpy(name, "NodeType");
+	name = malloc(sizeof(char) * (strlen("NodeType")) + 1);
+	if(name != NULL)
+		strcpy(name, "NodeType");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -94,5 +96,11 @@ void delete_NodeType(NodeType* const this)
 
 void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
+
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }

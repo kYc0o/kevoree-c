@@ -60,6 +60,7 @@ NetworkInfo* new_NetworkInfo()
 	pNetInfoObj->FindValuesByID = NetworkInfo_FindValuesByID;
 	
 	pNetInfoObj->MetaClassName = NetworkInfo_MetaClassName;
+	pObj->MetaClassName = NetworkInfo_MetaClassName;
 	pNetInfoObj->InternalGetKey = NetworkInfo_InternalGetKey;
 	pNetInfoObj->VisitAttributes = NetworkInfo_VisitAttributes;
 	pNetInfoObj->VisitReferences = NetworkInfo_VisitReferences;
@@ -76,11 +77,13 @@ char* NetworkInfo_InternalGetKey(NetworkInfo* const this)
 
 char* NetworkInfo_MetaClassName(NetworkInfo* const this)
 {
-	char name[12];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("NetworkInfo") + 1));*/
-	strcpy(name, "NetworkInfo");
+	name = malloc(sizeof(char) * (strlen("NetworkInfo")) + 1);
+	if(name != NULL)
+		strcpy(name, "NetworkInfo");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -159,7 +162,13 @@ void delete_NetworkInfo(NetworkInfo* const this)
 
 void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, parent, visitor);
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((NetworkInfo*)this)->MetaClassName((NetworkInfo*)this));*/
+
+	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, parent, visitor, 1);
 }
 
 void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor)

@@ -91,6 +91,7 @@ ContainerNode* new_ContainerNode()
 	pContNodeObj->RemoveNetworkInformation = ContainerNode_RemoveNetworkInformation;
 	
 	pContNodeObj->MetaClassName = ContainerNode_MetaClassName;
+	pObj->super->MetaClassName = ContainerNode_MetaClassName;
 	pContNodeObj->InternalGetKey = ContainerNode_InternalGetKey;
 	pContNodeObj->VisitAttributes = ContainerNode_VisitAttributes;
 	pContNodeObj->VisitReferences = ContainerNode_VisitReferences;
@@ -108,11 +109,13 @@ char* ContainerNode_InternalGetKey(ContainerNode* const this)
 
 char* ContainerNode_MetaClassName(ContainerNode* const this)
 {
-	char name[14];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("ContainerNode") + 1));*/
-	strcpy(name, "ContainerNode");
+	name = malloc(sizeof(char) * (strlen("ContainerNode")) + 1);
+	if(name != NULL)
+		strcpy(name, "ContainerNode");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -365,6 +368,12 @@ void delete_ContainerNode(ContainerNode* const this)
 
 void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((ContainerNode*)this)->MetaClassName((ContainerNode*)this));*/
+
 	Instance_VisitAttributes(((ContainerNode*)(this))->super, parent, visitor, recursive);
 }
 

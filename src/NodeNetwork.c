@@ -46,11 +46,13 @@ char* NodeNetwork_InternalGetKey(NodeNetwork* const this)
 
 char* NodeNetwork_MetaClassName(NodeNetwork* const this)
 {
-	char name[12];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("NodeNetwork") + 1));*/
-	strcpy(name, "NodeNetwork");
+	name = malloc(sizeof(char) * (strlen("NodeNetwork")) + 1);
+	if(name != NULL)
+		strcpy(name, "NodeNetwork");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -143,20 +145,25 @@ void delete_NodeNetwork(NodeNetwork* const this)
 
 void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
+	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((NodeNetwork*)this)->MetaClassName((NodeNetwork*)this);
+	visitor->action(path, STRING, cClass);
 
 	sprintf(path,"%s\\ID", parent);
 	visitor->action(path, STRING, ((NodeNetwork*)(this))->generated_KMF_ID);
 }
 void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
-	char path[128];
+	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	if(((NodeNetwork*)(this))->target != NULL)
 	{
-		sprintf(path, "%s/target[%s]", parent, /*((NodeNetwork*)(this))->target->super->super->name*/((NodeNetwork*)(this))->target->InternalGetKey(((NodeNetwork*)(this))->target));
+		sprintf(path, "%s/target[%s]", parent, ((NodeNetwork*)(this))->target->InternalGetKey(((NodeNetwork*)(this))->target));
 		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, 0);
 		/*((NodeNetwork*)(this))->target->VisitReferences(((NodeNetwork*)(this))->target, path, visitor);*/
 	}

@@ -3,6 +3,7 @@
 
 /*#include "kevoree.h"*/
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 /*#include "ContainerRoot.h"*/
 

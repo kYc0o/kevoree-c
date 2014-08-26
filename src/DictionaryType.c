@@ -49,11 +49,13 @@ char* DictionaryType_InternalGetKey(DictionaryType* const this)
 
 char* DictionaryType_MetaClassName(DictionaryType* const this)
 {
-	char name[15];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("DictionaryType") + 1));*/
-	strcpy(name, "DictionaryType");
+	name = malloc(sizeof(char) * (strlen("DictionaryType")) + 1);
+	if(name != NULL)
+		strcpy(name, "DictionaryType");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -112,7 +114,13 @@ void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttri
 void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
+	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((DictionaryType*)this)->MetaClassName((DictionaryType*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);
 
 	sprintf(path, "%s\\generated_KMF_ID", parent);
 	visitor->action(path, STRING, ((DictionaryType*)(this))->generated_KMF_ID);

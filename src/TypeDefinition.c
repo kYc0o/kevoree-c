@@ -77,6 +77,7 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->RemoveDictionaryType = TypeDefinition_RemoveDictionaryType;
 	pTypeDefObj->RemoveSuperTypes = TypeDefinition_RemoveSuperTypes;
 	pTypeDefObj->MetaClassName = TypeDefinition_MetaClassName;
+	pObj->MetaClassName = pTypeDefObj->MetaClassName;
 	pTypeDefObj->InternalGetKey = TypeDefinition_InternalGetKey;
 	pTypeDefObj->Delete = delete_TypeDefinition;
 	pTypeDefObj->VisitAttributes = TypeDefinition_VisitAttributes;
@@ -106,11 +107,13 @@ char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 
 char* TypeDefinition_MetaClassName(TypeDefinition* const this)
 {
-	char name[15];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("TypeDefinition") + 1));*/
-	strcpy(name, "TypeDefinition");
+	name = malloc(sizeof(char) * (strlen("TypeDefinition")) + 1);
+	if(name != NULL)
+		strcpy(name, "TypeDefinition");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -206,13 +209,16 @@ void delete_TypeDefinition(TypeDefinition* const this)
 
 void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
-
-	NamedElement_VisitAttributes(((TypeDefinition*)(this))->super, parent, visitor);
-	
 	if(recursive)
 	{
+		char path[256];
+		memset(&path[0], 0, sizeof(path));
+
+		/*sprintf(path,"%s\\cClass", parent);
+		visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
+
+		NamedElement_VisitAttributes(((TypeDefinition*)(this))->super, parent, visitor, recursive);
+
 		sprintf(path, "%s\\version", parent);
 		visitor->action(path, STRING, ((TypeDefinition*)(this))->version);
 
@@ -224,6 +230,10 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 
 		sprintf(path, "%s\\abstract", parent);
 		visitor->action(path, BOOL, (void*)((TypeDefinition*)(this))->abstract);
+	}
+	else
+	{
+		NamedElement_VisitAttributes(((TypeDefinition*)(this))->super, parent, visitor, recursive);
 	}
 }
 

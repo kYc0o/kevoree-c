@@ -32,11 +32,13 @@ char* NamedElement_InternalGetKey(NamedElement* const this)
 
 char* NamedElement_MetaClassName(NamedElement* const this)
 {
-	char name[13];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("NamedElement") + 1));*/
-	strcpy(name, "NamedElement");
+	name = malloc(sizeof(char) * (strlen("NamedElement")) + 1);
+	if(name != NULL)
+		strcpy(name, "NamedElement");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -50,13 +52,27 @@ void delete_NamedElement(NamedElement* const this)
 	}
 }
 
-void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path, "%s\\name", parent);
-	visitor->action(path, STRING, ((NamedElement*)(this))->name);
+	if(recursive)
+	{
+		char* cClass = NULL;
+		sprintf(path,"%s\\cClass", parent);
+		cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);
+		visitor->action(path, STRING, cClass);
+		free(cClass);
+
+		sprintf(path, "%s\\name", parent);
+		visitor->action(path, STRING, ((NamedElement*)(this))->name);
+	}
+	else
+	{
+		sprintf(path, "%s\\name", parent);
+		visitor->action(path, STRING, ((NamedElement*)(this))->name);
+	}
 }
 
 void* NamedElement_FindByPath(char* attribute, NamedElement* const this)

@@ -61,6 +61,7 @@ Group* new_Group()
 	
 	pGroupObj->InternalGetKey = Group_InternalGetKey;
 	pGroupObj->MetaClassName = Group_MetaClassName;
+	pObj->super->MetaClassName = Group_MetaClassName;
 	pGroupObj->VisitAttributes = Group_VisitAttributes;
 	pGroupObj->VisitReferences = Group_VisitReferences;
 	pGroupObj->FindSubNodesByID = Group_FindSubNodesByID;
@@ -77,11 +78,13 @@ char* Group_InternalGetKey(Group* const this)
 
 char* Group_MetaClassName(Group* const this)
 {
-	char name[6];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("Group") + 1));*/
-	strcpy(name, "Group");
+	name = malloc(sizeof(char) * (strlen("Group")) + 1);
+	if(name != NULL)
+		strcpy(name, "Group");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -159,6 +162,12 @@ void delete_Group(Group* const this)
 
 void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((Group*)this)->MetaClassName((Group*)this));*/
+
 	Instance_VisitAttributes(((Group*)(this))->super, parent, visitor, recursive);
 }
 

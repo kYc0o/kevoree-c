@@ -28,6 +28,7 @@ Port* new_Port()
 
 	pObj->InternalGetKey = Port_InternalGetKey;
 	pObj->MetaClassName = Port_MetaClassName;
+	pObj->super->MetaClassName = Port_MetaClassName;
 	pObj->Delete = delete_Port;
 	pObj->VisitAttributes = Port_VisitAttributes;
 	pObj->VisitReferences = Port_VisitReferences;
@@ -53,11 +54,13 @@ char* Port_InternalGetKey(Port* const this)
 
 char* Port_MetaClassName(Port* const this)
 {
-	char name[5];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("Port") + 1));*/
-	strcpy(name, "Port");
+	name = malloc(sizeof(char) * (strlen("Port")) + 1);
+	if(name != NULL)
+		strcpy(name, "Port");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -125,9 +128,15 @@ void Port_RemovePortTypeRef(Port* const this, PortTypeRef* ptr)
 	this->portTypeRef = NULL;
 }
 
-void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor)
+void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, int recursive)
 {
-	NamedElement_VisitAttributes(this->super, parent, visitor);
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, this->MetaClassName(this));*/
+
+	NamedElement_VisitAttributes(this->super, parent, visitor, recursive);
 }
 
 void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
@@ -147,7 +156,7 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
 				sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 0);
 				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}

@@ -26,6 +26,7 @@ TypeDefinition* newPoly_ChannelType()
 	pChanTypeObj->upperFragments = -1;
 
 	pObj->MetaClassName = ChannelType_MetaClassName;
+	pObj->super->MetaClassName = ChannelType_MetaClassName;
 	pObj->InternalGetKey = ChannelType_InternalGetKey;
 	pObj->VisitAttributes = ChannelType_VisitAttributes;
 	pObj->VisitReferences = ChannelType_VisitReferences;
@@ -103,26 +104,31 @@ char* ChannelType_InternalGetKey(void* const this)
 
 char* ChannelType_MetaClassName(ChannelType* const this)
 {
-	char name[12];
-	memset(&name[0], 0, sizeof(name));
+	char *name = NULL;
 
-	/*name = malloc(sizeof(char) * (strlen("ChannelType") + 1));*/
-	strcpy(name, "ChannelType");
+	name = malloc(sizeof(char) * (strlen("ChannelType")) + 1);
+	if(name != NULL)
+		strcpy(name, "ChannelType");
+	else
+		return NULL;
 	
 	return name;
 }
 
 void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
-	
-	/* TypeDefinition attributes */
-	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
-	
 	/* Local attributes */
 	if(recursive)
 	{
+		char path[256];
+		memset(&path[0], 0, sizeof(path));
+
+		/*sprintf(path,"%s\\cClass", parent);
+		visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
+
+		/* TypeDefinition attributes */
+		TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
+
 		sprintf(path, "%s\\lowerBindings", parent);
 		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerBindings);
 		sprintf(path, "%s\\upperBindings", parent);
@@ -131,6 +137,11 @@ void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visito
 		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerFragments);
 		sprintf(path, "%s\\upperFragments", parent);
 		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperFragments);
+	}
+	else
+	{
+		/* TypeDefinition attributes */
+		TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 	}
 }
 

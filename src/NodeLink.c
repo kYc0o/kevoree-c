@@ -44,11 +44,13 @@ char* NodeLink_InternalGetKey(NodeLink* const this)
 
 char* NodeLink_MetaClassName(NodeLink* const this)
 {
-	char name[9];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("NodeLink") + 1));*/
-	strcpy(name, "NodeLink");
+	name = malloc(sizeof(char) * (strlen("NodeLink")) + 1);
+	if(name != NULL)
+		strcpy(name, "NodeLink");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -122,7 +124,13 @@ void delete_NodeLink(NodeLink* const this)
 void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
+	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((NodeLink*)this)->MetaClassName((NodeLink*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);
 
 	sprintf(path, "%s\\ID", parent);
 	visitor->action(path, STRING, ((NodeLink*)(this))->generated_KMF_ID);

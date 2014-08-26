@@ -62,6 +62,7 @@ DictionaryAttribute* new_DictionaryAttribute()
 	pDicAttrObj->defaultValue = NULL;
 	
 	pDicAttrObj->MetaClassName = DictionaryAttribute_MetaClassName;
+	pObj->super->MetaClassName = DictionaryAttribute_MetaClassName;
 	pDicAttrObj->InternalGetKey = DictionaryAttribute_InternalGetKey;
 	pDicAttrObj->FindByPath = DictionaryAttribute_FindByPath;
 	
@@ -112,11 +113,13 @@ char* DictionaryAttribute_InternalGetKey(DictionaryAttribute* const this)
 
 char* DictionaryAttribute_MetaClassName(DictionaryAttribute* const this)
 {
-	char name[20];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("DictionaryAttribute") + 1));*/
-	strcpy(name, "DictionaryAttribute");
+	name = malloc(sizeof(char) * (strlen("DictionaryAttribute")) + 1);
+	if(name != NULL)
+		strcpy(name, "DictionaryAttribute");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -125,7 +128,10 @@ void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-  
+
+	/*sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((DictionaryAttribute*)this)->MetaClassName((DictionaryAttribute*)this));*/
+
 	/* TypedElement attributes */
 	TypedElement_VisitAttributes(((DictionaryAttribute*)this)->super, parent, visitor);
 	

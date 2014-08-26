@@ -57,6 +57,7 @@ TypeLibrary* new_TypeLibrary(void)
 	pTypeLibObj->RemoveSubTypes = TypeLibrary_RemoveSubTypes;
 	
 	pTypeLibObj->MetaClassName = TypeLibrary_MetaClassname;
+	pObj->MetaClassName = TypeLibrary_MetaClassname;
 	pTypeLibObj->InternalGetKey = TypeLibrary_InternalGetKey;
 	pTypeLibObj->Delete = delete_TypeLibrary;
 	pTypeLibObj->VisitAttributes = TypeLibrary_VisitAttributes;
@@ -67,11 +68,13 @@ TypeLibrary* new_TypeLibrary(void)
 
 char* TypeLibrary_MetaClassname(TypeLibrary* const this)
 {
-	char name[12];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("TypeLibrary") + 1));*/
-	strcpy(name, "TypeLibrary");
+	name = malloc(sizeof(char) * (strlen("TypeLibrary")) + 1);
+	if(name != NULL)
+		strcpy(name, "TypeLibrary");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -154,7 +157,13 @@ void delete_TypeLibrary(TypeLibrary* const this)
 
 void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	NamedElement_VisitAttributes(((TypeLibrary*)(this))->super, parent, visitor);
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((TypedElement*)this)->MetaClassName((TypedElement*)this));*/
+
+	NamedElement_VisitAttributes(((TypeLibrary*)(this))->super, parent, visitor, 1);
 }
 
 void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor)

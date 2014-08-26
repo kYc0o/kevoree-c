@@ -66,6 +66,7 @@ ComponentInstance* new_ComponentInstance()
 	pCompInstanceObj->InternalGetKey = ComponentInstance_InternalGetKey;
 	pCompInstanceObj->FindByPath = ComponentInstance_FindByPath;
 	
+	pObj->super->MetaClassName = ComponentInstance_MetaClassName;
 	pCompInstanceObj->Delete = delete_ComponentInstance;
 
 	return pCompInstanceObj;
@@ -78,11 +79,13 @@ char* ComponentInstance_InternalGetKey(ComponentInstance* const this)
 
 char* ComponentInstance_MetaClassName(ComponentInstance* const this)
 {
-	char name[18];
-	memset(&name[0], 0, sizeof(name));
+	char *name = NULL;
 
-	/*name = malloc(sizeof(char) * (strlen("ComponentInstance") + 1));*/
-	strcpy(name, "ComponentInstance");
+	name = malloc(sizeof(char) * (strlen("ComponentInstance")) + 1);
+	if(name != NULL)
+		strcpy(name, "ComponentInstance");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -210,9 +213,16 @@ void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
 
 void ComponentInstance_VisitAttributes(void* const this, char *parent, Visitor* visitor)
 {
-	ComponentInstance* pCompInstanceObj = (ComponentInstance*)this;
+	/*char path[256];
+	char *cClass = NULL;
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((ComponentInstance*)this)->MetaClassName((ComponentInstance*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);*/
 	
-	Instance_VisitAttributes(pCompInstanceObj->super, parent, visitor, 1);
+	Instance_VisitAttributes(((ComponentInstance*)this)->super, parent, visitor, 1);
 }
 
 void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -238,7 +248,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 			}
 		}
@@ -259,7 +269,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 			}
 		}

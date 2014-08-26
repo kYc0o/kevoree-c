@@ -19,7 +19,7 @@ typedef void (*fptrPortAddBindings)(Port*, MBinding*);
 typedef void (*fptrPortAddPortTypeRef)(Port*, PortTypeRef*);
 typedef void (*fptrPortRemoveBindings)(Port*, MBinding*);
 typedef void (*fptrPortRemovePortTypeRef)(Port*, PortTypeRef*);
-typedef void (*fptrVisitAttrPort)(Port*, char*, Visitor*);
+typedef void (*fptrVisitAttrPort)(Port*, char*, Visitor*, int);
 typedef void (*fptrVisitRefsPort)(Port*, char*, Visitor*);
 typedef void* (*fptrFindByPathPort)(char*, Port*);
 typedef void (*fptrDeletePort)(void*);
@@ -50,7 +50,7 @@ void Port_AddBindings(Port* const this, MBinding* ptr);
 void Port_AddPortTypeRef(Port* const this, PortTypeRef* ptr);
 void Port_RemoveBindings(Port* const this, MBinding* ptr);
 void Port_RemovePortTypeRef(Port* const this, PortTypeRef* ptr);
-void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor);
+void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, int recursive);
 void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor);
 void* Port_FindByPath(char* attribute, Port* const this);
 

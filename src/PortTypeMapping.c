@@ -33,11 +33,13 @@ PortTypeMapping* new_PortTypeMapping()
 
 char* PortTypeMapping_MetaClassName(PortTypeMapping* const this)
 {
-	char name[16];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("PortTypeMapping") + 1));*/
-	strcpy(name, "PortTypeMapping");
+	name = malloc(sizeof(char) * (strlen("PortTypeMapping")) + 1);
+	if(name != NULL)
+		strcpy(name, "PortTypeMapping");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -63,7 +65,13 @@ void delete_PortTypeMapping(PortTypeMapping* const this)
 void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
+	char* cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((PortTypeMapping*)this)->MetaClassName((PortTypeMapping*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);
 
 	sprintf(path,"%s\\ID",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->generated_KMF_ID);

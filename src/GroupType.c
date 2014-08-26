@@ -19,7 +19,7 @@ TypeDefinition* newPoly_GroupType()
 
 	pObj->pDerivedObj = pGroupTypeObj; /* Pointing to derived object */
 
-	pObj->MetaClassName = GroupType_MetaClassName;
+	pObj->super->MetaClassName = GroupType_MetaClassName;
 	pObj->InternalGetKey = GroupType_InternalGetKey;
 	pObj->VisitAttributes = GroupType_VisitAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
@@ -60,11 +60,13 @@ GroupType* new_GroupType()
 
 char* GroupType_MetaClassName(GroupType* const this)
 {
-	char name[10];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("GroupType") + 1));*/
-	strcpy(name, "GroupType");
+	name = malloc(sizeof(char) * (strlen("GroupType")) + 1);
+	if(name != NULL)
+		strcpy(name, "GroupType");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -93,5 +95,11 @@ void delete_GroupType(GroupType* const this)
 
 void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
+
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }

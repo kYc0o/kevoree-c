@@ -16,7 +16,7 @@ typedef void (*fptrMBindingAddPort)(MBinding*, Port*);
 typedef void (*fptrMbindingAddHub)(MBinding*, Channel*);
 typedef void (*fptrMBindingRemovePort)(MBinding*, Port*);
 typedef void (*fptrMbindingRemoveHub)(MBinding*, Channel*);
-typedef void (*fptrVisitAttrMBinding)(void*, char*, Visitor*);
+typedef void (*fptrVisitAttrMBinding)(void*, char*, Visitor*, int);
 typedef void (*fptrVisitRefsMbinding)(void*, char*, Visitor*, int);
 typedef void* (*fptrFindByPathMBinding)(char*, MBinding*);
 typedef void (*fptrDeleteMBinding)(void*);
@@ -45,7 +45,7 @@ void MBinding_AddPort(MBinding* const this, Port* ptr);
 void MBinding_AddHub(MBinding* const this, Channel* ptr);
 void MBinding_RemovePort(MBinding* const this, Port* ptr);
 void MBinding_RemoveHub(MBinding* const this, Channel* ptr);
-void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
 void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive);
 void* MBinding_FindByPath(char* attribute, MBinding* const this);
 

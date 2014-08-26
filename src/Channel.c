@@ -62,6 +62,7 @@ Channel* new_Channel()
 	pChannelObj->RemoveBindings = Channel_RemoveBindings;
 	
 	pChannelObj->MetaClassName = Channel_MetaClassName;
+	pObj->super->MetaClassName = Channel_MetaClassName;
 	pChannelObj->InternalGetKey = Channel_InternalGetKey;
 	pChannelObj->FindByPath = Channel_FindByPath;
 	
@@ -95,11 +96,13 @@ void delete_Channel(void* const this)
 
 char* Channel_MetaClassName(Channel* const this)
 {
-	char name[8];
-	memset(&name[0], 0, sizeof(name));
+	char *name = NULL;
 
-	/*name = malloc(sizeof(char) * (strlen("Channel") + 1));*/
-	strcpy(name, "Channel");
+	name = malloc(sizeof(char) * (strlen("Channel")) + 1);
+	if(name != NULL)
+		strcpy(name, "Channel");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -161,6 +164,15 @@ MBinding* Channel_FindBindingsByID(Channel* const this, char* id)
 
 void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
+	/*char *cClass = NULL;
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((Channel*)this)->MetaClassName((Channel*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);*/
+
 	Instance_VisitAttributes(((Channel*)this)->super, parent, visitor, recursive);
 }
 
@@ -184,7 +196,7 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, i
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
 				sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 0);
 				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}

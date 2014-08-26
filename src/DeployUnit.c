@@ -69,6 +69,7 @@ DeployUnit* new_DeployUnit()
 	pDepUnitObj->FindRequiredLibsByID = DeployUnit_FindRequiredLibsByID;
 	
 	pDepUnitObj->MetaClassName = DeployUnit_MetaClassName;
+	pObj->MetaClassName = DeployUnit_MetaClassName;
 	pDepUnitObj->InternalGetKey = DeployUnit_InternalGetKey;
 	pDepUnitObj->VisitAttributes = DeployUnit_VisitAttributes;
 	pDepUnitObj->VisitReferences = DeployUnit_VisitReferences;
@@ -102,11 +103,13 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 
 char* DeployUnit_MetaClassName(DeployUnit* const this)
 {
-	char name[11];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("DeployUnit") + 1));*/
-	strcpy(name, "DeployUnit");
+	name = malloc(sizeof(char) * (strlen("DeployUnit")) + 1);
+	if(name != NULL)
+		strcpy(name, "DeployUnit");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -187,13 +190,16 @@ void delete_DeployUnit(DeployUnit* const this)
 
 void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
-
-	NamedElement_VisitAttributes(((DeployUnit*)(this))->super, parent, visitor);
-	
 	if(recursive)
 	{
+		char path[256];
+		memset(&path[0], 0, sizeof(path));
+
+		/*sprintf(path,"%s\\cClass", parent);
+		visitor->action(path, STRING, ((DeployUnit*)this)->MetaClassName((DeployUnit*)this));*/
+
+		NamedElement_VisitAttributes(((DeployUnit*)(this))->super, parent, visitor, recursive);
+
 		sprintf(path,"%s\\groupName",parent);
 		visitor->action(path, STRING, ((DeployUnit*)(this))->groupName);
 
@@ -208,6 +214,10 @@ void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor
 
 		sprintf(path, "%s\\type", parent);
 		visitor->action(path, STRING, ((DeployUnit*)(this))->type);
+	}
+	else
+	{
+		NamedElement_VisitAttributes(((DeployUnit*)(this))->super, parent, visitor, recursive);
 	}
 }
 

@@ -28,11 +28,13 @@ Repository* new_Repository()
 
 char* Repository_MetaClassName(Repository* const this)
 {
-	char name[11];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("Repository") + 1));*/
-	strcpy(name, "Repository");
+	name = malloc(sizeof(char) * (strlen("Repository")) + 1);
+	if(name != NULL)
+		strcpy(name, "Repository");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -55,7 +57,13 @@ void delete_Repository(Repository* const this)
 void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
+	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((Repository*)this)->MetaClassName((Repository*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);
 
 	sprintf(path,"%s\\url",parent);
 	visitor->action(path, STRING, ((Repository*)(this))->url);

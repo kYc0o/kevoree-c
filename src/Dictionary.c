@@ -103,11 +103,13 @@ char* Dictionary_InternalGetKey(Dictionary* const this)
 
 char* Dictionary_MetaClassName(Dictionary* const this)
 {
-	char* name;
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("Dictionary") + 1));*/
-	strcpy(name, "Dictionary");
+	name = malloc(sizeof(char) * (strlen("Dictionary")) + 1);
+	if(name != NULL)
+		strcpy(name, "Dictionary");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -115,7 +117,13 @@ char* Dictionary_MetaClassName(Dictionary* const this)
 void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
+	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((Dictionary*)this)->MetaClassName((Dictionary*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);
 
 	sprintf(path, "%s\\generated_KMF_ID", parent);
 	visitor->action(path, STRING, ((Dictionary*)(this))->generated_KMF_ID);

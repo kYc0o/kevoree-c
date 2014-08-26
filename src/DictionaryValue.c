@@ -40,11 +40,13 @@ char* DictionaryValue_InternalGetKey(DictionaryValue* const this)
 
 char* DictionaryValue_MetaClassName(DictionaryValue* const this)
 {
-	char name[16];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("DictionaryValue") + 1));*/
-	strcpy(name, "DictionaryValue");
+	name = malloc(sizeof(char) * (strlen("DictionaryValue")) + 1);
+	if(name != NULL)
+		strcpy(name, "DictionaryValue");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -52,7 +54,13 @@ char* DictionaryValue_MetaClassName(DictionaryValue* const this)
 void DictionaryValue_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
+	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	cClass = ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);
 
 	sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((DictionaryValue*)(this))->name);

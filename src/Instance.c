@@ -70,6 +70,7 @@ Instance* new_Instance()
 	pInstanceObj->RemoveFragmentDictionary = Instance_RemoveFragmentDictionary;
 	
 	pInstanceObj->MetaClassName = Instance_MetaClassName;
+	pObj->MetaClassName = pInstanceObj->MetaClassName;
 	pInstanceObj->InternalGetKey = Instance_InternalGetKey;
 	pInstanceObj->Delete = delete_Instance;
 	pInstanceObj->VisitAttributes = Instance_VisitAttributes;
@@ -158,11 +159,13 @@ char* Instance_InternalGetKey(Instance* const this)
 
 char* Instance_MetaClassName(Instance* const this)
 {
-	char name[9];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("Instance") + 1));*/
-	strcpy(name, "Instance");
+	name = malloc(sizeof(char) * (strlen("Instance")) + 1);
+	if(name != NULL)
+		strcpy(name, "Instance");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -198,9 +201,12 @@ void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-	
+
+	/*sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((Instance*)this)->MetaClassName((Instance*)this));*/
+
 	/* NamedElement attributes */
-	NamedElement_VisitAttributes(((Instance*)(this))->super, parent, visitor);
+	NamedElement_VisitAttributes(((Instance*)(this))->super, parent, visitor, recursive);
 	
 	/* Local attributes */
 	if(recursive)

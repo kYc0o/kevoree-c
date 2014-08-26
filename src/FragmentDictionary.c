@@ -54,6 +54,7 @@ FragmentDictionary* new_FragmentDictionary(void)
 	pFragDicObj->name = NULL;
 	
 	pFragDicObj->MetaClassName = FragmentDictionary_MetaClassName;
+	pObj->MetaClassName = FragmentDictionary_MetaClassName;
 	pFragDicObj->InternalGetKey = FragmentDictionary_InternalGetKey;
 	pFragDicObj->FindByPath = FragmentDictionary_FindByPath;
 	
@@ -96,11 +97,13 @@ char* FragmentDictionary_InternalGetKey(FragmentDictionary* const this)
 
 char* FragmentDictionary_MetaClassName(FragmentDictionary* const this)
 {
-	char name[19];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("FragmentDictionary") + 1));*/
-	strcpy(name, "FragmentDictionary");
+	name = malloc(sizeof(char) * (strlen("FragmentDictionary")) + 1);
+	if(name != NULL)
+		strcpy(name, "FragmentDictionary");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -109,7 +112,7 @@ void FragmentDictionary_VisitAttributes(void* const this, char* parent, Visitor*
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-  
+
 	/* Dictionary attributes */
 	Dictionary_VisitAttributes(((FragmentDictionary*)this)->super, parent, visitor);
 	

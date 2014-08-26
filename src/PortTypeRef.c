@@ -69,6 +69,7 @@ PortTypeRef* new_PortTypeRef(void)
 	pPortTypeRefObj->RemoveMappings = PortTypeRef_RemoveMappings;
 	
 	pPortTypeRefObj->MetaClassName = PortTypeRef_MetaClassName;
+	pObj->MetaClassName = PortTypeRef_MetaClassName;
 	pPortTypeRefObj->InternalGetKey = PortTypeRef_InternalGetKey;
 	pPortTypeRefObj->Delete = delete_PortTypeRef;
 	pPortTypeRefObj->VisitAttributes = PortTypeRef_VisitAttributes;
@@ -80,11 +81,13 @@ PortTypeRef* new_PortTypeRef(void)
 
 char* PortTypeRef_MetaClassName(PortTypeRef* const this)
 {
-	char name[12];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("PortTypeRef") + 1));*/
-	strcpy(name, "PortTypeRef");
+	name = malloc(sizeof(char) * (strlen("PortTypeRef")) + 1);
+	if(name != NULL)
+		strcpy(name, "PortTypeRef");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -180,18 +183,25 @@ void delete_PortTypeRef(PortTypeRef* const this)
 
 void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
-	char path[256];
-	memset(&path[0], 0, sizeof(path));
-	
-	NamedElement_VisitAttributes(((PortTypeRef*)(this))->super, parent, visitor);
-	
 	if(recursive)
 	{
+		char path[256];
+		memset(&path[0], 0, sizeof(path));
+
+		/*sprintf(path,"%s\\cClass", parent);
+		visitor->action(path, STRING, ((PortTypeRef*)this)->MetaClassName((PortTypeRef*)this));*/
+
+		NamedElement_VisitAttributes(((PortTypeRef*)(this))->super, parent, visitor, recursive);
+
 		sprintf(path,"%s\\optional",parent);
 		visitor->action(path, BOOL, ((PortTypeRef*)(this))->optional);
 
 		sprintf(path,"%s\\noDependency",parent);
 		visitor->action(path, BOOL, ((PortTypeRef*)(this))->noDependency);
+	}
+	else
+	{
+		NamedElement_VisitAttributes(((PortTypeRef*)(this))->super, parent, visitor, recursive);
 	}
 }
 

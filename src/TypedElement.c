@@ -60,6 +60,7 @@ TypedElement* new_TypedElement(void)
 	pTypeElemObj->RemoveGenericTypes = TypedElement_RemoveGenericTypes;
 	
 	pTypeElemObj->MetaClassName = TypedElement_MetaClassName;
+	pObj->MetaClassName = TypedElement_MetaClassName;
 	pTypeElemObj->InternalGetKey = TypedElement_InternalGetKey;
 	pTypeElemObj->Delete = delete_TypedElement;
 	pTypeElemObj->VisitAttributes = TypedElement_VisitAttributes;
@@ -71,11 +72,13 @@ TypedElement* new_TypedElement(void)
 
 char* TypedElement_MetaClassName(TypedElement* const this)
 {
-	char name[13];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("TypedElement") + 1));*/
-	strcpy(name, "TypedElement");
+	name = malloc(sizeof(char) * (strlen("TypedElement")) + 1);
+	if(name != NULL)
+		strcpy(name, "TypedElement");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -158,7 +161,13 @@ void delete_TypedElement(TypedElement* const this)
 
 void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 {
-	NamedElement_VisitAttributes(((TypedElement*)(this))->super, parent, visitor);
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((TypedElement*)this)->MetaClassName((TypedElement*)this));*/
+
+	NamedElement_VisitAttributes(((TypedElement*)(this))->super, parent, visitor, 1);
 }
 
 void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visitor)

@@ -71,11 +71,13 @@ ContainerRoot* new_ContainerRoot(void)
 
 char* ContainerRoot_MetaClassName(ContainerRoot* const this)
 {
-	char name[14];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("ContainerRoot") + 1));*/
-	strcpy(name, "ContainerRoot");
+	name = malloc(sizeof(char) * (strlen("ContainerRoot")) + 1);
+	if(name != NULL)
+		strcpy(name, "ContainerRoot");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -631,8 +633,14 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 	int i;
 
 	char path[256];
+	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
-	
+
+	cClass = ((ContainerRoot*)this)->MetaClassName((ContainerRoot*)this);
+	sprintf(path, "%s\\cClass", cClass);
+	visitor->action(path, STRING, cClass);
+	free(cClass);
+
 	sprintf(path, "%s\\generated_KMF_ID", ((ContainerRoot*)(this))->generated_KMF_ID);
 	visitor->action(path, STRING, ((ContainerRoot*)(this))->generated_KMF_ID);
 
@@ -745,7 +753,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
 				sprintf(path, "mBindings[%s]", n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor, 1);
 			}
 		}

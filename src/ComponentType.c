@@ -30,7 +30,12 @@ TypeDefinition* newPoly_ComponentType(void)
 	pCompTypeObj->RemoveRequired = ComponentType_RemoveRequired;
 	pCompTypeObj->RemoveProvided = ComponentType_RemoveProvided;
 
-	pObj->MetaClassName = ComponentType_MetaClassName;
+	pCompTypeObj->MetaClassName = ComponentType_MetaClassName;
+	pCompTypeObj->InternalGetKey = ComponentType_InternalGetKey;
+	pCompTypeObj->VisitAttributes = ComponentType_VisitAttributes;
+	pCompTypeObj->VisitReferences = ComponentType_VisitReferences;
+
+	pObj->super->MetaClassName = ComponentType_MetaClassName;
 	pObj->InternalGetKey = ComponentType_InternalGetKey;
 	pObj->VisitAttributes = ComponentType_VisitAttributes;
 	pObj->VisitReferences = ComponentType_VisitReferences;
@@ -92,11 +97,13 @@ char* ComponentType_InternalGetKey(void* const this)
 
 char* ComponentType_MetaClassName(ComponentType* const this)
 {
-	char name[14];
-	memset(&name[0], 0, sizeof(name));
+	char *name;
 
-	/*name = malloc(sizeof(char) * (strlen("ComponentType") + 1));*/
-	strcpy(name, "ComponentType");
+	name = malloc(sizeof(char) * (strlen("ComponentType")) + 1);
+	if(name != NULL)
+		strcpy(name, "ComponentType");
+	else
+		return NULL;
 	
 	return name;
 }
@@ -213,6 +220,12 @@ void delete_ComponentType(ComponentType* const this)
 
 void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
 {
+	/*char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	sprintf(path,"%s\\cClass", parent);
+	visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
+
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }
 
