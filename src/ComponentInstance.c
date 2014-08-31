@@ -235,6 +235,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 
 	if(((ComponentInstance*)(this))->provided != NULL)
 	{
+		visitor->action("provided", SQBRACKET, NULL);
 		int i;
 
 		/* provided */
@@ -245,17 +246,21 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
-				sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));
+				/*sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 
 	if(((ComponentInstance*)(this))->required != NULL)
 	{
+		visitor->action("required", SQBRACKET, NULL);
 		int i;
 
 		/* required */
@@ -266,13 +271,16 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
-				sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));
+				/*sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

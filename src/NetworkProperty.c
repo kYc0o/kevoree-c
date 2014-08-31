@@ -106,8 +106,10 @@ void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* vi
 
 	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, parent, visitor, 1);
 	
-	sprintf(path, "%s\\value", parent);
+	/*sprintf(path, "%s\\value", parent);*/
+	sprintf(path, "value", parent);
 	visitor->action(path, STRING, ((NetworkProperty*)this)->value);
+	visitor->action(NULL, RETURN, NULL);
 }
 
 void* NetworkProperty_FindByPath(char* attribute, NetworkProperty* const this)

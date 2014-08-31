@@ -637,175 +637,218 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 	memset(&path[0], 0, sizeof(path));
 
 	cClass = ((ContainerRoot*)this)->MetaClassName((ContainerRoot*)this);
-	sprintf(path, "%s\\cClass", cClass);
+	sprintf(path, "eClass");
+	visitor->action(NULL, BRACKET, NULL);
 	visitor->action(path, STRING, cClass);
+	visitor->action(NULL, COLON, NULL);
 	free(cClass);
 
-	sprintf(path, "%s\\generated_KMF_ID", ((ContainerRoot*)(this))->generated_KMF_ID);
+	sprintf(path, "generated_KMF_ID");
 	visitor->action(path, STRING, ((ContainerRoot*)(this))->generated_KMF_ID);
+	visitor->action(NULL, COLON, NULL);
 
 	hashmap_map* m = NULL;
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->nodes) != NULL)
 	{
+		visitor->action("nodes", SQBRACKET, NULL);
 		/* compare nodes*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path, "nodes[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "nodes[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->typeDefinitions) != NULL)
 	{
-		
+		visitor->action("typeDefinitions", SQBRACKET, NULL);
 		/* compare typeDefinitions*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path, "typeDefinitions[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "typeDefinitions[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->repositories) != NULL)
 	{
+		visitor->action("repositories", SQBRACKET, NULL);
 		/* compare repositories*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				Repository* n = data;
-				sprintf(path, "repositories[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "repositories[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitAttributes(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->dataTypes) != NULL)
 	{
+		visitor->action("dataTypes", SQBRACKET, NULL);
 		/* compare dataTypes*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement* n = data;
-				sprintf(path, "dataTypes[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "dataTypes[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->libraries) != NULL)
 	{
+		visitor->action("libraries", SQBRACKET, NULL);
 		/* compare libraries*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				TypeLibrary* n = data;
-				sprintf(path, "libraries[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "libraries[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->hubs) != NULL)
 	{
+		visitor->action("hubs", SQBRACKET, NULL);
 		/* compare hubs */
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				Channel* n = data;
-				sprintf(path, "hubs[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "hubs[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor, 1);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->mBindings) != NULL)
 	{
+		visitor->action("mBindings", SQBRACKET, NULL);
 		/* compare mBindings*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				sprintf(path, "mBindings[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "mBindings[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor, 1);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->deployUnits) != NULL)
 	{
+		visitor->action("deployUnits", SQBRACKET, NULL);
 		/* compare deployUnits*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
 				sprintf(path, "deployUnits[%s]", n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->nodeNetworks) != NULL)
 	{
+		visitor->action("nodeNetworks", SQBRACKET, NULL);
 		/* compare nodeNetworks*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				NodeNetwork* n = data;
-				sprintf(path, "nodeNetworks[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "nodeNetworks[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitAttributes(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->groups) != NULL)
 	{
+		visitor->action("groups", SQBRACKET, NULL);
 		/* compare groups*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				Group* n = data;
-				sprintf(path, "groups[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "groups[%s]", n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor, 1);
+				visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
+	visitor->action(NULL, CLOSEBRACKET, NULL);
 }
 
 void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this)

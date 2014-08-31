@@ -57,16 +57,22 @@ void DictionaryValue_VisitAttributes(void* const this, char* parent, Visitor* vi
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s\\cClass", parent);
+	/*sprintf(path,"%s\\cClass", parent);*/
+	sprintf(path,"cClass");
 	cClass = ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this);
 	visitor->action(path, STRING, cClass);
+	visitor->action(NULL, COLON, NULL);
 	free(cClass);
 
-	sprintf(path, "%s\\name", parent);
+	/*sprintf(path, "%s\\name", parent);*/
+	sprintf(path, "name");
 	visitor->action(path, STRING, ((DictionaryValue*)(this))->name);
+	visitor->action(NULL, COLON, NULL);
 	
-	sprintf(path, "%s\\value", parent);
+	/*sprintf(path, "%s\\value", parent);*/
+	sprintf(path, "value");
 	visitor->action(path, STRING, ((DictionaryValue*)(this))->value);
+	visitor->action(NULL, RETURN, NULL);
 }
 
 void* DictionaryValue_FindByPath(char* attribute, DictionaryValue* const this)

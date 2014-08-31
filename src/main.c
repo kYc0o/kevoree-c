@@ -691,8 +691,8 @@ int main(void)
 	/*visitor_print->action =  ActionCompare;*/
 
 	model->Visit(model, visitor_print);
-	printf("\nVisiting model2 \n\n");
-	model2->Visit(model2, visitor_print);
+	/*printf("\nVisiting model2 \n\n");
+	model2->Visit(model2, visitor_print);*/
 	printf("Process finished!\n\n");
 
 	return 0;

@@ -241,6 +241,7 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 		
 	if(pDerivedObj->required != NULL)
 	{
+		visitor->action("required", SQBRACKET, NULL);
 		int i;
 				
 		/* required */
@@ -251,17 +252,21 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				sprintf(path, "%s/required[%s]", parent, n->InternalGetKey(n));
+				/*sprintf(path, "%s/required[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(pDerivedObj->provided != NULL)
 	{
+		visitor->action("provided", SQBRACKET, NULL);
 		int i;
 				
 		/* provided */
@@ -272,13 +277,16 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				PortTypeRef* n = data;
-				sprintf(path, "%s/provided[%s]", parent, n->InternalGetKey(n));
+				/*sprintf(path, "%s/provided[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

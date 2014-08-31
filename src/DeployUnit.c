@@ -200,20 +200,30 @@ void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor
 
 		NamedElement_VisitAttributes(((DeployUnit*)(this))->super, parent, visitor, recursive);
 
-		sprintf(path,"%s\\groupName",parent);
+		/*sprintf(path,"%s\\groupName",parent);*/
+		sprintf(path, "groupName");
 		visitor->action(path, STRING, ((DeployUnit*)(this))->groupName);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path, "%s\\version", parent);
+		/*sprintf(path, "%s\\version", parent);*/
+		sprintf(path, "version");
 		visitor->action(path, STRING, ((DeployUnit*)(this))->version);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path,"%s\\url",parent);
+		/*sprintf(path,"%s\\url",parent);*/
+		sprintf(path, "url");
 		visitor->action(path, STRING, ((DeployUnit*)(this))->url);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path, "%s\\hashcode", parent);
+		/*sprintf(path, "%s\\hashcode", parent);*/
+		sprintf(path, "hashcode");
 		visitor->action(path, STRING, ((DeployUnit*)(this))->hashcode);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path, "%s\\type", parent);
+		/*sprintf(path, "%s\\type", parent);*/
+		sprintf(path, "type");
 		visitor->action(path, STRING, ((DeployUnit*)(this))->type);
+		visitor->action(NULL, RETURN, NULL);
 	}
 	else
 	{
@@ -228,8 +238,8 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 	
 	if(((DeployUnit*)(this))->requiredLibs != NULL)
 	{
+		visitor->action("requiredLibs", SQBRACKET, NULL);
 		int i;
-		/*sprintf(path,"%s/requiredLibs[%s]", parent, ((DeployUnit*)(this))->super->name);*/
 
 		/* requiredLibs */
 		hashmap_map* m = ((DeployUnit*)(this))->requiredLibs;
@@ -241,11 +251,15 @@ void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor
 			{
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
-				sprintf(path,"%s/requiredLibs[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor, 0);
+				/*sprintf(path,"%s/requiredLibs[%s]", parent, n->InternalGetKey(n));*/
+				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
+				sprintf(path,"requiredLibs[%s]", n->InternalGetKey(n));
+				visitor->action(path, STRREF, NULL);
+				visitor->action(NULL, COLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

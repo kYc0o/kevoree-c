@@ -136,16 +136,30 @@ void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor
 	TypedElement_VisitAttributes(((DictionaryAttribute*)this)->super, parent, visitor);
 	
 	/* Local attributes */
-	sprintf(path, "%s\\optional", parent);
+	/*sprintf(path, "%s\\optional", parent);*/
+	sprintf(path, "optional");
 	visitor->action(path, BOOL, ((DictionaryAttribute*)(this))->optional);
-	sprintf(path, "%s\\state", parent);
+	visitor->action(NULL, COLON, NULL);
+
+	/*sprintf(path, "%s\\state", parent);*/
+	sprintf(path, "state");
 	visitor->action(path, BOOL, ((DictionaryAttribute*)(this))->state);
-	sprintf(path, "%s\\datatype", parent);
+	visitor->action(NULL, COLON, NULL);
+
+	/*sprintf(path, "%s\\datatype", parent);*/
+	sprintf(path, "datatype");
 	visitor->action(path, STRING, ((DictionaryAttribute*)(this))->datatype);
-	sprintf(path, "%s\\fragmentDependant", parent);
+	visitor->action(NULL, COLON, NULL);
+
+	/*sprintf(path, "%s\\fragmentDependant", parent);*/
+	sprintf(path, "fragmentDependant");
 	visitor->action(path, BOOL, ((DictionaryAttribute*)(this))->fragmentDependant);
-	sprintf(path, "%s\\defaultValue", parent);
+	visitor->action(NULL, COLON, NULL);
+
+	/*sprintf(path, "%s\\defaultValue", parent);*/
+	sprintf(path, "defaultValue");
 	visitor->action(path, STRING, ((DictionaryAttribute*)(this))->defaultValue);
+	visitor->action(NULL, RETURN, NULL);
 }
 
 void DictionaryAttribute_VisitReferences(void* const this, char* parent, Visitor* visitor)

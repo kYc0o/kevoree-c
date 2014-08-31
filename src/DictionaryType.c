@@ -117,13 +117,17 @@ void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* vis
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s\\cClass", parent);
+	/*sprintf(path,"%s\\cClass", parent);*/
+	sprintf(path,"cClass", parent);
 	cClass = ((DictionaryType*)this)->MetaClassName((DictionaryType*)this);
 	visitor->action(path, STRING, cClass);
+	visitor->action(NULL, COLON, NULL);
 	free(cClass);
 
-	sprintf(path, "%s\\generated_KMF_ID", parent);
+	/*sprintf(path, "%s\\generated_KMF_ID", parent);*/
+	sprintf(path, "generated_KMF_ID");
 	visitor->action(path, STRING, ((DictionaryType*)(this))->generated_KMF_ID);
+	visitor->action(NULL, COLON, NULL);
 }
 
 void DictionaryType_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -137,18 +141,22 @@ void DictionaryType_VisitReferences(void* const this, char* parent, Visitor* vis
 	
 	if((m = (hashmap_map*) ((DictionaryType*)(this))->attributes) != NULL)
 	{
+		visitor->action("attributes", SQBRACKET, NULL);
 		/* compare nodes*/
 		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				DictionaryAttribute* n = data;
-				sprintf(path, "%s/attributes[%s]", parent, n->InternalGetKey(n));
+				/*sprintf(path, "%s/attributes[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

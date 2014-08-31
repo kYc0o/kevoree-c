@@ -91,14 +91,26 @@ void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 
 	if(recursive)
 	{
-		sprintf(path,"%s\\cClass", parent);
+		/*sprintf(path,"%s\\cClass", parent);*/
+		sprintf(path,"cClass");
 		cClass = ((MBinding*)this)->MetaClassName((MBinding*)this);
 		visitor->action(path, STRING, cClass);
+		visitor->action(NULL, COLON, NULL);
 		free(cClass);
+
+		/*sprintf(path, "%s\\generated_KMF_ID", parent);*/
+		sprintf(path, "generated_KMF_ID");
+		visitor->action(path, STRING, ((MBinding*)(this))->generated_KMF_ID);
+		visitor->action(NULL, COLON, NULL);
+	}
+	else
+	{
+		/*sprintf(path, "%s\\generated_KMF_ID", parent);*/
+		sprintf(path, "generated_KMF_ID");
+		visitor->action(path, STRING, ((MBinding*)(this))->generated_KMF_ID);
+		visitor->action(NULL, COLON, NULL);
 	}
 
-	sprintf(path, "%s\\generated_KMF_ID", parent);
-	visitor->action(path, STRING, ((MBinding*)(this))->generated_KMF_ID);
 }
 
 void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
@@ -110,16 +122,26 @@ void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 
 		if(((MBinding*)(this))->port != NULL)
 		{
-			sprintf(path, "%s/port[%s]", parent, ((MBinding*)(this))->port->InternalGetKey(((MBinding*)(this))->port));
-			((MBinding*)(this))->port->VisitAttributes(((MBinding*)(this))->port, path, visitor, 0);
+			visitor->action("port", SQBRACKET, NULL);
+			/*sprintf(path, "%s/port[%s]", parent, ((MBinding*)(this))->port->InternalGetKey(((MBinding*)(this))->port));
+			((MBinding*)(this))->port->VisitAttributes(((MBinding*)(this))->port, path, visitor, 0);*/
+			sprintf(path, "port[%s]", ((MBinding*)(this))->port->InternalGetKey(((MBinding*)(this))->port));
 			/*((MBinding*)(this))->port->VisitReferences(((MBinding*)(this))->port, path, visitor);*/
+			visitor->action(path, STRREF, NULL);
+			visitor->action(NULL, RETURN, NULL);
+			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 		}
 
 		if(((MBinding*)(this))->channel != NULL)
 		{
-			sprintf(path, "%s/hub[%s]", parent, ((MBinding*)(this))->channel->InternalGetKey(((MBinding*)(this))->channel));
-			((MBinding*)(this))->channel->VisitAttributes(((MBinding*)(this))->channel, path, visitor, 0);
+			visitor->action("port", SQBRACKET, NULL);
+			/*sprintf(path, "%s/hub[%s]", parent, ((MBinding*)(this))->channel->InternalGetKey(((MBinding*)(this))->channel));
+			((MBinding*)(this))->channel->VisitAttributes(((MBinding*)(this))->channel, path, visitor, 0);*/
+			sprintf(path, "hub[%s]", ((MBinding*)(this))->channel->InternalGetKey(((MBinding*)(this))->channel));
 			/*((MBinding*)(this))->channel->VisitReferences(((MBinding*)(this))->channel, path, visitor);*/
+			visitor->action(path, STRREF, NULL);
+			visitor->action(NULL, RETURN, NULL);
+			visitor->action(NULL, CLOSESQBRACKET, NULL);
 		}
 	}
 }

@@ -60,13 +60,17 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	sprintf(path,"%s\\cClass", parent);
+	/*sprintf(path,"%s\\cClass", parent);*/
+	sprintf(path,"cClass");
 	cClass = ((Repository*)this)->MetaClassName((Repository*)this);
 	visitor->action(path, STRING, cClass);
+	visitor->action(NULL, COLON, NULL);
 	free(cClass);
 
-	sprintf(path,"%s\\url",parent);
+	/*sprintf(path,"%s\\url",parent);*/
+	sprintf(path, "url");
 	visitor->action(path, STRING, ((Repository*)(this))->url);
+	visitor->action(NULL, RETURN, NULL);
 }
 
 void* Repository_FindByPath(char* attribute, Repository* const this)

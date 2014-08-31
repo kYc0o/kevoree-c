@@ -178,6 +178,7 @@ void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visito
 	
 	if(((NetworkInfo*)(this))->values != NULL)
 	{
+		visitor->action("values", SQBRACKET, NULL);
 		int i;
 		
 		/*sprintf(path,"%s/values[%s]", parent, ((NetworkInfo*)(this))->super->name);*/
@@ -190,13 +191,16 @@ void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visito
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				NetworkProperty* n = data;
-				sprintf(path,"%s/values[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
+				/*sprintf(path,"%s/values[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

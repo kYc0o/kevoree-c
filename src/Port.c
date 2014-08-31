@@ -141,7 +141,6 @@ void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, int 
 
 void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 {
-	int i;
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
@@ -149,24 +148,35 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 	
 	if((m = (hashmap_map*)this->bindings) != NULL)
 	{
-		for(i = 0; i< m->table_size; i++)
+		/*int i;*/
+		visitor->action("bindings", SQBRACKET, NULL);
+		for(int i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor, 0);
+				/*sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));*/
+				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
+				sprintf(path, "bindings[%s]", n->InternalGetKey(n));
+				visitor->action(path, STRREF, NULL);
+					visitor->action(NULL, COLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(this->portTypeRef != NULL)
 	{
-		sprintf(path, "%s/portTypeRef[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
-		this->portTypeRef->VisitAttributes(this->portTypeRef, path, visitor, 0);
+		visitor->action("portTypeRef", SQBRACKET, NULL);
+		/*sprintf(path, "%s/portTypeRef[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
+		this->portTypeRef->VisitAttributes(this->portTypeRef, path, visitor, 0);*/
 		/*this->portTypeRef->VisitReferences(this->portTypeRef, path, visitor);*/
+		sprintf(path, "portTypeRef[%s]", this->portTypeRef->InternalGetKey(this->portTypeRef));
+		visitor->action(path, STRREF, NULL);
+		visitor->action(NULL, RETURN, NULL);
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 void* Port_FindByPath(char* attribute, Port* const this)

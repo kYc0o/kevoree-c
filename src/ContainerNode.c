@@ -386,9 +386,8 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	
 	if(((ContainerNode*)(this))->components != NULL)
 	{
+		visitor->action("components", SQBRACKET, NULL);
 		int i;
-		
-		/*sprintf(path,"%s/components[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
 		
 		/* components */
 		hashmap_map* m = ((ContainerNode*)(this))->components;
@@ -398,20 +397,22 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				ComponentInstance* n = data;
-				sprintf(path,"%s/components[%s]", parent, n->InternalGetKey(n));
+				/*sprintf(path,"%s/components[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(((ContainerNode*)(this))->hosts != NULL)
 	{
+		visitor->action("hosts", SQBRACKET, NULL);
 		int i;
-		
-		/*sprintf(path,"%s/hosts[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
 		
 		/* hosts */
 		hashmap_map* m = ((ContainerNode*)(this))->hosts;
@@ -421,27 +422,31 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"%s/hosts[%s]", parent, n->InternalGetKey(n));
+				/*sprintf(path,"%s/hosts[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 0);
 				/*n->VisitReferences(n, path, visitor);*/
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(((ContainerNode*)(this))->host != NULL)
 	{
+		visitor->action("host", SQBRACKET, NULL);
 		sprintf(path, "%s/host[%s]", parent, ((ContainerNode*)(this))->host->InternalGetKey(((ContainerNode*)(this))->host));
 		((ContainerNode*)(this))->host->VisitAttributes(((ContainerNode*)(this))->host, path, visitor, 0);
 		/*((ContainerNode*)(this))->host->VisitReferences(((ContainerNode*)(this))->host, path, visitor);*/
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(((ContainerNode*)(this))->groups != NULL)
 	{
+		visitor->action("groups", SQBRACKET, NULL);
 		int i;
-		
-		/*sprintf(path,"%s/groups[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
 		
 		/* groups */
 		hashmap_map* m = ((ContainerNode*)(this))->groups;
@@ -453,18 +458,21 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Group* n = data;
-				sprintf(path, "%s/groups[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor, 0);
+				/*sprintf(path, "%s/groups[%s]", parent, n->InternalGetKey(n));*/
+				sprintf(path, "groups[%s]", n->InternalGetKey(n));
+				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
+				visitor->action(path, STRREF, NULL);
+				visitor->action(NULL, COLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(((ContainerNode*)(this))->networkInformation != NULL)
 	{
+		visitor->action("networkInformation", SQBRACKET, NULL);
 		int i;
-		
-		/*sprintf(path,"%s/networkInformation[%s]", parent, ((ContainerNode*)(this))->super->super->name);*/
 		
 		/* networkInformation */
 		hashmap_map* m = ((ContainerNode*)(this))->networkInformation;
@@ -474,13 +482,16 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 		{
 			if(m->data[i].in_use != 0)
 			{
+				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				NetworkInfo* n = data;
-				sprintf(path,"%s/networkInformation[%s]", parent, /*n->super->name*/n->InternalGetKey(n));
+				/*sprintf(path,"%s/networkInformation[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
+				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

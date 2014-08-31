@@ -173,6 +173,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 
 	if(((TypeLibrary*)(this))->subTypes != NULL)
 	{
+		visitor->action("subTypes", SQBRACKET, NULL);
 		int i;
 		
 		/* subTypes */
@@ -185,11 +186,15 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path,"%s/subTypes[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor, 0);
-				/*n->VisitReferences(n, path, visitor);*/
+				/*sprintf(path,"%s/subTypes[%s]", parent, n->InternalGetKey(n));*/
+				sprintf(path, "subTypes[%s]", n->InternalGetKey(n));
+				/*n->VisitAttributes(n, path, visitor, 0);
+				n->VisitReferences(n, path, visitor);*/
+				visitor->action(path, STRREF, NULL);
+				visitor->action(NULL, COLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

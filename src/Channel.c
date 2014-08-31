@@ -188,6 +188,7 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, i
 	
 	if((m = (hashmap_map*) ((Channel*)(this))->bindings) != NULL)
 	{
+		visitor->action("bindings", SQBRACKET, NULL);
 		/* compare bindings*/
 		for(i = 0; i< m->table_size; i++)
 		{
@@ -195,11 +196,15 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, i
 			{
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor, 0);
-				/*n->VisitReferences(n, path, visitor);*/
+				/*sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));*/
+				sprintf(path, "mBindings[%s]", n->InternalGetKey(n));
+				/*n->VisitAttributes(n, path, visitor, 0);
+				n->VisitReferences(n, path, visitor);*/
+				visitor->action(path, STRREF, NULL);
+				visitor->action(NULL, COLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	/* Instance references */

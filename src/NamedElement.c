@@ -60,18 +60,23 @@ void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 	if(recursive)
 	{
 		char* cClass = NULL;
-		sprintf(path,"%s\\cClass", parent);
+		/*sprintf(path,"%s\\cClass", parent);*/
+		sprintf(path,"cClass");
 		cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);
 		visitor->action(path, STRING, cClass);
+		visitor->action(NULL, COLON, NULL);
 		free(cClass);
 
-		sprintf(path, "%s\\name", parent);
+		/*sprintf(path, "%s\\name", parent);*/
+		sprintf(path, "name", parent);
 		visitor->action(path, STRING, ((NamedElement*)(this))->name);
+		visitor->action(NULL, COLON, NULL);
 	}
 	else
 	{
-		sprintf(path, "%s\\name", parent);
-		visitor->action(path, STRING, ((NamedElement*)(this))->name);
+		/*sprintf(path, "%s\\name", parent);*/
+		visitor->action("", STRING, ((NamedElement*)(this))->name);
+		visitor->action(NULL, COLON, NULL);
 	}
 }
 

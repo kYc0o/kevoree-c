@@ -177,6 +177,7 @@ void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visit
 
 	if(((TypedElement*)(this))->genericTypes != NULL)
 	{
+		visitor->action("genericTypes", SQBRACKET, NULL);
 		int i;
 		
 		/* genericTypes */
@@ -189,9 +190,12 @@ void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visit
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement* n = data;
-				sprintf(path,"%s/genericTypes[%s]", parent, n->super->name);
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				/*sprintf(path,"%s/genericTypes[%s]", parent, n->super->name);*/
+				sprintf(path,"genericTypes[%s]", n->InternalGetKey(n));
+				/*n->VisitAttributes(n, path, visitor);
+				n->VisitReferences(n, path, visitor);*/
+				visitor->action(path, STRREF, NULL);
+				visitor->action(NULL, RETURN, NULL);
 			}
 		}
 	}

@@ -117,8 +117,10 @@ void FragmentDictionary_VisitAttributes(void* const this, char* parent, Visitor*
 	Dictionary_VisitAttributes(((FragmentDictionary*)this)->super, parent, visitor);
 	
 	/* Local attributes */
-	sprintf(path, "%s\\name", parent);
+	/*sprintf(path, "%s\\name", parent);*/
+	sprintf(path, "name");
 	visitor->action(path, STRING, ((FragmentDictionary*)(this))->name);
+	visitor->action(NULL, COLON, NULL);
 }
 
 void FragmentDictionary_VisitReferences(void* const this, char* parent, Visitor* visitor)

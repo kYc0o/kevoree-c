@@ -180,6 +180,7 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int
 	
 	if(((Group*)(this))->subNodes != NULL)
 	{
+		visitor->action("subNodes", SQBRACKET, NULL);
 		int i;
 		
 		/* subNodes */
@@ -192,11 +193,15 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"%s/subNodes[%s]", parent, /*n->super->super->name*/n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor, 0);
+				/*sprintf(path,"%s/subNodes[%s]", parent, n->InternalGetKey(n));*/
+				sprintf(path,"nodes[%s]", n->InternalGetKey(n));
+				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
+				visitor->action(path, STRREF, NULL);
+				visitor->action(NULL, COLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

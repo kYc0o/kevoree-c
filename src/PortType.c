@@ -112,8 +112,10 @@ void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 
 		TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 
-		sprintf(path, "%s\\synchrone", parent);
+		/*sprintf(path, "%s\\synchrone", parent);*/
+		sprintf(path, "synchrone");
 		visitor->action(path, BOOL, porttype->synchrone);
+		visitor->action(NULL, RETURN, NULL);
 	}
 	else
 	{

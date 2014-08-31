@@ -193,11 +193,15 @@ void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visito
 
 		NamedElement_VisitAttributes(((PortTypeRef*)(this))->super, parent, visitor, recursive);
 
-		sprintf(path,"%s\\optional",parent);
+		/*sprintf(path,"%s\\optional",parent);*/
+		sprintf(path, "optional");
 		visitor->action(path, BOOL, ((PortTypeRef*)(this))->optional);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path,"%s\\noDependency",parent);
+		/*sprintf(path,"%s\\noDependency",parent);*/
+		sprintf(path, "noDependency");
 		visitor->action(path, BOOL, ((PortTypeRef*)(this))->noDependency);
+		visitor->action(NULL, RETURN, NULL);
 	}
 	else
 	{

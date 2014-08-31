@@ -219,17 +219,25 @@ void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* vis
 
 		NamedElement_VisitAttributes(((TypeDefinition*)(this))->super, parent, visitor, recursive);
 
-		sprintf(path, "%s\\version", parent);
+		/*sprintf(path, "%s\\version", parent);*/
+		sprintf(path, "version");
 		visitor->action(path, STRING, ((TypeDefinition*)(this))->version);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path,"%s\\factoryBean",parent);
+		/*printf(path,"%s\\factoryBean",parent);*/
+		sprintf(path, "factoryBean");
 		visitor->action(path, STRING, ((TypeDefinition*)(this))->factoryBean);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path,"%s\\bean",parent);
+		/*sprintf(path,"%s\\bean",parent);*/
+		sprintf(path, "bean");
 		visitor->action(path, STRING, ((TypeDefinition*)(this))->bean);
+		visitor->action(NULL, COLON, NULL);
 
-		sprintf(path, "%s\\abstract", parent);
+		/*sprintf(path, "%s\\abstract", parent);*/
+		sprintf(path, "abstract");
 		visitor->action(path, BOOL, (void*)((TypeDefinition*)(this))->abstract);
+		visitor->action(NULL, COLON, NULL);
 	}
 	else
 	{
@@ -244,22 +252,32 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 
 	if(((TypeDefinition*)(this))->deployUnits != NULL)
 	{
-		sprintf(path, "%s/deployUnits[%s]", parent, ((TypeDefinition*)(this))->deployUnits->InternalGetKey(((TypeDefinition*)(this))->deployUnits));
-		DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
-		n->VisitAttributes(n, path, visitor, 0);
+		visitor->action("deployUnit", SQBRACKET, NULL);
+		/*sprintf(path, "%s/deployUnit[%s]", parent, ((TypeDefinition*)(this))->deployUnits->InternalGetKey(((TypeDefinition*)(this))->deployUnits));*/
+		sprintf(path, "deployUnits[%s]", ((TypeDefinition*)(this))->deployUnits->InternalGetKey(((TypeDefinition*)(this))->deployUnits));
+		/*DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
+		n->VisitAttributes(n, path, visitor, 0);*/
+		visitor->action(path, STRREF, NULL);
+		visitor->action(NULL, RETURN, NULL);
 		/*n->VisitReferences(n, path, visitor);*/
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(((TypeDefinition*)(this))->dictionaryType != NULL)
 	{
-		sprintf(path, "%s/dictionaryType[%s]", parent, ((TypeDefinition*)(this))->dictionaryType->InternalGetKey(((TypeDefinition*)(this))->dictionaryType));
+		visitor->action("dictionaryType", SQBRACKET, NULL);
+		sprintf(path, "dictionaryType[%s]", ((TypeDefinition*)(this))->dictionaryType->InternalGetKey(((TypeDefinition*)(this))->dictionaryType));
 		DictionaryType* n = ((TypeDefinition*)(this))->dictionaryType;
+		visitor->action(NULL, BRACKET, NULL);
 		n->VisitAttributes(n, path, visitor);
 		n->VisitReferences(n, path, visitor);
+		visitor->action(NULL, CLOSEBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
 	if(((TypeDefinition*)(this))->superTypes != NULL)
 	{
+		visitor->action("groups", SQBRACKET, NULL);
 		int i;
 		
 		/* superTypes */
@@ -272,11 +290,15 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path,"%s/superTypes[%s]", parent, /*n->super->name*/ n->InternalGetKey(n));
-				n->VisitAttributes(n, path, visitor, 0);
+				/*sprintf(path,"%s/superTypes[%s]", parent, n->InternalGetKey(n));*/
+				sprintf(path,"superTypes[%s]", n->InternalGetKey(n));
+				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
+				visitor->action(path, STRREF, NULL);
+				visitor->action(NULL, COLON, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 }
 

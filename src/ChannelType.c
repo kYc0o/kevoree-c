@@ -129,14 +129,25 @@ void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visito
 		/* TypeDefinition attributes */
 		TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 
-		sprintf(path, "%s\\lowerBindings", parent);
+		/*sprintf(path, "%s\\lowerBindings", parent);*/
+		sprintf(path, "lowerBindings");
 		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerBindings);
-		sprintf(path, "%s\\upperBindings", parent);
+		visitor->action(NULL, COLON, NULL);
+
+		/*sprintf(path, "%s\\upperBindings", parent);*/
+		sprintf(path, "upperBindings");
 		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperBindings);
-		sprintf(path, "%s\\lowerFragments", parent);
+		visitor->action(NULL, COLON, NULL);
+
+		/*sprintf(path, "%s\\lowerFragments", parent);*/
+		sprintf(path, "lowerFragments");
 		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerFragments);
-		sprintf(path, "%s\\upperFragments", parent);
+		visitor->action(NULL, COLON, NULL);
+
+		/*sprintf(path, "%s\\upperFragments", parent);*/
+		sprintf(path, "upperFragments", parent);
 		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperFragments);
+		visitor->action(NULL, COLON, NULL);
 	}
 	else
 	{
