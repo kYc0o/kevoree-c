@@ -95,7 +95,7 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 	if (internalKey == NULL)
 		return NULL;
 
-	sprintf(internalKey, "groupName=%s,hashcode=%s,name=%s,version=%s",
+	sprintf(internalKey, "%s/%s/%s/%s",
 						this->groupName, this->hashcode, this->super->name, this->version);
 
 	return internalKey;

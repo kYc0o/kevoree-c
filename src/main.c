@@ -88,7 +88,7 @@ void ActionCompare(char* _path, Type type, void* value)
 
 int main(void)
 {
-	printf("Starting kevoree C implementation\n");
+	//printf("Starting kevoree C implementation\n");
 
 	model = new_ContainerRoot();
 	model2 = new_ContainerRoot();
@@ -498,49 +498,49 @@ int main(void)
 	Port* pInMsg = new_Port();
 	pInMsg->super->name = malloc(sizeof(char) * (strlen("inMsg") + 1));
 	strcpy(pInMsg->super->name, "inMsg");
-	pInMsg->AddPortTypeRef(pInMsg, ptrInMsg);
+//	pInMsg->AddPortTypeRef(pInMsg, ptrInMsg);
 
 	/* Port sendMsg */
 	Port* pSendMsg = new_Port();
 	pSendMsg->super->name = malloc(sizeof(char) * (strlen("sendMsg") + 1));
 	strcpy(pSendMsg->super->name, "sendMsg");
-	pSendMsg->AddPortTypeRef(pSendMsg, ptrSendMsg);
+	//pSendMsg->AddPortTypeRef(pSendMsg, ptrSendMsg);
 
 	/* Port fake */
 	Port* pFake = new_Port();
 	pFake->super->name = malloc(sizeof(char) * (strlen("fake") + 1));
 	strcpy(pFake->super->name, "fake");
-	pFake->AddPortTypeRef(pFake, ptrFake);
+	//pFake->AddPortTypeRef(pFake, ptrFake);
 
 	/* Port sendMsg */
 	Port* pSendText = new_Port();
 	pSendText->super->name = malloc(sizeof(char) * (strlen("sendText") + 1));
 	strcpy(pSendText->super->name, "sendText");
-	pSendText->AddPortTypeRef(pSendText, ptrSendText);
+	//pSendText->AddPortTypeRef(pSendText, ptrSendText);
 
 	/* MBinding inMsg */
 	MBinding* mbInMsg = new_MBinding();
 	mbInMsg->AddHub(mbInMsg, defaultChannel);
 	mbInMsg->AddPort(mbInMsg, pInMsg);
-	pInMsg->AddBindings(pInMsg, mbInMsg);
+	//pInMsg->AddBindings(pInMsg, mbInMsg);
 
 	/* MBinding fake */
 	MBinding* mbFake = new_MBinding();
 	mbFake->AddHub(mbFake, defaultChannel);
 	mbFake->AddPort(mbFake, pFake);
-	pFake->AddBindings(pFake, mbFake);
+	//pFake->AddBindings(pFake, mbFake);
 
 	/* MBinding sendMsg */
 	MBinding* mbSendMsg = new_MBinding();
 	mbSendMsg->AddHub(mbSendMsg, defaultChannel);
 	mbSendMsg->AddPort(mbSendMsg, pSendMsg);
-	pSendMsg->AddBindings(pSendMsg, mbSendMsg);
+	//pSendMsg->AddBindings(pSendMsg, mbSendMsg);
 
 	/* MBinding sendText */
 	MBinding* mbSendText = new_MBinding();
 	mbSendText->AddHub(mbSendText, defaultChannel);
 	mbSendText->AddPort(mbSendText, pSendText);
-	pSendText->AddBindings(pSendText, mbSendText);
+	//pSendText->AddBindings(pSendText, mbSendText);
 
 	/* Group CoAP */
 	Group* coapGroup = new_Group();
@@ -629,12 +629,12 @@ int main(void)
 	ctHelloWorld->AddDictionaryType(ctHelloWorld, dtHelloWorld);
 	coapGroupType->AddDictionaryType(coapGroupType, gtDicType);
 	coapChanType->AddDictionaryType(coapChanType, chanDicType);
-
+/*
 	defaultChannel->AddBindings(defaultChannel, mbInMsg);
 	defaultChannel->AddBindings(defaultChannel, mbFake);
 	defaultChannel->AddBindings(defaultChannel, mbSendMsg);
 	defaultChannel->AddBindings(defaultChannel, mbSendText);
-
+*/
 	((ComponentType*)ctFakeConsole->pDerivedObj)->AddProvided((ComponentType*)ctFakeConsole->pDerivedObj, ptrInMsg);
 	((ComponentType*)ctFakeConsole->pDerivedObj)->AddRequired((ComponentType*)ctFakeConsole->pDerivedObj, ptrSendMsg);
 	((ComponentType*)ctHelloWorld->pDerivedObj)->AddProvided((ComponentType*)ctHelloWorld->pDerivedObj, ptrFake);
@@ -649,10 +649,12 @@ int main(void)
 	model->AddTypeDefinitions(model, coapChanType);
 	model->AddLibraries(model, contiki);
 	model->AddHubs(model, defaultChannel);
+/*
 	model->AddBindings(model, mbInMsg);
 	model->AddBindings(model, mbFake);
 	model->AddBindings(model, mbSendMsg);
 	model->AddBindings(model, mbSendText);
+*/
 	model->AddDeployUnits(model, duFakeConsole);
 	model->AddDeployUnits(model, duHelloWorld);
 	model->AddDeployUnits(model, kevContikiNode);
@@ -670,11 +672,11 @@ int main(void)
 	model2->AddTypeDefinitions(model2, coapGroupType);
 	model2->AddTypeDefinitions(model2, coapChanType);
 	model2->AddLibraries(model2, contiki);
-	model2->AddHubs(model2, defaultChannel);
+	model2->AddHubs(model2, defaultChannel);/*
 	model2->AddBindings(model2, mbInMsg);
 	model2->AddBindings(model2, mbFake);
 	model2->AddBindings(model2, mbSendMsg);
-	model2->AddBindings(model2, mbSendText);
+	model2->AddBindings(model2, mbSendText);*/
 	model2->AddDeployUnits(model2, duFakeConsole);
 	model2->AddDeployUnits(model2, duHelloWorld);
 	model2->AddDeployUnits(model2, kevContikiNode);
@@ -683,7 +685,7 @@ int main(void)
 	model2->AddGroups(model2, coapGroup);
 	model2->AddNodes(model2, contikiNode);
 
-	printf("Model %s created with success! \n\n", model2->InternalGetKey(model2));
+//	printf("Model %s created with success! \n\n", model2->InternalGetKey(model2));
 
 	Visitor* visitor_print = (Visitor*)malloc(sizeof(Visitor));
 
@@ -693,7 +695,7 @@ int main(void)
 	model->Visit(model, visitor_print);
 	/*printf("\nVisiting model2 \n\n");
 	model2->Visit(model2, visitor_print);*/
-	printf("Process finished!\n\n");
+//	printf("Process finished!\n\n");
 
 	return 0;
 }

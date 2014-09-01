@@ -100,7 +100,7 @@ char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 	if (internalKey == NULL)
 		return NULL;
 	
-	sprintf(internalKey, "name=%s,version=%s", this->super->name, this->version);
+	sprintf(internalKey, "%s/%s", this->super->name, this->version);
 
 	return internalKey;
 }
