@@ -148,9 +148,11 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 	
 	if((m = (hashmap_map*)this->bindings) != NULL)
 	{
-		/*int i;*/
+		int i;
+		int length = hashmap_length(this->bindings);
+
 		visitor->action("bindings", SQBRACKET, NULL);
-		for(int i = 0; i< m->table_size; i++)
+		for(i = 0; i< m->table_size; i++)
 		{
 			if(m->data[i].in_use != 0)
 			{
@@ -161,7 +163,13 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 				/*n->VisitReferences(n, path, visitor);*/
 				sprintf(path, "bindings[%s]", n->InternalGetKey(n));
 				visitor->action(path, STRREF, NULL);
+				if(length > 1)
+				{
 					visitor->action(NULL, COLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, RETURN, NULL);
 			}
 		}
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);

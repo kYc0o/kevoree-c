@@ -188,6 +188,8 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, i
 	
 	if((m = (hashmap_map*) ((Channel*)(this))->bindings) != NULL)
 	{
+		int length = hashmap_length(((Channel*)(this))->bindings);
+
 		visitor->action("bindings", SQBRACKET, NULL);
 		/* compare bindings*/
 		for(i = 0; i< m->table_size; i++)
@@ -201,9 +203,20 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, i
 				/*n->VisitAttributes(n, path, visitor, 0);
 				n->VisitReferences(n, path, visitor);*/
 				visitor->action(path, STRREF, NULL);
-				visitor->action(NULL, COLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, COLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, RETURN, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+	else
+	{
+		visitor->action("bindings", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	

@@ -92,8 +92,10 @@ void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 	if(recursive)
 	{
 		/*sprintf(path,"%s\\cClass", parent);*/
-		sprintf(path,"cClass");
-		cClass = ((MBinding*)this)->MetaClassName((MBinding*)this);
+		cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((MBinding*)this)->MetaClassName((MBinding*)this))) + 1);
+		sprintf(cClass, "org.kevoree.%s", ((MBinding*)this)->MetaClassName((MBinding*)this));
+		sprintf(path,"eClass");
+		/*cClass = ((MBinding*)this)->MetaClassName((MBinding*)this);*/
 		visitor->action(path, STRING, cClass);
 		visitor->action(NULL, COLON, NULL);
 		free(cClass);
@@ -134,7 +136,7 @@ void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 
 		if(((MBinding*)(this))->channel != NULL)
 		{
-			visitor->action("port", SQBRACKET, NULL);
+			visitor->action("hub", SQBRACKET, NULL);
 			/*sprintf(path, "%s/hub[%s]", parent, ((MBinding*)(this))->channel->InternalGetKey(((MBinding*)(this))->channel));
 			((MBinding*)(this))->channel->VisitAttributes(((MBinding*)(this))->channel, path, visitor, 0);*/
 			sprintf(path, "hub[%s]", ((MBinding*)(this))->channel->InternalGetKey(((MBinding*)(this))->channel));

@@ -58,8 +58,10 @@ void DictionaryValue_VisitAttributes(void* const this, char* parent, Visitor* vi
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);*/
-	sprintf(path,"cClass");
-	cClass = ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this);
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this))) + 1);
+	sprintf(cClass, "org.kevoree.%s", ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this));
+	sprintf(path,"eClass");
+	/*cClass = ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
 	free(cClass);

@@ -382,12 +382,11 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
-	Instance_VisitReferences(((ContainerNode*)(this))->super, parent, visitor, 0);
-	
 	if(((ContainerNode*)(this))->components != NULL)
 	{
 		visitor->action("components", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((ContainerNode*)(this))->components);
 		
 		/* components */
 		hashmap_map* m = ((ContainerNode*)(this))->components;
@@ -403,9 +402,20 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				/*sprintf(path,"%s/components[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+	else
+	{
+		visitor->action("components", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
@@ -413,6 +423,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	{
 		visitor->action("hosts", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((ContainerNode*)(this))->hosts);
 		
 		/* hosts */
 		hashmap_map* m = ((ContainerNode*)(this))->hosts;
@@ -428,9 +439,20 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				/*sprintf(path,"%s/hosts[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 0);
 				/*n->VisitReferences(n, path, visitor);*/
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+	else
+	{
+		visitor->action("hosts", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
@@ -442,11 +464,17 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 		/*((ContainerNode*)(this))->host->VisitReferences(((ContainerNode*)(this))->host, path, visitor);*/
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("host", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
 	
 	if(((ContainerNode*)(this))->groups != NULL)
 	{
 		visitor->action("groups", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((ContainerNode*)(this))->groups);
 		
 		/* groups */
 		hashmap_map* m = ((ContainerNode*)(this))->groups;
@@ -463,9 +491,20 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
 				visitor->action(path, STRREF, NULL);
-				visitor->action(NULL, COLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, COLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, RETURN, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+	else
+	{
+		visitor->action("groups", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
@@ -473,6 +512,7 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 	{
 		visitor->action("networkInformation", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((ContainerNode*)(this))->networkInformation);
 		
 		/* networkInformation */
 		hashmap_map* m = ((ContainerNode*)(this))->networkInformation;
@@ -488,11 +528,25 @@ void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visi
 				/*sprintf(path,"%s/networkInformation[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
-		visitor->action(NULL, CLOSESQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("networkInformation", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+
+	Instance_VisitReferences(((ContainerNode*)(this))->super, parent, visitor, 0);
+
 }
 
 void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this)

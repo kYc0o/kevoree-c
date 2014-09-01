@@ -61,8 +61,10 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);*/
-	sprintf(path,"cClass");
-	cClass = ((Repository*)this)->MetaClassName((Repository*)this);
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Repository*)this)->MetaClassName((Repository*)this))) + 1);
+	sprintf(cClass, "org.kevoree.%s", ((Repository*)this)->MetaClassName((Repository*)this));
+	sprintf(path,"eClass");
+	/*cClass = ((Repository*)this)->MetaClassName((Repository*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
 	free(cClass);

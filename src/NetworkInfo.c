@@ -180,8 +180,7 @@ void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visito
 	{
 		visitor->action("values", SQBRACKET, NULL);
 		int i;
-		
-		/*sprintf(path,"%s/values[%s]", parent, ((NetworkInfo*)(this))->super->name);*/
+		int length = hashmap_length(((NetworkInfo*)(this))->values);
 		
 		/* values */
 		hashmap_map* m = ((NetworkInfo*)(this))->values;
@@ -197,9 +196,20 @@ void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visito
 				/*sprintf(path,"%s/values[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				/*n->VisitReferences(n, parent, visitor);*/
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
+	}
+	else
+	{
+		visitor->action("values", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }

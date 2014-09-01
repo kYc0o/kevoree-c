@@ -176,12 +176,11 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 	
-	Instance_VisitReferences(((Group*)(this))->super, parent, visitor, 0);
-	
 	if(((Group*)(this))->subNodes != NULL)
 	{
 		visitor->action("subNodes", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((Group*)(this))->subNodes);
 		
 		/* subNodes */
 		hashmap_map* m = ((Group*)(this))->subNodes;
@@ -198,11 +197,25 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int
 				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
 				visitor->action(path, STRREF, NULL);
-				visitor->action(NULL, COLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, COLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, RETURN, NULL);
 			}
 		}
-		visitor->action(NULL, CLOSESQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("subNodes", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+
+	Instance_VisitReferences(((Group*)(this))->super, parent, visitor, 0);
+
 }
 
 void* Group_FindByPath(char* attribute, Group* const this)

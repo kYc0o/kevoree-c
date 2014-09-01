@@ -61,8 +61,10 @@ void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 	{
 		char* cClass = NULL;
 		/*sprintf(path,"%s\\cClass", parent);*/
-		sprintf(path,"cClass");
-		cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);
+		cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((NamedElement*)this)->MetaClassName((NamedElement*)this))) + 1);
+		sprintf(cClass, "org.kevoree.%s", ((NamedElement*)this)->MetaClassName((NamedElement*)this));
+		sprintf(path,"eClass");
+		/*cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);*/
 		visitor->action(path, STRING, cClass);
 		visitor->action(NULL, COLON, NULL);
 		free(cClass);

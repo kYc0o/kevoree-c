@@ -230,13 +230,11 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	/* Instance references */
-	Instance_VisitReferences(((ComponentInstance*)(this))->super, parent, visitor, 0);
-
 	if(((ComponentInstance*)(this))->provided != NULL)
 	{
 		visitor->action("provided", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((ComponentInstance*)(this))->provided);
 
 		/* provided */
 		hashmap_map* m = ((ComponentInstance*)(this))->provided;
@@ -252,9 +250,20 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				/*sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+	else
+	{
+		visitor->action("provided", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 
@@ -262,6 +271,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 	{
 		visitor->action("required", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((ComponentInstance*)(this))->required);
 
 		/* required */
 		hashmap_map* m = ((ComponentInstance*)(this))->required;
@@ -277,11 +287,25 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				/*sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
-		visitor->action(NULL, CLOSESQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("required", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+	/* Instance references */
+	Instance_VisitReferences(((ComponentInstance*)(this))->super, parent, visitor, 0);
+
 }
 
 void* ComponentInstance_FindByPath(char* attribute, ComponentInstance* const this)

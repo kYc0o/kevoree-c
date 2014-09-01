@@ -594,8 +594,8 @@ int main(void)
 	ComponentInstance* ciFakeConsole = new_ComponentInstance();
 	ciFakeConsole->super->super->name = malloc(sizeof(char) * (strlen("fakeconsole") + 1));
 	strcpy(ciFakeConsole->super->super->name, "fakeconsole");
-	ciFakeConsole->super->metaData = malloc(sizeof(char) * (strlen("dummy_MetaData") + 1));
-	strcpy(ciFakeConsole->super->metaData, "dummy_MetaData");
+	ciFakeConsole->super->metaData = malloc(sizeof(char) * (strlen("") + 1));
+	strcpy(ciFakeConsole->super->metaData, "");
 	ciFakeConsole->super->started = 1;
 	ciFakeConsole->super->AddTypeDefinition(ciFakeConsole->super, ctFakeConsole);
 	ciFakeConsole->AddProvided(ciFakeConsole, pInMsg);
@@ -604,8 +604,8 @@ int main(void)
 	ComponentInstance* ciHelloWorld = new_ComponentInstance();
 	ciHelloWorld->super->super->name = malloc(sizeof(char) * (strlen("helloworld") + 1));
 	strcpy(ciHelloWorld->super->super->name, "helloworld");
-	ciHelloWorld->super->metaData = malloc(sizeof(char) * (strlen("dummy_MetaDataChanged") + 1));
-	strcpy(ciHelloWorld->super->metaData, "dummy_MetaDataChanged");
+	ciHelloWorld->super->metaData = malloc(sizeof(char) * (strlen("") + 1));
+	strcpy(ciHelloWorld->super->metaData, "");
 	ciHelloWorld->super->started = 1;
 	ciHelloWorld->super->AddTypeDefinition(ciHelloWorld->super, ctHelloWorld);
 	ciHelloWorld->AddProvided(ciHelloWorld, pFake);

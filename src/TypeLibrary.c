@@ -175,6 +175,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 	{
 		visitor->action("subTypes", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(((TypeLibrary*)(this))->subTypes);
 		
 		/* subTypes */
 		hashmap_map* m = ((TypeLibrary*)(this))->subTypes;
@@ -191,9 +192,20 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 				/*n->VisitAttributes(n, path, visitor, 0);
 				n->VisitReferences(n, path, visitor);*/
 				visitor->action(path, STRREF, NULL);
-				visitor->action(NULL, COLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, COLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, RETURN, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
+	}
+	else
+	{
+		visitor->action("subTypes", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }

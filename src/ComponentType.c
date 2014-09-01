@@ -236,13 +236,12 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 	
 	TypeDefinition* pObj = (TypeDefinition*)this;
 	ComponentType* pDerivedObj = (ComponentType*)(pObj->pDerivedObj);
-	
-	TypeDefinition_VisitReferences(pObj, parent, visitor);
-		
+
 	if(pDerivedObj->required != NULL)
 	{
 		visitor->action("required", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(pDerivedObj->required);
 				
 		/* required */
 		hashmap_map* m = pDerivedObj->required;
@@ -258,9 +257,20 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 				/*sprintf(path, "%s/required[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+	else
+	{
+		visitor->action("required", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	
@@ -268,6 +278,7 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 	{
 		visitor->action("provided", SQBRACKET, NULL);
 		int i;
+		int length = hashmap_length(pDerivedObj->provided);
 				
 		/* provided */
 		hashmap_map* m = pDerivedObj->provided;
@@ -283,11 +294,24 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 				/*sprintf(path, "%s/provided[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
-		visitor->action(NULL, CLOSESQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("provided", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
+
+	TypeDefinition_VisitReferences(pObj, parent, visitor);
 }
 
 void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)

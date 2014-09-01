@@ -236,7 +236,14 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 			/*sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));*/
 			((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor, recursive);
 			((Instance*)(this))->typeDefinition->VisitReferences(((Instance*)(this))->typeDefinition, path, visitor);
+			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 		}
+		else
+		{
+			visitor->action("typeDefinition", SQBRACKET, NULL);
+			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+		}
+
 		if(((Instance*)(this))->dictionary != NULL)
 		{
 			visitor->action("dictionary", SQBRACKET, NULL);
@@ -247,12 +254,19 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 			visitor->action(NULL, CLOSEBRACKET, NULL);
 			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 		}
+		else
+		{
+			visitor->action("dictionary", SQBRACKET, NULL);
+			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+		}
 
 		hashmap_map* m = NULL;
 		int i;
 
 		if((m = (hashmap_map*) ((Instance*)(this))->fragmentDictionary) != NULL)
 		{
+			int length = hashmap_length(((Instance*)(this))->fragmentDictionary);
+
 			visitor->action("fragmentDictionary", SQBRACKET, NULL);
 			/* compare fragmentDictionary*/
 			for(i = 0; i< m->table_size; i++)
@@ -265,9 +279,20 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 					/*sprintf(path, "%s/fragmentDictionary[%s]", parent, n->InternalGetKey(n));*/
 					n->VisitAttributes(n, path, visitor);
 					n->VisitReferences(n, path, visitor);
-					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					if(length > 1)
+					{
+						visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+						length--;
+					}
+					else
+						visitor->action(NULL, CLOSEBRACKET, NULL);
 				}
 			}
+			visitor->action(NULL, CLOSESQBRACKET, NULL);
+		}
+		else
+		{
+			visitor->action("fragmentDictionary", SQBRACKET, NULL);
 			visitor->action(NULL, CLOSESQBRACKET, NULL);
 		}
 	}
@@ -283,6 +308,12 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 			visitor->action(NULL, RETURN, NULL);
 			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 		}
+		else
+		{
+			visitor->action("typeDefinition", SQBRACKET, NULL);
+			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+		}
+
 		if(((Instance*)(this))->dictionary != NULL)
 		{
 			visitor->action("dictionary", SQBRACKET, NULL);
@@ -293,12 +324,19 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 			visitor->action(NULL, CLOSEBRACKET, NULL);
 			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 		}
+		else
+		{
+			visitor->action("dictionary", SQBRACKET, NULL);
+			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+		}
 
 		hashmap_map* m = NULL;
 		int i;
 
 		if((m = (hashmap_map*) ((Instance*)(this))->fragmentDictionary) != NULL)
 		{
+			int length = hashmap_length(((Instance*)(this))->fragmentDictionary);
+
 			visitor->action("fragmentDictionary", SQBRACKET, NULL);
 			/* compare fragmentDictionary*/
 			for(i = 0; i< m->table_size; i++)
@@ -311,10 +349,21 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 					/*sprintf(path, "%s/fragmentDictionary[%s]", parent, n->InternalGetKey(n));*/
 					n->VisitAttributes(n, path, visitor);
 					n->VisitReferences(n, path, visitor);
-					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					if(length > 1)
+					{
+						visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+						length--;
+					}
+					else
+						visitor->action(NULL, CLOSEBRACKET, NULL);
 				}
 			}
-			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+			visitor->action(NULL, CLOSESQBRACKET, NULL);
+		}
+		else
+		{
+			visitor->action("fragmentDictionary", SQBRACKET, NULL);
+			visitor->action(NULL, CLOSESQBRACKET, NULL);
 		}
 	}
 }

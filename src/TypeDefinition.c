@@ -262,6 +262,11 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 		/*n->VisitReferences(n, path, visitor);*/
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("deployUnit", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
 	
 	if(((TypeDefinition*)(this))->dictionaryType != NULL)
 	{
@@ -274,10 +279,15 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 		visitor->action(NULL, CLOSEBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("dictionaryType", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
 	
 	if(((TypeDefinition*)(this))->superTypes != NULL)
 	{
-		visitor->action("groups", SQBRACKET, NULL);
+		visitor->action("superTypes", SQBRACKET, NULL);
 		int i;
 		
 		/* superTypes */
@@ -298,7 +308,12 @@ void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* vis
 				visitor->action(NULL, COLON, NULL);
 			}
 		}
-		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
+	}
+	else
+	{
+		visitor->action("superTypes", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
 

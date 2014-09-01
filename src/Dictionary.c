@@ -120,9 +120,11 @@ void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Dictionary*)this)->MetaClassName((Dictionary*)this))) + 1);
 	/*sprintf(path,"%s\\cClass", parent);*/
-	sprintf(path, "cClass");
-	cClass = ((Dictionary*)this)->MetaClassName((Dictionary*)this);
+	sprintf(cClass, "org.kevoree.%s", ((Dictionary*)this)->MetaClassName((Dictionary*)this));
+	sprintf(path, "eClass");
+	/*cClass = ((Dictionary*)this)->MetaClassName((Dictionary*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
 	free(cClass);
@@ -144,6 +146,8 @@ void Dictionary_VisitReferences(void* const this, char* parent, Visitor* visitor
 	
 	if((m = (hashmap_map*) ((Dictionary*)(this))->values) != NULL)
 	{
+		int length = hashmap_length(((Dictionary*)(this))->values);
+
 		visitor->action("values", SQBRACKET, NULL);
 		/* compare nodes*/
 		for(i = 0; i< m->table_size; i++)
@@ -155,9 +159,20 @@ void Dictionary_VisitReferences(void* const this, char* parent, Visitor* visitor
 				DictionaryValue* n = data;
 				/*sprintf(path, "%s/values[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
-				visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+				if(length > 1)
+				{
+					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
+					length--;
+				}
+				else
+					visitor->action(NULL, CLOSEBRACKET, NULL);
 			}
 		}
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
+	}
+	else
+	{
+		visitor->action("values", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }
