@@ -3,14 +3,20 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "tools.h"
 #include <string.h>
-#include "DeployUnit.h"
+#include "tools.h"
+#include "hashmap.h"
+/*#include "DeployUnit.h"
 #include "DictionaryType.h"
 #include "NamedElement.h"
-#include "hashmap.h"
+#include "ContainerRoot.h"*/
 
 typedef struct _TypeDefinition TypeDefinition;
+typedef struct _DeployUnit DeployUnit;
+typedef struct _NamedElement NamedElement;
+typedef struct _DictionaryType DictionaryType;
+typedef struct _ContainerRoot ContainerRoot;
+typedef struct _Visitor Visitor;
 
 /* Declaration of pointers to functions */
 typedef char* (*fptrTypeDefInternalGetKey)(TypeDefinition*);
@@ -27,15 +33,16 @@ typedef void (*fptrVisitRefsTypeDefinition)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathTypeDefinition)(char*, TypeDefinition*);
 
 typedef struct _TypeDefinition {
-	NamedElement* super;
-	void* pDerivedObj;
-	char* version;
-	char* factoryBean;
-	char* bean;
+	NamedElement *super;
+	void *pDerivedObj;
+	char *version;
+	char *factoryBean;
+	char *bean;
 	int abstract;
-	DeployUnit* deployUnits;
-	DictionaryType* dictionaryType;
+	DeployUnit *deployUnits;
+	DictionaryType *dictionaryType;
 	map_t superTypes;
+	ContainerRoot *eContainer;
 	fptrTypeDefInternalGetKey InternalGetKey;
 	fptrTypeDefAddDeployUnit AddDeployUnit;
 	fptrTypeDefAddDictionaryType AddDictionaryType;

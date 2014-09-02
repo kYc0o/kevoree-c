@@ -1,10 +1,13 @@
+#include "DictionaryAttribute.h"
+#include "TypeDefinition.h"
+#include "Visitor.h"
 #include "DictionaryType.h"
 
 DictionaryType* new_DictionaryType()
 {
 	DictionaryType* pObj = NULL;
 	/* Allocating memory */
-	pObj = (DictionaryType*)malloc(sizeof(DictionaryType));
+	pObj = (DictionaryType*)my_malloc(sizeof(DictionaryType));
 
 	if (pObj == NULL)
 	{
@@ -16,6 +19,7 @@ DictionaryType* new_DictionaryType()
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->attributes = NULL;
+	pObj->eContainer = NULL;
 	
 	pObj->AddAttributes = DictionaryType_AddAttributes;
 	pObj->RemoveAttributes = DictionaryType_RemoveAttributes;
@@ -38,7 +42,9 @@ void delete_DictionaryType(DictionaryType* const this)
 		free(this->generated_KMF_ID);
 		/* TODO check if hashmap is not NULL */
 		hashmap_free(this->attributes);
+		free(this->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -51,7 +57,7 @@ char* DictionaryType_MetaClassName(DictionaryType* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("DictionaryType")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("DictionaryType")) + 1);
 	if(name != NULL)
 		strcpy(name, "DictionaryType");
 	else
@@ -117,14 +123,15 @@ void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* vis
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryType*)this)->MetaClassName((DictionaryType*)this))) + 1);
+	cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryType*)this)->MetaClassName((DictionaryType*)this))) + 1);
 	/*sprintf(path,"%s\\cClass", parent);*/
 	sprintf(cClass, "org.kevoree.%s", ((DictionaryType*)this)->MetaClassName((DictionaryType*)this));
 	sprintf(path,"eClass", parent);
 	/*cClass = ((DictionaryType*)this)->MetaClassName((DictionaryType*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
-	free(cClass);
+	/*free(cClass);*/
+	str_free(cClass);
 
 	/*sprintf(path, "%s\\generated_KMF_ID", parent);*/
 	sprintf(path, "generated_KMF_ID");

@@ -1,3 +1,11 @@
+#include <string.h>
+#include "NamedElement.h"
+#include "Instance.h"
+#include "ComponentInstance.h"
+#include "Group.h"
+#include "Visitor.h"
+#include "NetworkInfo.h"
+#include "tools.h"
 #include "ContainerNode.h"
 
 Instance* newPoly_ContainerNode()
@@ -6,7 +14,7 @@ Instance* newPoly_ContainerNode()
 	Instance* pObj = new_Instance();
 
 	/* Allocating memory */
-	pContNodeObj = (ContainerNode*)malloc(sizeof(pContNodeObj));
+	pContNodeObj = (ContainerNode*)my_malloc(sizeof(pContNodeObj));
 
 	if (pContNodeObj == NULL)
 	{
@@ -22,6 +30,7 @@ Instance* newPoly_ContainerNode()
 	pContNodeObj->host = NULL;
 	pContNodeObj->groups = NULL;
 	pContNodeObj->networkInformation = NULL;
+	pContNodeObj->eContainer = NULL;
 	
 	pContNodeObj->FindComponentsByID = ContainerNode_FindComponentsByID;
 	pContNodeObj->FindHostsByID = ContainerNode_FindHostsByID;
@@ -58,7 +67,7 @@ ContainerNode* new_ContainerNode()
 		return NULL;
 
 	/* Allocating memory */
-	pContNodeObj = (ContainerNode*)malloc(sizeof(ContainerNode));
+	pContNodeObj = (ContainerNode*)my_malloc(sizeof(ContainerNode));
 
 	if (pContNodeObj == NULL)
 	{
@@ -74,6 +83,7 @@ ContainerNode* new_ContainerNode()
 	pContNodeObj->host = NULL;
 	pContNodeObj->groups = NULL;
 	pContNodeObj->networkInformation = NULL;
+	pContNodeObj->eContainer = NULL;
 	
 	pContNodeObj->FindComponentsByID = ContainerNode_FindComponentsByID;
 	pContNodeObj->FindHostsByID = ContainerNode_FindHostsByID;
@@ -111,7 +121,7 @@ char* ContainerNode_MetaClassName(ContainerNode* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("ContainerNode")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("ContainerNode")) + 1);
 	if(name != NULL)
 		strcpy(name, "ContainerNode");
 	else
@@ -348,6 +358,7 @@ void deletePoly_ContainerNode(Instance* const this)
 	hashmap_free(pContNodeObj->groups);
 	hashmap_free(pContNodeObj->networkInformation);
 	free(pContNodeObj->host);
+	free(pContNodeObj->eContainer);
 	free(pContNodeObj);
 	/*destroy base Obj*/
 	delete_Instance(this);
@@ -355,15 +366,19 @@ void deletePoly_ContainerNode(Instance* const this)
 
 void delete_ContainerNode(ContainerNode* const this)
 {
-	/* destroy base object */
-	delete_Instance(this->super);
-	/* destroy data memebers */
-	hashmap_free(this->components);
-	hashmap_free(this->hosts);
-	hashmap_free(this->groups);
-	hashmap_free(this->networkInformation);
-	free(this->host);
-	free(this);
+	if(this != NULL)
+	{/* destroy base object */
+		delete_Instance(this->super);
+		/* destroy data memebers */
+		hashmap_free(this->components);
+		hashmap_free(this->hosts);
+		hashmap_free(this->groups);
+		hashmap_free(this->networkInformation);
+		free(this->host);
+		free(this->eContainer);
+		free(this);
+		/*this = NULL;*/
+	}
 }
 
 void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)

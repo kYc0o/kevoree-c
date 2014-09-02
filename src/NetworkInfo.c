@@ -6,7 +6,7 @@ NamedElement* newPoly_NetworkInfo()
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pNetInfoObj = (NetworkInfo*)malloc(sizeof(NetworkInfo));
+	pNetInfoObj = (NetworkInfo*)my_malloc(sizeof(NetworkInfo));
 
 	if (pNetInfoObj == NULL)
 	{
@@ -16,8 +16,8 @@ NamedElement* newPoly_NetworkInfo()
 
 	pObj->pDerivedObj = pNetInfoObj; /* Pointing to derived object */
 	
-	/*pNetInfoObj->values = hashmap_new();*/
 	pNetInfoObj->values = NULL;
+	pNetInfoObj->eContainer = NULL;
 	
 	pNetInfoObj->AddValues = NetworkInfo_AddValues;
 	pNetInfoObj->RemoveValues = NetworkInfo_RemoveValues;
@@ -42,7 +42,7 @@ NetworkInfo* new_NetworkInfo()
 		return NULL;
 
 	/* Allocating memory */
-	pNetInfoObj = (NetworkInfo*)malloc(sizeof(NetworkInfo));
+	pNetInfoObj = (NetworkInfo*)my_malloc(sizeof(NetworkInfo));
 
 	if (pNetInfoObj == NULL)
 	{
@@ -52,8 +52,8 @@ NetworkInfo* new_NetworkInfo()
 	/*pObj->pDerivedObj = pNetInfoObj;  Pointing to derived object */
 	pNetInfoObj->super = pObj;
 	
-	/*pNetInfoObj->values = hashmap_new();*/
 	pNetInfoObj->values = NULL;
+	pNetInfoObj->eContainer = NULL;
 	
 	pNetInfoObj->AddValues = NetworkInfo_AddValues;
 	pNetInfoObj->RemoveValues = NetworkInfo_RemoveValues;
@@ -79,7 +79,7 @@ char* NetworkInfo_MetaClassName(NetworkInfo* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("NetworkInfo")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("NetworkInfo")) + 1);
 	if(name != NULL)
 		strcpy(name, "NetworkInfo");
 	else
@@ -141,22 +141,30 @@ NetworkProperty* NetworkInfo_FindValuesByID(NetworkInfo* const this, char* id)
 
 void deletePoly_NetworkInfo(NamedElement* const this)
 {
-	NetworkInfo* pNetInfoObj;
-	pNetInfoObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	hashmap_free(pNetInfoObj->values);
-	free(pNetInfoObj);
-	/*destroy base Obj*/
-	delete_NamedElement(this);
+	if(this != NULL)
+	{
+		NetworkInfo* pNetInfoObj;
+		pNetInfoObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		hashmap_free(pNetInfoObj->values);
+		free(pNetInfoObj->eContainer);
+		free(pNetInfoObj);
+		/*destroy base Obj*/
+		delete_NamedElement(this);
+	}
 }
 
 void delete_NetworkInfo(NetworkInfo* const this)
 {
-	/* destroy base object */
-	delete_NamedElement(this->super);
-	/* destroy data memebers */
-	hashmap_free(this->values);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_NamedElement(this->super);
+		/* destroy data memebers */
+		hashmap_free(this->values);
+		free(this->eContainer);
+		free(this);
+	}
 	
 }
 

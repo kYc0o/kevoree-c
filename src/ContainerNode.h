@@ -2,17 +2,22 @@
 #define H_ContainerNode
 #include <stdlib.h>
 #include <stdio.h>
-#include "tools.h"
 #include <string.h>
-#include "Instance.h"
-#include "ComponentInstance.h"
-#include "Group.h"
-#include "NetworkInfo.h"
 #include "hashmap.h"
-#include "Visitor.h"
+/*#include "Instance.h"*/
+/*#include "ComponentInstance.h"*/
+/*#include "Group.h"*/
+/*#include "Visitor.h"*/
+/*#include "NetworkInfo.h"
+#include "tools.h"*/
 
 typedef struct _ContainerNode ContainerNode;
+typedef struct _Instance Instance;
+typedef struct _ContainerRoot ContainerRoot;
+typedef struct _ComponentInstance ComponentInstance;
 typedef struct _Group Group;
+typedef struct _NetworkInfo NetworkInfo;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrContNodeMetaClassName)(ContainerNode*);
 typedef char* (*fptrContNodeInternalGetKey)(ContainerNode*);
@@ -36,12 +41,13 @@ typedef void (*fptrVisitRefsContainerNode)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathContainerNode)(char*, ContainerNode*);
 
 typedef struct _ContainerNode {
-	Instance* super;
+	Instance *super;
 	map_t components;
 	map_t hosts;
-	ContainerNode* host;
+	ContainerNode *host;
 	map_t networkInformation;
 	map_t groups;
+	ContainerRoot *eContainer;
 	fptrContNodeMetaClassName MetaClassName;
 	fptrContNodeInternalGetKey InternalGetKey;
 	fptrContNodeFindComponentsByID FindComponentsByID;
@@ -82,7 +88,6 @@ void ContainerNode_RemoveHost(ContainerNode* const this, ContainerNode* ptr);
 void ContainerNode_RemoveHosts(ContainerNode* const this, ContainerNode* ptr);
 void ContainerNode_RemoveGroups(ContainerNode* const this, Group* ptr);
 void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkInfo* ptr);
-/*int _acceptContainerNode(ContainerNode* this, ContainerNode* c, Visitor* visitor);*/
 void deletePoly_ContainerNode(Instance* const this);
 void delete_ContainerNode(ContainerNode* const this);
 void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);

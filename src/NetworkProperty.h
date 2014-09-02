@@ -3,9 +3,15 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "NamedElement.h"
+/*#include "NamedElement.h"*/
+/*#include "NetworkInfo.h"*/
+/*#include "NodeLink.h"*/
 
 typedef struct _NetworkProperty NetworkProperty;
+typedef struct _NamedElement NamedElement;
+typedef struct _NetworkInfo NetworkInfo;
+typedef struct _NodeLink NodeLink;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrNetPropMetaClassName)(NetworkProperty*);
 typedef char* (*fptrNetPropInternalGetKey)(NetworkProperty*);
@@ -15,9 +21,10 @@ typedef void (*fptrVisitAttrNetworkProperty)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNetworkProperty)(char*, NetworkProperty*);
 
 typedef struct _NetworkProperty {
-	NamedElement* super;
-	char* value;
-	/*int (*accept)(struct _NetworkProperty*, struct _NetworkProperty*, Visitor*);*/
+	NamedElement *super;
+	char *value;
+	NodeLink *eContainerNL;
+	NetworkInfo *eContainerNI;
 	fptrNetPropMetaClassName MetaClassName;
 	fptrNetPropInternalGetKey InternalGetKey;
 	fptrDeleteNetworkProperty Delete;

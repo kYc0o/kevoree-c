@@ -6,7 +6,7 @@ Instance* newPoly_Group()
 	Instance* pObj = new_Instance();
 
 	/* Allocating memory */
-	pGroupObj = (Group*)malloc(sizeof(Group));
+	pGroupObj = (Group*)my_malloc(sizeof(Group));
 
 	if (pGroupObj == NULL)
 	{
@@ -16,8 +16,8 @@ Instance* newPoly_Group()
 
 	pObj->pDerivedObj = pGroupObj; /* Pointing to derived object */
 	
-	/*pGroupObj->subNodes = hashmap_new();*/
-	pGroupObj->subNodes = NULL;;
+	pGroupObj->subNodes = NULL;
+	pGroupObj->eContainer = NULL;
 	
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
@@ -43,7 +43,7 @@ Group* new_Group()
 		return NULL;
 
 	/* Allocating memory */
-	pGroupObj = (Group*)malloc(sizeof(Group));
+	pGroupObj = (Group*)my_malloc(sizeof(Group));
 
 	if (pGroupObj == NULL)
 	{
@@ -55,6 +55,7 @@ Group* new_Group()
 	
 	/*pGroupObj->subNodes = hashmap_new();*/
 	pGroupObj->subNodes = NULL;
+	pGroupObj->eContainer = NULL;
 	
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
@@ -80,7 +81,7 @@ char* Group_MetaClassName(Group* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("Group")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("Group")) + 1);
 	if(name != NULL)
 		strcpy(name, "Group");
 	else
@@ -142,22 +143,31 @@ void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr)
 
 void deletePoly_Group(Instance* const this)
 {
-	Group* pGroupObj;
-	pGroupObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	hashmap_free(pGroupObj->subNodes);
-	free(pGroupObj);
-	/*destroy base Obj*/
-	delete_Instance(this);
+	if(this != NULL)
+	{
+		Group* pGroupObj;
+		pGroupObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		hashmap_free(pGroupObj->subNodes);
+		free(pGroupObj->eContainer);
+		free(pGroupObj);
+		/*destroy base Obj*/
+		delete_Instance(this);
+	}
 }
 
 void delete_Group(Group* const this)
 {
-	/* destroy base object */
-	delete_Instance(this->super);
-	/* destroy data memebers */
-	hashmap_free(this->subNodes);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_Instance(this->super);
+		/* destroy data memebers */
+		hashmap_free(this->subNodes);
+		free(this->eContainer);
+		free(this);
+		/*this = NULL;*/
+	}
 }
 
 void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)

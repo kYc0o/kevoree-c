@@ -1,3 +1,6 @@
+#include "NamedElement.h"
+#include "TypeDefinition.h"
+#include "Visitor.h"
 #include "ChannelType.h"
 
 TypeDefinition* newPoly_ChannelType()
@@ -9,7 +12,7 @@ TypeDefinition* newPoly_ChannelType()
 		return NULL;
 
 	/* Allocating memory */
-	pChanTypeObj = (ChannelType*)malloc(sizeof(ChannelType));
+	pChanTypeObj = (ChannelType*)my_malloc(sizeof(ChannelType));
 
 	if (pChanTypeObj == NULL)
 	{
@@ -46,7 +49,7 @@ ChannelType* new_ChannelType()
 		return NULL;
 
 	/* Allocating memory */
-	pChanTypeObj = (ChannelType*)malloc(sizeof(ChannelType));
+	pChanTypeObj = (ChannelType*)my_malloc(sizeof(ChannelType));
 
 	if (pChanTypeObj == NULL)
 	{
@@ -106,7 +109,7 @@ char* ChannelType_MetaClassName(ChannelType* const this)
 {
 	char *name = NULL;
 
-	name = malloc(sizeof(char) * (strlen("ChannelType")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("ChannelType")) + 1);
 	if(name != NULL)
 		strcpy(name, "ChannelType");
 	else

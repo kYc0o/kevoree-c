@@ -11,6 +11,16 @@
 /*typedef struct _Group Group;
 typedef struct _Visitor Visitor;*/
 typedef struct _ContainerRoot ContainerRoot;
+typedef struct _ContainerNode ContainerNode;
+typedef struct _TypeDefinition TypeDefinition;
+typedef struct _DeployUnit DeployUnit;
+typedef struct _Group Group;
+typedef struct _Channel Channel;
+typedef struct _TypeLibrary TypeLibrary;
+typedef struct _TypedElement TypedElement;
+typedef struct _NodeNetwork NodeNetwork;
+typedef struct _MBinding MBinding;
+typedef struct _Repository Repository;
 
 typedef char* (*fptrContRootMetaClassName)(ContainerRoot*);
 typedef char* (*fptrContRootInternalGetKey)(ContainerRoot*);

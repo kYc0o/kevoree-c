@@ -1,3 +1,8 @@
+#include <string.h>
+#include "Instance.h"
+#include "ContainerRoot.h"
+#include "MBinding.h"
+#include "tools.h"
 #include "Channel.h"
 
 Instance* newPoly_Channel()
@@ -6,7 +11,7 @@ Instance* newPoly_Channel()
 	Instance* pObj = new_Instance();
 
 	/* Allocating memory */
-	pChannelObj = (Channel*)malloc(sizeof(Channel));
+	pChannelObj = (Channel*)my_malloc(sizeof(Channel));
 
 	if (pChannelObj == NULL)
 	{
@@ -22,6 +27,7 @@ Instance* newPoly_Channel()
 	pObj->InternalGetKey = Channel_InternalGetKey;
 	
 	pChannelObj->bindings = NULL;
+	pChannelObj->eContainer = NULL;
 	
 	pChannelObj->FindBindingsByID = Channel_FindBindingsByID;
 	pChannelObj->AddBindings = Channel_AddBindings;
@@ -43,7 +49,7 @@ Channel* new_Channel()
 		return NULL;
 
 	/* Allocating memory */
-	pChannelObj = (Channel*)malloc(sizeof(Channel));
+	pChannelObj = (Channel*)my_malloc(sizeof(Channel));
 
 	if (pChannelObj == NULL)
 	{
@@ -56,6 +62,7 @@ Channel* new_Channel()
 	pChannelObj->VisitReferences = Channel_VisitReferences;
 	
 	pChannelObj->bindings = NULL;
+	pChannelObj->eContainer = NULL;
 	
 	pChannelObj->FindBindingsByID = Channel_FindBindingsByID;
 	pChannelObj->AddBindings = Channel_AddBindings;
@@ -73,13 +80,17 @@ Channel* new_Channel()
 
 void deletePoly_Channel(void* const this)
 {
-	Channel* pChannelObj;
-	pChannelObj = (Channel*)((Instance*)this)->pDerivedObj;
-	/*destroy derived obj*/
-	hashmap_free(pChannelObj->bindings);
-	free(pChannelObj);
-	/*destroy base Obj*/
-	delete_Instance(((Instance*)this));
+	if(this != NULL)
+	{
+		Channel* pChannelObj;
+		pChannelObj = (Channel*)((Instance*)this)->pDerivedObj;
+		/*destroy derived obj*/
+		hashmap_free(pChannelObj->bindings);
+		free(pChannelObj->eContainer);
+		free(pChannelObj);
+		/*destroy base Obj*/
+		delete_Instance(((Instance*)this));
+	}
 }
 
 void delete_Channel(void* const this)
@@ -90,7 +101,9 @@ void delete_Channel(void* const this)
 		delete_Instance(((Channel*)this)->super);
 		/* destroy data memebers */
 		hashmap_free(((Channel*)this)->bindings);
+		free(((Channel*)this)->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -98,7 +111,7 @@ char* Channel_MetaClassName(Channel* const this)
 {
 	char *name = NULL;
 
-	name = malloc(sizeof(char) * (strlen("Channel")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("Channel")) + 1);
 	if(name != NULL)
 		strcpy(name, "Channel");
 	else

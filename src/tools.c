@@ -8,7 +8,7 @@ char* Substring(char* string, int position, int length)
 	char *pointer;
 	int c;
 	
-	pointer = malloc(length+1);
+	pointer = my_malloc(length+1);
 	
 	if (pointer == NULL)
 	{

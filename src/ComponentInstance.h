@@ -1,14 +1,19 @@
 #ifndef H_ComponentInstance
 #define H_ComponentInstance
+
 #include <stdlib.h>
 #include <stdio.h>
-#include "tools.h"
 #include <string.h>
+#include "tools.h"
+#include "hashmap.h"
+/*#include "Instance.h"
 #include "Port.h"
-#include "Instance.h"
-#include "Visitor.h"
+#include "Visitor.h"*/
 
 typedef struct _ComponentInstance ComponentInstance;
+typedef struct _Instance Instance;
+typedef struct _Port Port;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrCompInstInternalGetKey)(ComponentInstance*);
 typedef char* (*fptrCompInstMetaClassName)(ComponentInstance*);

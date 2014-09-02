@@ -1,4 +1,6 @@
 #include "NodeType.h"
+#include "TypeDefinition.h"
+#include "NamedElement.h"
 
 TypeDefinition* newPoly_NodeType()
 {
@@ -6,7 +8,7 @@ TypeDefinition* newPoly_NodeType()
 	TypeDefinition* pObj = new_TypeDefinition();
 
 	/* Allocating memory */
-	pNodeTypeObj = (NodeType*)malloc(sizeof(NodeType));
+	pNodeTypeObj = (NodeType*)my_malloc(sizeof(NodeType));
 
 	if (pNodeTypeObj == NULL)
 	{
@@ -36,7 +38,7 @@ NodeType* new_NodeType()
 		return NULL;
 
 	/* Allocating memory */
-	pNodeTypeObj = (NodeType*)malloc(sizeof(NodeType));
+	pNodeTypeObj = (NodeType*)my_malloc(sizeof(NodeType));
 
 	if (pNodeTypeObj == NULL)
 	{
@@ -66,7 +68,7 @@ char* NodeType_MetaClassName(NodeType* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("NodeType")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("NodeType")) + 1);
 	if(name != NULL)
 		strcpy(name, "NodeType");
 	else

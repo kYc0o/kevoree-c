@@ -1,3 +1,6 @@
+#include "NamedElement.h"
+#include "ContainerRoot.h"
+#include "Visitor.h"
 #include "TypedElement.h"
 
 NamedElement* newPoly_TypedElement(void)
@@ -6,7 +9,7 @@ NamedElement* newPoly_TypedElement(void)
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pTypeElemObj = (TypedElement*)malloc(sizeof(TypedElement));
+	pTypeElemObj = (TypedElement*)my_malloc(sizeof(TypedElement));
 
 	if (pTypeElemObj == NULL)
 	{
@@ -16,8 +19,8 @@ NamedElement* newPoly_TypedElement(void)
 
 	pObj->pDerivedObj = pTypeElemObj; /* Pointing to derived object */
 	
-	/*pTypeElemObj->genericTypes = hashmap_new();*/
 	pTypeElemObj->genericTypes = NULL;
+	pTypeElemObj->eContainer = NULL;
 	
 	pTypeElemObj->FindGenericTypesByID = TypedElement_FindGenericTypesByID;
 	pTypeElemObj->AddGenericTypes = TypedElement_AddGenericTypes;
@@ -42,7 +45,7 @@ TypedElement* new_TypedElement(void)
 		return NULL;
 	
 	/* Allocating memory */
-	pTypeElemObj = (TypedElement*)malloc(sizeof(TypedElement));
+	pTypeElemObj = (TypedElement*)my_malloc(sizeof(TypedElement));
 
 	if (pTypeElemObj == NULL)
 	{
@@ -52,8 +55,8 @@ TypedElement* new_TypedElement(void)
 	pObj->pDerivedObj = pObj;  /*Pointing to derived object */
 	pTypeElemObj->super = pObj;
 	
-	/*pTypeElemObj->genericTypes = hashmap_new();*/
 	pTypeElemObj->genericTypes = NULL;
+	pTypeElemObj->eContainer = NULL;
 	
 	pTypeElemObj->FindGenericTypesByID = TypedElement_FindGenericTypesByID;
 	pTypeElemObj->AddGenericTypes = TypedElement_AddGenericTypes;
@@ -74,7 +77,7 @@ char* TypedElement_MetaClassName(TypedElement* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("TypedElement")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("TypedElement")) + 1);
 	if(name != NULL)
 		strcpy(name, "TypedElement");
 	else
@@ -141,22 +144,31 @@ void TypedElement_RemoveGenericTypes(TypedElement* const this, TypedElement* ptr
 
 void deletePoly_TypedElement(NamedElement* const this)
 {
-	TypedElement* pTypeElemObj;
-	pTypeElemObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	hashmap_free(pTypeElemObj->genericTypes);
-	free(pTypeElemObj);
-	/*destroy base Obj*/
-	delete_NamedElement(this);
+	if(this != NULL)
+	{
+		TypedElement* pTypeElemObj;
+		pTypeElemObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		hashmap_free(pTypeElemObj->genericTypes);
+		free(pTypeElemObj->eContainer);
+		free(pTypeElemObj);
+		/*destroy base Obj*/
+		delete_NamedElement(this);
+	}
 }
 
 void delete_TypedElement(TypedElement* const this)
 {
-	/* destroy base object */
-	delete_NamedElement(this->super);
-	/* destroy data memebers */
-	hashmap_free(this->genericTypes);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_NamedElement(this->super);
+		/* destroy data memebers */
+		hashmap_free(this->genericTypes);
+		free(this->eContainer);
+		free(this);
+		/*this = NULL;*/
+	}
 }
 
 void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor)

@@ -1,3 +1,6 @@
+#include "Dictionary.h"
+#include "Instance.h"
+#include "Visitor.h"
 #include "FragmentDictionary.h"
 
 Dictionary* newPoly_FragmentDictionary()
@@ -6,7 +9,7 @@ Dictionary* newPoly_FragmentDictionary()
 	Dictionary* pObj = new_Dictionary();
 
 	/* Allocating memory */
-	pFragDicObj = (FragmentDictionary*)malloc(sizeof(FragmentDictionary));
+	pFragDicObj = (FragmentDictionary*)my_malloc(sizeof(FragmentDictionary));
 
 	if (pFragDicObj == NULL)
 	{
@@ -16,6 +19,7 @@ Dictionary* newPoly_FragmentDictionary()
 
 	pObj->pDerivedObj = pFragDicObj; /* Pointing to derived object */
 	((FragmentDictionary*)pObj->pDerivedObj)->super = pObj;
+
 	pObj->VisitAttributes = FragmentDictionary_VisitAttributes;
 	pObj->VisitReferences = FragmentDictionary_VisitReferences;
 	
@@ -23,6 +27,7 @@ Dictionary* newPoly_FragmentDictionary()
 	pObj->InternalGetKey = FragmentDictionary_InternalGetKey;
 	
 	pFragDicObj->name = NULL;
+	pFragDicObj->eContainer = NULL;
 	
 	pObj->FindByPath = FragmentDictionary_FindByPath;
 	
@@ -40,7 +45,7 @@ FragmentDictionary* new_FragmentDictionary(void)
 		return NULL;
 
 	/* Allocating memory */
-	pFragDicObj = (FragmentDictionary*)malloc(sizeof(FragmentDictionary));
+	pFragDicObj = (FragmentDictionary*)my_malloc(sizeof(FragmentDictionary));
 
 	if (pFragDicObj == NULL)
 	{
@@ -52,6 +57,7 @@ FragmentDictionary* new_FragmentDictionary(void)
 	pFragDicObj->VisitReferences = FragmentDictionary_VisitReferences;
 	
 	pFragDicObj->name = NULL;
+	pFragDicObj->eContainer = NULL;
 	
 	pFragDicObj->MetaClassName = FragmentDictionary_MetaClassName;
 	pObj->MetaClassName = FragmentDictionary_MetaClassName;
@@ -71,6 +77,7 @@ void deletePoly_FragmentDictionary(void* const this)
 		pFragDicObj = (FragmentDictionary*)((Dictionary*)this)->pDerivedObj;
 		/*destroy derived obj*/
 		free(pFragDicObj->name);
+		free(pFragDicObj->eContainer);
 		free(pFragDicObj);
 		/*destroy base Obj*/
 		delete_Dictionary(((Dictionary*)this));
@@ -86,7 +93,9 @@ void delete_FragmentDictionary(void* const this)
 		/* destroy data memebers */
 		FragmentDictionary* pDicAttrObj = (FragmentDictionary*)this;
 		free(pDicAttrObj->name);
+		free(pDicAttrObj->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -99,7 +108,7 @@ char* FragmentDictionary_MetaClassName(FragmentDictionary* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("FragmentDictionary")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("FragmentDictionary")) + 1);
 	if(name != NULL)
 		strcpy(name, "FragmentDictionary");
 	else

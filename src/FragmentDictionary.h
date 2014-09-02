@@ -2,9 +2,13 @@
 #define __FragmentDictionary_H
 
 #include <string.h>
-#include "Dictionary.h"
+/*#include "Dictionary.h"
+#include "Instance.h"*/
 
 typedef struct _FragmentDictionary FragmentDictionary;
+typedef struct _Dictionary Dictionary;
+typedef struct _Instance Instance;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrFragDicMetaClassName)(FragmentDictionary*);
 typedef char* (*fptrFragDicInternalGetKey)(FragmentDictionary*);
@@ -14,8 +18,9 @@ typedef void (*fptrVisitRefsFragDic)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathFragDic)(char*, FragmentDictionary*);
 
 typedef struct _FragmentDictionary {
-	Dictionary* super;
-	char* name;
+	Dictionary *super;
+	char *name;
+	Instance *eContainer;
 	fptrFragDicInternalGetKey InternalGetKey;
 	fptrFragDicMetaClassName MetaClassName;
 	fptrDeleteFragDic Delete;

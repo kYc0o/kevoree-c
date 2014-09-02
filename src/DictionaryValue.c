@@ -1,10 +1,12 @@
+#include "Visitor.h"
+#include "Dictionary.h"
 #include "DictionaryValue.h"
 
 DictionaryValue* new_DictionaryValue(void)
 {
 	DictionaryValue* pObj = NULL;
 	/* Allocating memory */
-	pObj = (DictionaryValue*)malloc(sizeof(DictionaryValue));
+	pObj = (DictionaryValue*)my_malloc(sizeof(DictionaryValue));
 
 	if (pObj == NULL)
 	{
@@ -13,6 +15,7 @@ DictionaryValue* new_DictionaryValue(void)
 	
 	pObj->name = NULL;
 	pObj->value = NULL;
+	pObj->eContainer = NULL;
 
 	pObj->InternalGetKey = DictionaryValue_InternalGetKey;
 	pObj->MetaClassName = DictionaryValue_MetaClassName;
@@ -29,7 +32,9 @@ void delete_DictionaryValue(DictionaryValue* const this)
 	{
 		free(this->name);
 		free(this->value);
+		free(this->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -42,7 +47,7 @@ char* DictionaryValue_MetaClassName(DictionaryValue* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("DictionaryValue")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("DictionaryValue")) + 1);
 	if(name != NULL)
 		strcpy(name, "DictionaryValue");
 	else
@@ -58,13 +63,14 @@ void DictionaryValue_VisitAttributes(void* const this, char* parent, Visitor* vi
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);*/
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this))) + 1);
+	cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this))) + 1);
 	sprintf(cClass, "org.kevoree.%s", ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this));
 	sprintf(path,"eClass");
 	/*cClass = ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
-	free(cClass);
+	/*free(cClass);*/
+	str_free(cClass);
 
 	/*sprintf(path, "%s\\name", parent);*/
 	sprintf(path, "name");

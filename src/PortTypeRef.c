@@ -6,7 +6,7 @@ NamedElement* newPoly_PortTypeRef(void)
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pPortTypeRefObj = (PortTypeRef*)malloc(sizeof(PortTypeRef));
+	pPortTypeRefObj = (PortTypeRef*)my_malloc(sizeof(PortTypeRef));
 
 	if (pPortTypeRefObj == NULL)
 	{
@@ -20,6 +20,7 @@ NamedElement* newPoly_PortTypeRef(void)
 	pPortTypeRefObj->ref = NULL;
 	pPortTypeRefObj->optional = -1;
 	pPortTypeRefObj->noDependency = -1;
+	pPortTypeRefObj->eContainer = NULL;
 	
 	pPortTypeRefObj->FindMappingsByID = PortTypeRef_FindMappingsByID;
 	pPortTypeRefObj->AddRef = PortTypeRef_AddRef;
@@ -46,7 +47,7 @@ PortTypeRef* new_PortTypeRef(void)
 		return NULL;
 
 	/* Allocating memory */
-	pPortTypeRefObj = (PortTypeRef*)malloc(sizeof(PortTypeRef));
+	pPortTypeRefObj = (PortTypeRef*)my_malloc(sizeof(PortTypeRef));
 
 	if (pPortTypeRefObj == NULL)
 	{
@@ -61,6 +62,7 @@ PortTypeRef* new_PortTypeRef(void)
 	pPortTypeRefObj->ref = NULL;
 	pPortTypeRefObj->optional = -1;
 	pPortTypeRefObj->noDependency = -1;
+	pPortTypeRefObj->eContainer = NULL;
 	
 	pPortTypeRefObj->FindMappingsByID = PortTypeRef_FindMappingsByID;
 	pPortTypeRefObj->AddRef = PortTypeRef_AddRef;
@@ -83,7 +85,7 @@ char* PortTypeRef_MetaClassName(PortTypeRef* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("PortTypeRef")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("PortTypeRef")) + 1);
 	if(name != NULL)
 		strcpy(name, "PortTypeRef");
 	else
@@ -161,24 +163,33 @@ void PortTypeRef_RemoveMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 
 void deletePoly_PortTypeRef(NamedElement* const this)
 {
-	PortTypeRef* pPortTypeRefObj;
-	pPortTypeRefObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	free(pPortTypeRefObj->ref);
-	hashmap_free(pPortTypeRefObj->mappings);
-	free(pPortTypeRefObj);
-	/*destroy base Obj*/
-	delete_NamedElement(this);
+	if(this != NULL)
+	{
+		PortTypeRef* pPortTypeRefObj;
+		pPortTypeRefObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		free(pPortTypeRefObj->ref);
+		hashmap_free(pPortTypeRefObj->mappings);
+		free(pPortTypeRefObj->eContainer);
+		free(pPortTypeRefObj);
+		/*destroy base Obj*/
+		delete_NamedElement(this);
+	}
 }
 
 void delete_PortTypeRef(PortTypeRef* const this)
 {
-	/* destroy base object */
-	delete_NamedElement(this->super);
-	/* destroy data memebers */
-	hashmap_free(this->mappings);
-	free(this->ref);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_NamedElement(this->super);
+		/* destroy data memebers */
+		hashmap_free(this->mappings);
+		free(this->ref);
+		free(this->eContainer);
+		free(this);
+		/*this = NULL;*/
+	}
 }
 
 void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)

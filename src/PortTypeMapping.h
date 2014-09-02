@@ -5,9 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hashmap.h"
-#include "Visitor.h"
+/*#include "Visitor.h"
+#include "PortTypeRef.h"*/
 
 typedef struct _PortTypeMapping PortTypeMapping;
+typedef struct _PortTypeRef PortTypeRef;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrPortTypMapMetaClassName)(PortTypeMapping*);
 typedef char* (*fptrPortTypMapInternalGetKey)(PortTypeMapping*);
@@ -17,11 +20,12 @@ typedef void (*fptrVisitAttrPortTypeMapping)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathPortTypeMapping)(char*, PortTypeMapping*);
 
 typedef struct _PortTypeMapping {
-	void* pDerivedObj;
-	char* beanMethodName;
-	char* serviceMethodName;
-	char* paramTypes;
+	void *pDerivedObj;
+	char *beanMethodName;
+	char *serviceMethodName;
+	char *paramTypes;
 	char generated_KMF_ID[9];
+	PortTypeRef *eContainer;
 	fptrPortTypMapMetaClassName MetaClassName;
 	fptrPortTypMapInternalGetKey InternalGetKey;
 	fptrDeletePortTypeMapping Delete;

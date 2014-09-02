@@ -4,9 +4,13 @@
 #include <string.h>
 #include <stdio.h>
 #include "hashmap.h"
-#include "NamedElement.h"
+/*#include "NamedElement.h"
+#include "ContainerRoot.h"*/
 
 typedef struct _TypedElement TypedElement;
+typedef struct _NamedElement NamedElement;
+typedef struct _ContainerRoot ContainerRoot;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrTypElemMetaClassName)(TypedElement*);
 typedef char* (*fptrTypElemInternalGetKey)(TypedElement*);
@@ -22,6 +26,7 @@ typedef struct _TypedElement {
 	NamedElement* super;
 	void* pDerivedObj;
 	map_t genericTypes;
+	ContainerRoot *eContainer;
 	fptrTypElemMetaClassName MetaClassName;
 	fptrTypElemInternalGetKey InternalGetKey;
 	fptrTypElemFindGenericTypesByID FindGenericTypesByID;

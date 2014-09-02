@@ -1,10 +1,14 @@
+#include "NetworkProperty.h"
+#include "NodeNetwork.h"
+#include "Visitor.h"
+#include "tools.h"
 #include "NodeLink.h"
 
 NodeLink* new_NodeLink()
 {
 	NodeLink* pObj;
 	/* Allocating memory */
-	pObj = (NodeLink*)malloc(sizeof(NodeLink));
+	pObj = (NodeLink*)my_malloc(sizeof(NodeLink));
 
 	if (pObj == NULL)
 	{
@@ -12,9 +16,7 @@ NodeLink* new_NodeLink()
 	}
 
 	/* pointing to itself as we are creating base class object*/
-	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
 	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 
@@ -46,7 +48,7 @@ char* NodeLink_MetaClassName(NodeLink* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("NodeLink")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("NodeLink")) + 1);
 	if(name != NULL)
 		strcpy(name, "NodeLink");
 	else
@@ -117,6 +119,7 @@ void delete_NodeLink(NodeLink* const this)
 		free(this->zoneID);
 		free(this->generated_KMF_ID);
 		hashmap_free(this->networkProperties);
+		free(this->eContainer);
 		free(this);
 	}
 }
@@ -130,7 +133,8 @@ void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	sprintf(path,"%s\\cClass", parent);
 	cClass = ((NodeLink*)this)->MetaClassName((NodeLink*)this);
 	visitor->action(path, STRING, cClass);
-	free(cClass);
+	/*free(cClass);*/
+	str_free(cClass);
 
 	sprintf(path, "%s\\ID", parent);
 	visitor->action(path, STRING, ((NodeLink*)(this))->generated_KMF_ID);

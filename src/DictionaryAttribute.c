@@ -1,3 +1,7 @@
+#include "NamedElement.h"
+#include "TypedElement.h"
+#include "DictionaryType.h"
+#include "Visitor.h"
 #include "DictionaryAttribute.h"
 
 TypedElement* newPoly_DictionaryAttribute()
@@ -6,7 +10,7 @@ TypedElement* newPoly_DictionaryAttribute()
 	TypedElement* pObj = new_TypedElement();
 
 	/* Allocating memory */
-	pDicAttrObj = (DictionaryAttribute*)malloc(sizeof(DictionaryAttribute));
+	pDicAttrObj = (DictionaryAttribute*)my_malloc(sizeof(DictionaryAttribute));
 
 	if (pDicAttrObj == NULL)
 	{
@@ -27,6 +31,7 @@ TypedElement* newPoly_DictionaryAttribute()
 	pDicAttrObj->datatype = NULL;
 	pDicAttrObj->fragmentDependant = -1;
 	pDicAttrObj->defaultValue = NULL;
+	pDicAttrObj->eContainer = NULL;
 	
 	pObj->FindByPath = DictionaryAttribute_FindByPath;
 	
@@ -44,7 +49,7 @@ DictionaryAttribute* new_DictionaryAttribute()
 		return NULL;
 
 	/* Allocating memory */
-	pDicAttrObj = (DictionaryAttribute*)malloc(sizeof(DictionaryAttribute));
+	pDicAttrObj = (DictionaryAttribute*)my_malloc(sizeof(DictionaryAttribute));
 
 	if (pDicAttrObj == NULL)
 	{
@@ -60,6 +65,7 @@ DictionaryAttribute* new_DictionaryAttribute()
 	pDicAttrObj->datatype = NULL;
 	pDicAttrObj->fragmentDependant = -1;
 	pDicAttrObj->defaultValue = NULL;
+	pDicAttrObj->eContainer = NULL;
 	
 	pDicAttrObj->MetaClassName = DictionaryAttribute_MetaClassName;
 	pObj->super->MetaClassName = DictionaryAttribute_MetaClassName;
@@ -83,6 +89,7 @@ void deletePoly_DictionaryAttribute(void* const this)
 		free(pDicAttrObj->datatype);
 		pDicAttrObj->fragmentDependant = -1;
 		free(pDicAttrObj->defaultValue);
+		free(pDicAttrObj->eContainer);
 		free(pDicAttrObj);
 		/*destroy base Obj*/
 		delete_TypedElement(((TypedElement*)this));
@@ -102,7 +109,9 @@ void delete_DictionaryAttribute(void* const this)
 		free(pDicAttrObj->datatype);
 		pDicAttrObj->fragmentDependant = -1;
 		free(pDicAttrObj->defaultValue);
+		free(pDicAttrObj->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -115,7 +124,7 @@ char* DictionaryAttribute_MetaClassName(DictionaryAttribute* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("DictionaryAttribute")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("DictionaryAttribute")) + 1);
 	if(name != NULL)
 		strcpy(name, "DictionaryAttribute");
 	else

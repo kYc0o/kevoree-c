@@ -3,9 +3,10 @@
 
 #include <string.h>
 #include "hashmap.h"
-#include "TypeDefinition.h"
+/*#include "TypeDefinition.h"*/
 
 typedef struct _GroupType GroupType;
+typedef struct _TypeDefinition TypeDefinition;
 
 typedef char* (*fptrGroupTypeMetaClassName)(GroupType*);
 typedef char* (*fptrGroupTypeInternalGetKey)(GroupType*);

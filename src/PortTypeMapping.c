@@ -1,10 +1,13 @@
+#include "Port.h"
+#include "Visitor.h"
+#include "tools.h"
 #include "PortTypeMapping.h"
 
 PortTypeMapping* new_PortTypeMapping()
 {
 	PortTypeMapping* pObj;
 	/* Allocating memory */
-	pObj = (PortTypeMapping*)malloc(sizeof(PortTypeMapping));
+	pObj = (PortTypeMapping*)my_malloc(sizeof(PortTypeMapping));
 
 	if (pObj == NULL)
 	{
@@ -14,13 +17,13 @@ PortTypeMapping* new_PortTypeMapping()
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
 	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->beanMethodName = NULL;
 	pObj->serviceMethodName = NULL;
 	pObj->paramTypes = NULL;
+	pObj->eContainer = NULL;
 	
 	pObj->InternalGetKey = PortTypeMapping_InternalGetKey;
 	pObj->MetaClassName = PortTypeMapping_MetaClassName;
@@ -35,7 +38,7 @@ char* PortTypeMapping_MetaClassName(PortTypeMapping* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("PortTypeMapping")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("PortTypeMapping")) + 1);
 	if(name != NULL)
 		strcpy(name, "PortTypeMapping");
 	else
@@ -58,7 +61,9 @@ void delete_PortTypeMapping(PortTypeMapping* const this)
 		free(this->serviceMethodName);
 		free(this->paramTypes);
 		free(this->generated_KMF_ID);
+		free(this->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -71,7 +76,8 @@ void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* vi
 	sprintf(path,"%s\\cClass", parent);
 	cClass = ((PortTypeMapping*)this)->MetaClassName((PortTypeMapping*)this);
 	visitor->action(path, STRING, cClass);
-	free(cClass);
+	/*free(cClass);*/
+	str_free(cClass);
 
 	sprintf(path,"%s\\ID",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->generated_KMF_ID);

@@ -1,3 +1,6 @@
+#include "NamedElement.h"
+#include "NetworkInfo.h"
+#include "NodeLink.h"
 #include "NetworkProperty.h"
 
 NamedElement* newPoly_NetworkProperty()
@@ -6,7 +9,7 @@ NamedElement* newPoly_NetworkProperty()
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pNetPropObj = (NetworkProperty*)malloc(sizeof(NetworkProperty));
+	pNetPropObj = (NetworkProperty*)my_malloc(sizeof(NetworkProperty));
 
 	if (pNetPropObj == NULL)
 	{
@@ -17,6 +20,8 @@ NamedElement* newPoly_NetworkProperty()
 	pObj->pDerivedObj = pNetPropObj; /* Pointing to derived object */
 	
 	pNetPropObj->value = NULL;
+	pNetPropObj->eContainerNL = NULL;
+	pNetPropObj->eContainerNI = NULL;
 	
 	pObj->MetaClassName = NetworkProperty_MetaClassName;
 	pObj->InternalGetKey = NetworkProperty_InternalGetKey;
@@ -37,7 +42,7 @@ NetworkProperty* new_NetworkProperty()
 		return NULL;
 
 	/* Allocating memory */
-	pNetPropObj = (NetworkProperty*)malloc(sizeof(NetworkProperty));
+	pNetPropObj = (NetworkProperty*)my_malloc(sizeof(NetworkProperty));
 
 	if (pNetPropObj == NULL)
 	{
@@ -47,6 +52,10 @@ NetworkProperty* new_NetworkProperty()
 	/*pObj->pDerivedObj = pNetPropObj;  Pointing to derived object */
 	pNetPropObj->super = pObj;
 	
+	pNetPropObj->value = NULL;
+	pNetPropObj->eContainerNL = NULL;
+	pNetPropObj->eContainerNI = NULL;
+
 	pNetPropObj->MetaClassName = NetworkProperty_MetaClassName;
 	pObj->MetaClassName = NetworkProperty_MetaClassName;
 	pNetPropObj->InternalGetKey = NetworkProperty_InternalGetKey;
@@ -66,7 +75,7 @@ char* NetworkProperty_MetaClassName(NetworkProperty* const this)
 {
 	char *name = NULL;
 
-	name = malloc(sizeof(char) * (strlen("NetworkProperty")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("NetworkProperty")) + 1);
 	if(name != NULL)
 		strcpy(name, "NetworkProperty");
 	else
@@ -77,22 +86,33 @@ char* NetworkProperty_MetaClassName(NetworkProperty* const this)
 
 void deletePoly_NetworkProperty(NamedElement* const this)
 {
-	NetworkProperty* pNetPropObj;
-	pNetPropObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	free(pNetPropObj->value);
-	free(pNetPropObj);
-	/*destroy base Obj*/
-	delete_NamedElement(this);
+	if(this != NULL)
+	{
+		NetworkProperty* pNetPropObj;
+		pNetPropObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		free(pNetPropObj->value);
+		free(pNetPropObj->eContainerNL);
+		free(pNetPropObj->eContainerNI);
+		free(pNetPropObj);
+		/*destroy base Obj*/
+		delete_NamedElement(this);
+	}
 }
 
 void delete_NetworkProperty(NetworkProperty* const this)
 {
-	/* destroy base object */
-	delete_NamedElement(this->super);
-	/* destroy data memebers */
-	free(this->value);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_NamedElement(this->super);
+		/* destroy data memebers */
+		free(this->value);
+		free(this->eContainerNL);
+		free(this->eContainerNI);
+		free(this);
+		/*this = NULL;*/
+	}
 	
 }
 

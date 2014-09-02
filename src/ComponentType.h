@@ -3,10 +3,13 @@
 
 #include <string.h>
 #include "hashmap.h"
-#include "TypeDefinition.h"
-#include "PortTypeRef.h"
+/*#include "TypeDefinition.h"
+#include "PortTypeRef.h"*/
 
 typedef struct _ComponentType ComponentType;
+typedef struct _TypeDefinition TypeDefinition;
+typedef struct _PortTypeRef PortTypeRef;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrCompTypeMetaClassName)(ComponentType*);
 typedef char* (*fptrCompTypeInternalGetKey)(void*);

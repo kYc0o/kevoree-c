@@ -2,9 +2,13 @@
 #define __DictionaryAttribute_H
 
 #include <string.h>
-#include "TypedElement.h"
+/*#include "TypedElement.h"
+#include "DictionaryType.h"*/
 
 typedef struct _DictionaryAttribute DictionaryAttribute;
+typedef struct _TypedElement TypedElement;
+typedef struct _DictionaryType DictionaryType;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicAttrMetaClassName)(DictionaryAttribute*);
 typedef char* (*fptrDicAttrInternalGetKey)(DictionaryAttribute*);
@@ -17,9 +21,10 @@ typedef struct _DictionaryAttribute {
 	TypedElement* super;
 	int optional;
 	int state;
-	char* datatype;
+	char *datatype;
 	int fragmentDependant;
-	char* defaultValue;
+	char *defaultValue;
+	DictionaryType *eContainer;
 	fptrDicAttrInternalGetKey InternalGetKey;
 	fptrDicAttrMetaClassName MetaClassName;
 	fptrDeleteDicAttr Delete;

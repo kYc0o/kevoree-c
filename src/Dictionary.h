@@ -4,11 +4,14 @@
 #include <string.h>
 #include "tools.h"
 #include "hashmap.h"
-#include "Visitor.h"
+/*#include "Visitor.h"
 #include "DictionaryValue.h"
+#include "Instance.h"*/
 
 typedef struct _DictionaryValue DictionaryValue;
 typedef struct _Dictionary Dictionary;
+typedef struct _Instance Instance;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicoMetaClassName)(Dictionary*);
 typedef char* (*fptrDicoInternalGetKey)(Dictionary*);
@@ -21,9 +24,10 @@ typedef void (*fptrVisitRefsDico)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathDictionary)(char*, Dictionary*);
 
 typedef struct _Dictionary {
-	void* pDerivedObj;
+	void *pDerivedObj;
 	char generated_KMF_ID[9];
 	map_t values;
+	Instance *eContainer;
 	fptrDicoFindValuesByID FindValuesByID;
 	fptrDicoAddValues AddValues;
 	fptrDicoRemoveValues RemoveValues;

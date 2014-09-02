@@ -1,3 +1,6 @@
+#include "NamedElement.h"
+#include "DeployUnit.h"
+#include "DictionaryType.h"
 #include "TypeDefinition.h"
 
 NamedElement* newPoly_TypeDefinition()
@@ -6,7 +9,7 @@ NamedElement* newPoly_TypeDefinition()
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pTypeDefObj = (TypeDefinition*)malloc(sizeof(TypeDefinition));
+	pTypeDefObj = (TypeDefinition*)my_malloc(sizeof(TypeDefinition));
 
 	if (pTypeDefObj == NULL)
 	{
@@ -24,6 +27,7 @@ NamedElement* newPoly_TypeDefinition()
 	pTypeDefObj->deployUnits = NULL;
 	pTypeDefObj->dictionaryType = NULL;
 	pTypeDefObj->superTypes = NULL;
+	pTypeDefObj->eContainer = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
 	pTypeDefObj->AddDictionaryType = TypeDefinition_AddDictionaryType;
@@ -51,7 +55,7 @@ TypeDefinition* new_TypeDefinition()
 		return NULL;
 
 	/* Allocating memory */
-	pTypeDefObj = (TypeDefinition*)malloc(sizeof(TypeDefinition));
+	pTypeDefObj = (TypeDefinition*)my_malloc(sizeof(TypeDefinition));
 
 	if (pTypeDefObj == NULL)
 	{
@@ -69,6 +73,7 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->deployUnits = NULL;
 	pTypeDefObj->dictionaryType = NULL;
 	pTypeDefObj->superTypes = NULL;
+	pTypeDefObj->eContainer = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
 	pTypeDefObj->AddDictionaryType = TypeDefinition_AddDictionaryType;
@@ -94,7 +99,7 @@ char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen("name=") + strlen(this->super->name) + strlen(",") +
+	internalKey = my_malloc(sizeof(char) * (strlen("name=") + strlen(this->super->name) + strlen(",") +
 										strlen("version=") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
@@ -109,7 +114,7 @@ char* TypeDefinition_MetaClassName(TypeDefinition* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("TypeDefinition")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("TypeDefinition")) + 1);
 	if(name != NULL)
 		strcpy(name, "TypeDefinition");
 	else
@@ -182,28 +187,36 @@ void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition*
 
 void deletePoly_TypeDefinition(NamedElement* const this)
 {
-	TypeDefinition* pTypeDefObj;
-	pTypeDefObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	free(pTypeDefObj->version);
-	free(pTypeDefObj->deployUnits);
-	hashmap_free(pTypeDefObj->superTypes);
-	free(pTypeDefObj->superTypes);
-	free(pTypeDefObj);
-	/*destroy base Obj*/
-	delete_NamedElement(this);
+	if(this != NULL)
+	{
+		TypeDefinition* pTypeDefObj;
+		pTypeDefObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		free(pTypeDefObj->version);
+		free(pTypeDefObj->deployUnits);
+		hashmap_free(pTypeDefObj->superTypes);
+		free(pTypeDefObj->superTypes);
+		free(pTypeDefObj->eContainer);
+		free(pTypeDefObj);
+		/*destroy base Obj*/
+		delete_NamedElement(this);
+	}
 }
 
 void delete_TypeDefinition(TypeDefinition* const this)
 {
-	/* destroy base object */
-	delete_NamedElement(this->super);
-	/* destroy data memebers */
-	free(this->version);
-	free(this->deployUnits);
-	hashmap_free(this->superTypes);
-	free(this->superTypes);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_NamedElement(this->super);
+		/* destroy data memebers */
+		free(this->version);
+		free(this->deployUnits);
+		hashmap_free(this->superTypes);
+		free(this->superTypes);
+		free(this->eContainer);
+		free(this);
+	}
 	
 }
 

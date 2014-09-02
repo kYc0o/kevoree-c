@@ -1,3 +1,5 @@
+#include "NamedElement.h"
+#include "TypeDefinition.h"
 #include "GroupType.h"
 
 TypeDefinition* newPoly_GroupType()
@@ -9,7 +11,7 @@ TypeDefinition* newPoly_GroupType()
 		return NULL;
 
 	/* Allocating memory */
-	pGroupTypeObj = (GroupType*)malloc(sizeof(GroupType));
+	pGroupTypeObj = (GroupType*)my_malloc(sizeof(GroupType));
 
 	if (pGroupTypeObj == NULL)
 	{
@@ -38,7 +40,7 @@ GroupType* new_GroupType()
 		return NULL;
 
 	/* Allocating memory */
-	pGroupTypeObj = (GroupType*)malloc(sizeof(GroupType));
+	pGroupTypeObj = (GroupType*)my_malloc(sizeof(GroupType));
 
 	if (pGroupTypeObj == NULL)
 	{
@@ -62,7 +64,7 @@ char* GroupType_MetaClassName(GroupType* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("GroupType")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("GroupType")) + 1);
 	if(name != NULL)
 		strcpy(name, "GroupType");
 	else

@@ -6,7 +6,7 @@ NamedElement* newPoly_TypeLibrary(void)
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pTypeLibObj = (TypeLibrary*)malloc(sizeof(TypeLibrary));
+	pTypeLibObj = (TypeLibrary*)my_malloc(sizeof(TypeLibrary));
 
 	if (pTypeLibObj == NULL)
 	{
@@ -17,6 +17,7 @@ NamedElement* newPoly_TypeLibrary(void)
 	pObj->pDerivedObj = pTypeLibObj; /* Pointing to derived object */
 	
 	pTypeLibObj->subTypes = NULL;
+	pTypeLibObj->eContainer = NULL;
 	
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
@@ -40,7 +41,7 @@ TypeLibrary* new_TypeLibrary(void)
 		return NULL;
 	
 	/* Allocating memory */
-	pTypeLibObj = (TypeLibrary*)malloc(sizeof(TypeLibrary));
+	pTypeLibObj = (TypeLibrary*)my_malloc(sizeof(TypeLibrary));
 
 	if (pTypeLibObj == NULL)
 	{
@@ -51,6 +52,7 @@ TypeLibrary* new_TypeLibrary(void)
 	pTypeLibObj->super = pObj;
 	
 	pTypeLibObj->subTypes = NULL;
+	pTypeLibObj->eContainer = NULL;
 	
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
@@ -70,7 +72,7 @@ char* TypeLibrary_MetaClassname(TypeLibrary* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("TypeLibrary")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("TypeLibrary")) + 1);
 	if(name != NULL)
 		strcpy(name, "TypeLibrary");
 	else
@@ -137,22 +139,30 @@ void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 
 void deletePoly_TypeLibrary(NamedElement* const this)
 {
-	TypeLibrary* pTypeLibObj;
-	pTypeLibObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	hashmap_free(pTypeLibObj->subTypes);
-	free(pTypeLibObj);
-	/*destroy base Obj*/
-	delete_NamedElement(this);
+	if(this != NULL)
+	{
+		TypeLibrary* pTypeLibObj;
+		pTypeLibObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		hashmap_free(pTypeLibObj->subTypes);
+		free(pTypeLibObj->eContainer);
+		free(pTypeLibObj);
+		/*destroy base Obj*/
+		delete_NamedElement(this);
+	}
 }
 
 void delete_TypeLibrary(TypeLibrary* const this)
 {
-	/* destroy base object */
-	delete_NamedElement(this->super);
-	/* destroy data memebers */
-	hashmap_free(this->subTypes);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_NamedElement(this->super);
+		/* destroy data memebers */
+		hashmap_free(this->subTypes);
+		free(this->eContainer);
+		free(this);
+	}
 }
 
 void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
@@ -188,7 +198,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
 				/*sprintf(path,"%s/subTypes[%s]", parent, n->InternalGetKey(n));*/
-				sprintf(path, "subTypes[%s]", n->InternalGetKey(n));
+				sprintf(path, "typeDefinitions[%s]", n->InternalGetKey(n));
 				/*n->VisitAttributes(n, path, visitor, 0);
 				n->VisitReferences(n, path, visitor);*/
 				visitor->action(path, STRREF, NULL);

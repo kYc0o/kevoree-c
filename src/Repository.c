@@ -1,20 +1,19 @@
 #include "Repository.h"
+#include "Visitor.h"
 
 Repository* new_Repository()
 {
 	Repository* pObj;
 	/* Allocating memory */
-	pObj = (Repository*)malloc(sizeof(Repository));
+	pObj = (Repository*)my_malloc(sizeof(Repository));
 
 	if (pObj == NULL)
 	{
 		return NULL;
 	}
-
-	/* pointing to itself as we are creating base class object*/
-	pObj->pDerivedObj = pObj;
 	
 	pObj->url = NULL;
+	pObj->eContainer = NULL;
 	
 	pObj->InternalGetKey = Repository_InternalGetKey;
 	pObj->MetaClassName = Repository_MetaClassName;
@@ -30,7 +29,7 @@ char* Repository_MetaClassName(Repository* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("Repository")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("Repository")) + 1);
 	if(name != NULL)
 		strcpy(name, "Repository");
 	else
@@ -50,7 +49,9 @@ void delete_Repository(Repository* const this)
 	if(this != NULL)
 	{
 		free(this->url);
+		free(this->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -61,13 +62,13 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);*/
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Repository*)this)->MetaClassName((Repository*)this))) + 1);
+	cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Repository*)this)->MetaClassName((Repository*)this))) + 1);
 	sprintf(cClass, "org.kevoree.%s", ((Repository*)this)->MetaClassName((Repository*)this));
 	sprintf(path,"eClass");
 	/*cClass = ((Repository*)this)->MetaClassName((Repository*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
-	free(cClass);
+	str_free(cClass);
 
 	/*sprintf(path,"%s\\url",parent);*/
 	sprintf(path, "url");

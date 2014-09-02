@@ -4,9 +4,12 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Visitor.h"
+/*#include "Visitor.h"
+#include "Dictionary.h"*/
 
 typedef struct _DictionaryValue DictionaryValue;
+typedef struct _Dictionary Dictionary;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicValMetaClassName)(DictionaryValue*);
 typedef char* (*fptrDicValInternalGetKey)(DictionaryValue*);
@@ -16,8 +19,9 @@ typedef void (*fptrVisitAttrDicVal)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathDicVal)(char*, DictionaryValue*);
 
 typedef struct _DictionaryValue {
-	char* name;
-	char* value;
+	char *name;
+	char *value;
+	Dictionary *eContainer;
 	fptrDicValInternalGetKey InternalGetKey;
 	fptrDicValMetaClassName MetaClassName;
 	fptrDeleteDicVal Delete;

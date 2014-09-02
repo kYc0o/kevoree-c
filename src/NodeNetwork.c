@@ -1,26 +1,27 @@
+#include "ContainerNode.h"
+#include "NodeLink.h"
+#include "Visitor.h"
+#include "tools.h"
 #include "NodeNetwork.h"
 
 NodeNetwork* new_NodeNetwork()
 {
 	NodeNetwork* pObj;
 	/* Allocating memory */
-	pObj = (NodeNetwork*)malloc(sizeof(NodeNetwork));
+	pObj = (NodeNetwork*)my_malloc(sizeof(NodeNetwork));
 
 	if (pObj == NULL)
 	{
 		return NULL;
 	}
 
-	/* pointing to itself as we are creating base class object*/
-	pObj->pDerivedObj = pObj;
-
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
 	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 
 	pObj->initBy = NULL;
 	pObj->target = NULL;
 	pObj->link = NULL;
+	pObj->eContainer = NULL;
 	
 	pObj->InternalGetKey = NodeNetwork_InternalGetKey;
 	pObj->MetaClassName = NodeNetwork_MetaClassName;
@@ -48,7 +49,7 @@ char* NodeNetwork_MetaClassName(NodeNetwork* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("NodeNetwork")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("NodeNetwork")) + 1);
 	if(name != NULL)
 		strcpy(name, "NodeNetwork");
 	else
@@ -138,8 +139,10 @@ void delete_NodeNetwork(NodeNetwork* const this)
 		free(this->generated_KMF_ID);
 		free(this->initBy);
 		free(this->target);
+		free(this->eContainer);
 		hashmap_free(this->link);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 

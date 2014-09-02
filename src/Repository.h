@@ -5,9 +5,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hashmap.h"
-#include "Visitor.h"
+/*#include "Visitor.h"*/
 
 typedef struct _Repository Repository;
+typedef struct _ContainerRoot ContainerRoot;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrRepoMetaClassName)(Repository*);
 typedef char* (*fptrRepoInternalGetKey)(Repository*);
@@ -17,8 +19,8 @@ typedef void* (*fptrFindByPathRepo)(char*, Repository*);
 /*typedef void (*fptrVisitRefsRepository)(void*, char*, Visitor*);*/
 
 typedef struct _Repository {
-	void* pDerivedObj;
 	char* url;
+	ContainerRoot* eContainer;
 	fptrRepoInternalGetKey InternalGetKey;
 	fptrRepoMetaClassName MetaClassName;
 	fptrDeleteRepository Delete;

@@ -6,6 +6,7 @@
 #include "NamedElement.h"
 #include "NetworkProperty.h"
 #include "hashmap.h"
+#include "ContainerNode.h"
 
 typedef struct _NetworkInfo NetworkInfo;
 
@@ -21,10 +22,8 @@ typedef void* (*fptrFindByPathNetworkInfo)(char*, NetworkInfo*);
 
 typedef struct _NetworkInfo {
 	NamedElement* super;
-	/*int count_values;
-	NetworkProperty** values;*/
 	map_t values;
-	/*int (*accept)(struct _NetworkInfo*, struct _NetworkInfo*, Visitor*);*/
+	ContainerNode *eContainer;
 	fptrNetInfoMetaClassName MetaClassName;
 	fptrNetInfoInternalGetKey InternalGetKey;
 	fptrNetInfoAddValues AddValues;

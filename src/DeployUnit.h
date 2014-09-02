@@ -6,6 +6,7 @@
 #include "tools.h"
 #include "NamedElement.h"
 #include "hashmap.h"
+#include "ContainerRoot.h"
 
 typedef struct _DeployUnit DeployUnit;
 
@@ -21,12 +22,13 @@ typedef void* (*fptrFindByPathDeployUnit)(char*, DeployUnit*);
 
 typedef struct _DeployUnit {
 	NamedElement* super;
-	char* groupName;
-	char* version;
-	char* url;
-	char* hashcode;
-	char* type;
+	char *groupName;
+	char *version;
+	char *url;
+	char *hashcode;
+	char *type;
 	map_t requiredLibs;
+	ContainerRoot *eContainer;
 	fptrDepUnitMetaClassName MetaClassName;
 	fptrDepUnitInternalGetKey InternalGetKey;
 	fptrDepUnitAddRequiredLibs AddRequiredLibs;

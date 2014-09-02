@@ -7,6 +7,7 @@
 #include "ContainerNode.h"
 #include "Instance.h"
 #include "hashmap.h"
+#include "ContainerRoot.h"
 
 typedef struct _ContainerNode ContainerNode;
 typedef struct _Group Group;
@@ -22,8 +23,9 @@ typedef void (*fptrVisitRefsGroup)(void*, char*, Visitor*, int);
 typedef void* (*fptrFindByPathGroup)(char*, Group*);
 
 typedef struct _Group { 
-	Instance* super;
+	Instance *super;
 	map_t subNodes;
+	ContainerRoot *eContainer;
 	fptrGroupAddSubNodes AddSubNodes;
 	fptrGroupRemoveSubNodes RemoveSubNodes;
 	fptrGroupInternalGetKey InternalGetKey;

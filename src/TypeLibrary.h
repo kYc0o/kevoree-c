@@ -19,8 +19,9 @@ typedef void (*fptrVisitRefsTypeLib)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathTypeLibrary)(char*, TypeLibrary*);
 
 typedef struct _TypeLibrary {
-	NamedElement* super;
+	NamedElement *super;
 	map_t subTypes;
+	ContainerRoot *eContainer;
 	fptrTypeLibMetaClassName MetaClassName;
 	fptrTypeLibInternalGetKey InternalGetKey;
 	fptrTypeLibFindSubTypesByID FindSubTypesByID;

@@ -1,3 +1,7 @@
+#include <string.h>
+#include "NamedElement.h"
+#include "Instance.h"
+#include "Port.h"
 #include "ComponentInstance.h"
 
 Instance* newPoly_ComponentInstance()
@@ -6,7 +10,7 @@ Instance* newPoly_ComponentInstance()
 	Instance* pObj = new_Instance();
 
 	/* Allocating memory */
-	pCompInstanceObj = (ComponentInstance*)malloc(sizeof(ComponentInstance));
+	pCompInstanceObj = (ComponentInstance*)my_malloc(sizeof(ComponentInstance));
 
 	if (pCompInstanceObj == NULL)
 	{
@@ -42,7 +46,7 @@ ComponentInstance* new_ComponentInstance()
 		return NULL;
 
 	/* Allocating memory */
-	pCompInstanceObj = (ComponentInstance*)malloc(sizeof(ComponentInstance));
+	pCompInstanceObj = (ComponentInstance*)my_malloc(sizeof(ComponentInstance));
 
 	if (pCompInstanceObj == NULL)
 	{
@@ -81,7 +85,7 @@ char* ComponentInstance_MetaClassName(ComponentInstance* const this)
 {
 	char *name = NULL;
 
-	name = malloc(sizeof(char) * (strlen("ComponentInstance")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("ComponentInstance")) + 1);
 	if(name != NULL)
 		strcpy(name, "ComponentInstance");
 	else
@@ -248,6 +252,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				/*sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));*/
+				sprintf(path, "typeDefinitions[%s]/provided", ((ComponentInstance*)this)->super->typeDefinition->InternalGetKey(((ComponentInstance*)this)->super->typeDefinition));
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 				if(length > 1)
@@ -285,6 +290,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				/*sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));*/
+				sprintf(path, "typeDefinitions[%s]/required", ((ComponentInstance*)this)->super->typeDefinition->InternalGetKey(((ComponentInstance*)this)->super->typeDefinition));
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 				if(length > 1)

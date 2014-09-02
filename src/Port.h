@@ -4,13 +4,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hashmap.h"
-#include "Visitor.h"
-#include "MBinding.h"
-#include "PortTypeRef.h"
 
+typedef struct _NamedElement NamedElement;
 typedef struct _MBinding MBinding;
 typedef struct _PortTypeRef PortTypeRef;
 typedef struct _Port Port;
+typedef struct _MBinding MBinding;
+typedef struct _ComponentInstance ComponentInstance;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrPortInternalGetKey)(Port*);
 typedef char* (*fptrPortMetaClassName)(Port*);
@@ -25,9 +26,10 @@ typedef void* (*fptrFindByPathPort)(char*, Port*);
 typedef void (*fptrDeletePort)(void*);
 
 typedef struct _Port {
-	NamedElement* super;
+	NamedElement *super;
 	map_t bindings;
-	PortTypeRef* portTypeRef;
+	PortTypeRef *portTypeRef;
+	ComponentInstance *eContainer;
 	fptrPortInternalGetKey InternalGetKey;
 	fptrPortMetaClassName MetaClassName;
 	fptrPortFindBindingsByID FindBindingsByID;

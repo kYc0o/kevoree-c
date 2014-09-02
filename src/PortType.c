@@ -1,3 +1,6 @@
+#include "NamedElement.h"
+#include "TypeDefinition.h"
+#include "Visitor.h"
 #include "PortType.h"
 
 TypeDefinition* newPoly_PortType()
@@ -6,7 +9,7 @@ TypeDefinition* newPoly_PortType()
 	TypeDefinition* pObj = new_TypeDefinition();
 
 	/* Allocating memory */
-	pPortTypeObj = (PortType*)malloc(sizeof(PortType));
+	pPortTypeObj = (PortType*)my_malloc(sizeof(PortType));
 
 	if (pPortTypeObj == NULL)
 	{
@@ -39,7 +42,7 @@ PortType* new_PortType()
 		return NULL;
 
 	/* Allocating memory */
-	pPortTypeObj = (PortType*)malloc(sizeof(PortType));
+	pPortTypeObj = (PortType*)my_malloc(sizeof(PortType));
 
 	if (pPortTypeObj == NULL)
 	{
@@ -66,7 +69,7 @@ char* PortType_MetaClassName(PortType* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("PortType")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("PortType")) + 1);
 	if(name != NULL)
 		strcpy(name, "PortType");
 	else

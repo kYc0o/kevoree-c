@@ -6,7 +6,7 @@ NamedElement* newPoly_DeployUnit()
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pDepUnitObj = (DeployUnit*)malloc(sizeof(DeployUnit));
+	pDepUnitObj = (DeployUnit*)my_malloc(sizeof(DeployUnit));
 
 	if (pDepUnitObj == NULL)
 	{
@@ -22,6 +22,7 @@ NamedElement* newPoly_DeployUnit()
 	pDepUnitObj->hashcode = NULL;
 	pDepUnitObj->type = NULL;
 	pDepUnitObj->requiredLibs = NULL;
+	pDepUnitObj->eContainer = NULL;
 	
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
@@ -47,7 +48,7 @@ DeployUnit* new_DeployUnit()
 		return NULL;
 	
 	/* Allocating memory */
-	pDepUnitObj = (DeployUnit*)malloc(sizeof(DeployUnit));
+	pDepUnitObj = (DeployUnit*)my_malloc(sizeof(DeployUnit));
 
 	if (pDepUnitObj == NULL)
 	{
@@ -63,6 +64,7 @@ DeployUnit* new_DeployUnit()
 	pDepUnitObj->hashcode = NULL;
 	pDepUnitObj->type = NULL;
 	pDepUnitObj->requiredLibs = NULL;
+	pDepUnitObj->eContainer = NULL;
 	
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
@@ -87,7 +89,7 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen("groupName=") + strlen(this->groupName) + strlen(",") +
+	internalKey = my_malloc(sizeof(char) * (strlen("groupName=") + strlen(this->groupName) + strlen(",") +
 										strlen("hashcode=") + strlen(this->hashcode) + strlen(",") +
 										strlen("name=") + strlen(this->super->name) + strlen(",") +
 										strlen("version=") + strlen(this->version)) + 1);
@@ -105,7 +107,7 @@ char* DeployUnit_MetaClassName(DeployUnit* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("DeployUnit")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("DeployUnit")) + 1);
 	if(name != NULL)
 		strcpy(name, "DeployUnit");
 	else
@@ -160,32 +162,41 @@ DeployUnit* DeployUnit_FindRequiredLibsByID(DeployUnit* const this, char* id)
 
 void deletePoly_DeployUnit(NamedElement* const this)
 {
-	DeployUnit* pDepUnitObj;
-	pDepUnitObj = this->pDerivedObj;
-	/*destroy derived obj*/
-	free(pDepUnitObj->groupName);
-	free(pDepUnitObj->version);
-	free(pDepUnitObj->url);
-	free(pDepUnitObj->hashcode);
-	free(pDepUnitObj->type);
-	hashmap_free(pDepUnitObj->requiredLibs);
-	free(pDepUnitObj);
-	/*destroy base Obj*/
-	delete_NamedElement(this);
+	if(this != NULL)
+	{
+		DeployUnit* pDepUnitObj;
+		pDepUnitObj = this->pDerivedObj;
+		/*destroy derived obj*/
+		free(pDepUnitObj->groupName);
+		free(pDepUnitObj->version);
+		free(pDepUnitObj->url);
+		free(pDepUnitObj->hashcode);
+		free(pDepUnitObj->type);
+		hashmap_free(pDepUnitObj->requiredLibs);
+		free(pDepUnitObj->eContainer);
+		free(pDepUnitObj);
+		/*destroy base Obj*/
+		delete_NamedElement(this);
+	}
 }
 
 void delete_DeployUnit(DeployUnit* const this)
 {
-	/* destroy base object */
-	delete_NamedElement(this->super);
-	/* destroy data memebers */
-	free(this->groupName);
-	free(this->version);
-	free(this->url);
-	free(this->hashcode);
-	free(this->type);
-	hashmap_free(this->requiredLibs);
-	free(this);
+	if(this != NULL)
+	{
+		/* destroy base object */
+		delete_NamedElement(this->super);
+		/* destroy data memebers */
+		free(this->groupName);
+		free(this->version);
+		free(this->url);
+		free(this->hashcode);
+		free(this->type);
+		hashmap_free(this->requiredLibs);
+		free(this->eContainer);
+		free(this);
+		/*this = NULL;*/
+	}
 }
 
 void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)

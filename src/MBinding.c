@@ -4,19 +4,19 @@ MBinding* new_MBinding(void)
 {
 	MBinding* pObj = NULL;
 	/* Allocating memory */
-	pObj = (MBinding*)malloc(sizeof(MBinding));
+	pObj = (MBinding*)my_malloc(sizeof(MBinding));
 
 	if (pObj == NULL)
 	{
 		return NULL;
 	}
 
-	/*pObj->generated_KMF_ID = malloc(sizeof(char) * 8 + 1);*/
 	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->port = NULL;
 	pObj->channel = NULL;
+	pObj->eContainer = NULL;
 	
 	pObj->AddPort = MBinding_AddPort;
 	pObj->AddHub = MBinding_AddHub;
@@ -40,6 +40,9 @@ void delete_MBinding(void* const this)
 		free(((MBinding*)this)->generated_KMF_ID);
 		free(((MBinding*)this)->port);
 		free(((MBinding*)this)->channel);
+		free(((MBinding*)this)->eContainer);
+		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -47,7 +50,7 @@ char* MBinding_MetaClassName(MBinding* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("MBinding")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("MBinding")) + 1);
 	if(name != NULL)
 		strcpy(name, "MBinding");
 	else
@@ -92,13 +95,14 @@ void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 	if(recursive)
 	{
 		/*sprintf(path,"%s\\cClass", parent);*/
-		cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((MBinding*)this)->MetaClassName((MBinding*)this))) + 1);
+		cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((MBinding*)this)->MetaClassName((MBinding*)this))) + 1);
 		sprintf(cClass, "org.kevoree.%s", ((MBinding*)this)->MetaClassName((MBinding*)this));
 		sprintf(path,"eClass");
 		/*cClass = ((MBinding*)this)->MetaClassName((MBinding*)this);*/
 		visitor->action(path, STRING, cClass);
 		visitor->action(NULL, COLON, NULL);
-		free(cClass);
+		/*free(cClass);*/
+		str_free(cClass);
 
 		/*sprintf(path, "%s\\generated_KMF_ID", parent);*/
 		sprintf(path, "generated_KMF_ID");
@@ -133,6 +137,11 @@ void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 			visitor->action(NULL, RETURN, NULL);
 			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 		}
+		else
+		{
+			visitor->action("port", SQBRACKET, NULL);
+			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+		}
 
 		if(((MBinding*)(this))->channel != NULL)
 		{
@@ -143,6 +152,11 @@ void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 			/*((MBinding*)(this))->channel->VisitReferences(((MBinding*)(this))->channel, path, visitor);*/
 			visitor->action(path, STRREF, NULL);
 			visitor->action(NULL, RETURN, NULL);
+			visitor->action(NULL, CLOSESQBRACKET, NULL);
+		}
+		else
+		{
+			visitor->action("hub", SQBRACKET, NULL);
 			visitor->action(NULL, CLOSESQBRACKET, NULL);
 		}
 	}

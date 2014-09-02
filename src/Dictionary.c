@@ -1,10 +1,13 @@
+#include "Visitor.h"
+#include "DictionaryValue.h"
+#include "Instance.h"
 #include "Dictionary.h"
 
 Dictionary* new_Dictionary()
 {
 	Dictionary* pObj = NULL;
 	/* Allocating memory */
-	pObj = (Dictionary*)malloc(sizeof(Dictionary));
+	pObj = (Dictionary*)my_malloc(sizeof(Dictionary));
 
 	if (pObj == NULL)
 	{
@@ -19,6 +22,7 @@ Dictionary* new_Dictionary()
 	rand_str(pObj->generated_KMF_ID, 8);
 	
 	pObj->values = NULL;
+	pObj->eContainer = NULL;
 	
 	pObj->AddValues = Dictionary_AddValues;
 	pObj->RemoveValues = Dictionary_RemoveValues;
@@ -41,7 +45,9 @@ void delete_Dictionary(Dictionary* const this)
 		free(this->generated_KMF_ID);
 		/* TODO check if hashmap is not NULL */
 		hashmap_free(this->values);
+		free(this->eContainer);
 		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -105,7 +111,7 @@ char* Dictionary_MetaClassName(Dictionary* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("Dictionary")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("Dictionary")) + 1);
 	if(name != NULL)
 		strcpy(name, "Dictionary");
 	else
@@ -120,14 +126,15 @@ void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Dictionary*)this)->MetaClassName((Dictionary*)this))) + 1);
+	cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Dictionary*)this)->MetaClassName((Dictionary*)this))) + 1);
 	/*sprintf(path,"%s\\cClass", parent);*/
 	sprintf(cClass, "org.kevoree.%s", ((Dictionary*)this)->MetaClassName((Dictionary*)this));
 	sprintf(path, "eClass");
 	/*cClass = ((Dictionary*)this)->MetaClassName((Dictionary*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
-	free(cClass);
+	/*free(cClass);*/
+	str_free(cClass);
 
 	/*sprintf(path, "%s\\generated_KMF_ID", parent);*/
 	sprintf(path, "generated_KMF_ID");

@@ -1,10 +1,14 @@
+#include "Visitor.h"
+#include "MBinding.h"
+#include "PortTypeRef.h"
+#include "ComponentInstance.h"
 #include "Port.h"
 
 Port* new_Port()
 {
 	Port* pObj = NULL;
 	/* Allocating memory */
-	pObj = (Port*)malloc(sizeof(Port));
+	pObj = (Port*)my_malloc(sizeof(Port));
 
 	if (pObj == NULL)
 	{
@@ -20,6 +24,7 @@ Port* new_Port()
 	
 	pObj->bindings = NULL;
 	pObj->portTypeRef = NULL;
+	pObj->eContainer = NULL;
 	
 	pObj->AddBindings = Port_AddBindings;
 	pObj->AddPortTypeRef = Port_AddPortTypeRef;
@@ -44,6 +49,9 @@ void delete_Port(void* this)
 		delete_NamedElement(((Port*)this)->super);
 		hashmap_free(((Port*)this)->bindings);
 		free(((Port*)this)->portTypeRef);
+		free(((Port*)this)->eContainer);
+		free(this);
+		/*this = NULL;*/
 	}
 }
 
@@ -56,7 +64,7 @@ char* Port_MetaClassName(Port* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("Port")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("Port")) + 1);
 	if(name != NULL)
 		strcpy(name, "Port");
 	else
@@ -161,7 +169,7 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 				/*sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));*/
 				/*n->VisitAttributes(n, path, visitor, 0);*/
 				/*n->VisitReferences(n, path, visitor);*/
-				sprintf(path, "bindings[%s]", n->InternalGetKey(n));
+				sprintf(path, "mBindings[%s]", n->InternalGetKey(n));
 				visitor->action(path, STRREF, NULL);
 				if(length > 1)
 				{
@@ -174,16 +182,26 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 		}
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
+	else
+	{
+		visitor->action("bindings", SQBRACKET, NULL);
+		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
+	}
 	
 	if(this->portTypeRef != NULL)
 	{
 		visitor->action("portTypeRef", SQBRACKET, NULL);
 		/*sprintf(path, "%s/portTypeRef[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
-		this->portTypeRef->VisitAttributes(this->portTypeRef, path, visitor, 0);*/
-		/*this->portTypeRef->VisitReferences(this->portTypeRef, path, visitor);*/
-		sprintf(path, "portTypeRef[%s]", this->portTypeRef->InternalGetKey(this->portTypeRef));
+		this->portTypeRef->VisitAttributes(this->portTypeRef, parent, visitor, 0);
+		this->portTypeRef->VisitReferences(this->portTypeRef, parent, visitor);*/
+		sprintf(path, "%s[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
 		visitor->action(path, STRREF, NULL);
 		visitor->action(NULL, RETURN, NULL);
+		visitor->action(NULL, CLOSESQBRACKET, NULL);
+	}
+	else
+	{
+		visitor->action("portTypeRef", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKET, NULL);
 	}
 }

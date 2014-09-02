@@ -1,10 +1,11 @@
+#include <string.h>
 #include "ContainerRoot.h"
 
 ContainerRoot* new_ContainerRoot(void)
 {
 	ContainerRoot* pObj;
 	/* Allocating memory */
-	pObj = (ContainerRoot*)malloc(sizeof(ContainerRoot));
+	pObj = (ContainerRoot*)my_malloc(sizeof(ContainerRoot));
 
 	if (pObj == NULL)
 	{
@@ -73,7 +74,7 @@ char* ContainerRoot_MetaClassName(ContainerRoot* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("ContainerRoot")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("ContainerRoot")) + 1);
 	if(name != NULL)
 		strcpy(name, "ContainerRoot");
 	else
@@ -636,13 +637,14 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((ContainerRoot*)this)->MetaClassName((ContainerRoot*)this))) + 1);
+	cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((ContainerRoot*)this)->MetaClassName((ContainerRoot*)this))) + 1);
 	sprintf(cClass, "org.kevoree.%s", ((ContainerRoot*)this)->MetaClassName((ContainerRoot*)this));
 	sprintf(path, "eClass");
 	visitor->action(NULL, BRACKET, NULL);
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
-	free(cClass);
+	/*free(cClass);*/
+	str_free(cClass);
 
 	sprintf(path, "generated_KMF_ID");
 	visitor->action(path, STRING, ((ContainerRoot*)(this))->generated_KMF_ID);
@@ -861,7 +863,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				/*sprintf(path, "mBindings[%s]", n->InternalGetKey(n));*/
+				/*sprintf(path, "nodes[%s]/components[%s]", ((ContainerRoot*)(this))->FindNodesByID->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor, 1);
 				if(length > 1)

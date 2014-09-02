@@ -1,3 +1,7 @@
+#include <string.h>
+#include "PortTypeRef.h"
+#include "NamedElement.h"
+#include "TypeDefinition.h"
 #include "ComponentType.h"
 
 TypeDefinition* newPoly_ComponentType(void)
@@ -9,7 +13,7 @@ TypeDefinition* newPoly_ComponentType(void)
 		return NULL;
 
 	/* Allocating memory */
-	pCompTypeObj = (ComponentType*)malloc(sizeof(ComponentType));
+	pCompTypeObj = (ComponentType*)my_malloc(sizeof(ComponentType));
 
 	if (pCompTypeObj == NULL)
 	{
@@ -55,7 +59,7 @@ ComponentType* new_ComponentType(void)
 		return NULL;
 
 	/* Allocating memory */
-	pCompTypeObj = (ComponentType*)malloc(sizeof(ComponentType));
+	pCompTypeObj = (ComponentType*)my_malloc(sizeof(ComponentType));
 
 	if (pCompTypeObj == NULL)
 	{
@@ -99,7 +103,7 @@ char* ComponentType_MetaClassName(ComponentType* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("ComponentType")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("ComponentType")) + 1);
 	if(name != NULL)
 		strcpy(name, "ComponentType");
 	else

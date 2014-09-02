@@ -2,12 +2,14 @@
 #define H_NodeNetwork
 #include <stdlib.h>
 #include <stdio.h>
-#include "tools.h"
 #include <string.h>
-#include "NodeLink.h"
-#include "ContainerNode.h"
+#include "hashmap.h"
 
 typedef struct _NodeNetwork NodeNetwork;
+typedef struct _ContainerNode ContainerNode;
+typedef struct _ContainerRoot ContainerRoot;
+typedef struct _NodeLink NodeLink;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrNodeNetMetaClassName)(NodeNetwork*);
 typedef char* (*fptrNodeNetInternalGetKey)(NodeNetwork*);
@@ -29,6 +31,7 @@ typedef struct _NodeNetwork {
 	map_t link;
 	ContainerNode* initBy;
 	ContainerNode* target;
+	ContainerRoot* eContainer;
 	fptrNodeNetMetaClassName MetaClassName;
 	fptrNodeNetInternalGetKey InternalGetKey;
 	fptrNodeNetFindLinkByID FindLinkByID;

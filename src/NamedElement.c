@@ -4,7 +4,7 @@ NamedElement* new_NamedElement()
 {
 	NamedElement* pObj = NULL;
 	/* Allocating memory */
-	pObj = (NamedElement*)malloc(sizeof(NamedElement));
+	pObj = (NamedElement*)my_malloc(sizeof(NamedElement));
 
 	if (pObj == NULL)
 	{
@@ -34,7 +34,7 @@ char* NamedElement_MetaClassName(NamedElement* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("NamedElement")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("NamedElement")) + 1);
 	if(name != NULL)
 		strcpy(name, "NamedElement");
 	else
@@ -61,13 +61,14 @@ void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 	{
 		char* cClass = NULL;
 		/*sprintf(path,"%s\\cClass", parent);*/
-		cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((NamedElement*)this)->MetaClassName((NamedElement*)this))) + 1);
+		cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((NamedElement*)this)->MetaClassName((NamedElement*)this))) + 1);
 		sprintf(cClass, "org.kevoree.%s", ((NamedElement*)this)->MetaClassName((NamedElement*)this));
 		sprintf(path,"eClass");
 		/*cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);*/
 		visitor->action(path, STRING, cClass);
 		visitor->action(NULL, COLON, NULL);
-		free(cClass);
+		/*free(cClass);*/
+		str_free(cClass);
 
 		/*sprintf(path, "%s\\name", parent);*/
 		sprintf(path, "name", parent);

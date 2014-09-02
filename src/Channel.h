@@ -1,13 +1,14 @@
 #ifndef __Channel_H
 #define __Channel_H
 
-#include "hashmap.h"
 #include <string.h>
-#include "MBinding.h"
-#include "Instance.h"
+#include "hashmap.h"
 
 typedef struct _MBinding MBinding;
 typedef struct _Channel Channel;
+typedef struct _Instance Instance;
+typedef struct _ContainerRoot ContainerRoot;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrChannelInternalGetKey)(Channel*);
 typedef char* (*fptrChannelMetaClassName)(Channel*);
@@ -20,8 +21,9 @@ typedef void* (*fptrFindByPathChannel)(char*, Channel*);
 typedef void (*fptrDeleteChannel)(void*);
 
 typedef struct _Channel {
-	Instance* super;
+	Instance *super;
 	map_t bindings;
+	ContainerRoot *eContainer;
 	fptrChannelMetaClassName MetaClassName;
 	fptrChannelInternalGetKey InternalGetKey;
 	fptrChannelFindBindingsByID FindBindingsByID;

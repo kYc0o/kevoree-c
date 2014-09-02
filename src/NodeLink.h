@@ -4,10 +4,13 @@
 #include <string.h>
 #include <stdio.h>
 #include "hashmap.h"
-#include "NetworkProperty.h"
-#include "Visitor.h"
+/*#include "NetworkProperty.h"*/
+/*#include "Visitor.h"*/
 
 typedef struct _NodeLink NodeLink;
+typedef struct _NodeNetwork NodeNetwork;
+typedef struct _NetworkProperty NetworkProperty;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrNodeLinkMetaClassName)(NodeLink*);
 typedef char* (*fptrNodeLinkInternalGetKey)(NodeLink*);
@@ -20,13 +23,13 @@ typedef void (*fptrVisitRefsNodeLink)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNodeLink)(char*, NodeLink*);
 
 typedef struct _NodeLink {
-	void* pDerivedObj;
-	char* networkType;
+	char *networkType;
 	int estimatedRate;
-	char* lastCheck;
-	char* zoneID;
+	char *lastCheck;
+	char *zoneID;
 	char generated_KMF_ID[9];
 	map_t networkProperties;
+	NodeNetwork *eContainer;
 	fptrNodeLinkInternalGetKey InternalGetKey;
 	fptrNodeLinkFindNetworkPropertiesByID FindNetworkPropertiesByID;
 	fptrNodeLinkAddNetworkProperties AddNetworkProperties;

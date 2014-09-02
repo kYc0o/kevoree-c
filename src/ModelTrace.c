@@ -10,7 +10,7 @@ ModelTrace* new_ModelTrace()
 {
 	ModelTrace* pObj = NULL;
 	/* Allocating memory */
-	pObj = (ModelTrace*)malloc(sizeof(ModelTrace));
+	pObj = (ModelTrace*)my_malloc(sizeof(ModelTrace));
 
 	if (pObj == NULL)
 	{
@@ -57,7 +57,7 @@ ModelTrace* newPoly_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath
 	ModelTrace* pObj = new_ModelTrace();
 
 	/* Allocating memory */
-	pModSetTraceObj = (ModelSetTrace*)malloc(sizeof(ModelSetTrace));
+	pModSetTraceObj = (ModelSetTrace*)my_malloc(sizeof(ModelSetTrace));
 
 	if (pModSetTraceObj == NULL)
 	{
@@ -67,15 +67,15 @@ ModelTrace* newPoly_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath
 
 	pObj->pDerivedObj = pModSetTraceObj; /* Pointing to derived object */
 	
-	pObj->srcPath = malloc(sizeof(char)*(strlen(_srcPath)+1));
+	pObj->srcPath = my_malloc(sizeof(char)*(strlen(_srcPath)+1));
 	strcpy(pObj->srcPath, _srcPath);
-	pObj->refName = malloc(sizeof(char)*(strlen(_refName)+1));
+	pObj->refName = my_malloc(sizeof(char)*(strlen(_refName)+1));
 	strcpy(pObj->refName, _refName);
-	pModSetTraceObj->objPath = malloc(sizeof(char)*(strlen(_objPath)+1));
+	pModSetTraceObj->objPath = my_malloc(sizeof(char)*(strlen(_objPath)+1));
 	strcpy(pModSetTraceObj->objPath, _objPath);
-	pModSetTraceObj->content = malloc(sizeof(char)*(strlen(_content)+1));
+	pModSetTraceObj->content = my_malloc(sizeof(char)*(strlen(_content)+1));
 	strcpy(pModSetTraceObj->content, _content);
-	pModSetTraceObj->typeName = malloc(sizeof(char)*(strlen(_typeName)+1));
+	pModSetTraceObj->typeName = my_malloc(sizeof(char)*(strlen(_typeName)+1));
 	strcpy(pModSetTraceObj->typeName, _typeName);
 	
 	pModSetTraceObj->Delete = delete_ModelSetTrace;
@@ -91,7 +91,7 @@ ModelSetTrace* new_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath,
 	ModelTrace* pObj = new_ModelTrace();
 
 	/* Allocating memory */
-	pModSetTraceObj = (ModelSetTrace*)malloc(sizeof(ModelSetTrace));
+	pModSetTraceObj = (ModelSetTrace*)my_malloc(sizeof(ModelSetTrace));
 
 	if (pModSetTraceObj == NULL)
 	{
@@ -101,15 +101,15 @@ ModelSetTrace* new_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath,
 	/*pObj->pDerivedObj = pInstanceObj; Pointing to derived object */
 	pModSetTraceObj->super = pObj;
 	
-	pObj->srcPath = malloc(sizeof(char)*(strlen(_srcPath)+1));
+	pObj->srcPath = my_malloc(sizeof(char)*(strlen(_srcPath)+1));
 	strcpy(pObj->srcPath, _srcPath);
-	pObj->refName = malloc(sizeof(char)*(strlen(_refName)+1));
+	pObj->refName = my_malloc(sizeof(char)*(strlen(_refName)+1));
 	strcpy(pObj->refName, _refName);
-	pModSetTraceObj->objPath = malloc(sizeof(char)*(strlen(_objPath)+1));
+	pModSetTraceObj->objPath = my_malloc(sizeof(char)*(strlen(_objPath)+1));
 	strcpy(pModSetTraceObj->objPath, _objPath);
-	pModSetTraceObj->content = malloc(sizeof(char)*(strlen(_content)+1));
+	pModSetTraceObj->content = my_malloc(sizeof(char)*(strlen(_content)+1));
 	strcpy(pModSetTraceObj->content, _content);
-	pModSetTraceObj->typeName = malloc(sizeof(char)*(strlen(_typeName)+1));
+	pModSetTraceObj->typeName = my_malloc(sizeof(char)*(strlen(_typeName)+1));
 	strcpy(pModSetTraceObj->typeName, _typeName);
 	
 	pModSetTraceObj->Delete = delete_ModelSetTrace;
@@ -191,7 +191,7 @@ ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previou
 	ModelTrace* pObj = new_ModelTrace();
 
 	/* Allocating memory */
-	pModAddTraceObj = (ModelAddTrace*)malloc(sizeof(ModelAddTrace));
+	pModAddTraceObj = (ModelAddTrace*)my_malloc(sizeof(ModelAddTrace));
 
 	if (pModAddTraceObj == NULL)
 	{
@@ -201,13 +201,13 @@ ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previou
 
 	pObj->pDerivedObj = pModAddTraceObj; /* Pointing to derived object */
 	
-	pObj->srcPath = malloc(sizeof(char)*(strlen(_srcPath)+1));
+	pObj->srcPath = my_malloc(sizeof(char)*(strlen(_srcPath)+1));
 	strcpy(pObj->srcPath, _srcPath);
-	pObj->refName = malloc(sizeof(char)*(strlen(_refName)+1));
+	pObj->refName = my_malloc(sizeof(char)*(strlen(_refName)+1));
 	strcpy(pObj->refName, _refName);
-	pModAddTraceObj->previousPath = malloc(sizeof(char)*(strlen(_previousPath)+1));
+	pModAddTraceObj->previousPath = my_malloc(sizeof(char)*(strlen(_previousPath)+1));
 	strcpy(pModAddTraceObj->previousPath, _previousPath);
-	pModAddTraceObj->typeName = malloc(sizeof(char)*(strlen(_typeName)+1));
+	pModAddTraceObj->typeName = my_malloc(sizeof(char)*(strlen(_typeName)+1));
 	strcpy(pModAddTraceObj->typeName, _typeName);
 	
 	pModAddTraceObj->Delete = delete_ModelAddTrace;
@@ -223,7 +223,7 @@ ModelAddTrace* new_ModelAddTrace(char* _srcPath, char* _refName, char* _previous
 	ModelTrace* pObj = new_ModelTrace();
 
 	/* Allocating memory */
-	pModAddTraceObj = (ModelAddTrace*)malloc(sizeof(ModelAddTrace));
+	pModAddTraceObj = (ModelAddTrace*)my_malloc(sizeof(ModelAddTrace));
 
 	if (pModAddTraceObj == NULL)
 	{
@@ -233,13 +233,13 @@ ModelAddTrace* new_ModelAddTrace(char* _srcPath, char* _refName, char* _previous
 	/*pObj->pDerivedObj = pInstanceObj; Pointing to derived object */
 	pModAddTraceObj->super = pObj;
 	
-	pObj->srcPath = malloc(sizeof(char)*(strlen(_srcPath)+1));
+	pObj->srcPath = my_malloc(sizeof(char)*(strlen(_srcPath)+1));
 	strcpy(pObj->srcPath, _srcPath);
-	pObj->refName = malloc(sizeof(char)*(strlen(_refName)+1));
+	pObj->refName = my_malloc(sizeof(char)*(strlen(_refName)+1));
 	strcpy(pObj->refName, _refName);
-	pModAddTraceObj->previousPath = malloc(sizeof(char)*(strlen(_previousPath)+1));
+	pModAddTraceObj->previousPath = my_malloc(sizeof(char)*(strlen(_previousPath)+1));
 	strcpy(pModAddTraceObj->previousPath, _previousPath);
-	pModAddTraceObj->typeName = malloc(sizeof(char)*(strlen(_typeName)+1));
+	pModAddTraceObj->typeName = my_malloc(sizeof(char)*(strlen(_typeName)+1));
 	strcpy(pModAddTraceObj->typeName, _typeName);
 	
 	pModAddTraceObj->Delete = delete_ModelAddTrace;
@@ -363,7 +363,7 @@ ModelTrace* newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objP
 	ModelTrace* pObj = new_ModelTrace();
 
 	/* Allocating memory */
-	pModRemTraceObj = (ModelRemoveTrace*)malloc(sizeof(ModelRemoveTrace));
+	pModRemTraceObj = (ModelRemoveTrace*)my_malloc(sizeof(ModelRemoveTrace));
 
 	if (pModRemTraceObj == NULL)
 	{
@@ -373,11 +373,11 @@ ModelTrace* newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objP
 
 	pObj->pDerivedObj = pModRemTraceObj; /* Pointing to derived object */
 	
-	pObj->srcPath = malloc(sizeof(char)*(strlen(_srcPath)+1));
+	pObj->srcPath = my_malloc(sizeof(char)*(strlen(_srcPath)+1));
 	strcpy(pObj->srcPath, _srcPath);
-	pObj->refName = malloc(sizeof(char)*(strlen(_refName)+1));
+	pObj->refName = my_malloc(sizeof(char)*(strlen(_refName)+1));
 	strcpy(pObj->refName, _refName);
-	pModRemTraceObj->objPath = malloc(sizeof(char)*(strlen(_objPath)+1));
+	pModRemTraceObj->objPath = my_malloc(sizeof(char)*(strlen(_objPath)+1));
 	strcpy(pModRemTraceObj->objPath, _objPath);
 	
 	pModRemTraceObj->Delete = delete_ModelRemoveTrace;
@@ -415,7 +415,7 @@ ModelRemoveTrace* new_ModelRemoveTrace(char* _srcPath, char* _refName, char* _ob
 	ModelRemoveTrace* pModRemTraceObj = NULL;
 	ModelTrace* pObj = new_ModelTrace();
 
-	pModRemTraceObj = (ModelRemoveTrace*)malloc(sizeof(ModelRemoveTrace));
+	pModRemTraceObj = (ModelRemoveTrace*)my_malloc(sizeof(ModelRemoveTrace));
 
 	if (pModRemTraceObj == NULL)
 	{
@@ -425,11 +425,11 @@ ModelRemoveTrace* new_ModelRemoveTrace(char* _srcPath, char* _refName, char* _ob
 	/*pObj->pDerivedObj = pInstanceObj; Pointing to derived object */
 	pModRemTraceObj->super = pObj;
 
-	pObj->srcPath = malloc(sizeof(char)*(strlen(_srcPath)+1));
+	pObj->srcPath = my_malloc(sizeof(char)*(strlen(_srcPath)+1));
 	strcpy(pObj->srcPath, _srcPath);
-	pObj->refName = malloc(sizeof(char)*(strlen(_refName)+1));
+	pObj->refName = my_malloc(sizeof(char)*(strlen(_refName)+1));
 	strcpy(pObj->refName, _refName);
-	pModRemTraceObj->objPath = malloc(sizeof(char)*(strlen(_objPath)+1));
+	pModRemTraceObj->objPath = my_malloc(sizeof(char)*(strlen(_objPath)+1));
 	strcpy(pModRemTraceObj->objPath, _objPath);
 
 	pModRemTraceObj->Delete = delete_ModelRemoveTrace;

@@ -6,6 +6,7 @@
 #include "NamedElement.h"
 #include "PortType.h"
 #include "PortTypeMapping.h"
+#include "ComponentType.h"
 
 typedef struct _PortTypeRef PortTypeRef;
 
@@ -27,6 +28,7 @@ typedef struct _PortTypeRef {
 	int noDependency;
 	PortType* ref;
 	map_t mappings;
+	ComponentType *eContainer;
 	fptrPortTypeRefMetaClassName MetaClassName;
 	fptrPortTypeRefInternalGetKey InternalGetKey;
 	fptrPortTypeRefFindMappingsByID FindMappingsByID;

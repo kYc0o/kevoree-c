@@ -6,7 +6,7 @@ NamedElement* newPoly_Instance()
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pInstanceObj = (Instance*)malloc(sizeof(Instance));
+	pInstanceObj = (Instance*)my_malloc(sizeof(Instance));
 
 	if (pInstanceObj == NULL)
 	{
@@ -45,7 +45,7 @@ Instance* new_Instance()
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pInstanceObj = (Instance*)malloc(sizeof(Instance));
+	pInstanceObj = (Instance*)my_malloc(sizeof(Instance));
 
 	if (pInstanceObj == NULL)
 	{
@@ -161,7 +161,7 @@ char* Instance_MetaClassName(Instance* const this)
 {
 	char *name;
 
-	name = malloc(sizeof(char) * (strlen("Instance")) + 1);
+	name = my_malloc(sizeof(char) * (strlen("Instance")) + 1);
 	if(name != NULL)
 		strcpy(name, "Instance");
 	else
@@ -303,7 +303,7 @@ void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, 
 			visitor->action("typeDefinition", SQBRACKET, NULL);
 			/*sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));
 			((Instance*)(this))->typeDefinition->VisitAttributes(((Instance*)(this))->typeDefinition, path, visitor, recursive);*/
-			sprintf(path, "typeDefinition[%s]", ((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));
+			sprintf(path, "typeDefinitions[%s]", ((Instance*)(this))->typeDefinition->InternalGetKey(((Instance*)(this))->typeDefinition));
 			visitor->action(path, STRREF, NULL);
 			visitor->action(NULL, RETURN, NULL);
 			visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);

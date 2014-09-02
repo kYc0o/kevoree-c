@@ -3,10 +3,13 @@
 
 #include <string.h>
 #include "hashmap.h"
-#include "DictionaryAttribute.h"
+/*#include "DictionaryAttribute.h"
+#include "TypeDefinition.h"*/
 
 typedef struct _DictionaryAttribute DictionaryAttribute;
 typedef struct _DictionaryType DictionaryType;
+typedef struct _TypeDefinition TypeDefinition;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicTypeMetaClassName)(DictionaryType*);
 typedef char* (*fptrDicTypeInternalGetKey)(DictionaryType*);
@@ -21,6 +24,7 @@ typedef void* (*fptrFindByPathDicType)(char*, DictionaryType*);
 typedef struct _DictionaryType {
 	char generated_KMF_ID[9];
 	map_t attributes;
+	TypeDefinition *eContainer;
 	fptrDicTypeFindAttrByID FindAttributesByID;
 	fptrDicTypeAddAttr AddAttributes;
 	fptrDicTypeRemAttr RemoveAttributes;
