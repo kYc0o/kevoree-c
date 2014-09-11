@@ -1,0 +1,3772 @@
+{
+"eClass" : "org.kevoree.ContainerRoot",
+"generated_KMF_ID" : "wLoThlOU",
+"nodes" : [
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "33",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "35",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "46",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "42",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "40",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "9",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "54",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "12",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "26",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "8",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "43",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "48",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "6",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "7",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "56",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "11",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "2",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "38",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "1",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "55",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "32",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "5",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "17",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "13",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "15",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "36",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "61",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "60",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "49",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "19",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "50",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "3",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "29",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "45",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "59",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "31",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "25",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "10",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "23",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "47",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "14",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "22",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "53",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "58",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "27",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "41",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "52",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "20",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "21",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "16",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "44",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "24",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "30",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "4",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "34",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "18",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "57",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "39",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "28",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "37",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+},
+{
+"eClass" : "org.kevoree.ContainerNode",
+"name" : "51",
+"metaData" : "",
+"started" : "true",
+"components" : [
+{
+"eClass" : "org.kevoree.ComponentInstance",
+"name" : "0",
+"metaData" : "",
+"started" : "true",
+"provided" : [
+],
+"required" : [
+],
+"typeDefinition" : [
+"typeDefinitions[BlinkType/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"hosts" : [
+],
+"host" : [
+],
+"groups" : [
+"groups[CoAPGroup]"
+],
+"networkInformation" : [
+{
+"eClass" : "org.kevoree.NetworkInfo",
+"name" : "ip",
+"values" : [
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "local",
+"value" : "aaaa::0:0:3"
+},
+{
+"eClass" : "org.kevoree.NetworkProperty",
+"name" : "front",
+"value" : "contiki.kevoree.org"
+}
+]
+}
+],
+"typeDefinition" : [
+"typeDefinitions[ContikiNode/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+]
+}
+],
+"typeDefinitions" : [
+{
+"eClass" : "org.kevoree.NodeType",
+"name" : "ContikiNode",
+"version" : "0.0.1",
+"factoryBean" : "",
+"bean" : "",
+"abstract" : "false",
+"deployUnit" : [
+"deployUnits[org.kevoree.library.c//kevoree-contiki-node/0.0.1]"
+],
+"dictionaryType" : [
+{
+"eClass" : "org.kevoree.DictionaryType",
+"generated_KMF_ID" : "BiDwuYiL",
+"attributes" : [
+]
+}
+],
+"superTypes" : [
+]
+},
+{
+"eClass" : "org.kevoree.GroupType",
+"name" : "CoAPGroup",
+"version" : "0.0.1",
+"factoryBean" : "",
+"bean" : "",
+"abstract" : "false",
+"deployUnit" : [
+"deployUnits[//kevoree-group-coap/0.0.1]"
+],
+"dictionaryType" : [
+{
+"eClass" : "org.kevoree.DictionaryType",
+"generated_KMF_ID" : "DI8B1f8N",
+"attributes" : [
+{
+"eClass" : "org.kevoree.DictionaryAttribute",
+"name" : "path",
+"optional" : "true",
+"state" : "false",
+"datatype" : "string",
+"fragmentDependant" : "true",
+"defaultValue" : ""
+},
+{
+"eClass" : "org.kevoree.DictionaryAttribute",
+"name" : "port",
+"optional" : "true",
+"state" : "false",
+"datatype" : "number",
+"fragmentDependant" : "true",
+"defaultValue" : ""
+},
+{
+"eClass" : "org.kevoree.DictionaryAttribute",
+"name" : "proxy_port",
+"optional" : "true",
+"state" : "false",
+"datatype" : "int",
+"fragmentDependant" : "true",
+"defaultValue" : "9000"
+}
+]
+}
+],
+"superTypes" : [
+]
+},
+{
+"eClass" : "org.kevoree.ComponentType",
+"name" : "BlinkType",
+"version" : "0.0.1",
+"factoryBean" : "",
+"bean" : "",
+"abstract" : "false",
+"required" : [
+],
+"provided" : [
+],
+"deployUnit" : [
+"deployUnits[//kevoree-comp-blink/0.0.1]"
+],
+"dictionaryType" : [
+{
+"eClass" : "org.kevoree.DictionaryType",
+"generated_KMF_ID" : "hytCmvXU",
+"attributes" : [
+]
+}
+],
+"superTypes" : [
+]
+}
+],
+"repositories" : [
+],
+"dataTypes" : [
+],
+"libraries" : [
+{
+"eClass" : "org.kevoree.TypeLibrary",
+"name" : "Contiki",
+"subTypes" : [
+"typeDefinitions[ContikiNode/0.0.1]",
+"typeDefinitions[CoAPGroup/0.0.1]",
+"typeDefinitions[BlinkType/0.0.1]"
+]
+}
+],
+"hubs" : [
+],
+"mBindings" : [
+],
+"deployUnits" : [
+{
+"eClass" : "org.kevoree.DeployUnit",
+"name" : "kevoree-group-coap",
+"groupName" : "",
+"version" : "0.0.1",
+"url" : "",
+"hashcode" : "",
+"type" : "ce"
+},
+{
+"eClass" : "org.kevoree.DeployUnit",
+"name" : "kevoree-comp-blink",
+"groupName" : "",
+"version" : "0.0.1",
+"url" : "",
+"hashcode" : "",
+"type" : "ce"
+},
+{
+"eClass" : "org.kevoree.DeployUnit",
+"name" : "kevoree-contiki-node",
+"groupName" : "org.kevoree.library.c",
+"version" : "0.0.1",
+"url" : "",
+"hashcode" : "",
+"type" : "ce"
+}
+],
+"nodeNetworks" : [
+],
+"groups" : [
+{
+"eClass" : "org.kevoree.Group",
+"name" : "CoAPGroup",
+"metaData" : "",
+"started" : "true",
+"subNodes" : [
+"nodes[33]",
+"nodes[35]",
+"nodes[46]",
+"nodes[42]",
+"nodes[40]",
+"nodes[9]",
+"nodes[54]",
+"nodes[12]",
+"nodes[26]",
+"nodes[8]",
+"nodes[43]",
+"nodes[48]",
+"nodes[6]",
+"nodes[7]",
+"nodes[56]",
+"nodes[11]",
+"nodes[2]",
+"nodes[38]",
+"nodes[1]",
+"nodes[55]",
+"nodes[32]",
+"nodes[5]",
+"nodes[17]",
+"nodes[13]",
+"nodes[15]",
+"nodes[36]",
+"nodes[61]",
+"nodes[60]",
+"nodes[49]",
+"nodes[19]",
+"nodes[50]",
+"nodes[3]",
+"nodes[29]",
+"nodes[45]",
+"nodes[59]",
+"nodes[31]",
+"nodes[0]",
+"nodes[25]",
+"nodes[10]",
+"nodes[23]",
+"nodes[47]",
+"nodes[14]",
+"nodes[22]",
+"nodes[53]",
+"nodes[58]",
+"nodes[27]",
+"nodes[41]",
+"nodes[52]",
+"nodes[20]",
+"nodes[21]",
+"nodes[16]",
+"nodes[44]",
+"nodes[24]",
+"nodes[30]",
+"nodes[4]",
+"nodes[34]",
+"nodes[18]",
+"nodes[57]",
+"nodes[39]",
+"nodes[28]",
+"nodes[37]",
+"nodes[51]"
+],
+"typeDefinition" : [
+"typeDefinitions[CoAPGroup/0.0.1]"
+],
+"dictionary" : [
+],
+"fragmentDictionary" : [
+{
+"eClass" : "org.kevoree.FragmentDictionary",
+"generated_KMF_ID" : "QoMNUckL",
+"name" : "contiki-node",
+"values" : [
+]
+}
+]
+}
+]
+}

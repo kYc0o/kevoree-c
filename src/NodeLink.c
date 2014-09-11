@@ -79,7 +79,9 @@ void NodeLink_AddNetworkProperties(NodeLink* const this, NetworkProperty* ptr)
 {
 	NetworkProperty* container = NULL;
 	
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The NetworkProperty cannot be added in NodeLink because the key is not defined\n");
 	}
@@ -89,23 +91,30 @@ void NodeLink_AddNetworkProperties(NodeLink* const this, NetworkProperty* ptr)
 		{
 			this->networkProperties = hashmap_new();
 		}
-		if(hashmap_get(this->networkProperties, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->networkProperties, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (NetworkProperty*)ptr;*/
-			hashmap_put(this->networkProperties, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->networkProperties, internalKey, ptr) == MAP_OK)
+				ptr->eContainerNL = this;
 		}
 	}
 }
 
 void NodeLink_RemoveNetworkProperties(NodeLink* const this, NetworkProperty* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The NetworkProperty cannot be removed in NodeLink because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->networkProperties, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->networkProperties, internalKey) == MAP_OK)
+		{
+			ptr->eContainerNL = NULL;
+			free(internalKey);
+		}
 	}
 }
 
@@ -149,7 +158,7 @@ void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor)
 	visitor->action(path, STRING, ((NodeLink*)(this))->zoneID);
 	
 	sprintf(path, "%s\\estimatedRate", parent);
-	visitor->action(path, BOOL, ((NodeLink*)(this))->estimatedRate);
+	visitor->action(path, INTEGER, ((NodeLink*)(this))->estimatedRate);
 }
 
 void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor)

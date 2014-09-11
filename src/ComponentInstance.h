@@ -13,6 +13,7 @@
 typedef struct _ComponentInstance ComponentInstance;
 typedef struct _Instance Instance;
 typedef struct _Port Port;
+typedef struct _ContainerNode ContainerNode;
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrCompInstInternalGetKey)(ComponentInstance*);
@@ -29,9 +30,10 @@ typedef void (*fptrVisitRefsComponentInstance)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathComponentInstance)(char*, ComponentInstance*);
 
 typedef struct _ComponentInstance { 
-	Instance* super;
+	Instance *super;
 	map_t provided;
 	map_t required;
+	ContainerNode *eContainer;
 	fptrCompInstInternalGetKey InternalGetKey;
 	fptrCompInstMetaClassName MetaClassName;
 	fptrDeleteComponentInstance Delete;

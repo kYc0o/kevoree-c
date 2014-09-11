@@ -1,3 +1,7 @@
+#include <string.h>
+#include "NamedElement.h"
+#include "TypeDefinition.h"
+#include "Visitor.h"
 #include "TypeLibrary.h"
 
 NamedElement* newPoly_TypeLibrary(void)
@@ -107,7 +111,9 @@ void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 {
 	TypeDefinition* container = NULL;
 	
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The TypeDefinition cannot be added in TypeLibrary because the key is not defined\n");
 	}
@@ -117,23 +123,26 @@ void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 		{
 			this->subTypes = hashmap_new();
 		}
-		if(hashmap_get(this->subTypes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->subTypes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (TypeDefinition*)ptr;*/
-			hashmap_put(this->subTypes, ptr->InternalGetKey(ptr), ptr);
+			hashmap_put(this->subTypes, internalKey, ptr);
 		}
 	}
 }
 
 void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The TypeDefinition cannot be removed in TypeLibrary because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->subTypes, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->subTypes, internalKey);
+		free(internalKey);
 	}
 }
 
@@ -173,7 +182,7 @@ void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visito
 	sprintf(path,"%s\\cClass", parent);
 	visitor->action(path, STRING, ((TypedElement*)this)->MetaClassName((TypedElement*)this));*/
 
-	NamedElement_VisitAttributes(((TypeLibrary*)(this))->super, parent, visitor, 1);
+	NamedElement_VisitAttributes(((TypeLibrary*)(this))->super, parent, visitor, true);
 }
 
 void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor)

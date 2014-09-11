@@ -1,7 +1,11 @@
+#include <string.h>
+#include <stdlib.h>
 #include "Visitor.h"
 #include "MBinding.h"
 #include "PortTypeRef.h"
 #include "ComponentInstance.h"
+#include "ComponentType.h"
+#include "NamedElement.h"
 #include "Port.h"
 
 Port* new_Port()
@@ -94,7 +98,9 @@ void Port_AddBindings(Port* const this, MBinding* ptr)
 {
 	MBinding* container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The MBinding cannot be added in Port because the key is not defined\n");
 	}
@@ -105,10 +111,10 @@ void Port_AddBindings(Port* const this, MBinding* ptr)
 			this->bindings = hashmap_new();
 		}
 
-		if(hashmap_get(this->bindings, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->bindings, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (MBinding*)ptr;*/
-			hashmap_put(this->bindings, ptr->InternalGetKey(ptr), ptr);
+			hashmap_put(this->bindings, internalKey, ptr);
 		}
 	}
 }
@@ -120,13 +126,16 @@ void Port_AddPortTypeRef(Port* const this, PortTypeRef* ptr)
 
 void Port_RemoveBindings(Port* const this, MBinding* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The MBinding cannot be removed in Port because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->bindings, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->bindings, internalKey);
+		free(internalKey);
 	}
 }
 
@@ -136,7 +145,7 @@ void Port_RemovePortTypeRef(Port* const this, PortTypeRef* ptr)
 	this->portTypeRef = NULL;
 }
 
-void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, int recursive)
+void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	/*char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -192,9 +201,11 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 	{
 		visitor->action("portTypeRef", SQBRACKET, NULL);
 		/*sprintf(path, "%s/portTypeRef[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
-		this->portTypeRef->VisitAttributes(this->portTypeRef, parent, visitor, 0);
+		this->portTypeRef->VisitAttributes(this->portTypeRef, parent, visitor, false);
 		this->portTypeRef->VisitReferences(this->portTypeRef, parent, visitor);*/
-		sprintf(path, "%s[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
+		sprintf(path, "%s/%s[%s]", this->portTypeRef->eContainer->InternalGetKey(this->portTypeRef->eContainer),
+									parent,
+									this->portTypeRef->InternalGetKey(this->portTypeRef));
 		visitor->action(path, STRREF, NULL);
 		visitor->action(NULL, RETURN, NULL);
 		visitor->action(NULL, CLOSESQBRACKET, NULL);

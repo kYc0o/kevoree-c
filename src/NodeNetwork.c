@@ -79,7 +79,9 @@ void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 {
 	NodeLink* container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The NodeLink cannot be added in NodeNetwork because the key is not defined\n");
 	}
@@ -89,10 +91,11 @@ void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 		{
 			this->link = hashmap_new();
 		}
-		if(hashmap_get(this->link, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->link, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (NodeLink*)ptr;*/
-			hashmap_put(this->link, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->link, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
@@ -109,13 +112,19 @@ void NodeNetwork_AddTarget(NodeNetwork* const this, ContainerNode* ptr)
 
 void NodeNetwork_RemoveLink(NodeNetwork* const this, NodeLink* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The NodeLink cannot be removed in NodeNetwork because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->link, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->link, internalKey) == MAP_OK)
+		{
+			ptr->eContainer = NULL;
+			free(internalKey);
+		}
 	}
 }
 

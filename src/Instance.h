@@ -1,13 +1,15 @@
 #ifndef H_Instance
 #define H_Instance
 
-#include <stdlib.h>
-#include "NamedElement.h"
-#include "TypeDefinition.h"
-#include "Dictionary.h"
-#include "FragmentDictionary.h"
+#include <stdbool.h>
+#include "hashmap.h"
 
 typedef struct _Instance Instance;
+typedef struct _NamedElement NamedElement;
+typedef struct _TypeDefinition TypeDefinition;
+typedef struct _Dictionary Dictionary;
+typedef struct _FragmentDictionary FragmentDictionary;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrInstInternalGetKey)(Instance*);
 typedef char* (*fptrInstMetaClassName)(Instance*);
@@ -19,15 +21,15 @@ typedef void (*fptrInstRemoveTypeDefinition)(Instance*, TypeDefinition*);
 typedef void (*fptrInstRemoveDictionary)(Instance*, Dictionary*);
 typedef void (*fptrInstRemoveFragmentDictionary)(Instance*, FragmentDictionary*);
 typedef void (*fptrDeleteInstance)(Instance*);
-typedef void (*fptrVisitAttrInstance)(void*, char*, Visitor*, int);
-typedef void (*fptrVisitRefsInstance)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrInstance)(void*, char*, Visitor*, bool);
+typedef void (*fptrVisitRefsInstance)(void*, char*, Visitor*, bool);
 typedef void* (*fptrFindByPathInstance)(char*, Instance*);
 
 typedef struct _Instance {
 	NamedElement* super;
 	void* pDerivedObj;
 	char* metaData;
-	int started;
+	bool started;
 	TypeDefinition* typeDefinition;
 	Dictionary* dictionary;
 	map_t fragmentDictionary;
@@ -59,8 +61,8 @@ char* Instance_InternalGetKey(Instance* const this);
 char* Instance_MetaClassName(Instance* const this);
 void deletePoly_Instance(NamedElement* const this);
 void delete_Instance(Instance* const this);
-void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
-void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive);
+void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* Instance_FindByPath(char* attribute, Instance* const this);
 
 #endif /* H_Instance */

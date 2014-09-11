@@ -1,8 +1,7 @@
 #ifndef __Port_H
 #define __Port_H
 
-#include <string.h>
-#include <stdlib.h>
+#include <stdbool.h>
 #include "hashmap.h"
 
 typedef struct _NamedElement NamedElement;
@@ -20,7 +19,7 @@ typedef void (*fptrPortAddBindings)(Port*, MBinding*);
 typedef void (*fptrPortAddPortTypeRef)(Port*, PortTypeRef*);
 typedef void (*fptrPortRemoveBindings)(Port*, MBinding*);
 typedef void (*fptrPortRemovePortTypeRef)(Port*, PortTypeRef*);
-typedef void (*fptrVisitAttrPort)(Port*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrPort)(Port*, char*, Visitor*, bool);
 typedef void (*fptrVisitRefsPort)(Port*, char*, Visitor*);
 typedef void* (*fptrFindByPathPort)(char*, Port*);
 typedef void (*fptrDeletePort)(void*);
@@ -52,7 +51,7 @@ void Port_AddBindings(Port* const this, MBinding* ptr);
 void Port_AddPortTypeRef(Port* const this, PortTypeRef* ptr);
 void Port_RemoveBindings(Port* const this, MBinding* ptr);
 void Port_RemovePortTypeRef(Port* const this, PortTypeRef* ptr);
-void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, int recursive);
+void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, bool recursive);
 void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor);
 void* Port_FindByPath(char* attribute, Port* const this);
 

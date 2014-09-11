@@ -87,7 +87,9 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 {
 	DictionaryAttribute* container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The DictionaryAttribute cannot be added in DictionaryType because the key is not defined\n");
 	}
@@ -97,23 +99,30 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 		{
 			this->attributes = hashmap_new();
 		}
-		if(hashmap_get(this->attributes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->attributes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (DictionaryAttribute*)ptr;*/
-			hashmap_put(this->attributes, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->attributes, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
 
 void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttribute* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The DictionaryValue cannot be removed in Dictionary because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->attributes, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->attributes, internalKey) == MAP_OK)
+		{
+			ptr->eContainer = NULL;
+			free(internalKey);
+		}
 	}
 }
 

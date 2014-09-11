@@ -1,6 +1,9 @@
+#include <stdlib.h>
+#include <string.h>
 #include "NamedElement.h"
 #include "NetworkInfo.h"
 #include "NodeLink.h"
+#include "Visitor.h"
 #include "NetworkProperty.h"
 
 NamedElement* newPoly_NetworkProperty()
@@ -124,7 +127,7 @@ void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* vi
 	/*sprintf(path,"%s\\cClass", parent);
 	visitor->action(path, STRING, ((NetworkProperty*)this)->MetaClassName((NetworkProperty*)this));*/
 
-	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, parent, visitor, 1);
+	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, parent, visitor, true);
 	
 	/*sprintf(path, "%s\\value", parent);*/
 	sprintf(path, "value", parent);

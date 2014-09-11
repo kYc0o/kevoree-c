@@ -2,6 +2,7 @@
 #include "PortTypeRef.h"
 #include "NamedElement.h"
 #include "TypeDefinition.h"
+#include "Visitor.h"
 #include "ComponentType.h"
 
 TypeDefinition* newPoly_ComponentType(void)
@@ -134,9 +135,11 @@ PortTypeRef* ComponentType_FindProvidedByID(ComponentType* const this, char* id)
 
 void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 {
-	PortTypeRef* container = NULL;
+	PortTypeRef *container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The PortTypeRef cannot be added in ComponentType because the key is not defined");
 	}
@@ -147,19 +150,22 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 			this->required = hashmap_new();
 		}
 
-		if(hashmap_get(this->required, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->required, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (PortTypeRef*)ptr;*/
-			hashmap_put(this->required, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->required, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
 
 void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 {
-	PortTypeRef* container = NULL;
+	PortTypeRef *container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The PortTypeRef cannot be added in ComponentType because the key is not defined");
 	}
@@ -169,35 +175,48 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 		{
 			this->provided = hashmap_new();
 		}
-		if(hashmap_get(this->provided, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->provided, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (PortTypeRef*)ptr;*/
-			hashmap_put(this->provided, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->provided, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
 
 void ComponentType_RemoveRequired(ComponentType* const this, PortTypeRef* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->required, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->required, internalKey) == MAP_OK)
+		{
+			ptr->eContainer = NULL;
+			free(internalKey);
+		}
 	}
 }
 
 void ComponentType_RemoveProvided(ComponentType* const this, PortTypeRef* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->provided, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->provided, internalKey) == MAP_OK)
+		{
+			ptr->eContainer = NULL;
+			free(internalKey);
+		}
 	}
 }
 
@@ -222,7 +241,7 @@ void delete_ComponentType(ComponentType* const this)
 	free(this);
 }
 
-void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	/*char path[256];
 	memset(&path[0], 0, sizeof(path));

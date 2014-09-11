@@ -2,6 +2,7 @@
 #define __Channel_H
 
 #include <string.h>
+#include <stdbool.h>
 #include "hashmap.h"
 
 typedef struct _MBinding MBinding;
@@ -15,8 +16,8 @@ typedef char* (*fptrChannelMetaClassName)(Channel*);
 typedef void (*fptrChannelAddBindings)(Channel*, MBinding*);
 typedef void (*fptrChannelRemoveBindings)(Channel*, MBinding*);
 typedef MBinding* (*fptrChannelFindBindingsByID)(Channel*, char*);
-typedef void (*fptrVisitAttrChannel)(void*, char*, Visitor*, int);
-typedef void (*fptrVisitRefsChannel)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrChannel)(void*, char*, Visitor*, bool);
+typedef void (*fptrVisitRefsChannel)(void*, char*, Visitor*, bool);
 typedef void* (*fptrFindByPathChannel)(char*, Channel*);
 typedef void (*fptrDeleteChannel)(void*);
 
@@ -44,8 +45,8 @@ char* Channel_InternalGetKey(Channel* const this);
 void Channel_AddBindings(Channel* const this, MBinding* ptr);
 void Channel_RemoveBindings(Channel* const this, MBinding* ptr);
 MBinding* Channel_FindBindingsByID(Channel* const this, char* id);
-void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
-void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive);
+void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* Channel_FindByPath(char* attribute, Channel* const this);
 
 #endif /*__Channel_H */

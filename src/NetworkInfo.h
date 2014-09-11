@@ -1,14 +1,12 @@
 #ifndef H_NetworkInfo
 #define H_NetworkInfo
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "NamedElement.h"
-#include "NetworkProperty.h"
 #include "hashmap.h"
-#include "ContainerNode.h"
 
 typedef struct _NetworkInfo NetworkInfo;
+typedef struct _NamedElement NamedElement;
+typedef struct _NetworkProperty NetworkProperty;
+typedef struct _ContainerNode ContainerNode;
 
 typedef char* (*fptrNetInfoMetaClassName)(NetworkInfo*);
 typedef char* (*fptrNetInfoInternalGetKey)(NetworkInfo*);
@@ -37,7 +35,6 @@ typedef struct _NetworkInfo {
 
 NamedElement* newPoly_NetworkInfo(void);
 NetworkInfo* new_NetworkInfo(void);
-/*int _acceptNetworkInfo(NetworkInfo* this, NetworkInfo* c, Visitor* visitor);*/
 char* NetworkInfo_MetaClassName(NetworkInfo* const this);
 char* NetworkInfo_InternalGetKey(NetworkInfo* const this);
 void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr);

@@ -1,5 +1,6 @@
 #include "NamedElement.h"
 #include "TypeDefinition.h"
+#include "Visitor.h"
 #include "GroupType.h"
 
 TypeDefinition* newPoly_GroupType()
@@ -95,7 +96,7 @@ void delete_GroupType(GroupType* const this)
 	free(this);
 }
 
-void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	/*char path[256];
 	memset(&path[0], 0, sizeof(path));

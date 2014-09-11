@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "NamedElement.h"
 #include "DeployUnit.h"
 #include "DictionaryType.h"
@@ -94,13 +97,12 @@ TypeDefinition* new_TypeDefinition()
 
 char* TypeDefinition_InternalGetKey(TypeDefinition* const this)
 {
-	char* internalKey;
+	char* internalKey = NULL;
 
 	if (this == NULL)
 		return NULL;
 
-	internalKey = my_malloc(sizeof(char) * (strlen("name=") + strlen(this->super->name) + strlen(",") +
-										strlen("version=") + strlen(this->version)) + 1);
+	internalKey = my_malloc(sizeof(char) * (strlen(this->super->name) + strlen("/") + strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
@@ -136,6 +138,7 @@ void TypeDefinition_AddDictionaryType(TypeDefinition* const this, DictionaryType
 	if(ptr != NULL)
 	{
 		this->dictionaryType = ptr;
+		ptr->eContainer = this;
 	}
 }
 
@@ -147,6 +150,7 @@ void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit* ptr
 
 void TypeDefinition_RemoveDictionaryType(TypeDefinition* const this, DictionaryType *ptr)
 {
+	ptr->eContainer = NULL;
 	free(ptr);
 	this->dictionaryType = NULL;
 }
@@ -155,7 +159,9 @@ void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* pt
 {
 	TypeDefinition* container = NULL;
 	
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The TypeDefinition cannot be added in TypeDefinition because the key is not defined\n");
 	}
@@ -165,23 +171,26 @@ void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* pt
 		{
 			this->superTypes = hashmap_new();
 		}
-		if(hashmap_get(this->superTypes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->superTypes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (TypeDefinition*)ptr;*/
-			hashmap_put(this->superTypes, ptr->InternalGetKey(ptr), ptr);
+			hashmap_put(this->superTypes, internalKey, ptr);
 		}
 	}
 }
 
 void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The TypeDefinition cannot be removed in TypeDefinition because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->superTypes, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->superTypes, internalKey);
+		free(internalKey);
 	}
 }
 
@@ -220,7 +229,7 @@ void delete_TypeDefinition(TypeDefinition* const this)
 	
 }
 
-void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	if(recursive)
 	{
@@ -352,7 +361,7 @@ void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this)
 	}
 	else if(!strcmp("abstract",attribute))
 	{
-		return this->abstract;
+		return (void*)this->abstract;
 	}
 	else
 	{

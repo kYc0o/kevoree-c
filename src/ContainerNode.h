@@ -1,8 +1,6 @@
 #ifndef H_ContainerNode
 #define H_ContainerNode
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <stdbool.h>
 #include "hashmap.h"
 /*#include "Instance.h"*/
 /*#include "ComponentInstance.h"*/
@@ -36,7 +34,7 @@ typedef void (*fptrContNodeRemoveHost)(ContainerNode*, ContainerNode*);
 typedef void (*fptrContNodeRemoveGroups)(ContainerNode*, Group*);
 typedef void (*fptrContNodeRemoveNetworkInformation)(ContainerNode*, NetworkInfo*);
 typedef void (*fptrDeleteContNode)(ContainerNode*);
-typedef void (*fptrVisitAttrContainerNode)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrContainerNode)(void*, char*, Visitor*, bool);
 typedef void (*fptrVisitRefsContainerNode)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathContainerNode)(char*, ContainerNode*);
 
@@ -90,7 +88,7 @@ void ContainerNode_RemoveGroups(ContainerNode* const this, Group* ptr);
 void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkInfo* ptr);
 void deletePoly_ContainerNode(Instance* const this);
 void delete_ContainerNode(ContainerNode* const this);
-void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this);
 

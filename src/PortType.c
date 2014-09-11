@@ -1,3 +1,5 @@
+#include <string.h>
+#include <stdlib.h>
 #include "NamedElement.h"
 #include "TypeDefinition.h"
 #include "Visitor.h"
@@ -101,7 +103,7 @@ void delete_PortType(PortType* const this)
 	free(this);
 }
 
-void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	if(recursive)
 	{
@@ -117,7 +119,7 @@ void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 
 		/*sprintf(path, "%s\\synchrone", parent);*/
 		sprintf(path, "synchrone");
-		visitor->action(path, BOOL, porttype->synchrone);
+		visitor->action(path, BOOL, (void*)porttype->synchrone);
 		visitor->action(NULL, RETURN, NULL);
 	}
 	else
@@ -137,7 +139,7 @@ void* PortType_FindByPath(char* attribute, TypeDefinition* const this)
 	else if(!strcmp("synchrone",attribute))
 	{
 		PortType* porttype = this->pDerivedObj;
-		return porttype->synchrone;
+		return (void*)porttype->synchrone;
 	}
 	/* TypeDefinition references */
 	else

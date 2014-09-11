@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "Visitor.h"
 #include "NamedElement.h"
 
 NamedElement* new_NamedElement()
@@ -52,7 +56,7 @@ void delete_NamedElement(NamedElement* const this)
 	}
 }
 
-void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));

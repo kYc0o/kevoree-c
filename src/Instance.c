@@ -1,3 +1,9 @@
+#include <stdlib.h>
+#include "NamedElement.h"
+#include "TypeDefinition.h"
+#include "Dictionary.h"
+#include "FragmentDictionary.h"
+#include "Visitor.h"
 #include "Instance.h"
 
 NamedElement* newPoly_Instance()
@@ -104,13 +110,16 @@ void Instance_AddTypeDefinition(Instance* this, TypeDefinition* ptr)
 void Instance_AddDictionary(Instance* const this, Dictionary* ptr)
 {
 	this->dictionary = ptr;
+	ptr->eContainer = this;
 }
 
 void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* ptr)
 {
 	FragmentDictionary* container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The FragmentDictionary cannot be added in Instance because the key is not defined\n");
 	}
@@ -120,10 +129,11 @@ void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* pt
 		{
 			this->fragmentDictionary = hashmap_new();
 		}
-		if(hashmap_get(this->fragmentDictionary, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->fragmentDictionary, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (FragmentDictionary*)ptr;*/
-			hashmap_put(this->fragmentDictionary, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->fragmentDictionary, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
@@ -136,19 +146,22 @@ void Instance_RemoveTypeDefinition(Instance* const this, TypeDefinition* ptr)
 
 void Instance_RemoveDictionary(Instance* const this, Dictionary* ptr)
 {
+	ptr->eContainer = NULL;
 	free(ptr);
 	this->dictionary = NULL;
 }
 
 void Instance_RemoveFragmentDictionary(Instance* const this, FragmentDictionary* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The FragmentDictionary cannot be removed in Instance because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->fragmentDictionary, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->fragmentDictionary, internalKey);
 	}
 }
 
@@ -197,7 +210,7 @@ void delete_Instance(Instance* const this)
 	
 }
 
-void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -223,7 +236,7 @@ void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 	}
 }
 
-void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
+void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -382,7 +395,7 @@ void* Instance_FindByPath(char* attribute, Instance* const this)
 	}
 	else if(!strcmp("started",attribute))
 	{
-		return this->started;
+		return (void*)this->started;
 	}
 	/* Local references */
 	else

@@ -112,7 +112,9 @@ void TypedElement_AddGenericTypes(TypedElement* const this, TypedElement* ptr)
 {
 	TypedElement* container = NULL;
 	
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The TypedElement cannot be added in TypedElement because the key is not defined");
 	}
@@ -122,23 +124,26 @@ void TypedElement_AddGenericTypes(TypedElement* const this, TypedElement* ptr)
 		{
 			this->genericTypes = hashmap_new();
 		}
-		if(hashmap_get(this->genericTypes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->genericTypes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (TypedElement*)ptr;*/
-			hashmap_put(this->genericTypes, ptr->InternalGetKey(ptr), ptr);
+			hashmap_put(this->genericTypes, internalKey, ptr);
 		}
 	}
 }
 
 void TypedElement_RemoveGenericTypes(TypedElement* const this, TypedElement* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The TypedElement cannot be removed in TypedElement because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->genericTypes, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->genericTypes, internalKey);
+		free(internalKey);
 	}
 }
 
@@ -179,7 +184,7 @@ void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 	sprintf(path,"%s\\cClass", parent);
 	visitor->action(path, STRING, ((TypedElement*)this)->MetaClassName((TypedElement*)this));*/
 
-	NamedElement_VisitAttributes(((TypedElement*)(this))->super, parent, visitor, 1);
+	NamedElement_VisitAttributes(((TypedElement*)(this))->super, parent, visitor, true);
 }
 
 void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visitor)

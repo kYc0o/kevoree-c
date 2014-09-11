@@ -1,14 +1,15 @@
 #ifndef __PortTypeRef_H
 #define __PortTypeRef_H
 
-#include <string.h>
+#include <stdbool.h>
 #include "hashmap.h"
-#include "NamedElement.h"
-#include "PortType.h"
-#include "PortTypeMapping.h"
-#include "ComponentType.h"
 
 typedef struct _PortTypeRef PortTypeRef;
+typedef struct _NamedElement NamedElement;
+typedef struct _PortType PortType;
+typedef struct _PortTypeMapping PortTypeMapping;
+typedef struct _ComponentType ComponentType;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrPortTypeRefMetaClassName)(PortTypeRef*);
 typedef char* (*fptrPortTypeRefInternalGetKey)(PortTypeRef*);
@@ -18,14 +19,14 @@ typedef void (*fptrPortTypeRefAddMappings)(PortTypeRef*, PortTypeMapping*);
 typedef void (*fptrPortTypeRefRemoveRef)(PortTypeRef*, PortType*);
 typedef void (*fptrPortTypeRefRemoveMappings)(PortTypeRef*, PortTypeMapping*);
 typedef void (*fptrDeletePortTypeRef)(PortTypeRef*);
-typedef void (*fptrVisitAttrPortTypeRef)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrPortTypeRef)(void*, char*, Visitor*, bool);
 typedef void (*fptrVisitRefsPortTypeRef)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathPortTypeRef)(char*, PortTypeRef*);
 
 typedef struct _PortTypeRef {
 	NamedElement* super;
-	int optional;
-	int noDependency;
+	bool optional;
+	bool noDependency;
 	PortType* ref;
 	map_t mappings;
 	ComponentType *eContainer;
@@ -53,7 +54,7 @@ void PortTypeRef_RemoveRef(PortTypeRef* const this, PortType* ptr);
 void PortTypeRef_RemoveMappings(PortTypeRef* const this, PortTypeMapping* ptr);
 void deletePoly_PortTypeRef(NamedElement* const this);
 void delete_PortTypeRef(PortTypeRef* const this);
-void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void PortTypeRef_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this);
 

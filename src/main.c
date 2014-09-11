@@ -24,110 +24,17 @@ void str_free(char* ptr)
 	free(ptr);
 }
 
-ContainerRoot* model = NULL;
-ContainerRoot* model2 = NULL;
-
-void ActionCompare(char* _path, Type type, void* value)
-{
-	char* path = strdup(_path);
-	switch(type)
-	{
-		case STRING:
-			printf("path = %s  value = %s\n", path, (char*)value);
-			/*if(indexOf(path,"/") != -1)*/
-			path = strtok(path, "\\");
-			/*printf("Simple path: %s\n", path);*/
-			/*char* string = model2->FindByPath(path, model2);
-			printf("Attribute value: %s\n", string);*/
-			if(model2->FindByPath(path, model2) == NULL)
-			{
-				printf("Path %s does not exist in model, removing...\n\n", path);
-			}
-			else
-			{
-				printf("path = %s  value = %s\n", _path, (char*)value);
-				char* string = model->FindByPath(_path, model);
-				char* string2 = model2->FindByPath(_path, model2);
-				printf("Current attribute value: %s\n", string);
-				printf("New attribute value: %s\n", string2);
-				if(string != NULL && string2 != NULL)
-				{
-					if(!strcmp(string2, string))
-					{
-						printf("Identical attributes, nothing to change...\n\n");
-					}
-					else
-					{
-						printf("Changing attribute to %s in current model\n\n", string2);
-					}
-				}
-				else if(string == NULL && string2 != NULL)
-				{
-					printf("Current attribute is NULL, changing to new attribute '%s'\n\n", string2);
-				}
-				else if(string != NULL && string2 == NULL)
-				{
-					printf("Changing attribute to NULL\n\n");
-				}
-				else
-				{
-					printf("Both attributes are NULL, nothing to change\n\n");
-				}
-			}
-			break;
-
-		case BOOL:
-			printf("path = %s  value = %d\n", path, (int)value);
-			path = strtok(path, "\\");
-			/*printf("Simple path: %s\n", path);*/
-			/*int v = model->FindByPath(path, model);*/
-			if(model2->FindByPath(path, model2) == NULL)
-			{
-				printf("Path %s does not exist in model, removing...\n\n", path);
-			}
-			else
-			{
-				int v = model->FindByPath(_path, model);
-				int v2 = model2->FindByPath(_path, model2);
-				printf("Current attribute value: %d\n", v);
-				printf("New attribute value: %d\n", v2);
-				if(v == v2)
-				{
-					printf("Identical attributes, nothing to change...\n\n");
-				}
-				else
-				{
-					printf("Changing attribute to %s in current model\n\n", v2);
-				}
-
-			}
-			break;
-	}
-}
-/*KevoreeBootStrap *kb=NULL;*/
-
 int main(void)
 {
 	//printf("Starting kevoree C implementation\n");
 
-	model = new_ContainerRoot();
-	model2 = new_ContainerRoot();
-
-	/* ContainerNode contikiNode */
-	ContainerNode* contikiNode = new_ContainerNode();
-	contikiNode->super->super->name = my_malloc(sizeof(char) * (strlen("contiki-node")) + 1);
-	strcpy(contikiNode->super->super->name, "contiki-node");
-	contikiNode->super->started = 1;
-	contikiNode->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(contikiNode->super->metaData, "");
-
 	/* ContainerNode contikiNode
-	ContainerNode* serverNode = new_ContainerNode();
-	serverNode->super->super->name = my_malloc(sizeof(char) * (strlen("server-node")) + 1);
-	strcpy(serverNode->super->super->name, "server-node");
-	serverNode->super->started = 1;
-	serverNode->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(serverNode->super->metaData, "");*/
+	  		ContainerNode* serverNode = new_ContainerNode();
+	  		serverNode->super->super->name = my_malloc(sizeof(char) * (strlen("server-node")) + 1);
+	  		strcpy(serverNode->super->super->name, "server-node");
+	  		serverNode->super->started = true;
+	  		serverNode->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(serverNode->super->metaData, "");*/
 
 	/* NeworkProperty front */
 	NetworkProperty* contikiNodeFront = new_NetworkProperty();
@@ -173,7 +80,6 @@ int main(void)
 	serverNodeIP->AddValues(serverNodeIP, serverNodeFront);
 	serverNodeIP->AddValues(serverNodeIP, serverNodeLocal);
 
-	contikiNode->AddNetworkInformation(contikiNode, contikiNodeIP);
 	/*serverNode->AddNetworkInformation(serverNode, serverNodeIP);*/
 
 	/* TypeDefinition ContikiNode/1.0.0 */
@@ -186,14 +92,13 @@ int main(void)
 	strcpy(contikiNodeType->bean, "");
 	contikiNodeType->factoryBean = my_malloc(sizeof(char) * (strlen("")) + 1);
 	strcpy(contikiNodeType->factoryBean, "");
-	contikiNodeType->abstract = 0;
+	contikiNodeType->abstract = false;
 
-	contikiNode->super->AddTypeDefinition(contikiNode->super, contikiNodeType);
 	/*serverNode->super->AddTypeDefinition(serverNode->super, contikiNodeType);*/
 
 	/* TypeDefinition CoAPGroup/1.0.0 */
 	TypeDefinition* coapGroupType = newPoly_GroupType();
-	coapGroupType->abstract = 0;
+	coapGroupType->abstract = false;
 	coapGroupType->super->name = my_malloc(sizeof(char) * (strlen("CoAPGroup")) + 1);
 	strcpy(coapGroupType->super->name, "CoAPGroup");
 	coapGroupType->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
@@ -203,39 +108,39 @@ int main(void)
 	coapGroupType->factoryBean = my_malloc(sizeof(char) * (strlen("")) + 1);
 	strcpy(coapGroupType->factoryBean, "");
 
-	/* TypeDefinition CoAPChan/0.0.1 */
-	TypeDefinition* coapChanType = newPoly_ChannelType();
-	coapChanType->abstract = 0;
-	coapChanType->super->name = my_malloc(sizeof(char) * (strlen("CoAPChan")) + 1);
-	strcpy(coapChanType->super->name, "CoAPChan");
-	coapChanType->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
-	strcpy(coapChanType->version, "0.0.1");
-	coapChanType->bean = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(coapChanType->bean, "");
-	coapChanType->factoryBean = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(coapChanType->factoryBean, "");
-	((ChannelType*)coapChanType->pDerivedObj)->upperBindings = 0;
-	((ChannelType*)coapChanType->pDerivedObj)->lowerBindings = 0;
-	((ChannelType*)coapChanType->pDerivedObj)->upperFragments = 0;
-	((ChannelType*)coapChanType->pDerivedObj)->lowerFragments = 0;
+	/* TypeDefinition CoAPChan/0.0.1
+	  	TypeDefinition* coapChanType = newPoly_ChannelType();
+	  	coapChanType->abstract = false;
+	  	coapChanType->super->name = my_malloc(sizeof(char) * (strlen("CoAPChan")) + 1);
+	  	strcpy(coapChanType->super->name, "CoAPChan");
+	  	coapChanType->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
+	  	strcpy(coapChanType->version, "0.0.1");
+	  	coapChanType->bean = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(coapChanType->bean, "");
+	  	coapChanType->factoryBean = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(coapChanType->factoryBean, "");
+	  	((ChannelType*)coapChanType->pDerivedObj)->upperBindings = 0;
+	  	((ChannelType*)coapChanType->pDerivedObj)->lowerBindings = 0;
+	  	((ChannelType*)coapChanType->pDerivedObj)->upperFragments = 0;
+	  	((ChannelType*)coapChanType->pDerivedObj)->lowerFragments = 0;*/
 
 	/* TypeDefinition FakeConsoleType
-	TypeDefinition* ctFakeConsole = newPoly_ComponentType();
-	ctFakeConsole->abstract = 0;
-	ctFakeConsole->super->name = my_malloc(sizeof(char) * (strlen("FakeConsole")) + 1);
-	strcpy(ctFakeConsole->super->name, "FakeConsole");
-	ctFakeConsole->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
-	strcpy(ctFakeConsole->version, "0.0.1");
-	ctFakeConsole->bean = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(ctFakeConsole->bean, "");
-	ctFakeConsole->factoryBean = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(ctFakeConsole->factoryBean, "");*/
+	  		TypeDefinition* ctFakeConsole = newPoly_ComponentType();
+	  		ctFakeConsole->abstract = false;
+	  		ctFakeConsole->super->name = my_malloc(sizeof(char) * (strlen("FakeConsole")) + 1);
+	  		strcpy(ctFakeConsole->super->name, "FakeConsole");
+	  		ctFakeConsole->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
+	  		strcpy(ctFakeConsole->version, "0.0.1");
+	  		ctFakeConsole->bean = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(ctFakeConsole->bean, "");
+	  		ctFakeConsole->factoryBean = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(ctFakeConsole->factoryBean, "");*/
 
 	/* TypeDefinition HelloWorldType */
 	TypeDefinition* ctHelloWorld = newPoly_ComponentType();
-	ctHelloWorld->abstract = 0;
-	ctHelloWorld->super->name = my_malloc(sizeof(char) * (strlen("HelloWorld")) + 1);
-	strcpy(ctHelloWorld->super->name, "HelloWorld");
+	ctHelloWorld->abstract = false;
+	ctHelloWorld->super->name = my_malloc(sizeof(char) * (strlen("BlinkType")) + 1);
+	strcpy(ctHelloWorld->super->name, "BlinkType");
 	ctHelloWorld->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
 	strcpy(ctHelloWorld->version, "0.0.1");
 	ctHelloWorld->bean = my_malloc(sizeof(char) * (strlen("")) + 1);
@@ -251,133 +156,132 @@ int main(void)
 	contiki->AddSubTypes(contiki, ctHelloWorld);
 	contiki->AddSubTypes(contiki, contikiNodeType);
 	contiki->AddSubTypes(contiki, coapGroupType);
-	contiki->AddSubTypes(contiki, coapChanType);
 
 	/* TypeLibrary Default */
 	TypeLibrary* defLib = new_TypeLibrary();
 	defLib->super->name = my_malloc(sizeof(char) * (strlen("Default")) + 1);
 	strcpy(defLib->super->name, "Default");
 
-	/* Channel CoAPChannel */
-	Channel* defaultChannel = new_Channel();
-	defaultChannel->super->super->name = my_malloc(sizeof(char) * (strlen("DefaultChannel")) + 1);
-	strcpy(defaultChannel->super->super->name, "DefaultChannel");
-	defaultChannel->super->started = 1;
-	defaultChannel->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(defaultChannel->super->metaData, "");
+	/* Channel CoAPChannel
+	  	Channel* defaultChannel = new_Channel();
+	  	defaultChannel->super->super->name = my_malloc(sizeof(char) * (strlen("DefaultChannel")) + 1);
+	  	strcpy(defaultChannel->super->super->name, "DefaultChannel");
+	  	defaultChannel->super->started = true;
+	  	defaultChannel->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(defaultChannel->super->metaData, "");*/
 
 	/* Channel FragmentDictionary server-node
-	FragmentDictionary* fdChannelServerNode = new_FragmentDictionary();
-	fdChannelServerNode->name = my_malloc(sizeof(char) * (strlen("server-node")) + 1);
-	strcpy(fdChannelServerNode->name, "server-node");*/
+	  		FragmentDictionary* fdChannelServerNode = new_FragmentDictionary();
+	  		fdChannelServerNode->name = my_malloc(sizeof(char) * (strlen("server-node")) + 1);
+	  		strcpy(fdChannelServerNode->name, "server-node");*/
 
-	/* Channel FragmentDictionary contiki-node */
-	FragmentDictionary* fdChannelContikiNode = new_FragmentDictionary();
-	fdChannelContikiNode->name = my_malloc(sizeof(char) * (strlen("contiki-node")) + 1);
-	strcpy(fdChannelContikiNode->name, "contiki-node");
+	/* Channel FragmentDictionary contiki-node
+	  	FragmentDictionary* fdChannelContikiNode = new_FragmentDictionary();
+	  	fdChannelContikiNode->name = my_malloc(sizeof(char) * (strlen("contiki-node")) + 1);
+	  	strcpy(fdChannelContikiNode->name, "contiki-node");*/
 
-	defaultChannel->super->AddFragmentDictionary(defaultChannel->super, fdChannelContikiNode);
+	/*defaultChannel->super->AddFragmentDictionary(defaultChannel->super, fdChannelContikiNode);*/
 	/*defaultChannel->super->AddFragmentDictionary(defaultChannel->super, fdChannelServerNode);*/
 
-	/*Channel FragmentDictionary server-node*/
+	/*Channel FragmentDictionary server-node */
 	FragmentDictionary* fdContikiNode = new_FragmentDictionary();
 	fdContikiNode->name = my_malloc(sizeof(char) * (strlen("contiki-node")) + 1);
 	strcpy(fdContikiNode->name, "contiki-node");
 
-	/* Channel DictionaryValue host */
-	DictionaryValue* chanValueHost = new_DictionaryValue();
-	chanValueHost->name = my_malloc(sizeof(char) * (strlen("host")) + 1);
-	strcpy(chanValueHost->name, "host");
-	chanValueHost->value = my_malloc(sizeof(char) * (strlen("contiki.kevoree.org")) + 1);
-	strcpy(chanValueHost->value, "contiki.kevoree.org");
+	/* Channel DictionaryValue host
+	  	DictionaryValue* chanValueHost = new_DictionaryValue();
+	  	chanValueHost->name = my_malloc(sizeof(char) * (strlen("host")) + 1);
+	  	strcpy(chanValueHost->name, "host");
+	  	chanValueHost->value = my_malloc(sizeof(char) * (strlen("contiki.kevoree.org")) + 1);
+	  	strcpy(chanValueHost->value, "contiki.kevoree.org");*/
 
-	/* Channel DictionaryValue port */
-	DictionaryValue* chanValuePort = new_DictionaryValue();
-	chanValuePort->name = my_malloc(sizeof(char) * (strlen("port")) + 1);
-	strcpy(chanValuePort->name, "port");
-	chanValuePort->value = my_malloc(sizeof(char) * (strlen("80")) + 1);
-	strcpy(chanValuePort->value, "80");
+	/* Channel DictionaryValue port
+	  	DictionaryValue* chanValuePort = new_DictionaryValue();
+	  	chanValuePort->name = my_malloc(sizeof(char) * (strlen("port")) + 1);
+	  	strcpy(chanValuePort->name, "port");
+	  	chanValuePort->value = my_malloc(sizeof(char) * (strlen("80")) + 1);
+	  	strcpy(chanValuePort->value, "80");*/
 
-	/* Channel DictionaryValue path */
-	DictionaryValue* chanValuePath = new_DictionaryValue();
-	chanValuePath->name = my_malloc(sizeof(char) * (strlen("path")) + 1);
-	strcpy(chanValuePath->name, "path");
-	chanValuePath->value = my_malloc(sizeof(char) * (strlen("DefaultChannel")) + 1);
-	strcpy(chanValuePath->value, "DefaultChannel");
+	/* Channel DictionaryValue path
+	  	DictionaryValue* chanValuePath = new_DictionaryValue();
+	  	chanValuePath->name = my_malloc(sizeof(char) * (strlen("path")) + 1);
+	  	strcpy(chanValuePath->name, "path");
+	  	chanValuePath->value = my_malloc(sizeof(char) * (strlen("DefaultChannel")) + 1);
+	  	strcpy(chanValuePath->value, "DefaultChannel");*/
 
-	/* Channel DictionaryValue port*/
-	DictionaryValue* dvPortContikiNode = new_DictionaryValue();
-	dvPortContikiNode->name = my_malloc(sizeof(char) * (strlen("port")) + 1);
-	strcpy(dvPortContikiNode->name, "port");
-	dvPortContikiNode->value = my_malloc(sizeof(char) * (strlen("5683")) + 1);
-	strcpy(dvPortContikiNode->value, "5683");
+	/* Channel DictionaryValue port
+	  	DictionaryValue* dvPortContikiNode = new_DictionaryValue();
+	  	dvPortContikiNode->name = my_malloc(sizeof(char) * (strlen("port")) + 1);
+	  	strcpy(dvPortContikiNode->name, "port");
+	  	dvPortContikiNode->value = my_malloc(sizeof(char) * (strlen("5683")) + 1);
+	  	strcpy(dvPortContikiNode->value, "5683");*/
 
-	/* Channel Dictionary */
-	Dictionary* chanDico = new_Dictionary();
-	chanDico->AddValues(chanDico, chanValueHost);
-	chanDico->AddValues(chanDico, chanValuePort);
-	chanDico->AddValues(chanDico, chanValuePath);
+	/* Channel Dictionary
+	  	Dictionary* chanDico = new_Dictionary();
+	  	chanDico->AddValues(chanDico, chanValueHost);
+	  	chanDico->AddValues(chanDico, chanValuePort);
+	  	chanDico->AddValues(chanDico, chanValuePath);*/
 
-	defaultChannel->super->AddDictionary(defaultChannel->super, chanDico);
-	defaultChannel->super->AddTypeDefinition(defaultChannel->super, coapChanType);
+	/*defaultChannel->super->AddDictionary(defaultChannel->super, chanDico);
+	  	defaultChannel->super->AddTypeDefinition(defaultChannel->super, coapChanType);
 
-	fdContikiNode->super->AddValues(fdContikiNode->super, dvPortContikiNode);
+	  	fdContikiNode->super->AddValues(fdContikiNode->super, dvPortContikiNode);*/
 
 	/* ComponentType DictionaryAttribute FakeConsole
-	DictionaryAttribute* daFakeConsoleProxy = new_DictionaryAttribute();
-	daFakeConsoleProxy->fragmentDependant = 0;
-	daFakeConsoleProxy->optional = 1;
-	daFakeConsoleProxy->super->super->name = my_malloc(sizeof(char) * (strlen("proxy")) + 1);
-	strcpy(daFakeConsoleProxy->super->super->name, "proxy");
-	daFakeConsoleProxy->state = 0;
-	daFakeConsoleProxy->datatype = my_malloc(sizeof(char) * (strlen("boolean")) + 1);
-	strcpy(daFakeConsoleProxy->datatype, "boolean");
-	daFakeConsoleProxy->defaultValue = my_malloc(sizeof(char) * (strlen("false")) + 1);
-	strcpy(daFakeConsoleProxy->defaultValue, "false");*/
+	  		DictionaryAttribute* daFakeConsoleProxy = new_DictionaryAttribute();
+	  		daFakeConsoleProxy->fragmentDependant = false;
+	  		daFakeConsoleProxy->optional = true;
+	  		daFakeConsoleProxy->super->super->name = my_malloc(sizeof(char) * (strlen("proxy")) + 1);
+	  		strcpy(daFakeConsoleProxy->super->super->name, "proxy");
+	  		daFakeConsoleProxy->state = false;
+	  		daFakeConsoleProxy->datatype = my_malloc(sizeof(char) * (strlen("boolean")) + 1);
+	  		strcpy(daFakeConsoleProxy->datatype, "boolean");
+	  		daFakeConsoleProxy->defaultValue = my_malloc(sizeof(char) * (strlen("false")) + 1);
+	  		strcpy(daFakeConsoleProxy->defaultValue, "false");*/
 
-	/* ChannelType DictionaryAttribute host */
-	DictionaryAttribute* chanDicoAttrHost = new_DictionaryAttribute();
-	chanDicoAttrHost->fragmentDependant = 0;
-	chanDicoAttrHost->optional = 0;
-	chanDicoAttrHost->super->super->name = my_malloc(sizeof(char) * (strlen("host")) + 1);
-	strcpy(chanDicoAttrHost->super->super->name, "host");
-	chanDicoAttrHost->state = 0;
-	chanDicoAttrHost->datatype = my_malloc(sizeof(char) * (strlen("string")) + 1);
-	strcpy(chanDicoAttrHost->datatype, "string");
-	chanDicoAttrHost->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(chanDicoAttrHost->defaultValue, "");
+	/* ChannelType DictionaryAttribute host
+	  	DictionaryAttribute* chanDicoAttrHost = new_DictionaryAttribute();
+	  	chanDicoAttrHost->fragmentDependant = false;
+	  	chanDicoAttrHost->optional = false;
+	  	chanDicoAttrHost->super->super->name = my_malloc(sizeof(char) * (strlen("host")) + 1);
+	  	strcpy(chanDicoAttrHost->super->super->name, "host");
+	  	chanDicoAttrHost->state = false;
+	  	chanDicoAttrHost->datatype = my_malloc(sizeof(char) * (strlen("string")) + 1);
+	  	strcpy(chanDicoAttrHost->datatype, "string");
+	  	chanDicoAttrHost->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(chanDicoAttrHost->defaultValue, "");*/
 
-	/* ChannelType DictionaryAttribute port */
-	DictionaryAttribute* chanDicoAttrPort = new_DictionaryAttribute();
-	chanDicoAttrPort->fragmentDependant = 0;
-	chanDicoAttrPort->optional = 0;
-	chanDicoAttrPort->super->super->name = my_malloc(sizeof(char) * (strlen("port")) + 1);
-	strcpy(chanDicoAttrPort->super->super->name, "port");
-	chanDicoAttrPort->state = 0;
-	chanDicoAttrPort->datatype = my_malloc(sizeof(char) * (strlen("number")) + 1);
-	strcpy(chanDicoAttrPort->datatype, "number");
-	chanDicoAttrPort->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(chanDicoAttrPort->defaultValue, "");
+	/* ChannelType DictionaryAttribute port
+	  	DictionaryAttribute* chanDicoAttrPort = new_DictionaryAttribute();
+	  	chanDicoAttrPort->fragmentDependant = false;
+	  	chanDicoAttrPort->optional = false;
+	  	chanDicoAttrPort->super->super->name = my_malloc(sizeof(char) * (strlen("port")) + 1);
+	  	strcpy(chanDicoAttrPort->super->super->name, "port");
+	  	chanDicoAttrPort->state = false;
+	  	chanDicoAttrPort->datatype = my_malloc(sizeof(char) * (strlen("number")) + 1);
+	  	strcpy(chanDicoAttrPort->datatype, "number");
+	  	chanDicoAttrPort->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(chanDicoAttrPort->defaultValue, "");*/
 
-	/* ChannelType DictionaryAttribute path */
-	DictionaryAttribute* chanDicoAttrPath = new_DictionaryAttribute();
-	chanDicoAttrPath->fragmentDependant = 0;
-	chanDicoAttrPath->optional = 0;
-	chanDicoAttrPath->super->super->name = my_malloc(sizeof(char) * (strlen("path")) + 1);
-	strcpy(chanDicoAttrPath->super->super->name, "path");
-	chanDicoAttrPath->state = 0;
-	chanDicoAttrPath->datatype = my_malloc(sizeof(char) * (strlen("string")) + 1);
-	strcpy(chanDicoAttrPath->datatype, "string");
-	chanDicoAttrPath->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(chanDicoAttrPath->defaultValue, "");
+	/* ChannelType DictionaryAttribute path
+	  	DictionaryAttribute* chanDicoAttrPath = new_DictionaryAttribute();
+	  	chanDicoAttrPath->fragmentDependant = false;
+	  	chanDicoAttrPath->optional = false;
+	  	chanDicoAttrPath->super->super->name = my_malloc(sizeof(char) * (strlen("path")) + 1);
+	  	strcpy(chanDicoAttrPath->super->super->name, "path");
+	  	chanDicoAttrPath->state = false;
+	  	chanDicoAttrPath->datatype = my_malloc(sizeof(char) * (strlen("string")) + 1);
+	  	strcpy(chanDicoAttrPath->datatype, "string");
+	  	chanDicoAttrPath->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(chanDicoAttrPath->defaultValue, "");*/
 
 	/* GroupType DictionaryAttribute port */
 	DictionaryAttribute* gtDicAttrPort = new_DictionaryAttribute();
-	gtDicAttrPort->fragmentDependant = 1;
-	gtDicAttrPort->optional = 1;
+	gtDicAttrPort->fragmentDependant = true;
+	gtDicAttrPort->optional = true;
 	gtDicAttrPort->super->super->name = my_malloc(sizeof(char) * (strlen("port")) + 1);
 	strcpy(gtDicAttrPort->super->super->name, "port");
-	gtDicAttrPort->state = 0;
+	gtDicAttrPort->state = false;
 	gtDicAttrPort->datatype = my_malloc(sizeof(char) * (strlen("number")) + 1);
 	strcpy(gtDicAttrPort->datatype, "number");
 	gtDicAttrPort->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
@@ -385,11 +289,11 @@ int main(void)
 
 	/* GroupType DictionaryAttribute path */
 	DictionaryAttribute* gtDicAttrPath = new_DictionaryAttribute();
-	gtDicAttrPath->fragmentDependant = 1;
-	gtDicAttrPath->optional = 1;
+	gtDicAttrPath->fragmentDependant = true;
+	gtDicAttrPath->optional = true;
 	gtDicAttrPath->super->super->name = my_malloc(sizeof(char) * (strlen("path")) + 1);
 	strcpy(gtDicAttrPath->super->super->name, "path");
-	gtDicAttrPath->state = 0;
+	gtDicAttrPath->state = false;
 	gtDicAttrPath->datatype = my_malloc(sizeof(char) * (strlen("string")) + 1);
 	strcpy(gtDicAttrPath->datatype, "string");
 	gtDicAttrPath->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
@@ -397,31 +301,31 @@ int main(void)
 
 	/* GroupType DictionaryAttribute proxy_port */
 	DictionaryAttribute* gtDicAttrProxy = new_DictionaryAttribute();
-	gtDicAttrProxy->fragmentDependant = 1;
-	gtDicAttrProxy->optional = 1;
+	gtDicAttrProxy->fragmentDependant = true;
+	gtDicAttrProxy->optional = true;
 	gtDicAttrProxy->super->super->name = my_malloc(sizeof(char) * (strlen("proxy_port")) + 1);
 	strcpy(gtDicAttrProxy->super->super->name, "proxy_port");
-	gtDicAttrProxy->state = 0;
+	gtDicAttrProxy->state = false;
 	gtDicAttrProxy->datatype = my_malloc(sizeof(char) * (strlen("int")) + 1);
 	strcpy(gtDicAttrProxy->datatype, "int");
 	gtDicAttrProxy->defaultValue = my_malloc(sizeof(char) * (strlen("")) + 1);
 	strcpy(gtDicAttrProxy->defaultValue, "9000");
 
 	/* GroupType DictionaryAttribute proxy_port
-	DictionaryAttribute* gtDicAttrProxy = new_DictionaryAttribute();
-	gtDicAttrProxy->fragmentDependant = 1;
-	gtDicAttrProxy->optional = 1;
-	gtDicAttrProxy->super->super->name = malloc(sizeof(char) * (strlen("proxy_port")) + 1);
-	strcpy(gtDicAttrProxy->super->super->name, "proxy_port");
-	gtDicAttrProxy->state = 0;
-	gtDicAttrProxy->datatype = malloc(sizeof(char) * (strlen("int")) + 1);
-	strcpy(gtDicAttrProxy->datatype, "int");
-	gtDicAttrProxy->defaultValue = malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(gtDicAttrProxy->defaultValue, "9000");*/
+	  		DictionaryAttribute* gtDicAttrProxy = new_DictionaryAttribute();
+	  		gtDicAttrProxy->fragmentDependant = true;
+	  		gtDicAttrProxy->optional = true;
+	  		gtDicAttrProxy->super->super->name = malloc(sizeof(char) * (strlen("proxy_port")) + 1);
+	  		strcpy(gtDicAttrProxy->super->super->name, "proxy_port");
+	  		gtDicAttrProxy->state = false;
+	  		gtDicAttrProxy->datatype = malloc(sizeof(char) * (strlen("int")) + 1);
+	  		strcpy(gtDicAttrProxy->datatype, "int");
+	  		gtDicAttrProxy->defaultValue = malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(gtDicAttrProxy->defaultValue, "9000");*/
 
 	/* ComponentInstance DictionaryType FakeConsole
-	DictionaryType* dtFakeConsole = new_DictionaryType();
-	dtFakeConsole->AddAttributes(dtFakeConsole, daFakeConsoleProxy);*/
+	  		DictionaryType* dtFakeConsole = new_DictionaryType();
+	  		dtFakeConsole->AddAttributes(dtFakeConsole, daFakeConsoleProxy);*/
 
 	/* ComponentInstance DictionaryType HelloWorld */
 	DictionaryType* dtHelloWorld = new_DictionaryType();
@@ -432,11 +336,11 @@ int main(void)
 	gtDicType->AddAttributes(gtDicType, gtDicAttrPath);
 	gtDicType->AddAttributes(gtDicType, gtDicAttrProxy);
 
-	/* ChannelType DictionaryType */
-	DictionaryType* chanDicType = new_DictionaryType();
-	chanDicType->AddAttributes(chanDicType, chanDicoAttrHost);
-	chanDicType->AddAttributes(chanDicType, chanDicoAttrPort);
-	chanDicType->AddAttributes(chanDicType, chanDicoAttrPath);
+	/* ChannelType DictionaryType
+	  	DictionaryType* chanDicType = new_DictionaryType();
+	  	chanDicType->AddAttributes(chanDicType, chanDicoAttrHost);
+	  	chanDicType->AddAttributes(chanDicType, chanDicoAttrPort);
+	  	chanDicType->AddAttributes(chanDicType, chanDicoAttrPath);*/
 
 	/* DeployUnit //kevoree-contiki-node/0.0.1 */
 	DeployUnit* kevContikiNode = new_DeployUnit();
@@ -468,40 +372,40 @@ int main(void)
 	kevGroupCoap->type = my_malloc(sizeof(char) * (strlen("ce")) + 1);
 	strcpy(kevGroupCoap->type,"ce");
 
-	/* DeployUnit //kevoree-chan-coap/0.0.1 */
-	DeployUnit* kevChanCoap = new_DeployUnit();
-	kevChanCoap->super->name = my_malloc(sizeof(char) * (strlen("kevoree-chan-coap")) + 1);
-	strcpy(kevChanCoap->super->name, "kevoree-chan-coap");
-	kevChanCoap->groupName = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(kevChanCoap->groupName, "");
-	kevChanCoap->hashcode = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(kevChanCoap->hashcode, "");
-	kevChanCoap->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
-	strcpy(kevChanCoap->version,"0.0.1");
-	kevChanCoap->url = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(kevChanCoap->url, "");
-	kevChanCoap->type = my_malloc(sizeof(char) * (strlen("ce")) + 1);
-	strcpy(kevChanCoap->type,"ce");
+	/* DeployUnit //kevoree-chan-coap/0.0.1
+	  	DeployUnit* kevChanCoap = new_DeployUnit();
+	  	kevChanCoap->super->name = my_malloc(sizeof(char) * (strlen("kevoree-chan-coap")) + 1);
+	  	strcpy(kevChanCoap->super->name, "kevoree-chan-coap");
+	  	kevChanCoap->groupName = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(kevChanCoap->groupName, "");
+	  	kevChanCoap->hashcode = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(kevChanCoap->hashcode, "");
+	  	kevChanCoap->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
+	  	strcpy(kevChanCoap->version,"0.0.1");
+	  	kevChanCoap->url = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  	strcpy(kevChanCoap->url, "");
+	  	kevChanCoap->type = my_malloc(sizeof(char) * (strlen("ce")) + 1);
+	  	strcpy(kevChanCoap->type,"ce");*/
 
 	/* DeployUnit //kevoree-comp-fakeconsole/0.0.1
-	DeployUnit* duFakeConsole = new_DeployUnit();
-	duFakeConsole->super->name = my_malloc(sizeof(char) * (strlen("kevoree-comp-fakeconsole")) + 1);
-	strcpy(duFakeConsole->super->name, "kevoree-comp-fakeconsole");
-	duFakeConsole->groupName = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(duFakeConsole->groupName, "");
-	duFakeConsole->hashcode = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(duFakeConsole->hashcode, "");
-	duFakeConsole->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
-	strcpy(duFakeConsole->version,"0.0.1");
-	duFakeConsole->url = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(duFakeConsole->url, "");
-	duFakeConsole->type = my_malloc(sizeof(char) * (strlen("ce")) + 1);
-	strcpy(duFakeConsole->type,"ce");*/
+	  		DeployUnit* duFakeConsole = new_DeployUnit();
+	  		duFakeConsole->super->name = my_malloc(sizeof(char) * (strlen("kevoree-comp-fakeconsole")) + 1);
+	  		strcpy(duFakeConsole->super->name, "kevoree-comp-fakeconsole");
+	  		duFakeConsole->groupName = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(duFakeConsole->groupName, "");
+	  		duFakeConsole->hashcode = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(duFakeConsole->hashcode, "");
+	  		duFakeConsole->version = my_malloc(sizeof(char) * (strlen("0.0.1")) + 1);
+	  		strcpy(duFakeConsole->version,"0.0.1");
+	  		duFakeConsole->url = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(duFakeConsole->url, "");
+	  		duFakeConsole->type = my_malloc(sizeof(char) * (strlen("ce")) + 1);
+	  		strcpy(duFakeConsole->type,"ce");*/
 
 	/* DeployUnit //kevoree-comp-helloworld/0.0.1 */
 	DeployUnit* duHelloWorld = new_DeployUnit();
-	duHelloWorld->super->name = my_malloc(sizeof(char) * (strlen("kevoree-comp-helloworld")) + 1);
-	strcpy(duHelloWorld->super->name, "kevoree-comp-helloworld");
+	duHelloWorld->super->name = my_malloc(sizeof(char) * (strlen("kevoree-comp-blink")) + 1);
+	strcpy(duHelloWorld->super->name, "kevoree-comp-blink");
 	duHelloWorld->groupName = my_malloc(sizeof(char) * (strlen("")) + 1);
 	strcpy(duHelloWorld->groupName, "");
 	duHelloWorld->hashcode = my_malloc(sizeof(char) * (strlen("")) + 1);
@@ -514,90 +418,89 @@ int main(void)
 	strcpy(duHelloWorld->type,"ce");
 
 	/* PortTypeRef sendMsg
-	PortTypeRef* ptrSendMsg = new_PortTypeRef();
-	ptrSendMsg->super->name = my_malloc(sizeof(char) * (strlen("sendMsg")) + 1);
-	strcpy(ptrSendMsg->super->name, "sendMsg");
-	ptrSendMsg->noDependency = 1;
-	ptrSendMsg->optional = 1;*/
+	  		PortTypeRef* ptrSendMsg = new_PortTypeRef();
+	  		ptrSendMsg->super->name = my_malloc(sizeof(char) * (strlen("sendMsg")) + 1);
+	  		strcpy(ptrSendMsg->super->name, "sendMsg");
+	  		ptrSendMsg->noDependency = true;
+	  		ptrSendMsg->optional = true;*/
 
 	/* PortTypeRef inMsg
-	PortTypeRef* ptrInMsg = new_PortTypeRef();
-	ptrInMsg->super->name = my_malloc(sizeof(char) * (strlen("inMsg")) + 1);
-	strcpy(ptrInMsg->super->name, "inMsg");
-	ptrInMsg->noDependency = 1;
-	ptrInMsg->optional = 1;*/
+	  		PortTypeRef* ptrInMsg = new_PortTypeRef();
+	  		ptrInMsg->super->name = my_malloc(sizeof(char) * (strlen("inMsg")) + 1);
+	  		strcpy(ptrInMsg->super->name, "inMsg");
+	  		ptrInMsg->noDependency = true;
+	  		ptrInMsg->optional = true;*/
 
-	/* PortTypeRef sendText */
-	PortTypeRef* ptrSendText = new_PortTypeRef();
-	ptrSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
-	strcpy(ptrSendText->super->name, "sendText");
-	ptrSendText->noDependency = 1;
-	ptrSendText->optional = 1;
+	/* PortTypeRef sendText
+	  	PortTypeRef* ptrSendText = new_PortTypeRef();
+	  	ptrSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
+	  	strcpy(ptrSendText->super->name, "sendText");
+	  	ptrSendText->noDependency = true;
+	  	ptrSendText->optional = true;*/
 
 	/* PortTypeRef fake */
 	PortTypeRef* ptrFake = new_PortTypeRef();
 	ptrFake->super->name = my_malloc(sizeof(char) * (strlen("fake")) + 1);
 	strcpy(ptrFake->super->name, "fake");
-	ptrFake->noDependency = 1;
-	ptrFake->optional = 1;
+	ptrFake->noDependency = true;
+	ptrFake->optional = true;
 
 	/* Port inMsg
-	Port* pInMsg = new_Port();
-	pInMsg->super->name = my_malloc(sizeof(char) * (strlen("inMsg")) + 1);
-	strcpy(pInMsg->super->name, "inMsg");
-	pInMsg->AddPortTypeRef(pInMsg, ptrInMsg);*/
+	  		Port* pInMsg = new_Port();
+	  		pInMsg->super->name = my_malloc(sizeof(char) * (strlen("inMsg")) + 1);
+	  		strcpy(pInMsg->super->name, "inMsg");
+	  		pInMsg->AddPortTypeRef(pInMsg, ptrInMsg);*/
 
 	/* Port sendMsg
-	Port* pSendMsg = new_Port();
-	pSendMsg->super->name = my_malloc(sizeof(char) * (strlen("sendMsg")) + 1);
-	strcpy(pSendMsg->super->name, "sendMsg");
-	pSendMsg->AddPortTypeRef(pSendMsg, ptrSendMsg);*/
+	  		Port* pSendMsg = new_Port();
+	  		pSendMsg->super->name = my_malloc(sizeof(char) * (strlen("sendMsg")) + 1);
+	  		strcpy(pSendMsg->super->name, "sendMsg");
+	  		pSendMsg->AddPortTypeRef(pSendMsg, ptrSendMsg);*/
 
-	/* Port fake */
-	Port* pFake = new_Port();
-	pFake->super->name = my_malloc(sizeof(char) * (strlen("fake")) + 1);
-	strcpy(pFake->super->name, "fake");
-	pFake->AddPortTypeRef(pFake, ptrFake);
+	/* Port fake
+	  	Port* pFake = new_Port();
+	  	pFake->super->name = my_malloc(sizeof(char) * (strlen("fake")) + 1);
+	  	strcpy(pFake->super->name, "fake");
+	  	pFake->AddPortTypeRef(pFake, ptrFake);*/
 
-	/* Port sendMsg */
-	Port* pSendText = new_Port();
-	pSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
-	strcpy(pSendText->super->name, "sendText");
-	pSendText->AddPortTypeRef(pSendText, ptrSendText);
+	/* Port sendMsg
+	  	Port* pSendText = new_Port();
+	  	pSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
+	  	strcpy(pSendText->super->name, "sendText");
+	  	pSendText->AddPortTypeRef(pSendText, ptrSendText);*/
 
 	/* MBinding inMsg
-	MBinding* mbInMsg = new_MBinding();
-	mbInMsg->AddHub(mbInMsg, defaultChannel);
-	mbInMsg->AddPort(mbInMsg, pInMsg);
-	pInMsg->AddBindings(pInMsg, mbInMsg);*/
+	  		MBinding* mbInMsg = new_MBinding();
+	  		mbInMsg->AddHub(mbInMsg, defaultChannel);
+	  		mbInMsg->AddPort(mbInMsg, pInMsg);
+	  		pInMsg->AddBindings(pInMsg, mbInMsg);*/
 
-	/* MBinding fake */
-	MBinding* mbFake = new_MBinding();
-	mbFake->AddHub(mbFake, defaultChannel);
-	mbFake->AddPort(mbFake, pFake);
-	pFake->AddBindings(pFake, mbFake);
+	/* MBinding fake
+	  	MBinding* mbFake = new_MBinding();
+	  	mbFake->AddHub(mbFake, defaultChannel);
+	  	mbFake->AddPort(mbFake, pFake);
+	  	pFake->AddBindings(pFake, mbFake);*/
 
 	/* MBinding sendMsg
-	MBinding* mbSendMsg = new_MBinding();
-	mbSendMsg->AddHub(mbSendMsg, defaultChannel);
-	mbSendMsg->AddPort(mbSendMsg, pSendMsg);
-	pSendMsg->AddBindings(pSendMsg, mbSendMsg);*/
+	  		MBinding* mbSendMsg = new_MBinding();
+	  		mbSendMsg->AddHub(mbSendMsg, defaultChannel);
+	  		mbSendMsg->AddPort(mbSendMsg, pSendMsg);
+	  		pSendMsg->AddBindings(pSendMsg, mbSendMsg);*/
 
-	/* MBinding sendText */
-	MBinding* mbSendText = new_MBinding();
-	mbSendText->AddHub(mbSendText, defaultChannel);
-	mbSendText->AddPort(mbSendText, pSendText);
-	pSendText->AddBindings(pSendText, mbSendText);
+	/* MBinding sendText
+	  	MBinding* mbSendText = new_MBinding();
+	  	mbSendText->AddHub(mbSendText, defaultChannel);
+	  	mbSendText->AddPort(mbSendText, pSendText);
+	  	pSendText->AddBindings(pSendText, mbSendText);*/
 
 	/* Group CoAP */
 	Group* coapGroup = new_Group();
 	coapGroup->super->super->name = my_malloc(sizeof(char) * (strlen("CoAPGroup")) + 1);
 	strcpy(coapGroup->super->super->name, "CoAPGroup");
-	coapGroup->super->started = 1;
+	coapGroup->super->started = true;
 	coapGroup->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
 	strcpy(coapGroup->super->metaData, "");
 
-	coapGroup->AddSubNodes(coapGroup, contikiNode);
 	/*coapGroup->AddSubNodes(coapGroup, serverNode);*/
 	coapGroup->super->AddTypeDefinition(coapGroup->super, coapGroupType);
 
@@ -639,101 +542,89 @@ int main(void)
 	contikiNodeType->AddDictionaryType(contikiNodeType, contikiNodeDicType);
 
 	/*ComponentInstance* ciFakeConsole = new_ComponentInstance();
-	ciFakeConsole->super->super->name = my_malloc(sizeof(char) * (strlen("fakeconsole")) + 1);
-	strcpy(ciFakeConsole->super->super->name, "fakeconsole");
-	ciFakeConsole->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(ciFakeConsole->super->metaData, "");
-	ciFakeConsole->super->started = 1;
-	ciFakeConsole->super->AddTypeDefinition(ciFakeConsole->super, ctFakeConsole);
-	ciFakeConsole->AddProvided(ciFakeConsole, pInMsg);
-	ciFakeConsole->AddRequired(ciFakeConsole, pSendMsg);*/
+	  		ciFakeConsole->super->super->name = my_malloc(sizeof(char) * (strlen("fakeconsole")) + 1);
+	  		strcpy(ciFakeConsole->super->super->name, "fakeconsole");
+	  		ciFakeConsole->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
+	  		strcpy(ciFakeConsole->super->metaData, "");
+	  		ciFakeConsole->super->started = true;
+	  		ciFakeConsole->super->AddTypeDefinition(ciFakeConsole->super, ctFakeConsole);
+	  		ciFakeConsole->AddProvided(ciFakeConsole, pInMsg);
+	  		ciFakeConsole->AddRequired(ciFakeConsole, pSendMsg);*/
 
-	ComponentInstance* ciHelloWorld = new_ComponentInstance();
-	ciHelloWorld->super->super->name = my_malloc(sizeof(char) * (strlen("helloworld")) + 1);
-	strcpy(ciHelloWorld->super->super->name, "helloworld");
-	ciHelloWorld->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
-	strcpy(ciHelloWorld->super->metaData, "");
-	ciHelloWorld->super->started = 1;
-	ciHelloWorld->super->AddTypeDefinition(ciHelloWorld->super, ctHelloWorld);
-	ciHelloWorld->AddProvided(ciHelloWorld, pFake);
-	ciHelloWorld->AddRequired(ciHelloWorld, pSendText);
-
-	contikiNode->AddGroups(contikiNode, coapGroup);
 	/*contikiNode->AddComponents(contikiNode, ciFakeConsole);*/
-	contikiNode->AddComponents(contikiNode, ciHelloWorld);
 
 	/*serverNode->AddGroups(serverNode, coapGroup);
-	serverNode->AddComponents(serverNode, ciFakeConsole);
-	serverNode->AddComponents(serverNode, ciHelloWorld);
+	  		serverNode->AddComponents(serverNode, ciFakeConsole);
+	  		serverNode->AddComponents(serverNode, ciHelloWorld);
 
-	ctFakeConsole->AddDeployUnit(ctFakeConsole, duFakeConsole);*/
+	  		ctFakeConsole->AddDeployUnit(ctFakeConsole, duFakeConsole);*/
 	ctHelloWorld->AddDeployUnit(ctHelloWorld, duHelloWorld);
 	contikiNodeType->AddDeployUnit(contikiNodeType, kevContikiNode);
 	coapGroupType->AddDeployUnit(coapGroupType, kevGroupCoap);
-	coapChanType->AddDeployUnit(coapChanType, kevChanCoap);
+	/*coapChanType->AddDeployUnit(coapChanType, kevChanCoap);*/
 
 	/*ctFakeConsole->AddDictionaryType(ctFakeConsole, dtFakeConsole);*/
 	ctHelloWorld->AddDictionaryType(ctHelloWorld, dtHelloWorld);
 	coapGroupType->AddDictionaryType(coapGroupType, gtDicType);
-	coapChanType->AddDictionaryType(coapChanType, chanDicType);
+	/*coapChanType->AddDictionaryType(coapChanType, chanDicType);*/
 
 	/*defaultChannel->AddBindings(defaultChannel, mbInMsg);*/
-	defaultChannel->AddBindings(defaultChannel, mbFake);
+	/*defaultChannel->AddBindings(defaultChannel, mbFake);*/
 	/*defaultChannel->AddBindings(defaultChannel, mbSendMsg);*/
-	defaultChannel->AddBindings(defaultChannel, mbSendText);
+	/*defaultChannel->AddBindings(defaultChannel, mbSendText);*/
 
 	/*((ComponentType*)ctFakeConsole->pDerivedObj)->AddProvided((ComponentType*)ctFakeConsole->pDerivedObj, ptrInMsg);
-	((ComponentType*)ctFakeConsole->pDerivedObj)->AddRequired((ComponentType*)ctFakeConsole->pDerivedObj, ptrSendMsg);*/
-	((ComponentType*)ctHelloWorld->pDerivedObj)->AddProvided((ComponentType*)ctHelloWorld->pDerivedObj, ptrFake);
-	((ComponentType*)ctHelloWorld->pDerivedObj)->AddRequired((ComponentType*)ctHelloWorld->pDerivedObj, ptrSendText);
+	  		((ComponentType*)ctFakeConsole->pDerivedObj)->AddRequired((ComponentType*)ctFakeConsole->pDerivedObj, ptrSendMsg);*/
+	/*((ComponentType*)ctHelloWorld->pDerivedObj)->AddProvided((ComponentType*)ctHelloWorld->pDerivedObj, ptrFake);
+	  	((ComponentType*)ctHelloWorld->pDerivedObj)->AddRequired((ComponentType*)ctHelloWorld->pDerivedObj, ptrSendText);*/
 
 	/*for(int i = 0; i < 20; i++)
-	{*/
+	  		{*/
 
-	model->AddNodes(model, contikiNode);
+	/*model->AddNodes(model, contikiNode);*/
 	/*model->AddNodes(model, serverNode);
-	model->AddTypeDefinitions(model, ctFakeConsole);*/
-	model->AddTypeDefinitions(model, ctHelloWorld);
-	model->AddTypeDefinitions(model, contikiNodeType);
-	model->AddTypeDefinitions(model, coapGroupType);
-	model->AddTypeDefinitions(model, coapChanType);
-	model->AddLibraries(model, contiki);
-	model->AddHubs(model, defaultChannel);
+	  		model->AddTypeDefinitions(model, ctFakeConsole);*/
+	/*model->AddTypeDefinitions(model, ctHelloWorld);
+	  	model->AddTypeDefinitions(model, contikiNodeType);
+	  	model->AddTypeDefinitions(model, coapGroupType);
+	  	model->AddTypeDefinitions(model, coapChanType);
+	  	model->AddLibraries(model, contiki);
+	  	model->AddHubs(model, defaultChannel);*/
 
 	/*model->AddBindings(model, mbInMsg);*/
-	model->AddBindings(model, mbFake);
+	/*model->AddBindings(model, mbFake);*/
 	/*model->AddBindings(model, mbSendMsg);*/
-	model->AddBindings(model, mbSendText);
+	/*model->AddBindings(model, mbSendText);*/
 
 	/*model->AddDeployUnits(model, duFakeConsole);*/
-	model->AddDeployUnits(model, duHelloWorld);
-	model->AddDeployUnits(model, kevContikiNode);
-	model->AddDeployUnits(model, kevGroupCoap);
-	model->AddDeployUnits(model, kevChanCoap);
-	model->AddGroups(model, coapGroup);
+	/*model->AddDeployUnits(model, duHelloWorld);
+	  	model->AddDeployUnits(model, kevContikiNode);
+	  	model->AddDeployUnits(model, kevGroupCoap);
+	  	model->AddDeployUnits(model, kevChanCoap);
+	  	model->AddGroups(model, coapGroup);*/
 
 	/*printf("Model %s created with success!\n\n", model->InternalGetKey(model));*/
 
 	/*model2->AddNodes(model2, contikiNode);
-	model2->AddNodes(model2, serverNode);
-	model2->AddTypeDefinitions(model2, ctFakeConsole);
-	model2->AddTypeDefinitions(model2, ctHelloWorld);
-	model2->AddTypeDefinitions(model2, contikiNodeType);
-	model2->AddTypeDefinitions(model2, coapGroupType);
-	model2->AddTypeDefinitions(model2, coapChanType);
-	model2->AddLibraries(model2, contiki);
-	model2->AddHubs(model2, defaultChannel);
-	model2->AddBindings(model2, mbInMsg);
-	model2->AddBindings(model2, mbFake);
-	model2->AddBindings(model2, mbSendMsg);
-	model2->AddBindings(model2, mbSendText);
-	model2->AddDeployUnits(model2, duFakeConsole);
-	model2->AddDeployUnits(model2, duHelloWorld);
-	model2->AddDeployUnits(model2, kevContikiNode);
-	model2->AddDeployUnits(model2, kevGroupCoap);
-	model2->AddDeployUnits(model2, kevChanCoap);
-	model2->AddGroups(model2, coapGroup);
-	model2->AddNodes(model2, contikiNode);*/
+	  		model2->AddNodes(model2, serverNode);
+	  		model2->AddTypeDefinitions(model2, ctFakeConsole);
+	  		model2->AddTypeDefinitions(model2, ctHelloWorld);
+	  		model2->AddTypeDefinitions(model2, contikiNodeType);
+	  		model2->AddTypeDefinitions(model2, coapGroupType);
+	  		model2->AddTypeDefinitions(model2, coapChanType);
+	  		model2->AddLibraries(model2, contiki);
+	  		model2->AddHubs(model2, defaultChannel);
+	  		model2->AddBindings(model2, mbInMsg);
+	  		model2->AddBindings(model2, mbFake);
+	  		model2->AddBindings(model2, mbSendMsg);
+	  		model2->AddBindings(model2, mbSendText);
+	  		model2->AddDeployUnits(model2, duFakeConsole);
+	  		model2->AddDeployUnits(model2, duHelloWorld);
+	  		model2->AddDeployUnits(model2, kevContikiNode);
+	  		model2->AddDeployUnits(model2, kevGroupCoap);
+	  		model2->AddDeployUnits(model2, kevChanCoap);
+	  		model2->AddGroups(model2, coapGroup);
+	  		model2->AddNodes(model2, contikiNode);*/
 
 	/*printf("Model %s created with success! \n\n", model2->InternalGetKey(model2));*/
 
@@ -742,12 +633,75 @@ int main(void)
 	visitor_print->action =  actionprintf;
 	/*visitor_print->action =  ActionCompare;*/
 
-	model->Visit(model, visitor_print);
+	/*model->Visit(model, visitor_print);*/
 	/*printf("\nVisiting model2 \n\n");
-	model2->Visit(model2, visitor_print);*/
-//	printf("Process finished!\n\n");
+	  		model2->Visit(model2, visitor_print);*/
+	//	printf("Process finished!\n\n");
 
-	printf("RAM allocated: %d\n", mem_count);
+	ContainerRoot* modelX = new_ContainerRoot();
+
+	modelX->AddLibraries(modelX, contiki);
+
+	/*type definition*/
+	modelX->AddTypeDefinitions(modelX, ctHelloWorld);
+	modelX->AddTypeDefinitions(modelX, contikiNodeType);
+	modelX->AddTypeDefinitions(modelX, coapGroupType);
+
+
+
+	/*deploy unit*/
+	modelX->AddDeployUnits(modelX, duHelloWorld);
+	modelX->AddDeployUnits(modelX, kevContikiNode);
+	modelX->AddDeployUnits(modelX, kevGroupCoap);
+
+
+	/*instances*/
+	modelX->AddGroups(modelX, coapGroup);
+
+	int i = 0;
+	int j = 0;
+
+	for(i = 0; i < 36; i++)
+	{
+		/* ContainerNode contikiNode */
+		ContainerNode* contikiNode = new_ContainerNode();
+		contikiNode->super->super->name = my_malloc(sizeof(char) * (strlen("XX")) + 1);
+		sprintf(contikiNode->super->super->name, "%d", i);
+		contikiNode->super->started = true;
+		contikiNode->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
+		strcpy(contikiNode->super->metaData, "");
+
+		/*contiki->AddSubTypes(contiki, coapChanType);*/
+		contikiNode->AddNetworkInformation(contikiNode, contikiNodeIP);
+		contikiNode->super->AddTypeDefinition(contikiNode->super, contikiNodeType);
+		contikiNode->AddGroups(contikiNode, coapGroup);
+
+		for(j = 0; j < 3; j++)
+		{
+			ComponentInstance* ciHelloWorld = new_ComponentInstance();
+			ciHelloWorld->super->super->name = my_malloc(sizeof(char) * (strlen("XX")) + 1);
+			sprintf(ciHelloWorld->super->super->name, "%d", j);
+			ciHelloWorld->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
+			strcpy(ciHelloWorld->super->metaData, "");
+			ciHelloWorld->super->started = true;
+			ciHelloWorld->super->AddTypeDefinition(ciHelloWorld->super, ctHelloWorld);
+			/*ciHelloWorld->AddProvided(ciHelloWorld, pFake);
+				ciHelloWorld->AddRequired(ciHelloWorld, pSendText);*/
+
+			contikiNode->AddComponents(contikiNode, ciHelloWorld);
+		}
+
+		coapGroup->AddSubNodes(coapGroup, contikiNode);
+
+
+		modelX->AddNodes(modelX, contikiNode);
+		/*printf("%d\n", mem_count);*/
+	}
+
+	/*printf("Elapsed time: %d\n", RTIMER_NOW());*/
+	modelX->Visit(modelX, visitor_print);
+
+	/*modelX->Visit(modelX, visitor_print);*/
 
 	return 0;
 }

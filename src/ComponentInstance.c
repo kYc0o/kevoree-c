@@ -2,6 +2,9 @@
 #include "NamedElement.h"
 #include "Instance.h"
 #include "Port.h"
+#include "TypeDefinition.h"
+#include "ContainerNode.h"
+#include "Visitor.h"
 #include "ComponentInstance.h"
 
 Instance* newPoly_ComponentInstance()
@@ -149,9 +152,11 @@ Port* ComponentInstance_FindRequiredByID(ComponentInstance* const this, char* id
 
 void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
 {
-	Port* container = NULL;
+	Port *container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The Port cannot be added in ComponentInstance because the key is not defined\n");
 	}
@@ -161,19 +166,22 @@ void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
 		{
 			this->provided = hashmap_new();
 		}
-		if(hashmap_get(this->provided, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->provided, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (MBinding*)ptr;*/
-			hashmap_put(this->provided, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->provided, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
 
 void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
 {
-	Port* container = NULL;
+	Port *container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The Port cannot be added in ComponentInstance because the key is not defined\n");
 	}
@@ -183,35 +191,48 @@ void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
 		{
 			this->required = hashmap_new();
 		}
-		if(hashmap_get(this->required, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->required, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (MBinding*)ptr;*/
-			hashmap_put(this->required, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->required, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
 
 void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The Port cannot be removed in ComponentInstance because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->provided, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->provided, internalKey) == MAP_OK)
+		{
+			ptr->eContainer = NULL;
+			free(internalKey);
+		}
 	}
 }
 
 void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The Port cannot be removed in ComponentInstance because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->required, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->required, internalKey) == MAP_OK)
+		{
+			ptr->eContainer = NULL;
+			free(internalKey);
+		}
 	}
 }
 
@@ -226,7 +247,7 @@ void ComponentInstance_VisitAttributes(void* const this, char *parent, Visitor* 
 	visitor->action(path, STRING, cClass);
 	free(cClass);*/
 	
-	Instance_VisitAttributes(((ComponentInstance*)this)->super, parent, visitor, 1);
+	Instance_VisitAttributes(((ComponentInstance*)this)->super, parent, visitor, true);
 }
 
 void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -252,8 +273,8 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				/*sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));*/
-				sprintf(path, "typeDefinitions[%s]/provided", ((ComponentInstance*)this)->super->typeDefinition->InternalGetKey(((ComponentInstance*)this)->super->typeDefinition));
-				n->VisitAttributes(n, path, visitor, 1);
+				sprintf(path, "provided");
+				n->VisitAttributes(n, path, visitor, true);
 				n->VisitReferences(n, path, visitor);
 				if(length > 1)
 				{
@@ -310,7 +331,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 	/* Instance references */
-	Instance_VisitReferences(((ComponentInstance*)(this))->super, parent, visitor, 0);
+	Instance_VisitReferences(((ComponentInstance*)(this))->super, parent, visitor, false);
 
 }
 

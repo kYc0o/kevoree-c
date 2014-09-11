@@ -1,3 +1,4 @@
+#include <string.h>
 #include "NodeType.h"
 #include "TypeDefinition.h"
 #include "NamedElement.h"
@@ -96,7 +97,7 @@ void delete_NodeType(NodeType* const this)
 	
 }
 
-void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	/*char path[256];
 	memset(&path[0], 0, sizeof(path));

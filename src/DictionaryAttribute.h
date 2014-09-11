@@ -2,6 +2,7 @@
 #define __DictionaryAttribute_H
 
 #include <string.h>
+#include <stdbool.h>
 /*#include "TypedElement.h"
 #include "DictionaryType.h"*/
 
@@ -19,10 +20,10 @@ typedef void* (*fptrFindByPathDicAttr)(char*, DictionaryAttribute*);
 
 typedef struct _DictionaryAttribute {
 	TypedElement* super;
-	int optional;
-	int state;
+	bool optional;
+	bool state;
 	char *datatype;
-	int fragmentDependant;
+	bool fragmentDependant;
 	char *defaultValue;
 	DictionaryType *eContainer;
 	fptrDicAttrInternalGetKey InternalGetKey;

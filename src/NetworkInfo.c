@@ -1,3 +1,9 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include "NamedElement.h"
+#include "NetworkProperty.h"
+#include "ContainerNode.h"
+#include "Visitor.h"
 #include "NetworkInfo.h"
 
 NamedElement* newPoly_NetworkInfo()
@@ -92,7 +98,9 @@ void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr)
 {
 	NetworkProperty* container = NULL;
 	
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The NetworkProperty cannot be added in NetworkInfo because the key is not defined\n");
 	}
@@ -102,23 +110,30 @@ void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr)
 		{
 			this->values = hashmap_new();
 		}
-		if(hashmap_get(this->values, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->values, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (NetworkProperty*)ptr;*/
-			hashmap_put(this->values, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->values, internalKey, ptr) == MAP_OK)
+				ptr->eContainerNI = this;
 		}
 	}
 }
 
 void NetworkInfo_RemoveValues(NetworkInfo* const this, NetworkProperty* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The NetworkProperty cannot be removed in NetworkInfo because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->values, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->values, internalKey) == MAP_OK)
+		{
+			ptr->eContainerNI = NULL;
+			free(internalKey);
+		}
 	}
 }
 
@@ -176,7 +191,7 @@ void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visito
 	sprintf(path,"%s\\cClass", parent);
 	visitor->action(path, STRING, ((NetworkInfo*)this)->MetaClassName((NetworkInfo*)this));*/
 
-	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, parent, visitor, 1);
+	NamedElement_VisitAttributes(((NetworkInfo*)(this))->super, parent, visitor, true);
 }
 
 void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor)

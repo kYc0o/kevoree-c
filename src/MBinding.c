@@ -1,3 +1,9 @@
+#include <string.h>
+#include "MBinding.h"
+#include "Channel.h"
+#include "Port.h"
+#include "ContainerRoot.h"
+#include "Visitor.h"
 #include "MBinding.h"
 
 MBinding* new_MBinding(void)
@@ -86,7 +92,7 @@ void MBinding_RemoveHub(MBinding* const this, Channel* ptr)
 	this->channel = NULL;
 }
 
-void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
@@ -119,7 +125,7 @@ void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 
 }
 
-void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
+void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	if(recursive)
 	{

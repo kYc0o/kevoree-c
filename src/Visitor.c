@@ -10,12 +10,19 @@ void actionprintf(char *path, Type type, void* value)
 			printf("\"%s\" : \"%s\"", path, (char*)value);
 			break;
 
+		case INTEGER:
+			printf("\"%s\" : \"%d\"", path, (int)value);
+			break;
+
 		case STRREF:
 			printf("\"%s\"", path);
 			break;
 
 		case BOOL:
-			printf("\"%s\" : \"%d\"", path, (int)value);
+			if((int)value)
+				printf("\"%s\" : \"%s\"", path, "true");
+			else
+				printf("\"%s\" : \"%s\"", path, "false");
 			break;
 
 		case BRACKET:

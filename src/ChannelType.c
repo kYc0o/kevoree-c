@@ -118,7 +118,7 @@ char* ChannelType_MetaClassName(ChannelType* const this)
 	return name;
 }
 
-void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	/* Local attributes */
 	if(recursive)
@@ -134,22 +134,22 @@ void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visito
 
 		/*sprintf(path, "%s\\lowerBindings", parent);*/
 		sprintf(path, "lowerBindings");
-		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerBindings);
+		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerBindings);
 		visitor->action(NULL, COLON, NULL);
 
 		/*sprintf(path, "%s\\upperBindings", parent);*/
 		sprintf(path, "upperBindings");
-		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperBindings);
+		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperBindings);
 		visitor->action(NULL, COLON, NULL);
 
 		/*sprintf(path, "%s\\lowerFragments", parent);*/
 		sprintf(path, "lowerFragments");
-		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerFragments);
+		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerFragments);
 		visitor->action(NULL, COLON, NULL);
 
 		/*sprintf(path, "%s\\upperFragments", parent);*/
 		sprintf(path, "upperFragments", parent);
-		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperFragments);
+		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperFragments);
 		visitor->action(NULL, COLON, NULL);
 	}
 	else

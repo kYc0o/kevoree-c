@@ -2,16 +2,18 @@
 #define __GroupType_H
 
 #include <string.h>
+#include <stdbool.h>
 #include "hashmap.h"
 /*#include "TypeDefinition.h"*/
 
 typedef struct _GroupType GroupType;
 typedef struct _TypeDefinition TypeDefinition;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrGroupTypeMetaClassName)(GroupType*);
 typedef char* (*fptrGroupTypeInternalGetKey)(GroupType*);
 typedef void (*fptrDeleteGroupType)(GroupType*);
-typedef void (*fptrVisitAttrGroupType)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrGroupType)(void*, char*, Visitor*, bool);
 typedef void (*fptrVisitRefsGroupType)(void*, char*, Visitor*);
 
 typedef struct _GroupType {
@@ -29,6 +31,6 @@ char* GroupType_MetaClassName(GroupType* const this);
 char* GroupType_InternalGetKey(void* const this);
 void deletePoly_GroupType(TypeDefinition* const this);
 void delete_GroupType(GroupType* const this);
-void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 
 #endif /* __GroupType_H */

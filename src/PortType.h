@@ -1,23 +1,23 @@
 #ifndef __PortType_H
 #define __PortType_H
 
-#include <string.h>
-#include <stdlib.h>
-#include "TypeDefinition.h"
+#include <stdbool.h>
 
 typedef struct _PortType PortType;
+typedef struct _TypeDefinition TypeDefinition;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrPortTypeMetaClassName)(PortType*);
 typedef char* (*fptrPortTypeInternalGetKey)(PortType*);
 typedef void (*fptrDeletePortType)(PortType*);
-typedef void (*fptrVisitAttrPortType)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrPortType)(void*, char*, Visitor*, bool);
 typedef void (*fptrVisitRefsPortType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathPortType)(char*, TypeDefinition*);
 
 typedef struct _PortType {
 	void* pDerivedObj;
 	TypeDefinition* super;
-	int synchrone;
+	bool synchrone;
 	fptrPortTypeMetaClassName MetaClassName;
 	fptrPortTypeInternalGetKey InternalGetKey;
 	fptrDeletePortType Delete;
@@ -32,7 +32,7 @@ char* PortType_MetaClassName(PortType* const this);
 char* PortType_InternalGetKey(PortType* const this);
 void deletePoly_PortType(TypeDefinition* const this);
 void delete_PortType(PortType* const this);
-void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* PortType_FindByPath(char* attribute, TypeDefinition* const this);
 
 #endif /*__PortType_H */

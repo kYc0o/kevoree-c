@@ -1,6 +1,8 @@
 #ifndef H_TOOLS
 #define H_TOOLS
 
+#include <stdlib.h>
+
 short StartsWith (char* base, char* str);
 short EndsWith (char* base, char* str);
 int indexOf (char* base, char* str);

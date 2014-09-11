@@ -147,12 +147,12 @@ void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor
 	/* Local attributes */
 	/*sprintf(path, "%s\\optional", parent);*/
 	sprintf(path, "optional");
-	visitor->action(path, BOOL, ((DictionaryAttribute*)(this))->optional);
+	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->optional);
 	visitor->action(NULL, COLON, NULL);
 
 	/*sprintf(path, "%s\\state", parent);*/
 	sprintf(path, "state");
-	visitor->action(path, BOOL, ((DictionaryAttribute*)(this))->state);
+	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->state);
 	visitor->action(NULL, COLON, NULL);
 
 	/*sprintf(path, "%s\\datatype", parent);*/
@@ -162,7 +162,7 @@ void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor
 
 	/*sprintf(path, "%s\\fragmentDependant", parent);*/
 	sprintf(path, "fragmentDependant");
-	visitor->action(path, BOOL, ((DictionaryAttribute*)(this))->fragmentDependant);
+	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->fragmentDependant);
 	visitor->action(NULL, COLON, NULL);
 
 	/*sprintf(path, "%s\\defaultValue", parent);*/
@@ -186,11 +186,11 @@ void* DictionaryAttribute_FindByPath(char* attribute, DictionaryAttribute* const
 	/* Local attributes */
 	else if(!strcmp("optional", attribute))
 	{
-		return this->optional;
+		return (void*)this->optional;
 	}
 	else if(!strcmp("state", attribute))
 	{
-		return this->state;
+		return (void*)this->state;
 	}
 	else if(!strcmp("datatype", attribute))
 	{
@@ -198,7 +198,7 @@ void* DictionaryAttribute_FindByPath(char* attribute, DictionaryAttribute* const
 	}
 	else if(!strcmp("fragmentDependant", attribute))
 	{
-		return this->fragmentDependant;
+		return (void*)this->fragmentDependant;
 	}
 	else if(!strcmp("defaultValue", attribute))
 	{

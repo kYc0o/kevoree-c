@@ -129,7 +129,9 @@ void Channel_AddBindings(Channel* const this, MBinding* ptr)
 {
 	MBinding* container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The MBinding cannot be added in Channel because the key is not defined\n");
 	}
@@ -139,22 +141,26 @@ void Channel_AddBindings(Channel* const this, MBinding* ptr)
 		{
 			this->bindings = hashmap_new();
 		}
-		if(hashmap_get(this->bindings, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->bindings, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (MBinding*)ptr;*/
-			hashmap_put(this->bindings, ptr->InternalGetKey(ptr), ptr);
+			hashmap_put(this->bindings, internalKey, ptr);
+
 		}
 	}
 }
 void Channel_RemoveBindings(Channel* const this, MBinding* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The MBinding cannot be removed in Channel because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->bindings, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->bindings, internalKey);
+		free(internalKey);
 	}
 }
 
@@ -175,7 +181,7 @@ MBinding* Channel_FindBindingsByID(Channel* const this, char* id)
 	}
 }
 
-void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	/*char *cClass = NULL;
 	char path[256];
@@ -189,7 +195,7 @@ void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, i
 	Instance_VisitAttributes(((Channel*)this)->super, parent, visitor, recursive);
 }
 
-void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
+void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	int i;
 
@@ -234,7 +240,7 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, i
 	}
 	
 	/* Instance references */
-	Instance_VisitReferences(((Instance*)this)->super, parent, visitor, 0);
+	Instance_VisitReferences(((Instance*)this)->super, parent, visitor, false);
 }
 void* Channel_FindByPath(char* attribute, Channel* const this)
 {

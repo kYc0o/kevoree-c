@@ -1,3 +1,9 @@
+#include <string.h>
+#include "NamedElement.h"
+#include "PortType.h"
+#include "PortTypeMapping.h"
+#include "ComponentType.h"
+#include "Visitor.h"
 #include "PortTypeRef.h"
 
 NamedElement* newPoly_PortTypeRef(void)
@@ -125,7 +131,9 @@ void PortTypeRef_AddMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 {
 	PortTypeMapping* container = NULL;
 	
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The PortTypeMapping cannot be added in PortTypeRef because the key is not defined\n");
 	}
@@ -135,10 +143,11 @@ void PortTypeRef_AddMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 		{
 			this->mappings = hashmap_new();
 		}
-		if(hashmap_get(this->mappings, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->mappings, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (PortTypeMapping*)ptr;*/
-			hashmap_put(this->mappings, ptr->InternalGetKey(ptr), ptr);
+			if(hashmap_put(this->mappings, internalKey, ptr) == MAP_OK)
+				ptr->eContainer = this;
 		}
 	}
 }
@@ -151,13 +160,19 @@ void PortTypeRef_RemoveRef(PortTypeRef* const this, PortType* ptr)
 
 void PortTypeRef_RemoveMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The PortTypeMapping cannot be removed in PortTypeRef because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->mappings, ptr->InternalGetKey(ptr));
+		if(hashmap_remove(this->mappings, internalKey) == MAP_OK)
+		{
+			ptr->eContainer = NULL;
+			free(internalKey);
+		}
 	}
 }
 
@@ -192,7 +207,7 @@ void delete_PortTypeRef(PortTypeRef* const this)
 	}
 }
 
-void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	if(recursive)
 	{
@@ -206,12 +221,12 @@ void PortTypeRef_VisitAttributes(void* const this, char* parent, Visitor* visito
 
 		/*sprintf(path,"%s\\optional",parent);*/
 		sprintf(path, "optional");
-		visitor->action(path, BOOL, ((PortTypeRef*)(this))->optional);
+		visitor->action(path, BOOL, (void*)((PortTypeRef*)(this))->optional);
 		visitor->action(NULL, COLON, NULL);
 
 		/*sprintf(path,"%s\\noDependency",parent);*/
 		sprintf(path, "noDependency");
-		visitor->action(path, BOOL, ((PortTypeRef*)(this))->noDependency);
+		visitor->action(path, BOOL, (void*)((PortTypeRef*)(this))->noDependency);
 		visitor->action(NULL, RETURN, NULL);
 	}
 	else
@@ -266,11 +281,11 @@ void* PortTypeRef_FindByPath(char* attribute, PortTypeRef* const this)
 	/* Local attributes */
 	else if(!strcmp("optional", attribute))
 	{
-		return this->optional;
+		return (void*)this->optional;
 	}
 	else if(!strcmp("noDependency", attribute))
 	{
-		return this->noDependency;
+		return (void*)this->noDependency;
 	}
 	/* Local references */
 	else

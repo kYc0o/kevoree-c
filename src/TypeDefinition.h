@@ -1,9 +1,7 @@
 #ifndef H_TypeDefinition
 #define H_TypeDefinition
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <stdbool.h>
 #include "tools.h"
 #include "hashmap.h"
 /*#include "DeployUnit.h"
@@ -28,7 +26,7 @@ typedef void (*fptrTypeDefRemoveDictionaryType)(TypeDefinition*, DictionaryType*
 typedef void (*fptrTypeDefRemoveSuperTypes)(TypeDefinition*, TypeDefinition*);
 typedef char* (*fptrTypeDefMetaClassName)(TypeDefinition*);
 typedef void (*fptrDeleteTypeDef)(TypeDefinition*);
-typedef void (*fptrVisitAttrTypeDefinition)(void*, char*, Visitor*, int recursive);
+typedef void (*fptrVisitAttrTypeDefinition)(void*, char*, Visitor*, bool recursive);
 typedef void (*fptrVisitRefsTypeDefinition)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathTypeDefinition)(char*, TypeDefinition*);
 
@@ -38,7 +36,7 @@ typedef struct _TypeDefinition {
 	char *version;
 	char *factoryBean;
 	char *bean;
-	int abstract;
+	bool abstract;
 	DeployUnit *deployUnits;
 	DictionaryType *dictionaryType;
 	map_t superTypes;
@@ -69,7 +67,7 @@ NamedElement* newPoly_TypeDefinition(void);
 TypeDefinition* new_TypeDefinition(void);
 void deletePoly_TypeDefinition(NamedElement* const this);
 void delete_TypeDefinition(TypeDefinition* const this);
-void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this);
 

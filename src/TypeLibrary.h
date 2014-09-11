@@ -1,12 +1,11 @@
 #ifndef __TypeLibrary_H
 #define __TypeLibrary_H
 
-#include <string.h>
 #include "hashmap.h"
-#include "NamedElement.h"
-#include "TypeDefinition.h"
 
 typedef struct _TypeLibrary TypeLibrary;
+typedef struct _NamedElement NamedElement;
+typedef struct _TypeDefinition TypeDefinition;
 
 typedef char* (*fptrTypeLibMetaClassName)(TypeLibrary*);
 typedef char* (*fptrTypeLibInternalGetKey)(TypeLibrary*);

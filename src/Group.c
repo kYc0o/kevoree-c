@@ -1,3 +1,10 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "tools.h"
+#include "ContainerNode.h"
+#include "Instance.h"
+#include "ContainerRoot.h"
 #include "Group.h"
 
 Instance* newPoly_Group()
@@ -111,7 +118,9 @@ void Group_AddSubNodes(Group* const this, ContainerNode* ptr)
 {
 	ContainerNode* container = NULL;
 
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The ContainerNode cannot be added in Group because the key is not defined\n");
 	}
@@ -121,23 +130,26 @@ void Group_AddSubNodes(Group* const this, ContainerNode* ptr)
 		{
 			this->subNodes = hashmap_new();
 		}
-		if(hashmap_get(this->subNodes, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->subNodes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (ContainerNode*)ptr;*/
-			hashmap_put(this->subNodes, ptr->InternalGetKey(ptr), ptr);
+			hashmap_put(this->subNodes, internalKey, ptr);
 		}
 	}
 }
 
 void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The ContainerNode cannot be removed in Group because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->subNodes, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->subNodes, internalKey);
+		free(internalKey);
 	}
 }
 
@@ -170,7 +182,7 @@ void delete_Group(Group* const this)
 	}
 }
 
-void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	/*char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -181,7 +193,7 @@ void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, int
 	Instance_VisitAttributes(((Group*)(this))->super, parent, visitor, recursive);
 }
 
-void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int recursive)
+void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -224,7 +236,7 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, int
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
 
-	Instance_VisitReferences(((Group*)(this))->super, parent, visitor, 0);
+	Instance_VisitReferences(((Group*)(this))->super, parent, visitor, false);
 
 }
 

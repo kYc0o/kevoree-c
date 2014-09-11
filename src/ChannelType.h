@@ -1,14 +1,16 @@
 #ifndef __ChannelType_H
 #define __ChannelType_H
 
-#include "TypeDefinition.h"
+#include <stdbool.h>
 
 typedef struct _ChannelType ChannelType;
+typedef struct _TypeDefinition TypeDefinition;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrChanTypeMetaClassName)(ChannelType*);
 typedef char* (*fptrChanTypeInternalGetKey)(void*);
 typedef void (*fptrDeleteChannelType)(void*);
-typedef void (*fptrVisitAttrChanType)(void*, char*, Visitor*, int);
+typedef void (*fptrVisitAttrChanType)(void*, char*, Visitor*, bool);
 typedef void (*fptrVisitRefsChanType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathChanType)(char*, TypeDefinition*);
 
@@ -32,7 +34,7 @@ void deletePoly_ChannelType(void* const this);
 void delete_ChannelType(void* const this);
 char* ChannelType_InternalGetKey(void* const this);
 char* ChannelType_MetaClassName(ChannelType* const this);
-void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive);
+void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void ChannelType_VisitReferences(void* const this, char* parent, Visitor* visitor);
 void* ChannelType_FindByPath(char* attribute, TypeDefinition* const this);
 

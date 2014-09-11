@@ -89,16 +89,19 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = my_malloc(sizeof(char) * (strlen("groupName=") + strlen(this->groupName) + strlen(",") +
+	/*internalKey = my_malloc(sizeof(char) * (strlen("groupName=") + strlen(this->groupName) + strlen(",") +
 										strlen("hashcode=") + strlen(this->hashcode) + strlen(",") +
 										strlen("name=") + strlen(this->super->name) + strlen(",") +
-										strlen("version=") + strlen(this->version)) + 1);
+										strlen("version=") + strlen(this->version)) + 1);*/
+	internalKey = my_malloc(sizeof(char) * (strlen(this->groupName) + strlen(",") +
+											strlen(this->hashcode) + strlen(",") +
+											strlen(this->super->name) + strlen(",") +
+											strlen(this->version)) + 1);
 
 	if (internalKey == NULL)
 		return NULL;
 
-	sprintf(internalKey, "%s/%s/%s/%s",
-						this->groupName, this->hashcode, this->super->name, this->version);
+	sprintf(internalKey, "%s/%s/%s/%s", this->groupName, this->hashcode, this->super->name, this->version);
 
 	return internalKey;
 }
@@ -120,7 +123,9 @@ void DeployUnit_AddRequiredLibs(DeployUnit* const this, DeployUnit* ptr)
 {
 	DeployUnit* container = NULL;
 	
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The DeployUnit cannot be added in DeployUnit because the key is not defined\n");
 	}
@@ -130,23 +135,26 @@ void DeployUnit_AddRequiredLibs(DeployUnit* const this, DeployUnit* ptr)
 		{
 			this->requiredLibs = hashmap_new();
 		}
-		if(hashmap_get(this->requiredLibs, ptr->InternalGetKey(ptr), (void**)(&container)) == MAP_MISSING)
+		if(hashmap_get(this->requiredLibs, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (DeployUnit*)ptr;*/
-			hashmap_put(this->requiredLibs, ptr->InternalGetKey(ptr), ptr);
+			hashmap_put(this->requiredLibs, internalKey, ptr);
 		}
 	}
 }
 
 void DeployUnit_RemoveRequiredLibs(DeployUnit* const this, DeployUnit *ptr)
 {
-	if(ptr->InternalGetKey(ptr) == NULL)
+	char *internalKey = ptr->InternalGetKey(ptr);
+
+	if(internalKey == NULL)
 	{
 		printf("The DeployUnit cannot be removed in DeployUnit because the key is not defined\n");
 	}
 	else
 	{
-		hashmap_remove(this->requiredLibs, ptr->InternalGetKey(ptr));
+		hashmap_remove(this->requiredLibs, internalKey);
+		free(internalKey);
 	}
 }
 
@@ -199,7 +207,7 @@ void delete_DeployUnit(DeployUnit* const this)
 	}
 }
 
-void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor, int recursive)
+void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	if(recursive)
 	{
