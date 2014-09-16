@@ -114,7 +114,10 @@ void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr)
 		{
 			/*container = (NetworkProperty*)ptr;*/
 			if(hashmap_put(this->values, internalKey, ptr) == MAP_OK)
-				ptr->eContainerNI = this;
+			{
+				ptr->eContainerNI = my_malloc(sizeof(char) * (strlen("networkInfo[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainerNI, "networkInfo[%s]", this->InternalGetKey(this));
+			}
 		}
 	}
 }

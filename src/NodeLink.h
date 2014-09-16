@@ -8,7 +8,7 @@
 /*#include "Visitor.h"*/
 
 typedef struct _NodeLink NodeLink;
-typedef struct _NodeNetwork NodeNetwork;
+/*typedef struct _NodeNetwork NodeNetwork;*/
 typedef struct _NetworkProperty NetworkProperty;
 typedef struct _Visitor Visitor;
 
@@ -29,7 +29,7 @@ typedef struct _NodeLink {
 	char *zoneID;
 	char generated_KMF_ID[9];
 	map_t networkProperties;
-	NodeNetwork *eContainer;
+	char *eContainer;
 	fptrNodeLinkInternalGetKey InternalGetKey;
 	fptrNodeLinkFindNetworkPropertiesByID FindNetworkPropertiesByID;
 	fptrNodeLinkAddNetworkProperties AddNetworkProperties;

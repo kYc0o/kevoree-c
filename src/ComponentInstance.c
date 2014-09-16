@@ -170,7 +170,10 @@ void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
 		{
 			/*container = (MBinding*)ptr;*/
 			if(hashmap_put(this->provided, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->InternalGetKey(this));
+			}
 		}
 	}
 }
@@ -195,7 +198,10 @@ void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
 		{
 			/*container = (MBinding*)ptr;*/
 			if(hashmap_put(this->required, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->InternalGetKey(this));
+			}
 		}
 	}
 }
@@ -207,13 +213,15 @@ void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr)
 	if(internalKey == NULL)
 	{
 		printf("The Port cannot be removed in ComponentInstance because the key is not defined\n");
+		free(internalKey);
 	}
 	else
 	{
 		if(hashmap_remove(this->provided, internalKey) == MAP_OK)
 		{
+			str_free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			str_free(internalKey);
 		}
 	}
 }
@@ -225,13 +233,15 @@ void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
 	if(internalKey == NULL)
 	{
 		printf("The Port cannot be removed in ComponentInstance because the key is not defined\n");
+		free(internalKey);
 	}
 	else
 	{
 		if(hashmap_remove(this->required, internalKey) == MAP_OK)
 		{
+			str_free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			str_free(internalKey);
 		}
 	}
 }
@@ -311,7 +321,7 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				/*sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));*/
-				sprintf(path, "typeDefinitions[%s]/required", ((ComponentInstance*)this)->super->typeDefinition->InternalGetKey(((ComponentInstance*)this)->super->typeDefinition));
+				sprintf(path, "required");
 				n->VisitAttributes(n, path, visitor, 1);
 				n->VisitReferences(n, path, visitor);
 				if(length > 1)

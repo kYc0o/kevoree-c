@@ -20,7 +20,7 @@ typedef void* (*fptrFindByPathTypeLibrary)(char*, TypeLibrary*);
 typedef struct _TypeLibrary {
 	NamedElement *super;
 	map_t subTypes;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrTypeLibMetaClassName MetaClassName;
 	fptrTypeLibInternalGetKey InternalGetKey;
 	fptrTypeLibFindSubTypesByID FindSubTypesByID;

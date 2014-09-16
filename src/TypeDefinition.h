@@ -13,7 +13,7 @@ typedef struct _TypeDefinition TypeDefinition;
 typedef struct _DeployUnit DeployUnit;
 typedef struct _NamedElement NamedElement;
 typedef struct _DictionaryType DictionaryType;
-typedef struct _ContainerRoot ContainerRoot;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 /* Declaration of pointers to functions */
@@ -40,7 +40,7 @@ typedef struct _TypeDefinition {
 	DeployUnit *deployUnits;
 	DictionaryType *dictionaryType;
 	map_t superTypes;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrTypeDefInternalGetKey InternalGetKey;
 	fptrTypeDefAddDeployUnit AddDeployUnit;
 	fptrTypeDefAddDictionaryType AddDictionaryType;

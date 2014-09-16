@@ -13,7 +13,7 @@
 typedef struct _ComponentInstance ComponentInstance;
 typedef struct _Instance Instance;
 typedef struct _Port Port;
-typedef struct _ContainerNode ContainerNode;
+/*typedef struct _ContainerNode ContainerNode;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrCompInstInternalGetKey)(ComponentInstance*);
@@ -33,7 +33,7 @@ typedef struct _ComponentInstance {
 	Instance *super;
 	map_t provided;
 	map_t required;
-	ContainerNode *eContainer;
+	char *eContainer;
 	fptrCompInstInternalGetKey InternalGetKey;
 	fptrCompInstMetaClassName MetaClassName;
 	fptrDeleteComponentInstance Delete;

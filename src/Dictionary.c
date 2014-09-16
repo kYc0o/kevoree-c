@@ -87,7 +87,10 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 		{
 			/*container = (DictionaryValue*)ptr;*/
 			if(hashmap_put(this->values, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen("dictionary[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "dictionary[%s]", this->InternalGetKey(this));
+			}
 		}
 	}
 }

@@ -11,7 +11,7 @@
 
 typedef struct _ContainerNode ContainerNode;
 typedef struct _Instance Instance;
-typedef struct _ContainerRoot ContainerRoot;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _ComponentInstance ComponentInstance;
 typedef struct _Group Group;
 typedef struct _NetworkInfo NetworkInfo;
@@ -45,7 +45,7 @@ typedef struct _ContainerNode {
 	ContainerNode *host;
 	map_t networkInformation;
 	map_t groups;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrContNodeMetaClassName MetaClassName;
 	fptrContNodeInternalGetKey InternalGetKey;
 	fptrContNodeFindComponentsByID FindComponentsByID;

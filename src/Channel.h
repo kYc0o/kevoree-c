@@ -8,7 +8,7 @@
 typedef struct _MBinding MBinding;
 typedef struct _Channel Channel;
 typedef struct _Instance Instance;
-typedef struct _ContainerRoot ContainerRoot;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrChannelInternalGetKey)(Channel*);
@@ -24,7 +24,7 @@ typedef void (*fptrDeleteChannel)(void*);
 typedef struct _Channel {
 	Instance *super;
 	map_t bindings;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrChannelMetaClassName MetaClassName;
 	fptrChannelInternalGetKey InternalGetKey;
 	fptrChannelFindBindingsByID FindBindingsByID;

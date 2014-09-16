@@ -147,7 +147,10 @@ void PortTypeRef_AddMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 		{
 			/*container = (PortTypeMapping*)ptr;*/
 			if(hashmap_put(this->mappings, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen("portTypeRef[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "portTypeRef[%s]", this->InternalGetKey(this));
+			}
 		}
 	}
 }

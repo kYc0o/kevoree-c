@@ -8,7 +8,7 @@
 /*#include "Visitor.h"*/
 
 typedef struct _Repository Repository;
-typedef struct _ContainerRoot ContainerRoot;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrRepoMetaClassName)(Repository*);
@@ -20,7 +20,7 @@ typedef void* (*fptrFindByPathRepo)(char*, Repository*);
 
 typedef struct _Repository {
 	char* url;
-	ContainerRoot* eContainer;
+	char* eContainer;
 	fptrRepoInternalGetKey InternalGetKey;
 	fptrRepoMetaClassName MetaClassName;
 	fptrDeleteRepository Delete;

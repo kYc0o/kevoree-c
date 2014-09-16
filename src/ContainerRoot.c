@@ -287,7 +287,7 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 		{
 			/*container = (ContainerNode*)ptr;*/
 			if(hashmap_put(this->nodes, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -312,7 +312,7 @@ void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition*
 		{
 			/*container = (TypeDefinition*)ptr;*/
 			if(hashmap_put(this->typeDefinitions, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -337,7 +337,7 @@ void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 		{
 			/*container = (Repository*)ptr;*/
 			if(hashmap_put(this->repositories, internalKey, ptr) == MAP_OK)
-					ptr->eContainer = this;
+					ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -362,7 +362,7 @@ void ContainerRoot_AddDataTypes(ContainerRoot* const this, TypedElement* ptr)
 		{
 			/*container = (TypedElement*)ptr;*/
 			if(hashmap_put(this->dataTypes, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -387,7 +387,7 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		{
 			/*container = (TypeLibrary*)ptr;*/
 			if(hashmap_put(this->libraries, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -411,7 +411,7 @@ void ContainerRoot_AddHubs(ContainerRoot* const this, Channel* ptr)
 		{
 			/*container = (Channel*)ptr;*/
 			if(hashmap_put(this->hubs, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -435,7 +435,7 @@ void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 		{
 			/*container = (MBinding*)ptr;*/
 			if(hashmap_put(this->mBindings, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -460,7 +460,7 @@ void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 		{
 			/*container = (DeployUnit*)ptr;*/
 			if(hashmap_put(this->deployUnits, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 
 		/*free(internalKey);*/
@@ -488,7 +488,7 @@ void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 		{
 			/*container = (NodeNetwork*)ptr;*/
 			if(hashmap_put(this->nodeNetworks, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }
@@ -513,7 +513,7 @@ void ContainerRoot_AddGroups(ContainerRoot* const this, Group* ptr)
 		{
 			/*container = (Group*)ptr;*/
 			if(hashmap_put(this->groups, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+				ptr->eContainer = this->generated_KMF_ID;
 		}
 	}
 }

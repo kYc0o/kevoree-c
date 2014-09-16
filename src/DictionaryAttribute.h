@@ -8,7 +8,7 @@
 
 typedef struct _DictionaryAttribute DictionaryAttribute;
 typedef struct _TypedElement TypedElement;
-typedef struct _DictionaryType DictionaryType;
+/*typedef struct _DictionaryType DictionaryType;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicAttrMetaClassName)(DictionaryAttribute*);
@@ -25,7 +25,7 @@ typedef struct _DictionaryAttribute {
 	char *datatype;
 	bool fragmentDependant;
 	char *defaultValue;
-	DictionaryType *eContainer;
+	char *eContainer;
 	fptrDicAttrInternalGetKey InternalGetKey;
 	fptrDicAttrMetaClassName MetaClassName;
 	fptrDeleteDicAttr Delete;

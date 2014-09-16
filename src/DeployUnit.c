@@ -1,4 +1,9 @@
+#include <string.h>
+#include <stdio.h>
+#include "tools.h"
+#include "NamedElement.h"
 #include "DeployUnit.h"
+#include "Visitor.h"
 
 NamedElement* newPoly_DeployUnit()
 {

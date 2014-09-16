@@ -113,21 +113,21 @@ char* ComponentType_MetaClassName(ComponentType* const this)
 	return name;
 }
 
-PortTypeRef* ComponentType_FindRequiredByID(ComponentType* const this, char* id)
+PortTypeRef* ComponentType_FindRequiredByID(TypeDefinition* const this, char* id)
 {
 	PortTypeRef* value = NULL;
 
-	if(hashmap_get(this->required, id, (void**)(&value)) == MAP_OK)
+	if(hashmap_get(((ComponentType*)this->pDerivedObj)->required, id, (void**)(&value)) == MAP_OK)
 		return value;
 	else
 		return NULL;
 }
 
-PortTypeRef* ComponentType_FindProvidedByID(ComponentType* const this, char* id)
+PortTypeRef* ComponentType_FindProvidedByID(TypeDefinition* const this, char* id)
 {
 	PortTypeRef* value = NULL;
 
-	if(hashmap_get(this->provided, id, (void**)(&value)) == MAP_OK)
+	if(hashmap_get(((ComponentType*)this->pDerivedObj)->provided, id, (void**)(&value)) == MAP_OK)
 		return value;
 	else
 		return NULL;
@@ -154,7 +154,13 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 		{
 			/*container = (PortTypeRef*)ptr;*/
 			if(hashmap_put(this->required, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				TypeDefinition *typdef = this->super;
+				char *strContainer = typdef->InternalGetKey(typdef);
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
+				sprintf(ptr->eContainer, "typeDefinitions[%s]", strContainer);
+				str_free(strContainer);
+			}
 		}
 	}
 }
@@ -179,12 +185,18 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 		{
 			/*container = (PortTypeRef*)ptr;*/
 			if(hashmap_put(this->provided, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				TypeDefinition *typdef = this->super;
+				char *strContainer = typdef->InternalGetKey(typdef);
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
+				sprintf(ptr->eContainer, "typeDefinitions[%s]", strContainer);
+				str_free(strContainer);
+			}
 		}
 	}
 }
 
-void ComponentType_RemoveRequired(ComponentType* const this, PortTypeRef* ptr)
+void ComponentType_RemoveRequired(TypeDefinition* const this, PortTypeRef* ptr)
 {
 	char *internalKey = ptr->InternalGetKey(ptr);
 
@@ -194,15 +206,16 @@ void ComponentType_RemoveRequired(ComponentType* const this, PortTypeRef* ptr)
 	}
 	else
 	{
-		if(hashmap_remove(this->required, internalKey) == MAP_OK)
+		if(hashmap_remove(((ComponentType*)this->pDerivedObj)->required, internalKey) == MAP_OK)
 		{
+			str_free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			str_free(internalKey);
 		}
 	}
 }
 
-void ComponentType_RemoveProvided(ComponentType* const this, PortTypeRef* ptr)
+void ComponentType_RemoveProvided(TypeDefinition* const this, PortTypeRef* ptr)
 {
 	char *internalKey = ptr->InternalGetKey(ptr);
 
@@ -212,7 +225,7 @@ void ComponentType_RemoveProvided(ComponentType* const this, PortTypeRef* ptr)
 	}
 	else
 	{
-		if(hashmap_remove(this->provided, internalKey) == MAP_OK)
+		if(hashmap_remove(((ComponentType*)this->pDerivedObj)->provided, internalKey) == MAP_OK)
 		{
 			ptr->eContainer = NULL;
 			free(internalKey);

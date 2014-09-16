@@ -1,14 +1,11 @@
 #ifndef H_DeployUnit
 #define H_DeployUnit
 
-#include <string.h>
-#include <stdio.h>
-#include "tools.h"
-#include "NamedElement.h"
 #include "hashmap.h"
-#include "ContainerRoot.h"
 
 typedef struct _DeployUnit DeployUnit;
+typedef struct _NamedElement NamedElement;
+typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDepUnitMetaClassName)(DeployUnit*);
 typedef char* (*fptrDepUnitInternalGetKey)(DeployUnit*);
@@ -28,7 +25,7 @@ typedef struct _DeployUnit {
 	char *hashcode;
 	char *type;
 	map_t requiredLibs;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrDepUnitMetaClassName MetaClassName;
 	fptrDepUnitInternalGetKey InternalGetKey;
 	fptrDepUnitAddRequiredLibs AddRequiredLibs;

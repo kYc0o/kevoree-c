@@ -6,7 +6,7 @@
 typedef struct _Channel Channel;
 typedef struct _Port Port;
 typedef struct _MBinding MBinding;
-typedef struct _ContainerRoot ContainerRoot;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrMBindingInternalGetKey)(MBinding*);
@@ -24,7 +24,7 @@ typedef struct _MBinding {
 	char generated_KMF_ID[9];
 	Port* port;
 	Channel* channel;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrMBindingInternalGetKey InternalGetKey;
 	fptrMBindingMetaClassName MetaClassName;
 	fptrMBindingAddPort AddPort;

@@ -7,8 +7,8 @@
 
 typedef struct _NetworkProperty NetworkProperty;
 typedef struct _NamedElement NamedElement;
-typedef struct _NetworkInfo NetworkInfo;
-typedef struct _NodeLink NodeLink;
+/*typedef struct _NetworkInfo NetworkInfo;
+typedef struct _NodeLink NodeLink;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrNetPropMetaClassName)(NetworkProperty*);
@@ -21,8 +21,8 @@ typedef void* (*fptrFindByPathNetworkProperty)(char*, NetworkProperty*);
 typedef struct _NetworkProperty {
 	NamedElement *super;
 	char *value;
-	NodeLink *eContainerNL;
-	NetworkInfo *eContainerNI;
+	char *eContainerNL;
+	char *eContainerNI;
 	fptrNetPropMetaClassName MetaClassName;
 	fptrNetPropInternalGetKey InternalGetKey;
 	fptrDeleteNetworkProperty Delete;

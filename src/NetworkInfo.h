@@ -6,7 +6,7 @@
 typedef struct _NetworkInfo NetworkInfo;
 typedef struct _NamedElement NamedElement;
 typedef struct _NetworkProperty NetworkProperty;
-typedef struct _ContainerNode ContainerNode;
+/*typedef struct _ContainerNode ContainerNode;*/
 
 typedef char* (*fptrNetInfoMetaClassName)(NetworkInfo*);
 typedef char* (*fptrNetInfoInternalGetKey)(NetworkInfo*);
@@ -21,7 +21,7 @@ typedef void* (*fptrFindByPathNetworkInfo)(char*, NetworkInfo*);
 typedef struct _NetworkInfo {
 	NamedElement* super;
 	map_t values;
-	ContainerNode *eContainer;
+	char *eContainer;
 	fptrNetInfoMetaClassName MetaClassName;
 	fptrNetInfoInternalGetKey InternalGetKey;
 	fptrNetInfoAddValues AddValues;

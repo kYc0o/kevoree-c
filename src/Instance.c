@@ -110,7 +110,8 @@ void Instance_AddTypeDefinition(Instance* this, TypeDefinition* ptr)
 void Instance_AddDictionary(Instance* const this, Dictionary* ptr)
 {
 	this->dictionary = ptr;
-	ptr->eContainer = this;
+	ptr->eContainer = my_malloc(sizeof(char) * (strlen("instance[]") + strlen(this->InternalGetKey(this))) + 1);
+	sprintf(ptr->eContainer, "instance[%s]", this->InternalGetKey(this));
 }
 
 void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* ptr)
@@ -133,7 +134,10 @@ void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* pt
 		{
 			/*container = (FragmentDictionary*)ptr;*/
 			if(hashmap_put(this->fragmentDictionary, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen("instance[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "instance[%s]", this->InternalGetKey(this));
+			}
 		}
 	}
 }

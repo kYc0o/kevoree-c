@@ -103,7 +103,10 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 		{
 			/*container = (DictionaryAttribute*)ptr;*/
 			if(hashmap_put(this->attributes, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen("dictionaryType[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "dictionaryType[%s]", this->InternalGetKey(this));
+			}
 		}
 	}
 }

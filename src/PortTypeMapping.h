@@ -1,15 +1,12 @@
 #ifndef __PortTypeMapping_H
 #define __PortTypeMapping_H
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "hashmap.h"
 /*#include "Visitor.h"
 #include "PortTypeRef.h"*/
 
-typedef struct _PortTypeMapping PortTypeMapping;
 typedef struct _PortTypeRef PortTypeRef;
+typedef struct _PortTypeMapping PortTypeMapping;
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrPortTypMapMetaClassName)(PortTypeMapping*);
@@ -25,7 +22,7 @@ typedef struct _PortTypeMapping {
 	char *serviceMethodName;
 	char *paramTypes;
 	char generated_KMF_ID[9];
-	PortTypeRef *eContainer;
+	char *eContainer;
 	fptrPortTypMapMetaClassName MetaClassName;
 	fptrPortTypMapInternalGetKey InternalGetKey;
 	fptrDeletePortTypeMapping Delete;

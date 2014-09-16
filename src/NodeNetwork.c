@@ -95,7 +95,10 @@ void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 		{
 			/*container = (NodeLink*)ptr;*/
 			if(hashmap_put(this->link, internalKey, ptr) == MAP_OK)
-				ptr->eContainer = this;
+			{
+				ptr->eContainer = my_malloc(sizeof(char) * (strlen("nodeNetwork[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "nodeNetwork[%s]", this->InternalGetKey(this));
+			}
 		}
 	}
 }

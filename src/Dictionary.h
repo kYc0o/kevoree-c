@@ -10,7 +10,7 @@
 
 typedef struct _DictionaryValue DictionaryValue;
 typedef struct _Dictionary Dictionary;
-typedef struct _Instance Instance;
+/*typedef struct _Instance Instance;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicoMetaClassName)(Dictionary*);
@@ -27,7 +27,7 @@ typedef struct _Dictionary {
 	void *pDerivedObj;
 	char generated_KMF_ID[9];
 	map_t values;
-	Instance *eContainer;
+	char *eContainer;
 	fptrDicoFindValuesByID FindValuesByID;
 	fptrDicoAddValues AddValues;
 	fptrDicoRemoveValues RemoveValues;

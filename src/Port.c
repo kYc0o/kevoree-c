@@ -4,7 +4,7 @@
 #include "MBinding.h"
 #include "PortTypeRef.h"
 #include "ComponentInstance.h"
-#include "ComponentType.h"
+#include "TypeDefinition.h"
 #include "NamedElement.h"
 #include "Port.h"
 
@@ -203,7 +203,7 @@ void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor)
 		/*sprintf(path, "%s/portTypeRef[%s]", parent, this->portTypeRef->InternalGetKey(this->portTypeRef));
 		this->portTypeRef->VisitAttributes(this->portTypeRef, parent, visitor, false);
 		this->portTypeRef->VisitReferences(this->portTypeRef, parent, visitor);*/
-		sprintf(path, "%s/%s[%s]", this->portTypeRef->eContainer->InternalGetKey(this->portTypeRef->eContainer),
+		sprintf(path, "%s/%s[%s]", this->portTypeRef->eContainer,
 									parent,
 									this->portTypeRef->InternalGetKey(this->portTypeRef));
 		visitor->action(path, STRREF, NULL);

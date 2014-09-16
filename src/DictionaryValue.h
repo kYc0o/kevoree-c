@@ -8,7 +8,7 @@
 #include "Dictionary.h"*/
 
 typedef struct _DictionaryValue DictionaryValue;
-typedef struct _Dictionary Dictionary;
+/*typedef struct _Dictionary Dictionary;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicValMetaClassName)(DictionaryValue*);
@@ -21,7 +21,7 @@ typedef void* (*fptrFindByPathDicVal)(char*, DictionaryValue*);
 typedef struct _DictionaryValue {
 	char *name;
 	char *value;
-	Dictionary *eContainer;
+	char *eContainer;
 	fptrDicValInternalGetKey InternalGetKey;
 	fptrDicValMetaClassName MetaClassName;
 	fptrDeleteDicVal Delete;

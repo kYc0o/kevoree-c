@@ -7,7 +7,7 @@
 
 typedef struct _NodeNetwork NodeNetwork;
 typedef struct _ContainerNode ContainerNode;
-typedef struct _ContainerRoot ContainerRoot;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _NodeLink NodeLink;
 typedef struct _Visitor Visitor;
 
@@ -26,12 +26,12 @@ typedef void (*fptrVisitRefsNodeNetwork)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNodeNetwork)(char*, NodeNetwork*);
 
 typedef struct _NodeNetwork {
-	void* pDerivedObj;
+	void *pDerivedObj;
 	char generated_KMF_ID[9];
 	map_t link;
-	ContainerNode* initBy;
-	ContainerNode* target;
-	ContainerRoot* eContainer;
+	ContainerNode *initBy;
+	ContainerNode *target;
+	char *eContainer;
 	fptrNodeNetMetaClassName MetaClassName;
 	fptrNodeNetInternalGetKey InternalGetKey;
 	fptrNodeNetFindLinkByID FindLinkByID;

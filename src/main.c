@@ -431,12 +431,12 @@ int main(void)
 	  		ptrInMsg->noDependency = true;
 	  		ptrInMsg->optional = true;*/
 
-	/* PortTypeRef sendText
-	  	PortTypeRef* ptrSendText = new_PortTypeRef();
-	  	ptrSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
-	  	strcpy(ptrSendText->super->name, "sendText");
-	  	ptrSendText->noDependency = true;
-	  	ptrSendText->optional = true;*/
+	/* PortTypeRef sendText */
+	PortTypeRef* ptrSendText = new_PortTypeRef();
+	ptrSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
+	strcpy(ptrSendText->super->name, "sendText");
+	ptrSendText->noDependency = true;
+	ptrSendText->optional = true;
 
 	/* PortTypeRef fake */
 	PortTypeRef* ptrFake = new_PortTypeRef();
@@ -457,17 +457,17 @@ int main(void)
 	  		strcpy(pSendMsg->super->name, "sendMsg");
 	  		pSendMsg->AddPortTypeRef(pSendMsg, ptrSendMsg);*/
 
-	/* Port fake
-	  	Port* pFake = new_Port();
-	  	pFake->super->name = my_malloc(sizeof(char) * (strlen("fake")) + 1);
-	  	strcpy(pFake->super->name, "fake");
-	  	pFake->AddPortTypeRef(pFake, ptrFake);*/
+	/* Port fake */
+	Port* pFake = new_Port();
+	pFake->super->name = my_malloc(sizeof(char) * (strlen("fake")) + 1);
+	strcpy(pFake->super->name, "fake");
+	pFake->AddPortTypeRef(pFake, ptrFake);
 
-	/* Port sendMsg
-	  	Port* pSendText = new_Port();
-	  	pSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
-	  	strcpy(pSendText->super->name, "sendText");
-	  	pSendText->AddPortTypeRef(pSendText, ptrSendText);*/
+	/* Port sendMsg */
+	Port* pSendText = new_Port();
+	pSendText->super->name = my_malloc(sizeof(char) * (strlen("sendText")) + 1);
+	strcpy(pSendText->super->name, "sendText");
+	pSendText->AddPortTypeRef(pSendText, ptrSendText);
 
 	/* MBinding inMsg
 	  		MBinding* mbInMsg = new_MBinding();
@@ -575,8 +575,7 @@ int main(void)
 
 	/*((ComponentType*)ctFakeConsole->pDerivedObj)->AddProvided((ComponentType*)ctFakeConsole->pDerivedObj, ptrInMsg);
 	  		((ComponentType*)ctFakeConsole->pDerivedObj)->AddRequired((ComponentType*)ctFakeConsole->pDerivedObj, ptrSendMsg);*/
-	/*((ComponentType*)ctHelloWorld->pDerivedObj)->AddProvided((ComponentType*)ctHelloWorld->pDerivedObj, ptrFake);
-	  	((ComponentType*)ctHelloWorld->pDerivedObj)->AddRequired((ComponentType*)ctHelloWorld->pDerivedObj, ptrSendText);*/
+
 
 	/*for(int i = 0; i < 20; i++)
 	  		{*/
@@ -661,7 +660,7 @@ int main(void)
 	int i = 0;
 	int j = 0;
 
-	for(i = 0; i < 36; i++)
+	for(i = 0; i < 1; i++)
 	{
 		/* ContainerNode contikiNode */
 		ContainerNode* contikiNode = new_ContainerNode();
@@ -676,7 +675,7 @@ int main(void)
 		contikiNode->super->AddTypeDefinition(contikiNode->super, contikiNodeType);
 		contikiNode->AddGroups(contikiNode, coapGroup);
 
-		for(j = 0; j < 3; j++)
+		for(j = 0; j < 1; j++)
 		{
 			ComponentInstance* ciHelloWorld = new_ComponentInstance();
 			ciHelloWorld->super->super->name = my_malloc(sizeof(char) * (strlen("XX")) + 1);
@@ -684,19 +683,25 @@ int main(void)
 			ciHelloWorld->super->metaData = my_malloc(sizeof(char) * (strlen("")) + 1);
 			strcpy(ciHelloWorld->super->metaData, "");
 			ciHelloWorld->super->started = true;
-			ciHelloWorld->super->AddTypeDefinition(ciHelloWorld->super, ctHelloWorld);
-			/*ciHelloWorld->AddProvided(ciHelloWorld, pFake);
-				ciHelloWorld->AddRequired(ciHelloWorld, pSendText);*/
 
+
+			ciHelloWorld->super->AddTypeDefinition(ciHelloWorld->super, ctHelloWorld);
+
+			((ComponentType*)ctHelloWorld->pDerivedObj)->AddProvided(ctHelloWorld->pDerivedObj, ptrFake);
+			((ComponentType*)ctHelloWorld->pDerivedObj)->AddRequired(ctHelloWorld->pDerivedObj, ptrSendText);
 			contikiNode->AddComponents(contikiNode, ciHelloWorld);
+			ciHelloWorld->AddProvided(ciHelloWorld, pFake);
+			ciHelloWorld->AddRequired(ciHelloWorld, pSendText);
+
 		}
 
 		coapGroup->AddSubNodes(coapGroup, contikiNode);
 
-
 		modelX->AddNodes(modelX, contikiNode);
 		/*printf("%d\n", mem_count);*/
 	}
+
+
 
 	/*printf("Elapsed time: %d\n", RTIMER_NOW());*/
 	modelX->Visit(modelX, visitor_print);

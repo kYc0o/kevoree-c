@@ -7,7 +7,8 @@
 typedef struct _ContainerNode ContainerNode;
 typedef struct _Group Group;
 typedef struct _Instance Instance;
-typedef struct _ContainerRoot ContainerRoot;
+typedef struct _Visitor Visitor;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 
 typedef char* (*fptrGroupInternalGetKey)(Group*);
 typedef char* (*fptrGroupMetaClassName)(Group*);
@@ -22,7 +23,7 @@ typedef void* (*fptrFindByPathGroup)(char*, Group*);
 typedef struct _Group { 
 	Instance *super;
 	map_t subNodes;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrGroupAddSubNodes AddSubNodes;
 	fptrGroupRemoveSubNodes RemoveSubNodes;
 	fptrGroupInternalGetKey InternalGetKey;

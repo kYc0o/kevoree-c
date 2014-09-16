@@ -9,7 +9,7 @@ typedef struct _MBinding MBinding;
 typedef struct _PortTypeRef PortTypeRef;
 typedef struct _Port Port;
 typedef struct _MBinding MBinding;
-typedef struct _ComponentInstance ComponentInstance;
+/*typedef struct _ComponentInstance ComponentInstance;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrPortInternalGetKey)(Port*);
@@ -28,7 +28,7 @@ typedef struct _Port {
 	NamedElement *super;
 	map_t bindings;
 	PortTypeRef *portTypeRef;
-	ComponentInstance *eContainer;
+	char *eContainer;
 	fptrPortInternalGetKey InternalGetKey;
 	fptrPortMetaClassName MetaClassName;
 	fptrPortFindBindingsByID FindBindingsByID;

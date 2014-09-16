@@ -4,6 +4,7 @@
 #include "NamedElement.h"
 #include "DeployUnit.h"
 #include "DictionaryType.h"
+#include "Visitor.h"
 #include "TypeDefinition.h"
 
 NamedElement* newPoly_TypeDefinition()
@@ -138,7 +139,7 @@ void TypeDefinition_AddDictionaryType(TypeDefinition* const this, DictionaryType
 	if(ptr != NULL)
 	{
 		this->dictionaryType = ptr;
-		ptr->eContainer = this;
+		/*ptr->eContainer = this;*/
 	}
 }
 

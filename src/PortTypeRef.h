@@ -8,8 +8,9 @@ typedef struct _PortTypeRef PortTypeRef;
 typedef struct _NamedElement NamedElement;
 typedef struct _PortType PortType;
 typedef struct _PortTypeMapping PortTypeMapping;
-typedef struct _ComponentType ComponentType;
+/*typedef struct _TypeDefinition TypeDefinition;*/
 typedef struct _Visitor Visitor;
+
 
 typedef char* (*fptrPortTypeRefMetaClassName)(PortTypeRef*);
 typedef char* (*fptrPortTypeRefInternalGetKey)(PortTypeRef*);
@@ -27,9 +28,9 @@ typedef struct _PortTypeRef {
 	NamedElement* super;
 	bool optional;
 	bool noDependency;
-	PortType* ref;
+	PortType *ref;
 	map_t mappings;
-	ComponentType *eContainer;
+	char *eContainer;
 	fptrPortTypeRefMetaClassName MetaClassName;
 	fptrPortTypeRefInternalGetKey InternalGetKey;
 	fptrPortTypeRefFindMappingsByID FindMappingsByID;

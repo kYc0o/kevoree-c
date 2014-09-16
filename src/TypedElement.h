@@ -9,7 +9,7 @@
 
 typedef struct _TypedElement TypedElement;
 typedef struct _NamedElement NamedElement;
-typedef struct _ContainerRoot ContainerRoot;
+/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrTypElemMetaClassName)(TypedElement*);
@@ -26,7 +26,7 @@ typedef struct _TypedElement {
 	NamedElement* super;
 	void* pDerivedObj;
 	map_t genericTypes;
-	ContainerRoot *eContainer;
+	char *eContainer;
 	fptrTypElemMetaClassName MetaClassName;
 	fptrTypElemInternalGetKey InternalGetKey;
 	fptrTypElemFindGenericTypesByID FindGenericTypesByID;

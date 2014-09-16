@@ -95,7 +95,10 @@ void NodeLink_AddNetworkProperties(NodeLink* const this, NetworkProperty* ptr)
 		{
 			/*container = (NetworkProperty*)ptr;*/
 			if(hashmap_put(this->networkProperties, internalKey, ptr) == MAP_OK)
-				ptr->eContainerNL = this;
+			{
+				ptr->eContainerNL = my_malloc(sizeof(char) * (strlen("nodeLink[]") + strlen(this->InternalGetKey(this))) + 1);
+				sprintf(ptr->eContainerNL, "nodeLink[%s]", this->InternalGetKey(this));
+			}
 		}
 	}
 }
