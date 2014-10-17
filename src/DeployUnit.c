@@ -98,9 +98,9 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 										strlen("hashcode=") + strlen(this->hashcode) + strlen(",") +
 										strlen("name=") + strlen(this->super->name) + strlen(",") +
 										strlen("version=") + strlen(this->version)) + 1);*/
-	internalKey = my_malloc(sizeof(char) * (strlen(this->groupName) + strlen(",") +
-											strlen(this->hashcode) + strlen(",") +
-											strlen(this->super->name) + strlen(",") +
+	internalKey = my_malloc(sizeof(char) * (strlen(this->groupName) + strlen("/") +
+											strlen(this->hashcode) + strlen("/") +
+											strlen(this->super->name) + strlen("/") +
 											strlen(this->version)) + 1);
 
 	if (internalKey == NULL)

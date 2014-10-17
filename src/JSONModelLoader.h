@@ -1,6 +1,12 @@
 #ifndef __JSONModelLoader_H
 #define __JSONModelLoader_H
 
-void JSONKevDeserializer(struct jsonparse_state *jsonState, char _jsonType);
+#include "jsonparse.h"
 
-#endif
+#define MAX_STRJSON_SIZE 100
+
+typedef struct _ContainerRoot ContainerRoot;
+
+void JSONKevDeserializer(struct jsonparse_state *jsonState, char _jsonType, ContainerRoot *newModel);
+
+#endif /* __JSONModelLoader_H */

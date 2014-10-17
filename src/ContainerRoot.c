@@ -293,7 +293,8 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 }
 
 void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition* ptr)
-{  
+{
+	printf("Entering ContainerRoot_AddTypeDefinitions\n");
 	TypeDefinition* container = NULL;
 
 	char *internalKey = ptr->InternalGetKey(ptr);
