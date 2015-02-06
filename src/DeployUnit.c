@@ -109,17 +109,10 @@ char* DeployUnit_InternalGetKey(DeployUnit* const this)
 										strlen("hashcode=") + strlen(this->hashcode) + strlen(",") +
 										strlen("name=") + strlen(this->super->name) + strlen(",") +
 										strlen("version=") + strlen(this->version)) + 1);*/
-<<<<<<< Updated upstream
-	internalKey = my_malloc(sizeof(char) * (strlen(this->groupName) + strlen(",") +
-											strlen(this->hashcode) + strlen(",") +
-											strlen(this->super->name) + strlen(",") +
-											strlen(this->version)) + 1);
-=======
 	internalKey = malloc(sizeof(char) * (strlen(this->groupName) + strlen("/") +
 			strlen(this->hashcode) + strlen("/") +
 			strlen(this->super->name) + strlen("/") +
 			strlen(this->version)) + 1);
->>>>>>> Stashed changes
 
 	if (internalKey == NULL)
 		return NULL;

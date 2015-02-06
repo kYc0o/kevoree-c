@@ -303,11 +303,7 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 }
 
 void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition* ptr)
-<<<<<<< Updated upstream
-{  
-=======
 {
->>>>>>> Stashed changes
 	TypeDefinition* container = NULL;
 
 	char *internalKey = ptr->InternalGetKey(ptr);

@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "KMF4C.h"
 #ifdef CONTIKI
 #include "lib/list.h"
 #endif
@@ -20,6 +19,7 @@ typedef void ** list_t;
 
 typedef void (*fptrVisit)(char*, Type, void*);
 typedef void (*fptrDiff)(Visitor*, char*, Type, void*);
+typedef void (*fptrVDelete)(void*);
 
 enum Type
 {
@@ -48,7 +48,7 @@ typedef struct _Visitor {
 	fptrVisit print;
 	fptrDiff diff;
 	void (*action)(char* path, Type type, void* value);
-	fptrDelete delete;
+	fptrVDelete delete;
 } Visitor;
 
 Visitor *new_Visitor(ContainerRoot *new_model, ContainerRoot *current_model);
