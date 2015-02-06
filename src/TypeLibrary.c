@@ -4,13 +4,20 @@
 #include "Visitor.h"
 #include "TypeLibrary.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 NamedElement* newPoly_TypeLibrary(void)
 {
 	TypeLibrary* pTypeLibObj = NULL;
 	NamedElement* pObj = new_NamedElement();
 
 	/* Allocating memory */
-	pTypeLibObj = (TypeLibrary*)my_malloc(sizeof(TypeLibrary));
+	pTypeLibObj = (TypeLibrary*)malloc(sizeof(TypeLibrary));
 
 	if (pTypeLibObj == NULL)
 	{
@@ -19,19 +26,22 @@ NamedElement* newPoly_TypeLibrary(void)
 	}
 
 	pObj->pDerivedObj = pTypeLibObj; /* Pointing to derived object */
-	
+
 	pTypeLibObj->subTypes = NULL;
 	pTypeLibObj->eContainer = NULL;
-	
+
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
 	pTypeLibObj->RemoveSubTypes = TypeLibrary_RemoveSubTypes;
-	
+
 	pObj->MetaClassName = TypeLibrary_MetaClassname;
 	pObj->InternalGetKey = TypeLibrary_InternalGetKey;
 	pObj->Delete = deletePoly_TypeLibrary;
 	pObj->VisitAttributes = TypeLibrary_VisitAttributes;
+	pObj->VisitPathAttributes = TypeLibrary_VisitPathAttributes;
 	pObj->VisitReferences = TypeLibrary_VisitReferences;
+	pObj->VisitPathReferences = TypeLibrary_VisitPathReferences;
+	pObj->FindByPath = TypeLibrary_FindByPath;
 
 	return pObj;
 }
@@ -43,31 +53,33 @@ TypeLibrary* new_TypeLibrary(void)
 
 	if(pObj == NULL)
 		return NULL;
-	
+
 	/* Allocating memory */
-	pTypeLibObj = (TypeLibrary*)my_malloc(sizeof(TypeLibrary));
+	pTypeLibObj = (TypeLibrary*)malloc(sizeof(TypeLibrary));
 
 	if (pTypeLibObj == NULL)
 	{
 		return NULL;
 	}
 
-	/* pObj->pDerivedObj = pTypeLibObj; Pointing to derived object */
 	pTypeLibObj->super = pObj;
-	
+
 	pTypeLibObj->subTypes = NULL;
 	pTypeLibObj->eContainer = NULL;
-	
+
 	pTypeLibObj->FindSubTypesByID = TypeLibrary_FindSubTypesByID;
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
 	pTypeLibObj->RemoveSubTypes = TypeLibrary_RemoveSubTypes;
-	
+
 	pTypeLibObj->MetaClassName = TypeLibrary_MetaClassname;
 	pObj->MetaClassName = TypeLibrary_MetaClassname;
 	pTypeLibObj->InternalGetKey = TypeLibrary_InternalGetKey;
 	pTypeLibObj->Delete = delete_TypeLibrary;
 	pTypeLibObj->VisitAttributes = TypeLibrary_VisitAttributes;
+	pTypeLibObj->VisitPathAttributes = TypeLibrary_VisitPathAttributes;
 	pTypeLibObj->VisitReferences = TypeLibrary_VisitReferences;
+	pTypeLibObj->VisitPathReferences = TypeLibrary_VisitPathReferences;
+	pTypeLibObj->FindByPath = TypeLibrary_FindByPath;
 
 	return pTypeLibObj;
 }
@@ -76,12 +88,12 @@ char* TypeLibrary_MetaClassname(TypeLibrary* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("TypeLibrary")) + 1);
+	name = malloc(sizeof(char) * (strlen("TypeLibrary")) + 1);
 	if(name != NULL)
 		strcpy(name, "TypeLibrary");
 	else
 		return NULL;
-	
+
 	return name;
 }
 
@@ -110,12 +122,12 @@ TypeDefinition* TypeLibrary_FindSubTypesByID(TypeLibrary* const this, char* id)
 void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 {
 	TypeDefinition* container = NULL;
-	
+
 	char *internalKey = ptr->InternalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
-		printf("The TypeDefinition cannot be added in TypeLibrary because the key is not defined\n");
+		PRINTF("The TypeDefinition cannot be added in TypeLibrary because the key is not defined\n");
 	}
 	else
 	{
@@ -137,7 +149,7 @@ void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The TypeDefinition cannot be removed in TypeLibrary because the key is not defined\n");
+		PRINTF("The TypeDefinition cannot be removed in TypeLibrary because the key is not defined\n");
 	}
 	else
 	{
@@ -174,15 +186,14 @@ void delete_TypeLibrary(TypeLibrary* const this)
 	}
 }
 
-void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void TypeLibrary_VisitAttributes(void *const this, char *parent, Visitor *visitor)
 {
-	/*char path[256];
-	memset(&path[0], 0, sizeof(path));
-
-	sprintf(path,"%s\\cClass", parent);
-	visitor->action(path, STRING, ((TypedElement*)this)->MetaClassName((TypedElement*)this));*/
-
 	NamedElement_VisitAttributes(((TypeLibrary*)(this))->super, parent, visitor, true);
+}
+
+void TypeLibrary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+{
+	NamedElement_VisitPathAttributes(((TypeLibrary*)(this))->super, parent, visitor, true);
 }
 
 void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -195,7 +206,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 		visitor->action("subTypes", SQBRACKET, NULL);
 		int i;
 		int length = hashmap_length(((TypeLibrary*)(this))->subTypes);
-		
+
 		/* subTypes */
 		hashmap_map* m = ((TypeLibrary*)(this))->subTypes;
 
@@ -206,10 +217,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				/*sprintf(path,"%s/subTypes[%s]", parent, n->InternalGetKey(n));*/
 				sprintf(path, "typeDefinitions[%s]", n->InternalGetKey(n));
-				/*n->VisitAttributes(n, path, visitor, 0);
-				n->VisitReferences(n, path, visitor);*/
 				visitor->action(path, STRREF, NULL);
 				if(length > 1)
 				{
@@ -229,6 +237,32 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 	}
 }
 
+void TypeLibrary_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((TypeLibrary*)(this))->subTypes != NULL)
+	{
+		int i;
+
+		/* subTypes */
+		hashmap_map* m = ((TypeLibrary*)(this))->subTypes;
+
+		/* compare subTypes */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				TypeDefinition* n = data;
+				sprintf(path,"%s/subTypes[%s]", parent, n->InternalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor, false);
+			}
+		}
+	}
+}
+
 void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
 {
 	/* NamedElement attributes */
@@ -239,64 +273,82 @@ void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
 	/* Local references */
 	else
 	{
-		char* nextAttribute = NULL;
-		char* path = strdup(attribute);
-		char* pch;
+		char path[250];
+		memset(&path[0], 0, sizeof(path));
+		char token[100];
+		memset(&token[0], 0, sizeof(token));
+		char *obj = NULL;
+		char key[50];
+		memset(&key[0], 0, sizeof(key));
+		char nextPath[150];
+		memset(&nextPath[0], 0, sizeof(nextPath));
+		char *nextAttribute = NULL;
 
-		if(indexOf(path,"/") != -1)
+		strcpy(path, attribute);
+
+		if(strchr(path, '[') != NULL)
 		{
-			pch = strtok (path,"/");
-			/*nextAttribute = strtok(NULL, "\\");
-			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));*/
-			if(strchr(attribute,'\\') != NULL)
+			obj = strdup(strtok(path, "["));
+			strcpy(path, attribute);
+			PRINTF("Object: %s\n", obj);
+			strcpy(token, strtok(path, "]"));
+			strcpy(path, attribute);
+			sprintf(token, "%s]", token);
+			PRINTF("Token: %s\n", token);
+			sscanf(token, "%*[^[][%[^]]", key);
+			PRINTF("Key: %s\n", key);
+
+			if((strchr(path, '\\')) != NULL)
 			{
-				/*printf("Attribute found at: %d\n", strchr(attribute,'\\')-attribute+1);*/
 				nextAttribute = strtok(NULL, "\\");
-				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+				PRINTF("Attribute: %s\n", nextAttribute);
+
+				if(strchr(nextAttribute, '['))
+				{
+					sprintf(nextPath, "%s\\%s", ++nextAttribute, strtok(NULL, "\\"));
+					PRINTF("Next Path: %s\n", nextPath);
+				}
+				else
+				{
+					strcpy(nextPath, nextAttribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				}
 			}
 			else
 			{
-				/*printf("Attribute not found, looking for path\n");*/
 				nextAttribute = strtok(NULL, "\\");
+				strcpy(nextPath, ++nextAttribute);
+				PRINTF("Next Path: %s\n", nextPath);
+				nextAttribute = NULL;
 			}
 		}
 		else
 		{
-			pch = path;
-			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(path, "\\");
 			nextAttribute = strtok(NULL, "\\");
+			PRINTF("Attribute: %s\n", nextAttribute);
 		}
-		
-		/*printf("Token: %s\n", pch);*/
 
-		int i = indexOf(pch,"[") + 2;
-		int y = lastIndexOf(pch,"]") - i + 1;
-
-		char* relationName = (char*)Substring(pch, 0, i - 2);
-		char* queryID = (char*)Substring(pch, i, y);
-		
-		/*printf("relationName: %s\n", relationName);
-		printf("queryID: %s\n", queryID);
-		printf("next attribute: %s\n", nextAttribute);*/
-	  
-		if(!strcmp("subTypes", relationName))
+		if(!strcmp("subTypes", obj))
 		{
+			free(obj);
 			if(nextAttribute == NULL)
 			{
-				return this->FindSubTypesByID(this, queryID);
+				return this->FindSubTypesByID(this, key);
 			}
 			else
 			{
-				TypeDefinition* typdef = this->FindSubTypesByID(this, queryID);
+				TypeDefinition* typdef = this->FindSubTypesByID(this, key);
 				if(typdef != NULL)
-					return typdef->FindByPath(nextAttribute, typdef);
+					return typdef->FindByPath(nextPath, typdef);
 				else
 					return NULL;
 			}
 		}
 		else
 		{
-			printf("Wrong attribute or reference\n");
+			free(obj);
+			PRINTF("Wrong attribute or reference\n");
 			return NULL;
 		}
 	}

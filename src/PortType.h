@@ -22,7 +22,9 @@ typedef struct _PortType {
 	fptrPortTypeInternalGetKey InternalGetKey;
 	fptrDeletePortType Delete;
 	fptrVisitAttrPortType VisitAttributes;
+	fptrVisitAttrPortType VisitPathAttributes;
 	fptrVisitRefsPortType VisitReferences;
+	fptrVisitRefsPortType VisitPathReferences;
 	fptrFindByPathPortType FindByPath;
 } PortType;
 
@@ -33,6 +35,7 @@ char* PortType_InternalGetKey(PortType* const this);
 void deletePoly_PortType(TypeDefinition* const this);
 void delete_PortType(PortType* const this);
 void PortType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void PortType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* PortType_FindByPath(char* attribute, TypeDefinition* const this);
 
 #endif /*__PortType_H */

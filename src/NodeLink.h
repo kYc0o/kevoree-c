@@ -1,14 +1,9 @@
 #ifndef __NodeLink_H
 #define __NodeLink_H
 
-#include <string.h>
-#include <stdio.h>
 #include "hashmap.h"
-/*#include "NetworkProperty.h"*/
-/*#include "Visitor.h"*/
 
 typedef struct _NodeLink NodeLink;
-/*typedef struct _NodeNetwork NodeNetwork;*/
 typedef struct _NetworkProperty NetworkProperty;
 typedef struct _Visitor Visitor;
 
@@ -37,7 +32,9 @@ typedef struct _NodeLink {
 	fptrNodeLinkMetaClassName MetaClassName;
 	fptrDeleteNodeLink Delete;
 	fptrVisitAttrNodeLink VisitAttributes;
+	fptrVisitAttrNodeLink VisitPathAttributes;
 	fptrVisitRefsNodeLink VisitReferences;
+	fptrVisitRefsNodeLink VisitPathReferences;
 	fptrFindByPathNodeLink FindByPath;
 } NodeLink;
 
@@ -49,7 +46,9 @@ void NodeLink_RemoveNetworkProperties(NodeLink* const this, NetworkProperty *ptr
 char* NodeLink_MetaClassName(NodeLink* const this);
 void delete_NodeLink(NodeLink* const this);
 void NodeLink_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void NodeLink_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void NodeLink_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void NodeLink_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* NodeLink_FindByPath(char* attribute, NodeLink* const this);
 
 #endif /* __NodeLink_H */

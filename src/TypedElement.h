@@ -1,15 +1,10 @@
 #ifndef __TypedElement_H
 #define __TypedElement_H
 
-#include <string.h>
-#include <stdio.h>
 #include "hashmap.h"
-/*#include "NamedElement.h"
-#include "ContainerRoot.h"*/
 
 typedef struct _TypedElement TypedElement;
 typedef struct _NamedElement NamedElement;
-/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrTypElemMetaClassName)(TypedElement*);
@@ -34,7 +29,9 @@ typedef struct _TypedElement {
 	fptrTypElemRemoveGenericTypes RemoveGenericTypes;
 	fptrDeleteTypedElement Delete;
 	fptrVisitAttrTypedElement VisitAttributes;
+	fptrVisitAttrTypedElement VisitPathAttributes;
 	fptrVisitRefsTypedElement VisitReferences;
+	fptrVisitRefsTypedElement VisitPathReferences;
 	fptrFindByPathTypedElement FindByPath;
 } TypedElement;
 
@@ -48,7 +45,9 @@ void TypedElement_RemoveGenericTypes(TypedElement* const this, TypedElement* ptr
 void deletePoly_TypedElement(NamedElement* const this);
 void delete_TypedElement(TypedElement* const this);
 void TypedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void TypedElement_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void TypedElement_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void TypedElement_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* TypedElement_FindByPath(char* attribute, TypedElement* const this);
 
 #endif /* __TypedElement_H */

@@ -9,7 +9,6 @@ typedef struct _MBinding MBinding;
 typedef struct _PortTypeRef PortTypeRef;
 typedef struct _Port Port;
 typedef struct _MBinding MBinding;
-/*typedef struct _ComponentInstance ComponentInstance;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrPortInternalGetKey)(Port*);
@@ -38,7 +37,9 @@ typedef struct _Port {
 	fptrPortRemovePortTypeRef RemovePortTypeRef;
 	fptrFindByPathPort FindByPath;
 	fptrVisitAttrPort VisitAttributes;
+	fptrVisitAttrPort VisitPathAttributes;
 	fptrVisitRefsPort VisitReferences;
+	fptrVisitRefsPort VisitPathReferences;
 	fptrDeletePort Delete;
 } Port;
 
@@ -52,7 +53,9 @@ void Port_AddPortTypeRef(Port* const this, PortTypeRef* ptr);
 void Port_RemoveBindings(Port* const this, MBinding* ptr);
 void Port_RemovePortTypeRef(Port* const this, PortTypeRef* ptr);
 void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, bool recursive);
+void Port_VisitPathAttributes(Port* const this, char* parent, Visitor* visitor, bool recursive);
 void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor);
+void Port_VisitPathReferences(Port* const this, char* parent, Visitor* visitor);
 void* Port_FindByPath(char* attribute, Port* const this);
 
 #endif /* __Port_H */

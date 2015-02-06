@@ -3,13 +3,20 @@
 #include "TypeDefinition.h"
 #include "NamedElement.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 TypeDefinition* newPoly_NodeType()
 {
 	NodeType* pNodeTypeObj = NULL;
 	TypeDefinition* pObj = new_TypeDefinition();
 
 	/* Allocating memory */
-	pNodeTypeObj = (NodeType*)my_malloc(sizeof(NodeType));
+	pNodeTypeObj = (NodeType*)malloc(sizeof(NodeType));
 
 	if (pNodeTypeObj == NULL)
 	{
@@ -23,7 +30,9 @@ TypeDefinition* newPoly_NodeType()
 	pObj->super->MetaClassName = NodeType_MetaClassName;
 	pObj->InternalGetKey = NodeType_InternalGetKey;
 	pObj->VisitAttributes = NodeType_VisitAttributes;
+	pObj->VisitPathAttributes = NodeType_VisitPathAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
+	pObj->VisitPathReferences = TypeDefinition_VisitPathReferences;
 	
 	pObj->Delete = deletePoly_NodeType;
 
@@ -39,7 +48,7 @@ NodeType* new_NodeType()
 		return NULL;
 
 	/* Allocating memory */
-	pNodeTypeObj = (NodeType*)my_malloc(sizeof(NodeType));
+	pNodeTypeObj = (NodeType*)malloc(sizeof(NodeType));
 
 	if (pNodeTypeObj == NULL)
 	{
@@ -52,7 +61,9 @@ NodeType* new_NodeType()
 	pNodeTypeObj->MetaClassName = NodeType_MetaClassName;
 	pNodeTypeObj->InternalGetKey = NodeType_InternalGetKey;
 	pNodeTypeObj->VisitAttributes = NodeType_VisitAttributes;
+	pNodeTypeObj->VisitPathAttributes = NodeType_VisitPathAttributes;
 	pNodeTypeObj->VisitReferences = TypeDefinition_VisitAttributes;
+	pNodeTypeObj->VisitPathReferences = TypeDefinition_VisitPathAttributes;
 	pNodeTypeObj->FindByPath = TypeDefinition_FindByPath;
 	
 	pNodeTypeObj->Delete = delete_NodeType;
@@ -69,7 +80,7 @@ char* NodeType_MetaClassName(NodeType* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("NodeType")) + 1);
+	name = malloc(sizeof(char) * (strlen("NodeType")) + 1);
 	if(name != NULL)
 		strcpy(name, "NodeType");
 	else
@@ -97,13 +108,12 @@ void delete_NodeType(NodeType* const this)
 	
 }
 
-void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
+void NodeType_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
-	/*char path[256];
-	memset(&path[0], 0, sizeof(path));
-
-	sprintf(path,"%s\\cClass", parent);
-	visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
-
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
+}
+
+void NodeType_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
+{
+	TypeDefinition_VisitPathAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }

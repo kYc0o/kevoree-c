@@ -3,6 +3,13 @@
 #include "Visitor.h"
 #include "GroupType.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 TypeDefinition* newPoly_GroupType()
 {
 	GroupType* pGroupTypeObj = NULL;
@@ -12,7 +19,7 @@ TypeDefinition* newPoly_GroupType()
 		return NULL;
 
 	/* Allocating memory */
-	pGroupTypeObj = (GroupType*)my_malloc(sizeof(GroupType));
+	pGroupTypeObj = (GroupType*)malloc(sizeof(GroupType));
 
 	if (pGroupTypeObj == NULL)
 	{
@@ -25,7 +32,9 @@ TypeDefinition* newPoly_GroupType()
 	pObj->super->MetaClassName = GroupType_MetaClassName;
 	pObj->InternalGetKey = GroupType_InternalGetKey;
 	pObj->VisitAttributes = GroupType_VisitAttributes;
+	pObj->VisitPathAttributes = GroupType_VisitPathAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
+	pObj->VisitPathReferences = TypeDefinition_VisitPathReferences;
 	
 	pObj->Delete = deletePoly_GroupType;
 
@@ -41,7 +50,7 @@ GroupType* new_GroupType()
 		return NULL;
 
 	/* Allocating memory */
-	pGroupTypeObj = (GroupType*)my_malloc(sizeof(GroupType));
+	pGroupTypeObj = (GroupType*)malloc(sizeof(GroupType));
 
 	if (pGroupTypeObj == NULL)
 	{
@@ -54,7 +63,8 @@ GroupType* new_GroupType()
 	pGroupTypeObj->MetaClassName = GroupType_MetaClassName;
 	pGroupTypeObj->InternalGetKey = GroupType_InternalGetKey;
 	pGroupTypeObj->VisitAttributes = GroupType_VisitAttributes;
-	pGroupTypeObj->VisitReferences = TypeDefinition_VisitReferences;
+	pGroupTypeObj->VisitPathAttributes = GroupType_VisitPathAttributes;
+	pGroupTypeObj->VisitPathReferences = TypeDefinition_VisitPathReferences;
 	
 	pGroupTypeObj->Delete = delete_GroupType;
 
@@ -65,7 +75,7 @@ char* GroupType_MetaClassName(GroupType* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("GroupType")) + 1);
+	name = malloc(sizeof(char) * (strlen("GroupType")) + 1);
 	if(name != NULL)
 		strcpy(name, "GroupType");
 	else
@@ -96,13 +106,12 @@ void delete_GroupType(GroupType* const this)
 	free(this);
 }
 
-void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
+void GroupType_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
-	/*char path[256];
-	memset(&path[0], 0, sizeof(path));
-
-	sprintf(path,"%s\\cClass", parent);
-	visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
-
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
+}
+
+void GroupType_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
+{
+	TypeDefinition_VisitPathAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }

@@ -25,7 +25,9 @@ typedef struct _FragmentDictionary {
 	fptrFragDicMetaClassName MetaClassName;
 	fptrDeleteFragDic Delete;
 	fptrVisitAttrFragDic VisitAttributes;
+	fptrVisitAttrFragDic VisitPathAttributes;
 	fptrVisitRefsFragDic VisitReferences;
+	fptrVisitRefsFragDic VisitPathReferences;
 	fptrFindByPathFragDic FindByPath;
 } FragmentDictionary;
 
@@ -36,7 +38,9 @@ void delete_FragmentDictionary(void* const this);
 char* FragmentDictionary_InternalGetKey(FragmentDictionary* const this);
 char* FragmentDictionary_MetaClassName(FragmentDictionary* const this);
 void FragmentDictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void FragmentDictionary_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void FragmentDictionary_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void FragmentDictionary_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* FragmentDictionary_FindByPath(char* attribute, FragmentDictionary* const this);
 
 #endif /* __FragmentDictionary_H */

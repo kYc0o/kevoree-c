@@ -1,11 +1,8 @@
 #ifndef __ComponentType_H
 #define __ComponentType_H
 
-#include <string.h>
 #include <stdbool.h>
 #include "hashmap.h"
-/*#include "TypeDefinition.h"
-#include "PortTypeRef.h"*/
 
 typedef struct _ComponentType ComponentType;
 typedef struct _TypeDefinition TypeDefinition;
@@ -39,7 +36,9 @@ typedef struct _ComponentType {
 	fptrCompTypeRemoveProvided RemoveProvided;
 	fptrDeleteComponentType Delete;
 	fptrVisitAttrComponentType VisitAttributes;
+	fptrVisitAttrComponentType VisitPathAttributes;
 	fptrVisitRefsComponentType VisitReferences;
+	fptrVisitRefsComponentType VisitPathReferences;
 	fptrFindByPathComponentType FindByPath;
 } ComponentType;
 
@@ -56,7 +55,9 @@ void ComponentType_RemoveProvided(TypeDefinition* const this, PortTypeRef* ptr);
 void deletePoly_ComponentType(TypeDefinition* const this);
 void delete_ComponentType(ComponentType* const this);
 void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void ComponentType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void ComponentType_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this);
  
 #endif /* __ComponentType_H */

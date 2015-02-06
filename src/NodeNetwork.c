@@ -4,11 +4,18 @@
 #include "tools.h"
 #include "NodeNetwork.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 NodeNetwork* new_NodeNetwork()
 {
 	NodeNetwork* pObj;
 	/* Allocating memory */
-	pObj = (NodeNetwork*)my_malloc(sizeof(NodeNetwork));
+	pObj = (NodeNetwork*)malloc(sizeof(NodeNetwork));
 
 	if (pObj == NULL)
 	{
@@ -22,7 +29,7 @@ NodeNetwork* new_NodeNetwork()
 	pObj->target = NULL;
 	pObj->link = NULL;
 	pObj->eContainer = NULL;
-	
+
 	pObj->InternalGetKey = NodeNetwork_InternalGetKey;
 	pObj->MetaClassName = NodeNetwork_MetaClassName;
 	pObj->FindLinkByID = NodeNetwork_FindLinkByID;
@@ -34,9 +41,11 @@ NodeNetwork* new_NodeNetwork()
 	pObj->RemoveTarget = NodeNetwork_RemoveTarget;
 	pObj->Delete = delete_NodeNetwork;
 	pObj->VisitAttributes = NodeNetwork_VisitAttributes;
+	pObj->VisitPathAttributes = NodeNetwork_VisitPathAttributes;
 	pObj->VisitReferences = NodeNetwork_VisitReferences;
+	pObj->VisitPathReferences = NodeNetwork_VisitPathReferences;
 	pObj->FindByPath = NodeNetwork_FindByPath;
-	
+
 	return pObj;
 }
 
@@ -49,12 +58,12 @@ char* NodeNetwork_MetaClassName(NodeNetwork* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("NodeNetwork")) + 1);
+	name = malloc(sizeof(char) * (strlen("NodeNetwork")) + 1);
 	if(name != NULL)
 		strcpy(name, "NodeNetwork");
 	else
 		return NULL;
-	
+
 	return name;
 }
 
@@ -83,7 +92,7 @@ void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The NodeLink cannot be added in NodeNetwork because the key is not defined\n");
+		PRINTF("The NodeLink cannot be added in NodeNetwork because the key is not defined\n");
 	}
 	else
 	{
@@ -96,7 +105,7 @@ void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr)
 			/*container = (NodeLink*)ptr;*/
 			if(hashmap_put(this->link, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = my_malloc(sizeof(char) * (strlen("nodeNetwork[]") + strlen(this->InternalGetKey(this))) + 1);
+				ptr->eContainer = malloc(sizeof(char) * (strlen("nodeNetwork[]") + strlen(this->InternalGetKey(this))) + 1);
 				sprintf(ptr->eContainer, "nodeNetwork[%s]", this->InternalGetKey(this));
 			}
 		}
@@ -119,7 +128,7 @@ void NodeNetwork_RemoveLink(NodeNetwork* const this, NodeLink* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The NodeLink cannot be removed in NodeNetwork because the key is not defined\n");
+		PRINTF("The NodeLink cannot be removed in NodeNetwork because the key is not defined\n");
 	}
 	else
 	{
@@ -158,7 +167,7 @@ void delete_NodeNetwork(NodeNetwork* const this)
 	}
 }
 
-void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void NodeNetwork_VisitAttributes(void *const this, char *parent, Visitor *visitor)
 {
 	char path[256];
 	char *cClass = NULL;
@@ -171,7 +180,22 @@ void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visito
 	sprintf(path,"%s\\ID", parent);
 	visitor->action(path, STRING, ((NodeNetwork*)(this))->generated_KMF_ID);
 }
-void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor)
+
+void NodeNetwork_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	char *cClass = NULL;
+	memset(&path[0], 0, sizeof(path));
+
+	/*sprintf(path,"%s\\cClass", parent);
+	cClass = ((NodeNetwork*)this)->MetaClassName((NodeNetwork*)this);
+	visitor->action(path, STRING, cClass);*/
+
+	sprintf(path,"%s\\ID", parent);
+	visitor->action(path, STRING, ((NodeNetwork*)(this))->generated_KMF_ID);
+}
+
+void NodeNetwork_VisitReferences(void *const this, char *parent, Visitor *visitor)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -179,23 +203,19 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 	if(((NodeNetwork*)(this))->target != NULL)
 	{
 		sprintf(path, "%s/target[%s]", parent, ((NodeNetwork*)(this))->target->InternalGetKey(((NodeNetwork*)(this))->target));
-		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, 0);
-		/*((NodeNetwork*)(this))->target->VisitReferences(((NodeNetwork*)(this))->target, path, visitor);*/
+		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, false);
 	}
-	
+
 	if(((NodeNetwork*)(this))->initBy != NULL)
 	{
-		sprintf(path, "%s/initBy[%s]", parent, /*((NodeNetwork*)(this))->initBy->super->super->name*/((NodeNetwork*)(this))->initBy->InternalGetKey(((NodeNetwork*)(this))->initBy));
-		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor, 0);
-		/*((NodeNetwork*)(this))->initBy->VisitReferences(((NodeNetwork*)(this))->initBy, path, visitor);*/
+		sprintf(path, "%s/initBy[%s]", parent, ((NodeNetwork*)(this))->initBy->InternalGetKey(((NodeNetwork*)(this))->initBy));
+		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor, false);
 	}
-	
+
 	if(((NodeNetwork*)(this))->link != NULL)
 	{
 		int i;
-		
-		/*sprintf(path,"%s/link[%s]", parent, ((NodeNetwork*)(this))->generated_KMF_ID);*/
-		
+
 		/* link */
 		hashmap_map* m = ((NodeNetwork*)(this))->link;
 
@@ -206,9 +226,48 @@ void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				NodeLink* n = data;
-				sprintf(path,"%s/link[%s]", parent, /*n->generated_KMF_ID*/n->InternalGetKey(n));
+				sprintf(path,"%s/link[%s]", parent, n->InternalGetKey(n));
 				n->VisitAttributes(n, path, visitor);
 				n->VisitReferences(n, path, visitor);
+			}
+		}
+	}
+}
+
+void NodeNetwork_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	if(((NodeNetwork*)(this))->target != NULL)
+	{
+		sprintf(path, "%s/target[%s]", parent, ((NodeNetwork*)(this))->target->InternalGetKey(((NodeNetwork*)(this))->target));
+		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, false);
+	}
+
+	if(((NodeNetwork*)(this))->initBy != NULL)
+	{
+		sprintf(path, "%s/initBy[%s]", parent, ((NodeNetwork*)(this))->initBy->InternalGetKey(((NodeNetwork*)(this))->initBy));
+		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor, false);
+	}
+
+	if(((NodeNetwork*)(this))->link != NULL)
+	{
+		int i;
+
+		/* link */
+		hashmap_map* m = ((NodeNetwork*)(this))->link;
+
+		/* compare link */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				NodeLink* n = data;
+				sprintf(path,"%s/link[%s]", parent, n->InternalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor);
+				n->VisitPathReferences(n, path, visitor);
 			}
 		}
 	}
@@ -224,86 +283,106 @@ void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this)
 	/* Local references */
 	else
 	{
-		char* nextAttribute = NULL;
-		char* path = strdup(attribute);
-		char* pch;
+		char path[250];
+		memset(&path[0], 0, sizeof(path));
+		char token[100];
+		memset(&token[0], 0, sizeof(token));
+		char *obj = NULL;
+		char key[50];
+		memset(&key[0], 0, sizeof(key));
+		char nextPath[150];
+		memset(&nextPath[0], 0, sizeof(nextPath));
+		char *nextAttribute = NULL;
 
-		if(indexOf(path,"/") != -1)
+		strcpy(path, attribute);
+
+		if(strchr(path, '[') != NULL)
 		{
-			pch = strtok (path,"/");
-			/*nextAttribute = strtok(NULL, "\\");
-			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));*/
-			if(strchr(attribute,'\\') != NULL)
+			obj = strdup(strtok(path, "["));
+			strcpy(path, attribute);
+			PRINTF("Object: %s\n", obj);
+			strcpy(token, strtok(path, "]"));
+			strcpy(path, attribute);
+			sprintf(token, "%s]", token);
+			PRINTF("Token: %s\n", token);
+			sscanf(token, "%*[^[][%[^]]", key);
+			PRINTF("Key: %s\n", key);
+
+			if((strchr(path, '\\')) != NULL)
 			{
-				printf("Attribute found at: %d\n", strchr(attribute,'\\')-attribute+1);
 				nextAttribute = strtok(NULL, "\\");
-				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+				PRINTF("Attribute: %s\n", nextAttribute);
+
+				if(strchr(nextAttribute, '['))
+				{
+					sprintf(nextPath, "%s\\%s", ++nextAttribute, strtok(NULL, "\\"));
+					PRINTF("Next Path: %s\n", nextPath);
+				}
+				else
+				{
+					strcpy(nextPath, nextAttribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				}
 			}
 			else
 			{
-				printf("Attribute not found, looking for path\n");
 				nextAttribute = strtok(NULL, "\\");
+				strcpy(nextPath, ++nextAttribute);
+				PRINTF("Next Path: %s\n", nextPath);
+				nextAttribute = NULL;
 			}
 		}
 		else
 		{
-			pch = path;
-			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(path, "\\");
 			nextAttribute = strtok(NULL, "\\");
+			PRINTF("Attribute: %s\n", nextAttribute);
 		}
-		
-		/*printf("Token: %s\n", pch);*/
 
-		int i = indexOf(pch,"[") + 2;
-		int y = lastIndexOf(pch,"]") - i + 1;
-
-		char* relationName = (char*)Substring(pch, 0, i - 2);
-		char* queryID = (char*)Substring(pch, i, y);
-		
-		/*printf("relationName: %s\n", relationName);
-		printf("queryID: %s\n", queryID);
-		printf("next attribute: %s\n", nextAttribute);*/
-		
-		if(!strcmp("link", relationName))
+		if(!strcmp("link", obj))
 		{
+			free(obj);
 			if(nextAttribute == NULL)
 			{
-				return this->FindLinkByID(this, queryID);
+				return this->FindLinkByID(this, key);
 			}
 			else
 			{
-				NodeLink* nodelink = this->FindLinkByID(this, queryID);
+				NodeLink* nodelink = this->FindLinkByID(this, key);
 				if(nodelink != NULL)
-					return nodelink->FindByPath(nextAttribute, nodelink);
+					return nodelink->FindByPath(nextPath, nodelink);
 				else
 					return NULL;
 			}
 		}
-		else if(!strcmp("initBy", relationName))
+		else if(!strcmp("initBy", obj))
 		{
+			free(obj);
 			if(nextAttribute == NULL)
 			{
 				return this->initBy;
 			}
 			else
 			{
-				return this->initBy->FindByPath(nextAttribute, this->initBy);
+				return this->initBy->FindByPath(nextPath, this->initBy);
 			}
 		}
-		else if(!strcmp("target", relationName))
+		else if(!strcmp("target", obj))
 		{
+			free(obj);
 			if(nextAttribute == NULL)
 			{
 				return this->target;
 			}
 			else
 			{
-				return this->target->FindByPath(nextAttribute, this->target);
+				return this->target->FindByPath(nextPath, this->target);
 			}
 		}
 		else
 		{
-			printf("Wrong attribute or reference\n");
+			free(obj);
+			PRINTF("Wrong attribute or reference\n");
 			return NULL;
 		}
 	}

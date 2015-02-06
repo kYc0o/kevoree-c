@@ -21,7 +21,9 @@ typedef struct _NodeType {
 	fptrNodeTypeInternalGetKey InternalGetKey;
 	fptrDeleteNodeType Delete;
 	fptrVisitAttrNodeType VisitAttributes;
+	fptrVisitAttrNodeType VisitPathAttributes;
 	fptrVisitRefsNodeType VisitReferences;
+	fptrVisitRefsNodeType VisitPathReferences;
 	fptrFindByPathNodeType FindByPath;
 } NodeType;
 
@@ -32,5 +34,6 @@ void delete_NodeType(NodeType*);
 char* NodeType_MetaClassName(NodeType* const this);
 char* NodeType_InternalGetKey(void* const this);
 void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NodeType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 
 #endif /* H_NodeType */

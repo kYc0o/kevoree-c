@@ -6,11 +6,18 @@
 #include "tools.h"
 #include "PortTypeMapping.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 PortTypeMapping* new_PortTypeMapping()
 {
 	PortTypeMapping* pObj;
 	/* Allocating memory */
-	pObj = (PortTypeMapping*)my_malloc(sizeof(PortTypeMapping));
+	pObj = (PortTypeMapping*)malloc(sizeof(PortTypeMapping));
 
 	if (pObj == NULL)
 	{
@@ -32,6 +39,7 @@ PortTypeMapping* new_PortTypeMapping()
 	pObj->MetaClassName = PortTypeMapping_MetaClassName;
 	pObj->Delete = delete_PortTypeMapping;
 	pObj->VisitAttributes = PortTypeMapping_VisitAttributes;
+	pObj->VisitPathAttributes = PortTypeMapping_VisitPathAttributes;
 	pObj->FindByPath = PortTypeMapping_FindByPath;
 	
 	return pObj;
@@ -41,7 +49,7 @@ char* PortTypeMapping_MetaClassName(PortTypeMapping* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("PortTypeMapping")) + 1);
+	name = malloc(sizeof(char) * (strlen("PortTypeMapping")) + 1);
 	if(name != NULL)
 		strcpy(name, "PortTypeMapping");
 	else
@@ -80,7 +88,7 @@ void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* vi
 	cClass = ((PortTypeMapping*)this)->MetaClassName((PortTypeMapping*)this);
 	visitor->action(path, STRING, cClass);
 	/*free(cClass);*/
-	str_free(cClass);
+	free(cClass);
 
 	sprintf(path,"%s\\ID",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->generated_KMF_ID);
@@ -91,6 +99,30 @@ void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* vi
 	sprintf(path,"%s\\serviceMethodName",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->serviceMethodName);
 	
+	sprintf(path,"%s\\paramTypes",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->paramTypes);
+}
+
+void PortTypeMapping_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	char* cClass = NULL;
+	memset(&path[0], 0, sizeof(path));
+
+	/*sprintf(path,"%s\\cClass", parent);
+	cClass = ((PortTypeMapping*)this)->MetaClassName((PortTypeMapping*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);*/
+
+	sprintf(path,"%s\\ID",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->generated_KMF_ID);
+
+	sprintf(path,"%s\\beanMethodName",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->beanMethodName);
+
+	sprintf(path,"%s\\serviceMethodName",parent);
+	visitor->action(path, STRING, ((PortTypeMapping*)(this))->serviceMethodName);
+
 	sprintf(path,"%s\\paramTypes",parent);
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->paramTypes);
 }
@@ -117,7 +149,7 @@ void* PortTypeMapping_FindByPath(char* attribute, PortTypeMapping* const this)
 	/* There is no local references */
 	else
 	{
-		printf("Wrong path\n");
+		PRINTF("Wrong path\n");
 		return NULL;
 	}
 }

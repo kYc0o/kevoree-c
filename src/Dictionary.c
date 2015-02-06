@@ -3,26 +3,33 @@
 #include "Instance.h"
 #include "Dictionary.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 Dictionary* new_Dictionary()
 {
 	Dictionary* pObj = NULL;
 	/* Allocating memory */
-	pObj = (Dictionary*)my_malloc(sizeof(Dictionary));
+	pObj = (Dictionary*)malloc(sizeof(Dictionary));
 
 	if (pObj == NULL)
 	{
 		return NULL;
 	}
-	
+
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
 
 	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
-	
+
 	pObj->values = NULL;
 	pObj->eContainer = NULL;
-	
+
 	pObj->AddValues = Dictionary_AddValues;
 	pObj->RemoveValues = Dictionary_RemoveValues;
 	pObj->FindValuesByID = Dictionary_FindValuesByID;
@@ -31,9 +38,11 @@ Dictionary* new_Dictionary()
 	pObj->MetaClassName = Dictionary_MetaClassName;
 	pObj->Delete = delete_Dictionary;
 	pObj->VisitAttributes = Dictionary_VisitAttributes;
+	pObj->VisitPathAttributes = Dictionary_VisitPathAttributes;
 	pObj->VisitReferences = Dictionary_VisitReferences;
+	pObj->VisitPathReferences = Dictionary_VisitPathReferences;
 	pObj->FindByPath = Dictionary_FindByPath;
-	
+
 	return pObj;
 }
 
@@ -75,7 +84,7 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The DictionaryValue cannot be added in Dictionary because the key is not defined\n");
+		PRINTF("The DictionaryValue cannot be added in Dictionary because the key is not defined\n");
 	}
 	else
 	{
@@ -88,7 +97,7 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 			/*container = (DictionaryValue*)ptr;*/
 			if(hashmap_put(this->values, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = my_malloc(sizeof(char) * (strlen("dictionary[]") + strlen(this->InternalGetKey(this))) + 1);
+				ptr->eContainer = malloc(sizeof(char) * (strlen("dictionary[]") + strlen(this->InternalGetKey(this))) + 1);
 				sprintf(ptr->eContainer, "dictionary[%s]", this->InternalGetKey(this));
 			}
 		}
@@ -101,7 +110,7 @@ void Dictionary_RemoveValues(Dictionary* const this, DictionaryValue* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The DictionaryValue cannot be removed in Dictionary because the key is not defined\n");
+		PRINTF("The DictionaryValue cannot be removed in Dictionary because the key is not defined\n");
 	}
 	else
 	{
@@ -122,12 +131,12 @@ char* Dictionary_MetaClassName(Dictionary* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("Dictionary")) + 1);
+	name = malloc(sizeof(char) * (strlen("Dictionary")) + 1);
 	if(name != NULL)
 		strcpy(name, "Dictionary");
 	else
 		return NULL;
-	
+
 	return name;
 }
 
@@ -137,31 +146,42 @@ void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Dictionary*)this)->MetaClassName((Dictionary*)this))) + 1);
-	/*sprintf(path,"%s\\cClass", parent);*/
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Dictionary*)this)->MetaClassName((Dictionary*)this))) + 1);
 	sprintf(cClass, "org.kevoree.%s", ((Dictionary*)this)->MetaClassName((Dictionary*)this));
 	sprintf(path, "eClass");
-	/*cClass = ((Dictionary*)this)->MetaClassName((Dictionary*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
-	/*free(cClass);*/
-	str_free(cClass);
+	free(cClass);
 
-	/*sprintf(path, "%s\\generated_KMF_ID", parent);*/
 	sprintf(path, "generated_KMF_ID");
 	visitor->action(path, STRING, ((Dictionary*)(this))->generated_KMF_ID);
 	visitor->action(NULL, COLON, NULL);
 }
 
-void Dictionary_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void Dictionary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	char *cClass = NULL;
+	memset(&path[0], 0, sizeof(path));
+
+	/*sprintf(path,"%s\\cClass", parent);
+	cClass = ((Dictionary*)this)->MetaClassName((Dictionary*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);*/
+
+	sprintf(path, "%s\\generated_KMF_ID", parent);
+	visitor->action(path, STRING, ((Dictionary*)(this))->generated_KMF_ID);
+}
+
+void Dictionary_VisitReferences(void *const this, char *parent, Visitor *visitor)
 {
 	int i;
 
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-	
+
 	hashmap_map* m = NULL;
-	
+
 	if((m = (hashmap_map*) ((Dictionary*)(this))->values) != NULL)
 	{
 		int length = hashmap_length(((Dictionary*)(this))->values);
@@ -175,7 +195,6 @@ void Dictionary_VisitReferences(void* const this, char* parent, Visitor* visitor
 				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				DictionaryValue* n = data;
-				/*sprintf(path, "%s/values[%s]", parent, n->InternalGetKey(n));*/
 				n->VisitAttributes(n, path, visitor);
 				if(length > 1)
 				{
@@ -195,6 +214,31 @@ void Dictionary_VisitReferences(void* const this, char* parent, Visitor* visitor
 	}
 }
 
+void Dictionary_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+{
+	int i;
+
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	hashmap_map* m = NULL;
+
+	if((m = (hashmap_map*) ((Dictionary*)(this))->values) != NULL)
+	{
+		/* compare nodes*/
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				DictionaryValue* n = data;
+				sprintf(path, "%s/values[%s]", parent, n->InternalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor);
+			}
+		}
+	}
+}
+
 void* Dictionary_FindByPath(char* attribute, Dictionary* const this)
 {
 	/* Local attributes */
@@ -205,56 +249,83 @@ void* Dictionary_FindByPath(char* attribute, Dictionary* const this)
 	/* Local references */
 	else
 	{
-		char* nextAttribute = NULL;
-		char* path = strdup(attribute);
-		char* pch;
+		char path[250];
+		memset(&path[0], 0, sizeof(path));
+		char token[100];
+		memset(&token[0], 0, sizeof(token));
+		char *obj = NULL;
+		char key[50];
+		memset(&key[0], 0, sizeof(key));
+		char nextPath[150];
+		memset(&nextPath[0], 0, sizeof(nextPath));
+		char *nextAttribute = NULL;
 
-		if(indexOf(path,"/") != -1)
+		strcpy(path, attribute);
+
+		if(strchr(path, '[') != NULL)
 		{
-			pch = strtok (path,"/");
-			
-			if(strchr(attribute,'\\') != NULL)
+			obj = strdup(strtok(path, "["));
+			strcpy(path, attribute);
+			PRINTF("Object: %s\n", obj);
+			strcpy(token, strtok(path, "]"));
+			strcpy(path, attribute);
+			sprintf(token, "%s]", token);
+			PRINTF("Token: %s\n", token);
+			sscanf(token, "%*[^[][%[^]]", key);
+			PRINTF("Key: %s\n", key);
+
+			if((strchr(path, '\\')) != NULL)
 			{
 				nextAttribute = strtok(NULL, "\\");
-				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
+				PRINTF("Attribute: %s\n", nextAttribute);
+
+				if(strchr(nextAttribute, '['))
+				{
+					sprintf(nextPath, "%s\\%s", ++nextAttribute, strtok(NULL, "\\"));
+					PRINTF("Next Path: %s\n", nextPath);
+				}
+				else
+				{
+					strcpy(nextPath, nextAttribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				}
 			}
 			else
 			{
 				nextAttribute = strtok(NULL, "\\");
+				strcpy(nextPath, ++nextAttribute);
+				PRINTF("Next Path: %s\n", nextPath);
+				nextAttribute = NULL;
 			}
 		}
 		else
 		{
-			pch = path;
-			nextAttribute = strtok(pch, "\\");
+			nextAttribute = strtok(path, "\\");
 			nextAttribute = strtok(NULL, "\\");
+			PRINTF("Attribute: %s\n", nextAttribute);
 		}
 
-		int i = indexOf(pch,"[") + 2;
-		int y = lastIndexOf(pch,"]") - i + 1;
-
-		char* relationName = (char*)Substring(pch, 0, i - 2);
-		char* queryID = (char*)Substring(pch, i, y);
-	  
-		if(!strcmp("values", relationName))
+		if(!strcmp("values", obj))
 		{
+			free(obj);
 			if(nextAttribute == NULL)
 			{
-				
-				return this->FindValuesByID(this, queryID);
+
+				return this->FindValuesByID(this, key);
 			}
 			else
 			{
-				DictionaryValue* value = this->FindValuesByID(this, queryID);
+				DictionaryValue* value = this->FindValuesByID(this, key);
 				if(value != NULL)
-					return value->FindByPath(nextAttribute, value);
+					return value->FindByPath(nextPath, value);
 				else
 					return NULL;
 			}
 		}
 		else
 		{
-			printf("Wrong attribute or reference\n");
+			free(obj);
+			PRINTF("Wrong attribute or reference\n");
 			return NULL;
 		}
 	}

@@ -21,7 +21,9 @@ typedef struct _NamedElement {
 	fptrNamedElementMetaClassName MetaClassName;
 	fptrDeleteNamedElement Delete;
 	fptrVisitAttrNamedElement VisitAttributes;
+	fptrVisitAttrNamedElement VisitPathAttributes;
 	fptrVisitRefsNamedElement VisitReferences;
+	fptrVisitRefsNamedElement VisitPathReferences;
 	fptrFindByPathNamedElement FindByPath;
 }NamedElement;
 
@@ -30,6 +32,7 @@ char* NamedElement_InternalGetKey(NamedElement* const this);
 char* NamedElement_MetaClassName(NamedElement* const this);
 void delete_NamedElement(NamedElement*);
 void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NamedElement_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* NamedElement_FindByPath(char* attribute, NamedElement* const this);
 
 #endif

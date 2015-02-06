@@ -1,11 +1,18 @@
 #include "Repository.h"
 #include "Visitor.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 Repository* new_Repository()
 {
 	Repository* pObj;
 	/* Allocating memory */
-	pObj = (Repository*)my_malloc(sizeof(Repository));
+	pObj = (Repository*)malloc(sizeof(Repository));
 
 	if (pObj == NULL)
 	{
@@ -19,8 +26,8 @@ Repository* new_Repository()
 	pObj->MetaClassName = Repository_MetaClassName;
 	pObj->Delete = delete_Repository;
 	pObj->VisitAttributes = Repository_VisitAttributes;
+	pObj->VisitPathAttributes = Repository_VisitPathAttributes;
 	pObj->FindByPath = Repository_FindByPath;
-	/*pObj->VisitReferences = Repository_VisitAttributes;*/
 	
 	return pObj;
 }
@@ -29,7 +36,7 @@ char* Repository_MetaClassName(Repository* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("Repository")) + 1);
+	name = malloc(sizeof(char) * (strlen("Repository")) + 1);
 	if(name != NULL)
 		strcpy(name, "Repository");
 	else
@@ -61,19 +68,31 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path,"%s\\cClass", parent);*/
-	cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Repository*)this)->MetaClassName((Repository*)this))) + 1);
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Repository*)this)->MetaClassName((Repository*)this))) + 1);
 	sprintf(cClass, "org.kevoree.%s", ((Repository*)this)->MetaClassName((Repository*)this));
 	sprintf(path,"eClass");
-	/*cClass = ((Repository*)this)->MetaClassName((Repository*)this);*/
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
-	str_free(cClass);
+	free(cClass);
 
-	/*sprintf(path,"%s\\url",parent);*/
 	sprintf(path, "url");
 	visitor->action(path, STRING, ((Repository*)(this))->url);
 	visitor->action(NULL, RETURN, NULL);
+}
+
+void Repository_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	char *cClass = NULL;
+	memset(&path[0], 0, sizeof(path));
+
+	/*sprintf(path,"%s\\cClass", parent);
+	cClass = ((Repository*)this)->MetaClassName((Repository*)this);
+	visitor->action(path, STRING, cClass);
+	free(cClass);*/
+
+	sprintf(path,"%s\\url",parent);
+	visitor->action(path, STRING, ((Repository*)(this))->url);
 }
 
 void* Repository_FindByPath(char* attribute, Repository* const this)
@@ -84,7 +103,7 @@ void* Repository_FindByPath(char* attribute, Repository* const this)
 	}
 	else
 	{
-		printf("Wrong path\n");
+		PRINTF("Wrong path\n");
 		return NULL;
 	}
 }

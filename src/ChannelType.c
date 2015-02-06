@@ -3,6 +3,13 @@
 #include "Visitor.h"
 #include "ChannelType.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 TypeDefinition* newPoly_ChannelType()
 {
 	ChannelType* pChanTypeObj = NULL;
@@ -12,7 +19,7 @@ TypeDefinition* newPoly_ChannelType()
 		return NULL;
 
 	/* Allocating memory */
-	pChanTypeObj = (ChannelType*)my_malloc(sizeof(ChannelType));
+	pChanTypeObj = (ChannelType*)malloc(sizeof(ChannelType));
 
 	if (pChanTypeObj == NULL)
 	{
@@ -32,7 +39,9 @@ TypeDefinition* newPoly_ChannelType()
 	pObj->super->MetaClassName = ChannelType_MetaClassName;
 	pObj->InternalGetKey = ChannelType_InternalGetKey;
 	pObj->VisitAttributes = ChannelType_VisitAttributes;
+	pObj->VisitPathAttributes = ChannelType_VisitPathAttributes;
 	pObj->VisitReferences = ChannelType_VisitReferences;
+	pObj->VisitPathReferences = ChannelType_VisitPathReferences;
 	pObj->FindByPath = ChannelType_FindByPath;
 	
 	pObj->Delete = deletePoly_ChannelType;
@@ -49,7 +58,7 @@ ChannelType* new_ChannelType()
 		return NULL;
 
 	/* Allocating memory */
-	pChanTypeObj = (ChannelType*)my_malloc(sizeof(ChannelType));
+	pChanTypeObj = (ChannelType*)malloc(sizeof(ChannelType));
 
 	if (pChanTypeObj == NULL)
 	{
@@ -69,7 +78,9 @@ ChannelType* new_ChannelType()
 	pChanTypeObj->MetaClassName = ChannelType_MetaClassName;
 	pChanTypeObj->InternalGetKey = ChannelType_InternalGetKey;
 	pChanTypeObj->VisitAttributes = ChannelType_VisitAttributes;
+	pChanTypeObj->VisitPathAttributes = ChannelType_VisitPathAttributes;
 	pChanTypeObj->VisitReferences = ChannelType_VisitReferences;
+	pChanTypeObj->VisitPathReferences = ChannelType_VisitPathReferences;
 	
 	pChanTypeObj->Delete = delete_ChannelType;
 
@@ -109,7 +120,7 @@ char* ChannelType_MetaClassName(ChannelType* const this)
 {
 	char *name = NULL;
 
-	name = my_malloc(sizeof(char) * (strlen("ChannelType")) + 1);
+	name = malloc(sizeof(char) * (strlen("ChannelType")) + 1);
 	if(name != NULL)
 		strcpy(name, "ChannelType");
 	else
@@ -126,28 +137,21 @@ void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visito
 		char path[256];
 		memset(&path[0], 0, sizeof(path));
 
-		/*sprintf(path,"%s\\cClass", parent);
-		visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
-
 		/* TypeDefinition attributes */
 		TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 
-		/*sprintf(path, "%s\\lowerBindings", parent);*/
 		sprintf(path, "lowerBindings");
 		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerBindings);
 		visitor->action(NULL, COLON, NULL);
 
-		/*sprintf(path, "%s\\upperBindings", parent);*/
 		sprintf(path, "upperBindings");
 		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperBindings);
 		visitor->action(NULL, COLON, NULL);
 
-		/*sprintf(path, "%s\\lowerFragments", parent);*/
 		sprintf(path, "lowerFragments");
 		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerFragments);
 		visitor->action(NULL, COLON, NULL);
 
-		/*sprintf(path, "%s\\upperFragments", parent);*/
 		sprintf(path, "upperFragments", parent);
 		visitor->action(path, INTEGER, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperFragments);
 		visitor->action(NULL, COLON, NULL);
@@ -159,9 +163,41 @@ void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visito
 	}
 }
 
+void ChannelType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
+{
+	/* Local attributes */
+	if(recursive)
+	{
+		char path[256];
+		memset(&path[0], 0, sizeof(path));
+
+		/* TypeDefinition attributes */
+		TypeDefinition_VisitPathAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
+
+		sprintf(path, "%s\\lowerBindings", parent);
+		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerBindings);
+		sprintf(path, "%s\\upperBindings", parent);
+		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperBindings);
+		sprintf(path, "%s\\lowerFragments", parent);
+		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->lowerFragments);
+		sprintf(path, "%s\\upperFragments", parent);
+		visitor->action(path, BOOL, ((ChannelType*)(((TypeDefinition*)this)->pDerivedObj))->upperFragments);
+	}
+	else
+	{
+		/* TypeDefinition attributes */
+		TypeDefinition_VisitPathAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
+	}
+}
+
 void ChannelType_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
 	TypeDefinition_VisitReferences((TypeDefinition*)this, parent, visitor);
+}
+
+void ChannelType_VisitPathReferences(void* const this, char* parent, Visitor* visitor)
+{
+	TypeDefinition_VisitPathReferences((TypeDefinition*)this, parent, visitor);
 }
 
 void* ChannelType_FindByPath(char* attribute, TypeDefinition* const this)

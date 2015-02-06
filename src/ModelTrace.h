@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "ActionType.h"
 
 /**
  * Author: fco.ja.ac@gmail.com
@@ -12,105 +11,52 @@
  * Time: 16:00
  */
 
-/*class ModelTrace
-{
+typedef struct _ModelTrace ModelTrace;
 
-  public:
-    virtual ~ModelTrace(){}
-	virtual string toString ()
-	{
-	}
-  string srcPath;	
-  string refName;
-};*/
-
-/*typedef struct _ModelTrace ModelTrace;*/
-
-typedef char* (*fptrModelTraceToString)(void*);
+typedef char *(*fptrModelTraceToString)(void*);
 typedef void (*fptrDeleteModelTrace)(void*);
 
 typedef struct _ModelTrace {
-	void* pDerivedObj;
-	char* srcPath;
-	char* refName;
+	ModelTrace *next;
+	void *pDerivedObj;
+	char *srcPath;
+	char *refName;
 	fptrModelTraceToString ToString;
 	fptrDeleteModelTrace Delete;
 } ModelTrace;
 
-ModelTrace* new_ModelTrace(void);
-char* ModelTrace_ToString(void* const this);
-void delete_ModelTrace(void* const this);
-
-
-/*class ModelAddTrace : public ModelTrace
-{
-	
-public:
-   ModelAddTrace(string _srcPath, string _refName, string _previousPath,string _typeName);
-   ~ModelAddTrace();
-   virtual std::string toString ();
-  
-  string previousPath;
-  string typeName;
-
-};*/
-
-/*typedef _ModelAddTrace ModelAddTrace;*/
+ModelTrace *new_ModelTrace(void);
+char *ModelTrace_ToString(void * const this);
+void delete_ModelTrace(void * const this);
 
 typedef struct _ModelAddTrace {
-	ModelTrace* super;
-	char* previousPath;
-	char* typeName;
+	ModelTrace *super;
+	char *previousPath;
+	char *typeName;
 	fptrModelTraceToString ToString;
 	fptrDeleteModelTrace Delete;
 } ModelAddTrace;
 
-ModelAddTrace* new_ModelAddTrace(char* _srcPath, char* _refName, char* _previousPath, char* _typeName);
-ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previousPath, char* _typeName);
+ModelAddTrace *new_ModelAddTrace(char *_srcPath, char *_refName, char *_previousPath, char *_typeName);
+ModelTrace *newPoly_ModelAddTrace(char* _srcPath, char *_refName, char *_previousPath, char *_typeName);
 char* ModelAddTrace_ToString(void* const this);
 void delete_ModelAddTrace(void* const this);
 void deletePoly_ModelAddTrace(void* const this);
 
-/*class ModelSetTrace:public ModelTrace
-{
-public: 
-  ModelSetTrace (string _srcPath, string _refName, string _objPath, string _content, string _typeName);
-  ~ModelSetTrace();
-  virtual std::string toString ();
- 
-  string objPath;
-  string content;
-  string typeName;
-
-};*/
-
-/*typedef struct _ModelSetTrace ModelSetTrace;*/
-
 typedef struct _ModelSetTrace {
-	ModelTrace* super;
-	char* objPath;
-	char* content;
-	char* typeName;
+	ModelTrace *super;
+	/*char* objPath;*/
+	char *content;
+	/*char* typeName;*/
 	fptrModelTraceToString ToString;
 	fptrDeleteModelTrace Delete;
 } ModelSetTrace;
 
-ModelTrace* newPoly_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath, char* _content, char* _typeName);
-ModelSetTrace* new_ModelSetTrace(char* _srcPath, char* _refName, char* _objPath, char* _content, char* _typeName);
-char* ModelSetTrace_ToString(void* const this);
-void delete_ModelSetTrace(void* const this);
-void deletePoly_ModelSetTrace(void* const this);
-
-/*class ModelRemoveTrace:public ModelTrace
-{
-public:
-  ModelRemoveTrace (string _srcPath, string _refName, string _objPath);
-  ~ModelRemoveTrace();
-  virtual std::string toString ();
-  string objPath;
-};*/
-
-/*typedef _ModelRemoveTrace ModelRemoveTrace;*/
+ModelTrace* newPoly_ModelSetTrace(char *_srcPath, char *_refName, /*char* _objPath,*/ char *_content/*, char* _typeName*/);
+ModelSetTrace* new_ModelSetTrace(char *_srcPath, char *_refName, /*char *_objPath,*/ char *_content/*, char* _typeName*/);
+char *ModelSetTrace_ToString(void *const this);
+void delete_ModelSetTrace(void *const this);
+void deletePoly_ModelSetTrace(void *const this);
 
 typedef struct _ModelRemoveTrace {
 	ModelTrace* super;
@@ -120,6 +66,7 @@ typedef struct _ModelRemoveTrace {
 } ModelRemoveTrace;
 
 ModelRemoveTrace* new_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objPath);
+ModelTrace *newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objPath);
 char* ModelRemoveTrace_ToString(void* const this);
 void delete_ModelRemoveTrace(void* const this);
 

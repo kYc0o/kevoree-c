@@ -1,13 +1,10 @@
 #ifndef H_NodeNetwork
 #define H_NodeNetwork
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
 #include "hashmap.h"
 
 typedef struct _NodeNetwork NodeNetwork;
 typedef struct _ContainerNode ContainerNode;
-/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _NodeLink NodeLink;
 typedef struct _Visitor Visitor;
 
@@ -43,7 +40,9 @@ typedef struct _NodeNetwork {
 	fptrNodeNetRemoveTarget RemoveTarget;
 	fptrDeleteNodeNetwork Delete;
 	fptrVisitAttrNodeNetwork VisitAttributes;
+	fptrVisitAttrNodeNetwork VisitPathAttributes;
 	fptrVisitRefsNodeNetwork VisitReferences;
+	fptrVisitRefsNodeNetwork VisitPathReferences;
 	fptrFindByPathNodeNetwork FindByPath;
 } NodeNetwork;
 
@@ -59,7 +58,9 @@ void NodeNetwork_RemoveInitBy(NodeNetwork* const this, ContainerNode* ptr);
 void NodeNetwork_RemoveTarget(NodeNetwork* const this, ContainerNode* ptr);
 void delete_NodeNetwork(NodeNetwork* const this);
 void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void NodeNetwork_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void NodeNetwork_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this);
 
 #endif /* H_NodeNetwork */

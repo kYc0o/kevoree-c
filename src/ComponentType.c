@@ -5,16 +5,23 @@
 #include "Visitor.h"
 #include "ComponentType.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 TypeDefinition* newPoly_ComponentType(void)
 {
 	ComponentType* pCompTypeObj = NULL;
 	TypeDefinition* pObj = new_TypeDefinition();
-	
+
 	if(pObj == NULL)
 		return NULL;
 
 	/* Allocating memory */
-	pCompTypeObj = (ComponentType*)my_malloc(sizeof(ComponentType));
+	pCompTypeObj = (ComponentType*)malloc(sizeof(ComponentType));
 
 	if (pCompTypeObj == NULL)
 	{
@@ -24,10 +31,10 @@ TypeDefinition* newPoly_ComponentType(void)
 
 	pObj->pDerivedObj = pCompTypeObj; /* Pointing to derived object */
 	pCompTypeObj->super = pObj;
-	
+
 	pCompTypeObj->required = NULL;
 	pCompTypeObj->provided = NULL;
-	
+
 	pCompTypeObj->FindRequiredByID = ComponentType_FindRequiredByID;
 	pCompTypeObj->FindProvidedByID = ComponentType_FindProvidedByID;
 	pCompTypeObj->AddRequired = ComponentType_AddRequired;
@@ -38,14 +45,16 @@ TypeDefinition* newPoly_ComponentType(void)
 	pCompTypeObj->MetaClassName = ComponentType_MetaClassName;
 	pCompTypeObj->InternalGetKey = ComponentType_InternalGetKey;
 	pCompTypeObj->VisitAttributes = ComponentType_VisitAttributes;
+	pCompTypeObj->VisitPathAttributes = ComponentType_VisitPathAttributes;
 	pCompTypeObj->VisitReferences = ComponentType_VisitReferences;
+	pCompTypeObj->VisitPathReferences = ComponentType_VisitPathReferences;
 
 	pObj->super->MetaClassName = ComponentType_MetaClassName;
 	pObj->InternalGetKey = ComponentType_InternalGetKey;
 	pObj->VisitAttributes = ComponentType_VisitAttributes;
 	pObj->VisitReferences = ComponentType_VisitReferences;
 	pObj->FindByPath = ComponentType_FindByPath;
-	
+
 	pObj->Delete = deletePoly_ComponentType;
 
 	return pObj;
@@ -55,12 +64,12 @@ ComponentType* new_ComponentType(void)
 {
 	ComponentType* pCompTypeObj = NULL;
 	TypeDefinition* pObj = new_TypeDefinition();
-	
+
 	if(pObj == NULL)
 		return NULL;
 
 	/* Allocating memory */
-	pCompTypeObj = (ComponentType*)my_malloc(sizeof(ComponentType));
+	pCompTypeObj = (ComponentType*)malloc(sizeof(ComponentType));
 
 	if (pCompTypeObj == NULL)
 	{
@@ -71,10 +80,10 @@ ComponentType* new_ComponentType(void)
 	/*pObj->pDerivedObj = pCompTypeObj;  Pointing to derived object */
 	pObj->pDerivedObj = NULL;
 	pCompTypeObj->super = pObj;
-	
+
 	pCompTypeObj->required = NULL;
 	pCompTypeObj->provided = NULL;
-	
+
 	pCompTypeObj->FindRequiredByID = ComponentType_FindRequiredByID;
 	pCompTypeObj->FindProvidedByID = ComponentType_FindProvidedByID;
 	pCompTypeObj->AddRequired = ComponentType_AddRequired;
@@ -85,8 +94,11 @@ ComponentType* new_ComponentType(void)
 	pCompTypeObj->MetaClassName = ComponentType_MetaClassName;
 	pCompTypeObj->InternalGetKey = ComponentType_InternalGetKey;
 	pCompTypeObj->VisitAttributes = ComponentType_VisitAttributes;
+	pCompTypeObj->VisitPathAttributes = ComponentType_VisitPathAttributes;
 	pCompTypeObj->VisitReferences = ComponentType_VisitReferences;
-	
+	pCompTypeObj->VisitPathReferences = ComponentType_VisitPathReferences;
+	pCompTypeObj->FindByPath = ComponentType_FindByPath;
+
 	pCompTypeObj->Delete = delete_ComponentType;
 
 	return pCompTypeObj;
@@ -96,7 +108,7 @@ char* ComponentType_InternalGetKey(void* const this)
 {
 	if (this == NULL)
 		return NULL;
-	
+
 	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
 }
 
@@ -104,12 +116,12 @@ char* ComponentType_MetaClassName(ComponentType* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("ComponentType")) + 1);
+	name = malloc(sizeof(char) * (strlen("ComponentType")) + 1);
 	if(name != NULL)
 		strcpy(name, "ComponentType");
 	else
 		return NULL;
-	
+
 	return name;
 }
 
@@ -141,7 +153,7 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The PortTypeRef cannot be added in ComponentType because the key is not defined");
+		PRINTF("The PortTypeRef cannot be added in ComponentType because the key is not defined");
 	}
 	else
 	{
@@ -157,9 +169,9 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 			{
 				TypeDefinition *typdef = this->super;
 				char *strContainer = typdef->InternalGetKey(typdef);
-				ptr->eContainer = my_malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
+				ptr->eContainer = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
 				sprintf(ptr->eContainer, "typeDefinitions[%s]", strContainer);
-				str_free(strContainer);
+				free(strContainer);
 			}
 		}
 	}
@@ -173,7 +185,7 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The PortTypeRef cannot be added in ComponentType because the key is not defined");
+		PRINTF("The PortTypeRef cannot be added in ComponentType because the key is not defined");
 	}
 	else
 	{
@@ -188,9 +200,9 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 			{
 				TypeDefinition *typdef = this->super;
 				char *strContainer = typdef->InternalGetKey(typdef);
-				ptr->eContainer = my_malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
+				ptr->eContainer = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
 				sprintf(ptr->eContainer, "typeDefinitions[%s]", strContainer);
-				str_free(strContainer);
+				free(strContainer);
 			}
 		}
 	}
@@ -202,15 +214,15 @@ void ComponentType_RemoveRequired(TypeDefinition* const this, PortTypeRef* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
+		PRINTF("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
 	}
 	else
 	{
 		if(hashmap_remove(((ComponentType*)this->pDerivedObj)->required, internalKey) == MAP_OK)
 		{
-			str_free(ptr->eContainer);
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			str_free(internalKey);
+			free(internalKey);
 		}
 	}
 }
@@ -221,7 +233,7 @@ void ComponentType_RemoveProvided(TypeDefinition* const this, PortTypeRef* ptr)
 
 	if(internalKey == NULL)
 	{
-		printf("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
+		PRINTF("The PortTypeRef cannot be removed in ComponentType because the key is not defined\n");
 	}
 	else
 	{
@@ -254,22 +266,21 @@ void delete_ComponentType(ComponentType* const this)
 	free(this);
 }
 
-void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
+void ComponentType_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
-	/*char path[256];
-	memset(&path[0], 0, sizeof(path));
-
-	sprintf(path,"%s\\cClass", parent);
-	visitor->action(path, STRING, ((TypeDefinition*)this)->MetaClassName((TypeDefinition*)this));*/
-
 	TypeDefinition_VisitAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
+}
+
+void ComponentType_VisitPathAttributes(void * const this, char* parent, Visitor* visitor, bool recursive)
+{
+	TypeDefinition_VisitPathAttributes(((TypeDefinition*)(this)), parent, visitor, recursive);
 }
 
 void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
-	
+
 	TypeDefinition* pObj = (TypeDefinition*)this;
 	ComponentType* pDerivedObj = (ComponentType*)(pObj->pDerivedObj);
 
@@ -278,7 +289,7 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 		visitor->action("required", SQBRACKET, NULL);
 		int i;
 		int length = hashmap_length(pDerivedObj->required);
-				
+
 		/* required */
 		hashmap_map* m = pDerivedObj->required;
 
@@ -309,13 +320,13 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 		visitor->action("required", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if(pDerivedObj->provided != NULL)
 	{
 		visitor->action("provided", SQBRACKET, NULL);
 		int i;
 		int length = hashmap_length(pDerivedObj->provided);
-				
+
 		/* provided */
 		hashmap_map* m = pDerivedObj->provided;
 
@@ -350,6 +361,59 @@ void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visi
 	TypeDefinition_VisitReferences(pObj, parent, visitor);
 }
 
+void ComponentType_VisitPathReferences(void* const this, char* parent, Visitor* visitor)
+{
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	TypeDefinition* pObj = (TypeDefinition*)this;
+	ComponentType* pDerivedObj = (ComponentType*)(pObj->pDerivedObj);
+
+	TypeDefinition_VisitPathReferences(pObj, parent, visitor);
+
+	if(pDerivedObj->required != NULL)
+	{
+		int i;
+
+		/* required */
+		hashmap_map* m = pDerivedObj->required;
+
+		/* compare required */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				PortTypeRef* n = data;
+				sprintf(path, "%s/required[%s]", parent, n->InternalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor, 1);
+				n->VisitPathReferences(n, path, visitor);
+			}
+		}
+	}
+
+	if(pDerivedObj->provided != NULL)
+	{
+		int i;
+
+		/* provided */
+		hashmap_map* m = pDerivedObj->provided;
+
+		/* compare provided */
+		for(i = 0; i< m->table_size; i++)
+		{
+			if(m->data[i].in_use != 0)
+			{
+				any_t data = (any_t) (m->data[i].data);
+				PortTypeRef* n = data;
+				sprintf(path, "%s/provided[%s]", parent, n->InternalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor, 1);
+				n->VisitPathReferences(n, path, visitor);
+			}
+		}
+	}
+}
+
 void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
 {
 	/* There is no local attributes */
@@ -360,24 +424,20 @@ void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
 	}
 	else
 	{
-		char* nextAttribute = NULL;
+		/*char* nextAttribute = NULL;
 		char* path = strdup(attribute);
 		char* pch;
 
 		if(indexOf(path,"/") != -1)
 		{
 			pch = strtok (path,"/");
-			/*nextAttribute = strtok(NULL, "\\");
-			sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));*/
 			if(strchr(attribute,'\\') != NULL)
 			{
-				/*printf("Attribute found at: %d\n", strchr(attribute,'\\')-attribute+1);*/
 				nextAttribute = strtok(NULL, "\\");
 				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
 			}
 			else
 			{
-				/*printf("Attribute not found, looking for path\n");*/
 				nextAttribute = strtok(NULL, "\\");
 			}
 		}
@@ -387,51 +447,103 @@ void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
 			nextAttribute = strtok(pch, "\\");
 			nextAttribute = strtok(NULL, "\\");
 		}
-		
-		/*printf("Token: %s\n", pch);*/
 
 		int i = indexOf(pch,"[") + 2;
 		int y = lastIndexOf(pch,"]") - i + 1;
 
 		char* relationName = (char*)Substring(pch, 0, i - 2);
-		char* queryID = (char*)Substring(pch, i, y);
-		
-		/*printf("relationName: %s\n", relationName);
-		printf("queryID: %s\n", queryID);
-		printf("next attribute: %s\n", nextAttribute);*/
-		
-		if(!strcmp("required", relationName))
+		char* queryID = (char*)Substring(pch, i, y);*/
+
+		char path[250];
+		memset(&path[0], 0, sizeof(path));
+		char token[100];
+		memset(&token[0], 0, sizeof(token));
+		char *obj = NULL;
+		char key[50];
+		memset(&key[0], 0, sizeof(key));
+		char nextPath[150];
+		memset(&nextPath[0], 0, sizeof(nextPath));
+		char *nextAttribute = NULL;
+
+		strcpy(path, attribute);
+
+		if(strchr(path, '[') != NULL)
 		{
-			ComponentType* comptype = this->pDerivedObj;
-			
-			if(nextAttribute == NULL)
+			obj = strdup(strtok(path, "["));
+			strcpy(path, attribute);
+			PRINTF("Object: %s\n", obj);
+			strcpy(token, strtok(path, "]"));
+			strcpy(path, attribute);
+			sprintf(token, "%s]", token);
+			PRINTF("Token: %s\n", token);
+			sscanf(token, "%*[^[][%[^]]", key);
+			PRINTF("Key: %s\n", key);
+
+			if((strchr(path, '\\')) != NULL)
 			{
-				
-				return comptype->FindRequiredByID(comptype, queryID);
+				nextAttribute = strtok(NULL, "\\");
+				PRINTF("Attribute: %s\n", nextAttribute);
+
+				if(strchr(nextAttribute, '['))
+				{
+					sprintf(nextPath, "%s\\%s", ++nextAttribute, strtok(NULL, "\\"));
+					PRINTF("Next Path: %s\n", nextPath);
+				}
+				else
+				{
+					strcpy(nextPath, nextAttribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				}
 			}
 			else
 			{
-				PortTypeRef* ptypref = comptype->FindRequiredByID(comptype, queryID);
+				nextAttribute = strtok(NULL, "\\");
+				strcpy(nextPath, ++nextAttribute);
+				PRINTF("Next Path: %s\n", nextPath);
+				nextAttribute = NULL;
+			}
+		}
+		else
+		{
+			nextAttribute = strtok(path, "\\");
+			nextAttribute = strtok(NULL, "\\");
+			PRINTF("Attribute: %s\n", nextAttribute);
+		}
+
+		if(!strcmp("required", obj))
+		{
+			free(obj);
+			ComponentType* comptype = this->pDerivedObj;
+
+			if(nextAttribute == NULL)
+			{
+
+				return comptype->FindRequiredByID(comptype->super, key);
+			}
+			else
+			{
+				PortTypeRef* ptypref = comptype->FindRequiredByID(comptype->super, key);
 				if(ptypref != NULL)
-					return ptypref->FindByPath(nextAttribute, ptypref);
+					return ptypref->FindByPath(nextPath, ptypref);
 				else
 					return NULL;
 			}
 		}
-		else if(!strcmp("provided", relationName))
+		else if(!strcmp("provided", obj))
 		{
+			free(obj);
 			ComponentType* comptype = this->pDerivedObj;
-			
+
 			if(nextAttribute == NULL)
 			{
-				
-				return comptype->FindProvidedByID(comptype, queryID);
+
+				return comptype->FindProvidedByID(comptype->super, key);
 			}
 			else
 			{
-				PortTypeRef* ptypref = comptype->FindProvidedByID(comptype, queryID);
+				PortTypeRef* ptypref = comptype->FindProvidedByID(comptype->super, key);
 				if(ptypref != NULL)
-					return ptypref->FindByPath(nextAttribute, ptypref);
+					return ptypref->FindByPath(nextPath, ptypref);
 				else
 					return NULL;
 			}
@@ -439,6 +551,7 @@ void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this)
 		/* TypeDefinition references */
 		else
 		{
+			free(obj);
 			return TypeDefinition_FindByPath(attribute, this);
 		}
 	}

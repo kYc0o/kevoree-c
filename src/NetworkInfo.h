@@ -6,7 +6,6 @@
 typedef struct _NetworkInfo NetworkInfo;
 typedef struct _NamedElement NamedElement;
 typedef struct _NetworkProperty NetworkProperty;
-/*typedef struct _ContainerNode ContainerNode;*/
 
 typedef char* (*fptrNetInfoMetaClassName)(NetworkInfo*);
 typedef char* (*fptrNetInfoInternalGetKey)(NetworkInfo*);
@@ -19,7 +18,7 @@ typedef void (*fptrVisitRefsNetworkInfo)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNetworkInfo)(char*, NetworkInfo*);
 
 typedef struct _NetworkInfo {
-	NamedElement* super;
+	NamedElement *super;
 	map_t values;
 	char *eContainer;
 	fptrNetInfoMetaClassName MetaClassName;
@@ -29,7 +28,9 @@ typedef struct _NetworkInfo {
 	fptrNetInfoFindValuesByID FindValuesByID;
 	fptrDeleteNetInfo Delete;
 	fptrVisitAttrNetworkInfo VisitAttributes;
+	fptrVisitAttrNetworkInfo VisitPathAttributes;
 	fptrVisitRefsNetworkInfo VisitReferences;
+	fptrVisitRefsNetworkInfo VisitPathReferences;
 	fptrFindByPathNetworkInfo FindByPath;
 } NetworkInfo;
 
@@ -43,7 +44,9 @@ NetworkProperty* NetworkInfo_FindValuesByID(NetworkInfo* const this, char* id);
 void deletePoly_NetworkInfo(NamedElement* const this);
 void delete_NetworkInfo(NetworkInfo* const this);
 void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void NetworkInfo_VisitPathAttributes(void *const this, char *parent, Visitor *visitor);
 void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void NetworkInfo_VisitPathReferences(void *const this, char *parent, Visitor *visitor);
 void* NetworkInfo_FindByPath(char* attribute, NetworkInfo* const this);
 
 #endif /* H_NetworkInfo */

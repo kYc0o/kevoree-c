@@ -8,7 +8,6 @@ typedef struct _ContainerNode ContainerNode;
 typedef struct _Group Group;
 typedef struct _Instance Instance;
 typedef struct _Visitor Visitor;
-/*typedef struct _ContainerRoot ContainerRoot;*/
 
 typedef char* (*fptrGroupInternalGetKey)(Group*);
 typedef char* (*fptrGroupMetaClassName)(Group*);
@@ -31,7 +30,9 @@ typedef struct _Group {
 	fptrGroupFindSubNodesByID FindSubNodesByID;
 	fptrDeleteGroup Delete;
 	fptrVisitAttrGroup VisitAttributes;
+	fptrVisitAttrGroup VisitPathAttributes;
 	fptrVisitRefsGroup VisitReferences;
+	fptrVisitRefsGroup VisitPathReferences;
 	fptrFindByPathGroup FindByPath;
 } Group;
 
@@ -45,7 +46,9 @@ void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr);
 void deletePoly_Group(Instance*);
 void delete_Group(Group*);
 void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void Group_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void Group_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* Group_FindByPath(char* attribute, Group* const this);
 
 #endif /* H_Group */

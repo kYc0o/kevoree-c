@@ -2,18 +2,12 @@
 #define H_TypeDefinition
 
 #include <stdbool.h>
-#include "tools.h"
 #include "hashmap.h"
-/*#include "DeployUnit.h"
-#include "DictionaryType.h"
-#include "NamedElement.h"
-#include "ContainerRoot.h"*/
 
 typedef struct _TypeDefinition TypeDefinition;
 typedef struct _DeployUnit DeployUnit;
 typedef struct _NamedElement NamedElement;
 typedef struct _DictionaryType DictionaryType;
-/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 /* Declaration of pointers to functions */
@@ -51,7 +45,9 @@ typedef struct _TypeDefinition {
 	fptrTypeDefMetaClassName MetaClassName;
 	fptrDeleteTypeDef Delete;
 	fptrVisitAttrTypeDefinition VisitAttributes;
+	fptrVisitAttrTypeDefinition VisitPathAttributes;
 	fptrVisitRefsTypeDefinition VisitReferences;
+	fptrVisitRefsTypeDefinition VisitPathReferences;
 	fptrFindByPathTypeDefinition FindByPath;
 } TypeDefinition;
 
@@ -68,7 +64,9 @@ TypeDefinition* new_TypeDefinition(void);
 void deletePoly_TypeDefinition(NamedElement* const this);
 void delete_TypeDefinition(TypeDefinition* const this);
 void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void TypeDefinition_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void TypeDefinition_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this);
 
 #endif /* H_TypeDefinition */

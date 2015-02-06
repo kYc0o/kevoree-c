@@ -3,13 +3,20 @@
 #include "Visitor.h"
 #include "FragmentDictionary.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 Dictionary* newPoly_FragmentDictionary()
 {
 	FragmentDictionary* pFragDicObj = NULL;
 	Dictionary* pObj = new_Dictionary();
 
 	/* Allocating memory */
-	pFragDicObj = (FragmentDictionary*)my_malloc(sizeof(FragmentDictionary));
+	pFragDicObj = (FragmentDictionary*)malloc(sizeof(FragmentDictionary));
 
 	if (pFragDicObj == NULL)
 	{
@@ -21,7 +28,9 @@ Dictionary* newPoly_FragmentDictionary()
 	((FragmentDictionary*)pObj->pDerivedObj)->super = pObj;
 
 	pObj->VisitAttributes = FragmentDictionary_VisitAttributes;
+	pObj->VisitPathAttributes = FragmentDictionary_VisitPathAttributes;
 	pObj->VisitReferences = FragmentDictionary_VisitReferences;
+	pObj->VisitPathReferences = FragmentDictionary_VisitPathReferences;
 	
 	pObj->MetaClassName = FragmentDictionary_MetaClassName;
 	pObj->InternalGetKey = FragmentDictionary_InternalGetKey;
@@ -45,7 +54,7 @@ FragmentDictionary* new_FragmentDictionary(void)
 		return NULL;
 
 	/* Allocating memory */
-	pFragDicObj = (FragmentDictionary*)my_malloc(sizeof(FragmentDictionary));
+	pFragDicObj = (FragmentDictionary*)malloc(sizeof(FragmentDictionary));
 
 	if (pFragDicObj == NULL)
 	{
@@ -54,7 +63,9 @@ FragmentDictionary* new_FragmentDictionary(void)
 
 	pFragDicObj->super = pObj;
 	pFragDicObj->VisitAttributes = FragmentDictionary_VisitAttributes;
+	pFragDicObj->VisitPathAttributes = FragmentDictionary_VisitPathAttributes;
 	pFragDicObj->VisitReferences = FragmentDictionary_VisitReferences;
+	pFragDicObj->VisitPathReferences = FragmentDictionary_VisitPathReferences;
 	
 	pFragDicObj->name = NULL;
 	pFragDicObj->eContainer = NULL;
@@ -108,7 +119,7 @@ char* FragmentDictionary_MetaClassName(FragmentDictionary* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("FragmentDictionary")) + 1);
+	name = malloc(sizeof(char) * (strlen("FragmentDictionary")) + 1);
 	if(name != NULL)
 		strcpy(name, "FragmentDictionary");
 	else
@@ -117,7 +128,7 @@ char* FragmentDictionary_MetaClassName(FragmentDictionary* const this)
 	return name;
 }
 
-void FragmentDictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void FragmentDictionary_VisitAttributes(void *const this, char *parent, Visitor *visitor)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -126,15 +137,32 @@ void FragmentDictionary_VisitAttributes(void* const this, char* parent, Visitor*
 	Dictionary_VisitAttributes(((FragmentDictionary*)this)->super, parent, visitor);
 	
 	/* Local attributes */
-	/*sprintf(path, "%s\\name", parent);*/
 	sprintf(path, "name");
 	visitor->action(path, STRING, ((FragmentDictionary*)(this))->name);
 	visitor->action(NULL, COLON, NULL);
 }
 
-void FragmentDictionary_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void FragmentDictionary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	/* Dictionary attributes */
+	Dictionary_VisitPathAttributes(((FragmentDictionary*)this)->super, parent, visitor);
+
+	/* Local attributes */
+	sprintf(path, "%s\\name", parent);
+	visitor->action(path, STRING, ((FragmentDictionary*)(this))->name);
+}
+
+void FragmentDictionary_VisitReferences(void *const this, char *parent, Visitor *visitor)
 {
 	Dictionary_VisitReferences(((FragmentDictionary*)(this))->super, parent, visitor);
+}
+
+void FragmentDictionary_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+{
+	Dictionary_VisitPathReferences(((FragmentDictionary*)(this))->super, parent, visitor);
 }
 
 void* FragmentDictionary_FindByPath(char* attribute, FragmentDictionary* const this)
@@ -152,7 +180,7 @@ void* FragmentDictionary_FindByPath(char* attribute, FragmentDictionary* const t
 	/* There is no local references */
 	else
 	{
-		printf("Wrong attribute or reference\n");
+		PRINTF("Wrong attribute or reference\n");
 		return NULL;
 	}
 }

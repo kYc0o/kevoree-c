@@ -1,17 +1,11 @@
 #ifndef H_ContainerNode
 #define H_ContainerNode
+
 #include <stdbool.h>
 #include "hashmap.h"
-/*#include "Instance.h"*/
-/*#include "ComponentInstance.h"*/
-/*#include "Group.h"*/
-/*#include "Visitor.h"*/
-/*#include "NetworkInfo.h"
-#include "tools.h"*/
 
 typedef struct _ContainerNode ContainerNode;
 typedef struct _Instance Instance;
-/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _ComponentInstance ComponentInstance;
 typedef struct _Group Group;
 typedef struct _NetworkInfo NetworkInfo;
@@ -64,7 +58,9 @@ typedef struct _ContainerNode {
 	fptrContNodeRemoveNetworkInformation RemoveNetworkInformation;
 	fptrDeleteContNode Delete;
 	fptrVisitAttrContainerNode VisitAttributes;
+	fptrVisitAttrContainerNode VisitPathAttributes;
 	fptrVisitRefsContainerNode VisitReferences;
+	fptrVisitRefsContainerNode VisitPathReferences;
 	fptrFindByPathContainerNode FindByPath;
 } ContainerNode ;
 
@@ -89,7 +85,9 @@ void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkIn
 void deletePoly_ContainerNode(Instance* const this);
 void delete_ContainerNode(ContainerNode* const this);
 void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void ContainerNode_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void ContainerNode_VisitPathReferences(void *const this, char *parent, Visitor *visitor);
 void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this);
 
 #endif /* H_ContainerNode */

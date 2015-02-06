@@ -28,6 +28,7 @@ typedef void* (*fptrFindByPathInstance)(char*, Instance*);
 typedef struct _Instance {
 	NamedElement* super;
 	void* pDerivedObj;
+	char *path;
 	char* metaData;
 	bool started;
 	TypeDefinition* typeDefinition;
@@ -44,7 +45,9 @@ typedef struct _Instance {
 	fptrInstMetaClassName MetaClassName;
 	fptrDeleteInstance Delete;
 	fptrVisitAttrInstance VisitAttributes;
+	fptrVisitAttrInstance VisitPathAttributes;
 	fptrVisitRefsInstance VisitReferences;
+	fptrVisitRefsInstance VisitPathReferences;
 	fptrFindByPathInstance FindByPath;
 } Instance;
 
@@ -62,7 +65,9 @@ char* Instance_MetaClassName(Instance* const this);
 void deletePoly_Instance(NamedElement* const this);
 void delete_Instance(Instance* const this);
 void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void Instance_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void Instance_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* Instance_FindByPath(char* attribute, Instance* const this);
 
 #endif /* H_Instance */

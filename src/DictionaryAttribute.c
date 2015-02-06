@@ -4,13 +4,20 @@
 #include "Visitor.h"
 #include "DictionaryAttribute.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 TypedElement* newPoly_DictionaryAttribute()
 {
 	DictionaryAttribute* pDicAttrObj = NULL;
 	TypedElement* pObj = new_TypedElement();
 
 	/* Allocating memory */
-	pDicAttrObj = (DictionaryAttribute*)my_malloc(sizeof(DictionaryAttribute));
+	pDicAttrObj = (DictionaryAttribute*)malloc(sizeof(DictionaryAttribute));
 
 	if (pDicAttrObj == NULL)
 	{
@@ -21,7 +28,9 @@ TypedElement* newPoly_DictionaryAttribute()
 	pObj->pDerivedObj = pDicAttrObj; /* Pointing to derived object */
 	((DictionaryAttribute*)pObj->pDerivedObj)->super = pObj;
 	pObj->VisitAttributes = DictionaryAttribute_VisitAttributes;
+	pObj->VisitPathAttributes = DictionaryAttribute_VisitPathAttributes;
 	pObj->VisitReferences = DictionaryAttribute_VisitReferences;
+	pObj->VisitPathReferences = DictionaryAttribute_VisitPathReferences;
 	
 	pObj->MetaClassName = DictionaryAttribute_MetaClassName;
 	pObj->InternalGetKey = DictionaryAttribute_InternalGetKey;
@@ -49,7 +58,7 @@ DictionaryAttribute* new_DictionaryAttribute()
 		return NULL;
 
 	/* Allocating memory */
-	pDicAttrObj = (DictionaryAttribute*)my_malloc(sizeof(DictionaryAttribute));
+	pDicAttrObj = (DictionaryAttribute*)malloc(sizeof(DictionaryAttribute));
 
 	if (pDicAttrObj == NULL)
 	{
@@ -58,7 +67,9 @@ DictionaryAttribute* new_DictionaryAttribute()
 
 	pDicAttrObj->super = pObj;
 	pDicAttrObj->VisitAttributes = DictionaryAttribute_VisitAttributes;
+	pDicAttrObj->VisitPathAttributes = DictionaryAttribute_VisitPathAttributes;
 	pDicAttrObj->VisitReferences = DictionaryAttribute_VisitReferences;
+	pDicAttrObj->VisitPathReferences = DictionaryAttribute_VisitPathReferences;
 	
 	pDicAttrObj->optional = -1;
 	pDicAttrObj->state = -1;
@@ -124,7 +135,7 @@ char* DictionaryAttribute_MetaClassName(DictionaryAttribute* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("DictionaryAttribute")) + 1);
+	name = malloc(sizeof(char) * (strlen("DictionaryAttribute")) + 1);
 	if(name != NULL)
 		strcpy(name, "DictionaryAttribute");
 	else
@@ -138,37 +149,50 @@ void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
-	/*sprintf(path,"%s\\cClass", parent);
-	visitor->action(path, STRING, ((DictionaryAttribute*)this)->MetaClassName((DictionaryAttribute*)this));*/
-
 	/* TypedElement attributes */
 	TypedElement_VisitAttributes(((DictionaryAttribute*)this)->super, parent, visitor);
 	
 	/* Local attributes */
-	/*sprintf(path, "%s\\optional", parent);*/
 	sprintf(path, "optional");
 	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->optional);
 	visitor->action(NULL, COLON, NULL);
 
-	/*sprintf(path, "%s\\state", parent);*/
 	sprintf(path, "state");
 	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->state);
 	visitor->action(NULL, COLON, NULL);
 
-	/*sprintf(path, "%s\\datatype", parent);*/
 	sprintf(path, "datatype");
 	visitor->action(path, STRING, ((DictionaryAttribute*)(this))->datatype);
 	visitor->action(NULL, COLON, NULL);
 
-	/*sprintf(path, "%s\\fragmentDependant", parent);*/
 	sprintf(path, "fragmentDependant");
 	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->fragmentDependant);
 	visitor->action(NULL, COLON, NULL);
 
-	/*sprintf(path, "%s\\defaultValue", parent);*/
 	sprintf(path, "defaultValue");
 	visitor->action(path, STRING, ((DictionaryAttribute*)(this))->defaultValue);
 	visitor->action(NULL, RETURN, NULL);
+}
+
+void DictionaryAttribute_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+{
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	/* TypedElement attributes */
+	TypedElement_VisitPathAttributes(((DictionaryAttribute*)this)->super, parent, visitor);
+
+	/* Local attributes */
+	sprintf(path, "%s\\optional", parent);
+	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->optional);
+	sprintf(path, "%s\\state", parent);
+	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->state);
+	sprintf(path, "%s\\datatype", parent);
+	visitor->action(path, STRING, ((DictionaryAttribute*)(this))->datatype);
+	sprintf(path, "%s\\fragmentDependant", parent);
+	visitor->action(path, BOOL, (void*)((DictionaryAttribute*)(this))->fragmentDependant);
+	sprintf(path, "%s\\defaultValue", parent);
+	visitor->action(path, STRING, ((DictionaryAttribute*)(this))->defaultValue);
 }
 
 void DictionaryAttribute_VisitReferences(void* const this, char* parent, Visitor* visitor)
@@ -176,7 +200,12 @@ void DictionaryAttribute_VisitReferences(void* const this, char* parent, Visitor
 	TypedElement_VisitReferences(((DictionaryAttribute*)(this))->super, parent, visitor);
 }
 
-void* DictionaryAttribute_FindByPath(char* attribute, DictionaryAttribute* const this)
+void DictionaryAttribute_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+{
+	TypedElement_VisitPathReferences(((DictionaryAttribute*)(this))->super, parent, visitor);
+}
+
+void *DictionaryAttribute_FindByPath(char *attribute, DictionaryAttribute *const this)
 {
 	/* TypedElement attributes and references */
 	if(!strcmp("name", attribute) || !strcmp("genericTypes", attribute))
@@ -207,7 +236,7 @@ void* DictionaryAttribute_FindByPath(char* attribute, DictionaryAttribute* const
 	/* There is no local references */
 	else
 	{
-		printf("Wrong attribute or reference\n");
+		PRINTF("Wrong attribute or reference\n");
 		return NULL;
 	}
 }

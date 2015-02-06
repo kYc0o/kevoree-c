@@ -14,10 +14,10 @@
  * Return an empty hashmap, or NULL on failure.
  */
 map_t hashmap_new() {
-	hashmap_map* m = (hashmap_map*) my_malloc(sizeof(hashmap_map));
+	hashmap_map* m = (hashmap_map*) malloc(sizeof(hashmap_map));
 	if(!m) goto err;
 
-	m->data = (hashmap_element*) my_calloc(INITIAL_SIZE, sizeof(hashmap_element));
+	m->data = (hashmap_element*)calloc(INITIAL_SIZE, sizeof(hashmap_element));
 	if(!m->data) goto err;
 
 	m->table_size = INITIAL_SIZE;
@@ -211,7 +211,7 @@ int hashmap_rehash(map_t in){
 	/* Setup the new elements */
 	hashmap_map *m = (hashmap_map *) in;
 	hashmap_element* temp = (hashmap_element *)
-		my_calloc(2 * m->table_size, sizeof(hashmap_element));
+		calloc(2 * m->table_size, sizeof(hashmap_element));
 	if(!temp) return MAP_OMEM;
 
 	/* Update the array */

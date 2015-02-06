@@ -2,8 +2,6 @@
 #define __PortTypeMapping_H
 
 #include "hashmap.h"
-/*#include "Visitor.h"
-#include "PortTypeRef.h"*/
 
 typedef struct _PortTypeRef PortTypeRef;
 typedef struct _PortTypeMapping PortTypeMapping;
@@ -13,7 +11,6 @@ typedef char* (*fptrPortTypMapMetaClassName)(PortTypeMapping*);
 typedef char* (*fptrPortTypMapInternalGetKey)(PortTypeMapping*);
 typedef void (*fptrDeletePortTypeMapping)(PortTypeMapping*);
 typedef void (*fptrVisitAttrPortTypeMapping)(void*, char*, Visitor*);
-/*typedef void (*fptrVisitRefsPortTypeMapping)(void*, char*, Visitor*);*/
 typedef void* (*fptrFindByPathPortTypeMapping)(char*, PortTypeMapping*);
 
 typedef struct _PortTypeMapping {
@@ -27,7 +24,7 @@ typedef struct _PortTypeMapping {
 	fptrPortTypMapInternalGetKey InternalGetKey;
 	fptrDeletePortTypeMapping Delete;
 	fptrVisitAttrPortTypeMapping VisitAttributes;
-	/*fptrVisitRefsPortTypeMapping VisitReferences;*/
+	fptrVisitAttrPortTypeMapping VisitPathAttributes;
 	fptrFindByPathPortTypeMapping FindByPath;
 } PortTypeMapping;
 
@@ -36,6 +33,7 @@ char* PortTypeMapping_MetaClassName(PortTypeMapping* const this);
 char* PortTypeMapping_InternalGetKey(PortTypeMapping* const this);
 void delete_PortTypeMapping(PortTypeMapping* const this);
 void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void PortTypeMapping_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void* PortTypeMapping_FindByPath(char* attribute, PortTypeMapping* const this);
 
 #endif /*__PortTypeMapping_H */

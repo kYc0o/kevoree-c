@@ -4,11 +4,18 @@
 #include "Visitor.h"
 #include "NamedElement.h"
 
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 NamedElement* new_NamedElement()
 {
 	NamedElement* pObj = NULL;
 	/* Allocating memory */
-	pObj = (NamedElement*)my_malloc(sizeof(NamedElement));
+	pObj = (NamedElement*)malloc(sizeof(NamedElement));
 
 	if (pObj == NULL)
 	{
@@ -23,7 +30,9 @@ NamedElement* new_NamedElement()
 	pObj->MetaClassName = NamedElement_MetaClassName;
 	pObj->Delete = delete_NamedElement;
 	pObj->VisitAttributes = NamedElement_VisitAttributes;
+	pObj->VisitPathAttributes = NamedElement_VisitPathAttributes;
 	pObj->VisitReferences = NamedElement_VisitAttributes;
+	pObj->VisitPathReferences = NamedElement_VisitPathAttributes;
 	pObj->FindByPath = NamedElement_FindByPath;
 	
 	return pObj;
@@ -38,7 +47,7 @@ char* NamedElement_MetaClassName(NamedElement* const this)
 {
 	char *name;
 
-	name = my_malloc(sizeof(char) * (strlen("NamedElement")) + 1);
+	name = malloc(sizeof(char) * (strlen("NamedElement")) + 1);
 	if(name != NULL)
 		strcpy(name, "NamedElement");
 	else
@@ -56,7 +65,7 @@ void delete_NamedElement(NamedElement* const this)
 	}
 }
 
-void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
+void NamedElement_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -64,26 +73,44 @@ void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visit
 	if(recursive)
 	{
 		char* cClass = NULL;
-		/*sprintf(path,"%s\\cClass", parent);*/
-		cClass = my_malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((NamedElement*)this)->MetaClassName((NamedElement*)this))) + 1);
+		cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((NamedElement*)this)->MetaClassName((NamedElement*)this))) + 1);
 		sprintf(cClass, "org.kevoree.%s", ((NamedElement*)this)->MetaClassName((NamedElement*)this));
 		sprintf(path,"eClass");
-		/*cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);*/
 		visitor->action(path, STRING, cClass);
 		visitor->action(NULL, COLON, NULL);
-		/*free(cClass);*/
-		str_free(cClass);
+		free(cClass);
 
-		/*sprintf(path, "%s\\name", parent);*/
 		sprintf(path, "name", parent);
 		visitor->action(path, STRING, ((NamedElement*)(this))->name);
 		visitor->action(NULL, COLON, NULL);
 	}
 	else
 	{
-		/*sprintf(path, "%s\\name", parent);*/
 		visitor->action("", STRING, ((NamedElement*)(this))->name);
 		visitor->action(NULL, COLON, NULL);
+	}
+}
+
+void NamedElement_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
+{
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
+	if(recursive)
+	{
+		/*char* cClass = NULL;
+		sprintf(path,"%s\\cClass", parent);
+		cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);
+		visitor->action(path, STRING, cClass);
+		free(cClass);*/
+
+		sprintf(path, "%s\\name", parent);
+		visitor->action(path, STRING, ((NamedElement*)(this))->name);
+	}
+	else
+	{
+		sprintf(path, "%s\\name", parent);
+		visitor->action(path, STRING, ((NamedElement*)(this))->name);
 	}
 }
 
@@ -95,7 +122,7 @@ void* NamedElement_FindByPath(char* attribute, NamedElement* const this)
 	}
 	else
 	{
-		printf("Wrong attribute\n");
+		PRINTF("Wrong attribute\n");
 		return NULL;
 	}
 }

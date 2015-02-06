@@ -33,7 +33,9 @@ typedef struct _DeployUnit {
 	fptrDepUnitFindRequiredLibsByID FindRequiredLibsByID;
 	fptrDeleteDepUnit Delete;
 	fptrVisitAttrDeployUnit VisitAttributes;
+	fptrVisitAttrDeployUnit VisitPathAttributes;
 	fptrVisitRefsDeployUnit VisitReferences;
+	fptrVisitRefsDeployUnit VisitPathReferences;
 	fptrFindByPathDeployUnit FindByPath;
 } DeployUnit;
 
@@ -47,7 +49,9 @@ DeployUnit* DeployUnit_FindRequiredLibsByID(DeployUnit* const this, char* id);
 void deletePoly_DeployUnit(NamedElement* const this);
 void delete_DeployUnit(DeployUnit* const this);
 void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DeployUnit_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void DeployUnit_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this);
 
 #endif /* H_DeployUnit */

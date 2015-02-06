@@ -1,16 +1,10 @@
 #ifndef __Dictionary_H
 #define __Dictionary_H
 
-#include <string.h>
-#include "tools.h"
 #include "hashmap.h"
-/*#include "Visitor.h"
-#include "DictionaryValue.h"
-#include "Instance.h"*/
 
 typedef struct _DictionaryValue DictionaryValue;
 typedef struct _Dictionary Dictionary;
-/*typedef struct _Instance Instance;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicoMetaClassName)(Dictionary*);
@@ -25,7 +19,7 @@ typedef void* (*fptrFindByPathDictionary)(char*, Dictionary*);
 
 typedef struct _Dictionary {
 	void *pDerivedObj;
-	char generated_KMF_ID[9];
+	char generated_KMF_ID[33];
 	map_t values;
 	char *eContainer;
 	fptrDicoFindValuesByID FindValuesByID;
@@ -35,7 +29,9 @@ typedef struct _Dictionary {
 	fptrDicoMetaClassName MetaClassName;
 	fptrDeleteDictionary Delete;
 	fptrVisitAttrDico VisitAttributes;
+	fptrVisitAttrDico VisitPathAttributes;
 	fptrVisitRefsDico VisitReferences;
+	fptrVisitRefsDico VisitPathReferences;
 	fptrFindByPathDictionary FindByPath;
 } Dictionary;
 
@@ -47,7 +43,9 @@ void Dictionary_RemoveValues(Dictionary* const this, DictionaryValue* ptr);
 char* Dictionary_InternalGetKey(Dictionary* const this);
 char* Dictionary_MetaClassName(Dictionary* const this);
 void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void Dictionary_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void Dictionary_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void Dictionary_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* Dictionary_FindByPath(char* attribute, Dictionary* const this);
 
 #endif /* __Dictionary_H */

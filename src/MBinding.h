@@ -6,7 +6,6 @@
 typedef struct _Channel Channel;
 typedef struct _Port Port;
 typedef struct _MBinding MBinding;
-/*typedef struct _ContainerRoot ContainerRoot;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrMBindingInternalGetKey)(MBinding*);
@@ -32,7 +31,9 @@ typedef struct _MBinding {
 	fptrMBindingRemovePort RemovePort;
 	fptrMbindingRemoveHub RemoveHub;
 	fptrVisitAttrMBinding VisitAttributes;
+	fptrVisitAttrMBinding VisitPathAttributes;
 	fptrVisitRefsMbinding VisitReferences;
+	fptrVisitRefsMbinding VisitPathReferences;
 	fptrFindByPathMBinding FindByPath;
 	fptrDeleteMBinding Delete;
 } MBinding;
@@ -46,7 +47,9 @@ void MBinding_AddHub(MBinding* const this, Channel* ptr);
 void MBinding_RemovePort(MBinding* const this, Port* ptr);
 void MBinding_RemoveHub(MBinding* const this, Channel* ptr);
 void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void MBinding_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void MBinding_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void* MBinding_FindByPath(char* attribute, MBinding* const this);
 
 #endif /* __MBinding_H */

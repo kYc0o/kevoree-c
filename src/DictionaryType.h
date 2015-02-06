@@ -1,14 +1,10 @@
 #ifndef __DictionaryType_H
 #define __DictionaryType_H
 
-#include <string.h>
 #include "hashmap.h"
-/*#include "DictionaryAttribute.h"
-#include "TypeDefinition.h"*/
 
 typedef struct _DictionaryAttribute DictionaryAttribute;
 typedef struct _DictionaryType DictionaryType;
-/*typedef struct _TypeDefinition TypeDefinition;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrDicTypeMetaClassName)(DictionaryType*);
@@ -31,7 +27,9 @@ typedef struct _DictionaryType {
 	fptrDicTypeInternalGetKey InternalGetKey;
 	fptrDicTypeMetaClassName MetaClassName;
 	fptrVisitAttrDicType VisitAttributes;
+	fptrVisitAttrDicType VisitPathAttributes;
 	fptrVisitRefsDicType VisitReferences;
+	fptrVisitRefsDicType VisitPathReferences;
 	fptrFindByPathDicType FindByPath;
 	fptrDeleteDicType Delete;
 } DictionaryType;
@@ -44,7 +42,9 @@ DictionaryAttribute* DictionaryType_FindAttributesByID(DictionaryType* const thi
 void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribute* ptr);
 void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttribute* ptr);
 void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void DictionaryType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void DictionaryType_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void DictionaryType_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* DictionaryType_FindByPath(char* attribute, DictionaryType* const this);
 
 #endif /* __DictionaryType_H */

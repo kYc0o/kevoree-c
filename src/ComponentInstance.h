@@ -1,19 +1,11 @@
 #ifndef H_ComponentInstance
 #define H_ComponentInstance
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "tools.h"
 #include "hashmap.h"
-/*#include "Instance.h"
-#include "Port.h"
-#include "Visitor.h"*/
 
 typedef struct _ComponentInstance ComponentInstance;
 typedef struct _Instance Instance;
 typedef struct _Port Port;
-/*typedef struct _ContainerNode ContainerNode;*/
 typedef struct _Visitor Visitor;
 
 typedef char* (*fptrCompInstInternalGetKey)(ComponentInstance*);
@@ -44,7 +36,9 @@ typedef struct _ComponentInstance {
 	fptrCompInstRemoveProvided RemoveProvided;
 	fptrCompInstRemoveRequired RemoveRequired;
 	fptrVisitAttrComponentInstance VisitAttributes;
+	fptrVisitAttrComponentInstance VisitPathAttributes;
 	fptrVisitRefsComponentInstance VisitReferences;
+	fptrVisitRefsComponentInstance VisitPathReferences;
 	fptrFindByPathComponentInstance FindByPath;
 } ComponentInstance ;
 
@@ -61,7 +55,9 @@ void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr);
 void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr);
 void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr);
 void ComponentInstance_VisitAttributes(void* const this, char* parent, Visitor* visitor);
+void ComponentInstance_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
 void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor);
+void ComponentInstance_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
 void* ComponentInstance_FindByPath(char* attribute, ComponentInstance* const this);
 
 #endif /* H_ComponentInstance */

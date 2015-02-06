@@ -22,7 +22,9 @@ typedef struct _GroupType {
 	fptrGroupTypeInternalGetKey InternalGetKey;
 	fptrDeleteGroupType Delete;
 	fptrVisitAttrGroupType VisitAttributes;
+	fptrVisitAttrGroupType VisitPathAttributes;
 	fptrVisitRefsGroupType VisitReferences;
+	fptrVisitRefsGroupType VisitPathReferences;
 } GroupType;
 
 TypeDefinition* newPoly_GroupType(void);
@@ -32,5 +34,6 @@ char* GroupType_InternalGetKey(void* const this);
 void deletePoly_GroupType(TypeDefinition* const this);
 void delete_GroupType(GroupType* const this);
 void GroupType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void GroupType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 
 #endif /* __GroupType_H */

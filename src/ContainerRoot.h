@@ -1,15 +1,10 @@
 #ifndef H_ContainerRoot
 #define H_ContainerRoot
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "hashmap.h"
-#include "tools.h"
-#include "kevoree.h"
 
-/*typedef struct _Group Group;
-typedef struct _Visitor Visitor;*/
+typedef struct _Group Group;
+typedef struct _Visitor Visitor;
 typedef struct _ContainerRoot ContainerRoot;
 typedef struct _ContainerNode ContainerNode;
 typedef struct _TypeDefinition TypeDefinition;
@@ -105,6 +100,7 @@ typedef struct _ContainerRoot {
 	fptrContRootRemoveGroups RemoveGroups;
 	fptrDeleteContainerRoot Delete;
 	fptrVisitContainerRoot Visit;
+	fptrVisitContainerRoot VisitPaths;
 	fptrFindByPathContainerRoot FindByPath;
 } ContainerRoot;
 
@@ -143,6 +139,7 @@ void ContainerRoot_RemoveNodeNetworks(ContainerRoot* const this, NodeNetwork* pt
 void ContainerRoot_RemoveGroups(ContainerRoot* const this, Group* ptr);
 void delete_ContainerRoot(ContainerRoot* const this);
 void ContainerRoot_Visit(void* const this, Visitor* visitor);
+void ContainerRoot_VisitPaths(void* const this, Visitor* visitor);
 void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this);
 
 #endif
