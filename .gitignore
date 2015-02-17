@@ -8,6 +8,9 @@ CMakeCache.txt
 *.json~
 *.metadata
 *.settings
+*.csettings
 /main
 /Makefile
 /tmp/
+
+/current_model.json
