@@ -1105,7 +1105,7 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 	visitor->action(path, STRING, cClass);
 	free(cClass);*/
 
-	sprintf(path, "generated_KMF_ID");
+	sprintf(path, "\\generated_KMF_ID");
 	visitor->action(path, STRING, ((ContainerRoot*)(this))->generated_KMF_ID);
 
 	hashmap_map* m = NULL;
@@ -1281,7 +1281,7 @@ void *ContainerRoot_FindByPath(char *_path, void *const this)
 	{
 		return pObj;
 		/*return this;*/
-	} else if (!strcmp("generated_KMF_ID", _path)) {
+	} else if (!strcmp("\\generated_KMF_ID", _path)) {
 		return pObj->generated_KMF_ID;
 	}
 	/* ContainerRoot references */

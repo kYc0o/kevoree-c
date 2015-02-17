@@ -9,6 +9,15 @@
 #include "list.h"
 #include "jsonparse.h"
 
+#define MAX_NUMBER 6
+
+#define DEBUG 1
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
 ContainerRoot *current_model = NULL;
 ContainerRoot *new_model = NULL;
 Visitor *visitor_print;
@@ -182,33 +191,66 @@ void actionprintpath(char *path, Type type, void *value)
 
 void actionUpdateDelete(char* _path, Type type, void* value)
 {
-	char *path = strdup(_path);
+	char *__path = strdup(_path);
+	char path[250];
+	char *path2 = strdup(_path);
+	char *path3 = NULL;
+	char *refname = NULL;
+	char *src = NULL;
+	KMFContainer *container;
 	/*
 	 * TODO return if memory is full
 	 */
+
+
+	if ((refname = strtok(path2, "\\")) != NULL) {
+		if ((refname = strtok(NULL, "\\")) == NULL) {
+			refname = strtok(path2, "\\");
+		}
+	}
+
+	strcpy(path, strtok(__path, "\\"));
+
+	if (!strcmp("generated_KMF_ID", path)) {
+		strcpy(path, "");
+	}
+
+	if ((container = new_model->FindByPath(path, new_model)) != NULL) {
+		if ((src = strdup(path)) != NULL) {
+		} else {
+			PRINTF("ERROR: not enough memory for src!\n");
+		}
+		/*typeName = strdup(container->metaClassName(container));*/
+	}
+
 	switch(type)
 	{
 	case STRING:
-		path = strtok(path, "\\");
-		if(new_model->FindByPath(path, new_model) == NULL)
-		{
+		if (container == NULL) {
+			/*
+			 * TODO check NULL
+			 */
+			if ((container = (KMFContainer*)current_model->FindByPath(path, current_model)) != NULL) {
+				if ((src = strdup(container->eContainer)) != NULL) {
+				} else {
+					PRINTF("ERROR: not enough memory for src!\n");
+				}
+			} else {
+				PRINTF("ERROR: Cannot retrieve source!\n");
+			}
 			/*printf("path = %s  value = %s\n", path, (char*)value);
 			printf("Path %s does not exist in new_model, removing...\n\n", path);*/
-			ModelTrace *mt = newPoly_ModelRemoveTrace(path, (char*)value, path);
+			ModelTrace *mt = newPoly_ModelRemoveTrace(src, refname, path);
 			/*char *strTrace = mt->ToString(mt->pDerivedObj);
 				PRINTF(strTrace);
 			free(strTrace);*/
-			if(mt != NULL)
-			{
+			if (mt != NULL)	{
 				list_add(model_traces, mt);
-			}
-			else {
+			} else {
 				printf("ERROR: ModelTrace cannot be added!\n");
 				printf("path = %s  value = %s\n", path, (char*)value);
 			}
-		}
-		else
-		{
+		} else {
 			/*printf("path = %s  value = %s\n", _path, (char*)value);*/
 			char* string = current_model->FindByPath(_path, current_model);
 			char* string2 = new_model->FindByPath(_path, new_model);
@@ -223,7 +265,7 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 				else
 				{
 					/*printf("Changing attribute to %s in current_model\n\n", string2);*/
-					ModelTrace *mt = newPoly_ModelSetTrace(path, string2, "STRING");
+					ModelTrace *mt = newPoly_ModelSetTrace(src, refname, string2);
 					/*char *strTrace = mt->ToString(mt->pDerivedObj);
 						PRINTF(strTrace);
 						free(strTrace);*/
@@ -240,7 +282,7 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 			else if(string == NULL && string2 != NULL)
 			{
 				/*printf("Current attribute is NULL, changing to new attribute '%s'\n\n", string2);*/
-				ModelTrace *mt = newPoly_ModelSetTrace(path, string2, "STRING");
+				ModelTrace *mt = newPoly_ModelSetTrace(src, refname, string2);
 				/*
 					char *strTrace = mt->ToString(mt->pDerivedObj);
 					PRINTF(strTrace);
@@ -258,7 +300,7 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 			else if(string != NULL && string2 == NULL)
 			{
 				/*printf("Changing attribute to NULL\n\n");*/
-				ModelTrace *mt = newPoly_ModelSetTrace(path, "NULL", "STRING");
+				ModelTrace *mt = newPoly_ModelSetTrace(src, refname, "");
 				/*char *strTrace = mt->ToString(mt->pDerivedObj);
 					PRINTF(strTrace);
 					free(strTrace);*/
@@ -276,12 +318,17 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 
 	case BOOL:
 	case INTEGER:
-		path = strtok(path, "\\");
-		if(new_model->FindByPath(path, new_model) == NULL)
+		if(container == NULL)/*new_model->FindByPath(path, new_model) == NULL)*/
 		{
+			/*
+			 * TODO check NULL
+			 */
+			container = (KMFContainer*)current_model->FindByPath(path, current_model);
+			src = strdup(container->eContainer);
+			PRINTF("src: %s\n", src);
 			/*printf("path = %s  value = %d\n", path, (int)value);
 			printf("Path %s does not exist in new_model, removing...\n\n", path);*/
-			ModelTrace *mt = newPoly_ModelRemoveTrace(path, (char*)value, path);
+			ModelTrace *mt = newPoly_ModelRemoveTrace(src, refname, path);
 			/*char *strTrace = mt->ToString(mt->pDerivedObj);
 				PRINTF(strTrace);
 				free(strTrace);*/
@@ -299,7 +346,7 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 			/*printf("path = %s  value = %d\n", _path, (int)value);*/
 			int v = (int)(current_model->FindByPath(_path, current_model));
 			int v2 = (int)(new_model->FindByPath(_path, new_model));
-			char v2str[4] = {0};
+			char v2str[MAX_NUMBER] = {0};
 			/*printf("Current attribute value: %d\n", v);
 			printf("New attribute value: %d\n", v2);*/
 			if(v == v2)
@@ -310,7 +357,7 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 			{
 				/*printf("Changing attribute to %d in current_model\n\n", v2);*/
 				sprintf(v2str, "%d", v2);
-				ModelTrace *mt = newPoly_ModelSetTrace(path, v2str, "INT");
+				ModelTrace *mt = newPoly_ModelSetTrace(src, refname, v2str);
 				/*char *strTrace = mt->ToString(mt->pDerivedObj);
 					PRINTF(strTrace);
 					free(strTrace);*/
@@ -338,23 +385,69 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 		printf("Type non valid!\n");
 		break;
 	}
+
+	free(__path);
+	free(path2);
+	if (src != NULL) {
+		free(src);
+	}
 }
 
 void actionAdd(char* _path, Type type, void* value)
 {
-	char *path = strdup(_path);
+	char *__path = strdup(_path);
+	char *path;
+	char *path2 = strdup(_path);
+	char *refname = NULL;
+	char *src = NULL;
+	char *typename = NULL;
+	KMFContainer *container;
 	/*
 	 * TODO return if memory is full
 	 */
+	if ((refname = strtok(path2, "\\")) != NULL) {
+		if ((refname = strtok(NULL, "\\")) == NULL) {
+			refname = strtok(path2, "\\");
+		}
+	}
+	if ((path = strtok(__path, "\\")) == NULL) {
+		path = "";
+	} else if (!strcmp("generated_KMF_ID", path)) {
+		path = "";
+	}
+	/*if ((container = current_model->FindByPath(path, current_model)) != NULL) {
+		if ((src = strdup(path)) != NULL) {
+		} else {
+			PRINTF("ERROR: not enough memory for src!\n");
+		}
+		typename = strdup(container->metaClassName(container));
+	} else {
+		PRINTF("INFO: adding %s\n", path);
+	}*/
+
 	switch(type)
 	{
 	case STRING:
 		/*printf("path = %s  value = %s\n", path, (char*)value);*/
 		/*path = strtok(path, "\\");*/
-		if(current_model->FindByPath(path, current_model) == NULL)
+		container = current_model->FindByPath(path, current_model);
+		if(container == NULL)
 		{
+			PRINTF("DEBUG: looking for container in new_model at %s!\n", path);
+			if ((container = (KMFContainer*)new_model->FindByPath(path, new_model)) != NULL) {
+				if ((src = strdup(container->eContainer)) != NULL) {
+					typename = strdup(container->metaClassName(container));
+				} else {
+					PRINTF("ERROR: not enough memory for src!\n");
+				}
+			} else {
+				PRINTF("ERROR: Cannot retrieve source!\n");
+			}
 			/*printf("Path %s does not exist in curent_model, adding...\n\n", path);*/
-			ModelTrace *mt = newPoly_ModelAddTrace(path, (char*)value, path, "STRING");
+			PRINTF("DEBUG: refname: %s\n", refname);
+			PRINTF("DEBUG: src: %s\n", src);
+			PRINTF("DEBUG: typename: %s\n", typename);
+			ModelTrace *mt = newPoly_ModelAddTrace(src, refname, path, typename);
 			/*char *strTrace = mt->ToString(mt->pDerivedObj);
 				PRINTF(strTrace);
 				free(strTrace);*/
@@ -411,8 +504,17 @@ void actionAdd(char* _path, Type type, void* value)
 		printf("Type non valid!\n");
 		break;
 	}
-	free(path);
+
+	free(__path);
+	free(path2);
+	if (src != NULL) {
+		free(src);
+	}
+	if (typename != NULL) {
+		free(typename);
+	}
 }
+
 /*KevoreeBootStrap *kb=NULL;*/
 
 int main(void)
