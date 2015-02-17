@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _ComponentType ComponentType;
 typedef struct _TypeDefinition TypeDefinition;
@@ -23,41 +24,43 @@ typedef void (*fptrVisitRefsComponentType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathComponentType)(char*, TypeDefinition*);
 
 typedef struct _ComponentType {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	TypeDefinition* super;
 	map_t required;
 	map_t provided;
-	fptrCompTypeMetaClassName MetaClassName;
-	fptrCompTypeInternalGetKey InternalGetKey;
 	fptrCompTypeFindRequiredByID FindRequiredByID;
 	fptrCompTypeFindProvidedByID FindProvidedByID;
 	fptrCompTypeAddRequired AddRequired;
 	fptrCompTypeAddProvided AddProvided;
 	fptrCompTypeRemoveRequired RemoveRequired;
 	fptrCompTypeRemoveProvided RemoveProvided;
-	fptrDeleteComponentType Delete;
-	fptrVisitAttrComponentType VisitAttributes;
-	fptrVisitAttrComponentType VisitPathAttributes;
-	fptrVisitRefsComponentType VisitReferences;
-	fptrVisitRefsComponentType VisitPathReferences;
-	fptrFindByPathComponentType FindByPath;
 } ComponentType;
 
 TypeDefinition* newPoly_ComponentType(void);
 ComponentType* new_ComponentType(void);
-char* ComponentType_MetaClassName(ComponentType* const this);
-char* ComponentType_InternalGetKey(void* const this);
+char* ComponentType_metaClassName(void* const this);
+char* ComponentType_internalGetKey(void* const this);
 PortTypeRef* ComponentType_FindRequiredByID(TypeDefinition* const this, char*);
 PortTypeRef* ComponentType_FindProvidedByID(TypeDefinition* const this, char*);
 void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr);
 void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr);
 void ComponentType_RemoveRequired(TypeDefinition* const this, PortTypeRef* ptr);
 void ComponentType_RemoveProvided(TypeDefinition* const this, PortTypeRef* ptr);
-void deletePoly_ComponentType(TypeDefinition* const this);
-void delete_ComponentType(ComponentType* const this);
+void deletePoly_ComponentType(void* const this);
+void delete_ComponentType(void* const this);
 void ComponentType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void ComponentType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
-void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void ComponentType_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
-void* ComponentType_FindByPath(char* attribute, TypeDefinition* const this);
+void ComponentType_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void ComponentType_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* ComponentType_FindByPath(char* attribute, void* const this);
  
 #endif /* __ComponentType_H */

@@ -2,6 +2,7 @@
 #include "DictionaryValue.h"
 #include "Instance.h"
 #include "Dictionary.h"
+#include "tools.h"
 
 #define DEBUG 0
 #if DEBUG
@@ -34,8 +35,8 @@ Dictionary* new_Dictionary()
 	pObj->RemoveValues = Dictionary_RemoveValues;
 	pObj->FindValuesByID = Dictionary_FindValuesByID;
 
-	pObj->InternalGetKey = Dictionary_InternalGetKey;
-	pObj->MetaClassName = Dictionary_MetaClassName;
+	pObj->internalGetKey = Dictionary_internalGetKey;
+	pObj->metaClassName = Dictionary_metaClassName;
 	pObj->Delete = delete_Dictionary;
 	pObj->VisitAttributes = Dictionary_VisitAttributes;
 	pObj->VisitPathAttributes = Dictionary_VisitPathAttributes;
@@ -46,15 +47,18 @@ Dictionary* new_Dictionary()
 	return pObj;
 }
 
-void delete_Dictionary(Dictionary* const this)
+void delete_Dictionary(void* const this)
 {
 	if(this != NULL)
 	{
-		free(this->generated_KMF_ID);
-		/* TODO check if hashmap is not NULL */
-		hashmap_free(this->values);
-		free(this->eContainer);
-		free(this);
+		Dictionary *pObj = (Dictionary*)this;
+		free(pObj->generated_KMF_ID);
+		/*
+		 * TODO check if hashmap is not NULL
+		 */
+		hashmap_free(pObj->values);
+		free(pObj->eContainer);
+		free(pObj);
 		/*this = NULL;*/
 	}
 }
@@ -80,7 +84,7 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 {
 	DictionaryValue* container = NULL;
 
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -97,8 +101,8 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 			/*container = (DictionaryValue*)ptr;*/
 			if(hashmap_put(this->values, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen("dictionary[]") + strlen(this->InternalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "dictionary[%s]", this->InternalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen("dictionary[]") + strlen(this->internalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "dictionary[%s]", this->internalGetKey(this));
 			}
 		}
 	}
@@ -106,7 +110,7 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 
 void Dictionary_RemoveValues(Dictionary* const this, DictionaryValue* ptr)
 {
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -122,13 +126,15 @@ void Dictionary_RemoveValues(Dictionary* const this, DictionaryValue* ptr)
 	}
 }
 
-char* Dictionary_InternalGetKey(Dictionary* const this)
+char* Dictionary_internalGetKey(void* const this)
 {
-	return this->generated_KMF_ID;
+	Dictionary *pObj = (Dictionary*)this;
+	return pObj->generated_KMF_ID;
 }
 
-char* Dictionary_MetaClassName(Dictionary* const this)
+char* Dictionary_metaClassName(void* const this)
 {
+	Dictionary *pObj = (Dictionary*)this;
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("Dictionary")) + 1);
@@ -140,14 +146,14 @@ char* Dictionary_MetaClassName(Dictionary* const this)
 	return name;
 }
 
-void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Dictionary*)this)->MetaClassName((Dictionary*)this))) + 1);
-	sprintf(cClass, "org.kevoree.%s", ((Dictionary*)this)->MetaClassName((Dictionary*)this));
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Dictionary*)this)->metaClassName((Dictionary*)this))) + 1);
+	sprintf(cClass, "org.kevoree.%s", ((Dictionary*)this)->metaClassName((Dictionary*)this));
 	sprintf(path, "eClass");
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
@@ -158,14 +164,14 @@ void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	visitor->action(NULL, COLON, NULL);
 }
 
-void Dictionary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void Dictionary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);
-	cClass = ((Dictionary*)this)->MetaClassName((Dictionary*)this);
+	cClass = ((Dictionary*)this)->metaClassName((Dictionary*)this);
 	visitor->action(path, STRING, cClass);
 	free(cClass);*/
 
@@ -173,7 +179,7 @@ void Dictionary_VisitPathAttributes(void *const this, char *parent, Visitor *vis
 	visitor->action(path, STRING, ((Dictionary*)(this))->generated_KMF_ID);
 }
 
-void Dictionary_VisitReferences(void *const this, char *parent, Visitor *visitor)
+void Dictionary_VisitReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	int i;
 
@@ -195,7 +201,7 @@ void Dictionary_VisitReferences(void *const this, char *parent, Visitor *visitor
 				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				DictionaryValue* n = data;
-				n->VisitAttributes(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, false);
 				if(length > 1)
 				{
 					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
@@ -214,7 +220,7 @@ void Dictionary_VisitReferences(void *const this, char *parent, Visitor *visitor
 	}
 }
 
-void Dictionary_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+void Dictionary_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	int i;
 
@@ -232,19 +238,20 @@ void Dictionary_VisitPathReferences(void *const this, char *parent, Visitor *vis
 			{
 				any_t data = (any_t) (m->data[i].data);
 				DictionaryValue* n = data;
-				sprintf(path, "%s/values[%s]", parent, n->InternalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor);
+				sprintf(path, "%s/values[%s]", parent, n->internalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor, false);
 			}
 		}
 	}
 }
 
-void* Dictionary_FindByPath(char* attribute, Dictionary* const this)
+void* Dictionary_FindByPath(char* attribute, void* const this)
 {
+	Dictionary *pObj = (Dictionary*)this;
 	/* Local attributes */
 	if(!strcmp("generated_KMF_ID", attribute))
 	{
-		return this->generated_KMF_ID;
+		return pObj->generated_KMF_ID;
 	}
 	/* Local references */
 	else
@@ -311,11 +318,11 @@ void* Dictionary_FindByPath(char* attribute, Dictionary* const this)
 			if(nextAttribute == NULL)
 			{
 
-				return this->FindValuesByID(this, key);
+				return pObj->FindValuesByID(pObj, key);
 			}
 			else
 			{
-				DictionaryValue* value = this->FindValuesByID(this, key);
+				DictionaryValue* value = pObj->FindValuesByID(pObj, key);
 				if(value != NULL)
 					return value->FindByPath(nextPath, value);
 				else

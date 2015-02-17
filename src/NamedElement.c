@@ -26,8 +26,8 @@ NamedElement* new_NamedElement()
 	pObj->pDerivedObj = pObj;
 	pObj->name = NULL;
 
-	pObj->InternalGetKey = NamedElement_InternalGetKey;
-	pObj->MetaClassName = NamedElement_MetaClassName;
+	pObj->internalGetKey = NamedElement_internalGetKey;
+	pObj->metaClassName = NamedElement_metaClassName;
 	pObj->Delete = delete_NamedElement;
 	pObj->VisitAttributes = NamedElement_VisitAttributes;
 	pObj->VisitPathAttributes = NamedElement_VisitPathAttributes;
@@ -38,12 +38,13 @@ NamedElement* new_NamedElement()
 	return pObj;
 }
 
-char* NamedElement_InternalGetKey(NamedElement* const this)
+char* NamedElement_internalGetKey(void * const this)
 {
-	return this->name;
+	NamedElement *pObj = (NamedElement*)this;
+	return pObj->name;
 }
 
-char* NamedElement_MetaClassName(NamedElement* const this)
+char* NamedElement_metaClassName(void * const this)
 {
 	char *name;
 
@@ -56,12 +57,13 @@ char* NamedElement_MetaClassName(NamedElement* const this)
 	return name;
 }
 
-void delete_NamedElement(NamedElement* const this)
+void delete_NamedElement(void * const this)
 {
 	if(this != NULL)
 	{
-		free(this->name);
-		free(this);
+		NamedElement *pObj = (NamedElement*)this;
+		free(pObj->name);
+		free(pObj);
 	}
 }
 
@@ -73,14 +75,14 @@ void NamedElement_VisitAttributes(void *const this, char *parent, Visitor *visit
 	if(recursive)
 	{
 		char* cClass = NULL;
-		cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((NamedElement*)this)->MetaClassName((NamedElement*)this))) + 1);
-		sprintf(cClass, "org.kevoree.%s", ((NamedElement*)this)->MetaClassName((NamedElement*)this));
+		cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((NamedElement*)this)->metaClassName((NamedElement*)this))) + 1);
+		sprintf(cClass, "org.kevoree.%s", ((NamedElement*)this)->metaClassName((NamedElement*)this));
 		sprintf(path,"eClass");
 		visitor->action(path, STRING, cClass);
 		visitor->action(NULL, COLON, NULL);
 		free(cClass);
 
-		sprintf(path, "name", parent);
+		sprintf(path, "name");
 		visitor->action(path, STRING, ((NamedElement*)(this))->name);
 		visitor->action(NULL, COLON, NULL);
 	}
@@ -100,7 +102,7 @@ void NamedElement_VisitPathAttributes(void *const this, char *parent, Visitor *v
 	{
 		/*char* cClass = NULL;
 		sprintf(path,"%s\\cClass", parent);
-		cClass = ((NamedElement*)this)->MetaClassName((NamedElement*)this);
+		cClass = ((NamedElement*)this)->metaClassName((NamedElement*)this);
 		visitor->action(path, STRING, cClass);
 		free(cClass);*/
 
@@ -114,11 +116,12 @@ void NamedElement_VisitPathAttributes(void *const this, char *parent, Visitor *v
 	}
 }
 
-void* NamedElement_FindByPath(char* attribute, NamedElement* const this)
+void* NamedElement_FindByPath(char* attribute, void * const this)
 {
+	NamedElement *pObj = (NamedElement*)this;
 	if(!strcmp("name",attribute))
 	{
-		return this->name;
+		return pObj->name;
 	}
 	else
 	{

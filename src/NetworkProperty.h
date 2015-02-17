@@ -1,6 +1,9 @@
 #ifndef H_NetworkProperty
 #define H_NetworkProperty
 
+#include <stdbool.h>
+#include "KMF4C.h"
+
 typedef struct _NetworkProperty NetworkProperty;
 typedef struct _NamedElement NamedElement;
 typedef struct _Visitor Visitor;
@@ -12,26 +15,30 @@ typedef void (*fptrVisitAttrNetworkProperty)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNetworkProperty)(char*, NetworkProperty*);
 
 typedef struct _NetworkProperty {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	NamedElement *super;
 	char *value;
 	char *eContainerNL;
 	char *eContainerNI;
-	fptrNetPropMetaClassName MetaClassName;
-	fptrNetPropInternalGetKey InternalGetKey;
-	fptrDeleteNetworkProperty Delete;
-	fptrVisitAttrNetworkProperty VisitAttributes;
-	fptrVisitAttrNetworkProperty VisitPathAttributes;
-	fptrFindByPathNetworkProperty FindByPath;
 } NetworkProperty;
 
 NamedElement* newPoly_NetworkProperty(void);
 NetworkProperty* new_NetworkProperty(void);
-char* NetworkProperty_MetaClassName(NetworkProperty* const this);
-char* NetworkProperty_InternalGetKey(NetworkProperty* const this);
-void deletePoly_NetworkProperty(NamedElement* const this);
-void delete_NetworkProperty(NetworkProperty* const this);
-void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void NetworkProperty_VisitPathAttributes(void *const this, char *parent, Visitor *visitor);
-void* NetworkProperty_FindByPath(char* attribute, NetworkProperty* const this);
+char* NetworkProperty_metaClassName(void * const this);
+char* NetworkProperty_internalGetKey(void * const this);
+void deletePoly_NetworkProperty(void * const this);
+void delete_NetworkProperty(void * const this);
+void NetworkProperty_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NetworkProperty_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive);
+void* NetworkProperty_FindByPath(char* attribute, void * const this);
 
 #endif /* H_NetworkProperty */

@@ -1,10 +1,11 @@
+#include <string.h>
 #include "DefaultFactorykevoree.h"
 #include "kevoree.h"
 #include "JSONModelLoader.h"
 #include "json.h"
 #include "jsonparse.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -92,7 +93,13 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 					{
 					case JSON_TYPE_STRING:
 						jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
-						obj->super->started = atoi(strJson);
+						if (!strcmp("false", strJson)) {
+							obj->super->started = false;
+						} else if (!strcmp("true", strJson)) {
+							obj->super->started = true;
+						} else {
+							obj->super->started = false;
+						}
 						PRINTF("%s -> %d\n", strJson, obj->super->started);
 						break;
 					}
@@ -283,8 +290,8 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 								else
 								{
 									PRINTF("Group %s not found!\n", id);
-									char *objId = (char*)malloc(sizeof(char) * strlen("nodes[]") * strlen(obj->InternalGetKey(obj)) + 1);
-									sprintf(objId, "nodes[%s]", obj->InternalGetKey(obj));
+									char *objId = (char*)malloc(sizeof(char) * strlen("nodes[]") * strlen(obj->internalGetKey(obj)) + 1);
+									sprintf(objId, "nodes[%s]", obj->internalGetKey(obj));
 									PRINTF("Storing objId %s for later resolve of %s!\n", objId, strJson);
 									ObjectReference *ref = new_ObjectReference(objId, strdup(strJson));
 									loader->addObjectReference(loader, ref);
@@ -403,8 +410,8 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 								else
 								{
 									PRINTF("TypeDefinition %s not found!\n", id);
-									char *objId = (char*)malloc(sizeof(char) * strlen("nodes[]") * strlen(obj->InternalGetKey(obj)) + 1);
-									sprintf(objId, "nodes[%s]", obj->InternalGetKey(obj));
+									char *objId = (char*)malloc(sizeof(char) * strlen("nodes[]") * strlen(obj->internalGetKey(obj)) + 1);
+									sprintf(objId, "nodes[%s]", obj->internalGetKey(obj));
 									PRINTF("Storing objId %s for later resolve of %s!\n", objId, strJson);
 									ObjectReference *ref = new_ObjectReference(objId, strdup(strJson));
 									loader->addObjectReference(loader, ref);
@@ -781,7 +788,13 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 					{
 					case JSON_TYPE_STRING:
 						jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
-						obj->super->started = atoi(strJson);
+						if (!strcmp("false", strJson)) {
+							obj->super->started = false;
+						} else if (!strcmp("true", strJson)) {
+							obj->super->started = true;
+						} else {
+							obj->super->started = false;
+						}
 						PRINTF("%s -> %d\n", strJson, obj->super->started);
 						break;
 					}
@@ -825,8 +838,8 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 								else
 								{
 									PRINTF("TypeDefinition %s not found!\n", id);
-									char *objId = (char*)malloc(sizeof(char) * strlen("nodes[]/components[]") * strlen(obj->InternalGetKey(obj)) * strlen(node->InternalGetKey(node)) + 1);
-									sprintf(objId, "nodes[%s]/components[%s]", node->InternalGetKey(node), obj->InternalGetKey(obj));
+									char *objId = (char*)malloc(sizeof(char) * strlen("nodes[]/components[]") * strlen(obj->internalGetKey(obj)) * strlen(node->internalGetKey(node)) + 1);
+									sprintf(objId, "nodes[%s]/components[%s]", node->internalGetKey(node), obj->internalGetKey(obj));
 									PRINTF("Storing objId %s for later resolve of %s!\n", objId, strJson);
 									ObjectReference *ref = new_ObjectReference(objId, strdup(strJson));
 									loader->addObjectReference(loader, ref);
@@ -1274,8 +1287,8 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 								else
 								{
 									PRINTF("TypeDefinition %s not found!\n", id);
-									char *objId = (char*)malloc(sizeof(char) * strlen("groups[]") * strlen(obj->InternalGetKey(obj)) + 1);
-									sprintf(objId, "groups[%s]", obj->InternalGetKey(obj));
+									char *objId = (char*)malloc(sizeof(char) * strlen("groups[]") * strlen(obj->internalGetKey(obj)) + 1);
+									sprintf(objId, "groups[%s]", obj->internalGetKey(obj));
 									PRINTF("Storing objId %s for later resolve of %s!\n", objId, strJson);
 									ObjectReference *ref = new_ObjectReference(objId, strdup(strJson));
 									loader->addObjectReference(loader, ref);
@@ -1337,8 +1350,8 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 								else
 								{
 									PRINTF("Node %s not found!\n", id);
-									char *objId = (char*)malloc(sizeof(char) * strlen("groups[]") * strlen(obj->InternalGetKey(obj)) + 1);
-									sprintf(objId, "groups[%s]", obj->InternalGetKey(obj));
+									char *objId = (char*)malloc(sizeof(char) * strlen("groups[]") * strlen(obj->internalGetKey(obj)) + 1);
+									sprintf(objId, "groups[%s]", obj->internalGetKey(obj));
 									PRINTF("Storing objId %s for later resolve of %s!\n", objId, strJson);
 									ObjectReference *ref = new_ObjectReference(objId, strdup(strJson));
 									loader->addObjectReference(loader, ref);
@@ -1828,8 +1841,8 @@ TypeDefinition *createTypeDefinition(struct jsonparse_state *jsonState, char jso
 								else
 								{
 									PRINTF("DeployUnit %s not found!\n", id);
-									char *objId = (char*)malloc(sizeof(char) * strlen("typeDefinitions[]") * strlen(obj->InternalGetKey(obj)) + 1);
-									sprintf(objId, "typeDefinitions[%s]", obj->InternalGetKey(obj));
+									char *objId = (char*)malloc(sizeof(char) * strlen("typeDefinitions[]") * strlen(obj->internalGetKey(obj)) + 1);
+									sprintf(objId, "typeDefinitions[%s]", obj->internalGetKey(obj));
 									PRINTF("Storing objId %s for later resolve of %s!\n", objId, strJson);
 									ObjectReference *ref = new_ObjectReference(objId, strdup(strJson));
 									loader->addObjectReference(loader, ref);
@@ -2363,8 +2376,8 @@ TypeLibrary *createTypeLibrary(struct jsonparse_state *jsonState, char jsonType,
 								else
 								{
 									PRINTF("TypeDefinition %s not found!\n", id);
-									char *objId = (char*)malloc(sizeof(char) * strlen("libraries[]") * strlen(obj->InternalGetKey(obj)) + 1);
-									sprintf(objId, "libraries[%s]", obj->InternalGetKey(obj));
+									char *objId = (char*)malloc(sizeof(char) * strlen("libraries[]") * strlen(obj->internalGetKey(obj)) + 1);
+									sprintf(objId, "libraries[%s]", obj->internalGetKey(obj));
 									PRINTF("Storing objId %s for later resolve of %s!\n", objId, strJson);
 									ObjectReference *ref = new_ObjectReference(objId, strdup(strJson));
 									loader->addObjectReference(loader, ref);

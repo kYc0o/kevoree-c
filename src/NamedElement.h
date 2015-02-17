@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "tools.h"
+#include "KMF4C.h"
 
 typedef struct _NamedElement NamedElement;
 typedef struct _Visitor Visitor;
@@ -15,24 +16,25 @@ typedef void (*fptrVisitRefsNamedElement)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNamedElement)(char*, NamedElement*);
 
 typedef struct _NamedElement {
-	void* pDerivedObj;
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char* name;
-	fptrNamedElementInternalGetKey InternalGetKey;
-	fptrNamedElementMetaClassName MetaClassName;
-	fptrDeleteNamedElement Delete;
-	fptrVisitAttrNamedElement VisitAttributes;
-	fptrVisitAttrNamedElement VisitPathAttributes;
-	fptrVisitRefsNamedElement VisitReferences;
-	fptrVisitRefsNamedElement VisitPathReferences;
-	fptrFindByPathNamedElement FindByPath;
 }NamedElement;
 
 NamedElement* new_NamedElement(void);
-char* NamedElement_InternalGetKey(NamedElement* const this);
-char* NamedElement_MetaClassName(NamedElement* const this);
-void delete_NamedElement(NamedElement*);
+char* NamedElement_internalGetKey(void * const this);
+char* NamedElement_metaClassName(void * const this);
+void delete_NamedElement(void * const this);
 void NamedElement_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void NamedElement_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
-void* NamedElement_FindByPath(char* attribute, NamedElement* const this);
+void* NamedElement_FindByPath(char* attribute, void * const this);
 
 #endif

@@ -2,6 +2,7 @@
 #define __Repository_H
 
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _Repository Repository;
 typedef struct _Visitor Visitor;
@@ -13,22 +14,25 @@ typedef void (*fptrVisitAttrRepository)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathRepo)(char*, Repository*);
 
 typedef struct _Repository {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char* url;
-	char* eContainer;
-	fptrRepoInternalGetKey InternalGetKey;
-	fptrRepoMetaClassName MetaClassName;
-	fptrDeleteRepository Delete;
-	fptrVisitAttrRepository VisitAttributes;
-	fptrVisitAttrRepository VisitPathAttributes;
-	fptrFindByPathRepo FindByPath;
 } Repository;
 
 Repository* new_Repository(void);
-char* Repository_MetaClassName(Repository* const this);
-char* Repository_InternalGetKey(Repository* const this);
-void delete_Repository(Repository* const this);
-void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void Repository_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
-void* Repository_FindByPath(char* attribute, Repository* const this);
+char* Repository_metaClassName(void * const this);
+char* Repository_internalGetKey(void * const this);
+void delete_Repository(void * const this);
+void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void Repository_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* Repository_FindByPath(char* attribute, void * const this);
 
 #endif

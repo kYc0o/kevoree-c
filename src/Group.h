@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _ContainerNode ContainerNode;
 typedef struct _Group Group;
@@ -20,35 +21,36 @@ typedef void (*fptrVisitRefsGroup)(void*, char*, Visitor*, bool);
 typedef void* (*fptrFindByPathGroup)(char*, Group*);
 
 typedef struct _Group { 
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	Instance *super;
 	map_t subNodes;
-	char *eContainer;
 	fptrGroupAddSubNodes AddSubNodes;
 	fptrGroupRemoveSubNodes RemoveSubNodes;
-	fptrGroupInternalGetKey InternalGetKey;
-	fptrGroupMetaClassName MetaClassName;
 	fptrGroupFindSubNodesByID FindSubNodesByID;
-	fptrDeleteGroup Delete;
-	fptrVisitAttrGroup VisitAttributes;
-	fptrVisitAttrGroup VisitPathAttributes;
-	fptrVisitRefsGroup VisitReferences;
-	fptrVisitRefsGroup VisitPathReferences;
-	fptrFindByPathGroup FindByPath;
 } Group;
 
 Instance* newPoly_Group(void);
 Group* new_Group(void);
-char* Group_InternalGetKey(Group* const this);
-char* Group_MetaClassName(Group* const this);
+char* Group_internalGetKey(void* const this);
+char* Group_metaClassName(void* const this);
 ContainerNode* Group_FindSubNodesByID(Group* const this, char* id);
 void Group_AddSubNodes(Group* const this, ContainerNode* ptr);
 void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr);
-void deletePoly_Group(Instance*);
-void delete_Group(Group*);
+void deletePoly_Group(void * const this);
+void delete_Group(void * const this);
 void Group_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Group_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Group_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
-void* Group_FindByPath(char* attribute, Group* const this);
+void* Group_FindByPath(char *attribute, void * const this);
 
 #endif /* H_Group */

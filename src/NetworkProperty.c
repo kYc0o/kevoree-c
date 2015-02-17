@@ -33,8 +33,8 @@ NamedElement* newPoly_NetworkProperty()
 	pNetPropObj->eContainerNL = NULL;
 	pNetPropObj->eContainerNI = NULL;
 	
-	pObj->MetaClassName = NetworkProperty_MetaClassName;
-	pObj->InternalGetKey = NetworkProperty_InternalGetKey;
+	pObj->metaClassName = NetworkProperty_metaClassName;
+	pObj->internalGetKey = NetworkProperty_internalGetKey;
 	pObj->VisitAttributes = NetworkProperty_VisitAttributes;
 	pObj->VisitPathAttributes = NetworkProperty_VisitPathAttributes;
 	pObj->FindByPath = NetworkProperty_FindByPath;
@@ -66,9 +66,9 @@ NetworkProperty* new_NetworkProperty()
 	pNetPropObj->eContainerNL = NULL;
 	pNetPropObj->eContainerNI = NULL;
 
-	pNetPropObj->MetaClassName = NetworkProperty_MetaClassName;
-	pObj->MetaClassName = NetworkProperty_MetaClassName;
-	pNetPropObj->InternalGetKey = NetworkProperty_InternalGetKey;
+	pNetPropObj->metaClassName = NetworkProperty_metaClassName;
+	pObj->metaClassName = NetworkProperty_metaClassName;
+	pNetPropObj->internalGetKey = NetworkProperty_internalGetKey;
 	pNetPropObj->VisitAttributes = NetworkProperty_VisitAttributes;
 	pNetPropObj->VisitPathAttributes = NetworkProperty_VisitPathAttributes;
 	pNetPropObj->FindByPath = NetworkProperty_FindByPath;
@@ -78,12 +78,13 @@ NetworkProperty* new_NetworkProperty()
 	return pNetPropObj;
 }
 
-char* NetworkProperty_InternalGetKey(NetworkProperty* const this)
+char* NetworkProperty_internalGetKey(void * const this)
 {
-	return this->super->InternalGetKey(this->super);
+	NetworkProperty *pObj = (NetworkProperty*)this;
+	return pObj->super->internalGetKey(pObj->super);
 }
 
-char* NetworkProperty_MetaClassName(NetworkProperty* const this)
+char* NetworkProperty_metaClassName(void * const this)
 {
 	char *name = NULL;
 
@@ -96,51 +97,53 @@ char* NetworkProperty_MetaClassName(NetworkProperty* const this)
 	return name;
 }
 
-void deletePoly_NetworkProperty(NamedElement* const this)
+void deletePoly_NetworkProperty(void * const this)
 {
 	if(this != NULL)
 	{
+		NamedElement *pObj = (NamedElement*)this;
 		NetworkProperty* pNetPropObj;
-		pNetPropObj = this->pDerivedObj;
+		pNetPropObj = pObj->pDerivedObj;
 		/*destroy derived obj*/
 		free(pNetPropObj->value);
 		free(pNetPropObj->eContainerNL);
 		free(pNetPropObj->eContainerNI);
 		free(pNetPropObj);
 		/*destroy base Obj*/
-		delete_NamedElement(this);
+		delete_NamedElement(pObj);
 	}
 }
 
-void delete_NetworkProperty(NetworkProperty* const this)
+void delete_NetworkProperty(void * const this)
 {
 	if(this != NULL)
 	{
+		NetworkProperty *pObj = (NetworkProperty*)this;
 		/* destroy base object */
-		delete_NamedElement(this->super);
+		delete_NamedElement(pObj->super);
 		/* destroy data memebers */
-		free(this->value);
-		free(this->eContainerNL);
-		free(this->eContainerNI);
-		free(this);
+		free(pObj->value);
+		free(pObj->eContainerNL);
+		free(pObj->eContainerNI);
+		free(pObj);
 		/*this = NULL;*/
 	}
 	
 }
 
-void NetworkProperty_VisitAttributes(void *const this, char *parent, Visitor *visitor)
+void NetworkProperty_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	NamedElement_VisitAttributes(((NetworkProperty*)(this))->super, parent, visitor, true);
 	
-	sprintf(path, "value", parent);
+	sprintf(path, "value");
 	visitor->action(path, STRING, ((NetworkProperty*)this)->value);
 	visitor->action(NULL, RETURN, NULL);
 }
 
-void NetworkProperty_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void NetworkProperty_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -151,17 +154,18 @@ void NetworkProperty_VisitPathAttributes(void *const this, char *parent, Visitor
 	visitor->action(path, STRING, ((NetworkProperty*)this)->value);
 }
 
-void* NetworkProperty_FindByPath(char *attribute, NetworkProperty *const this)
+void* NetworkProperty_FindByPath(char *attribute, void *const this)
 {
+	NetworkProperty *pObj = (NetworkProperty*)this;
 	/* NamedElement attributes */
 	if(!strcmp("name", attribute))
 	{
-		return this->super->FindByPath(attribute, this->super);
+		return pObj->super->FindByPath(attribute, pObj->super);
 	}
 	/* Local attributes */
 	else if(!strcmp("value", attribute))
 	{
-		return this->value;
+		return pObj->value;
 	}
 	else
 	{

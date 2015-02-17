@@ -4,7 +4,7 @@
 #include "Visitor.h"
 #include "DictionaryAttribute.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -32,8 +32,8 @@ TypedElement* newPoly_DictionaryAttribute()
 	pObj->VisitReferences = DictionaryAttribute_VisitReferences;
 	pObj->VisitPathReferences = DictionaryAttribute_VisitPathReferences;
 	
-	pObj->MetaClassName = DictionaryAttribute_MetaClassName;
-	pObj->InternalGetKey = DictionaryAttribute_InternalGetKey;
+	pObj->metaClassName = DictionaryAttribute_metaClassName;
+	pObj->internalGetKey = DictionaryAttribute_internalGetKey;
 	
 	pDicAttrObj->optional = -1;
 	pDicAttrObj->state = -1;
@@ -78,9 +78,9 @@ DictionaryAttribute* new_DictionaryAttribute()
 	pDicAttrObj->defaultValue = NULL;
 	pDicAttrObj->eContainer = NULL;
 	
-	pDicAttrObj->MetaClassName = DictionaryAttribute_MetaClassName;
-	pObj->super->MetaClassName = DictionaryAttribute_MetaClassName;
-	pDicAttrObj->InternalGetKey = DictionaryAttribute_InternalGetKey;
+	pDicAttrObj->metaClassName = DictionaryAttribute_metaClassName;
+	pObj->super->metaClassName = DictionaryAttribute_metaClassName;
+	pDicAttrObj->internalGetKey = DictionaryAttribute_internalGetKey;
 	pDicAttrObj->FindByPath = DictionaryAttribute_FindByPath;
 	
 	pDicAttrObj->Delete = delete_DictionaryAttribute;
@@ -126,13 +126,15 @@ void delete_DictionaryAttribute(void* const this)
 	}
 }
 
-char* DictionaryAttribute_InternalGetKey(DictionaryAttribute* const this)
+char* DictionaryAttribute_internalGetKey(void* const this)
 {
-	return this->super->InternalGetKey(this->super);
+	DictionaryAttribute *pObj = (DictionaryAttribute*)this;
+	return pObj->super->internalGetKey(pObj->super);
 }
 
-char* DictionaryAttribute_MetaClassName(DictionaryAttribute* const this)
+char* DictionaryAttribute_metaClassName(void* const this)
 {
+	DictionaryAttribute *pObj = (DictionaryAttribute*)this;
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("DictionaryAttribute")) + 1);
@@ -144,13 +146,13 @@ char* DictionaryAttribute_MetaClassName(DictionaryAttribute* const this)
 	return name;
 }
 
-void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/* TypedElement attributes */
-	TypedElement_VisitAttributes(((DictionaryAttribute*)this)->super, parent, visitor);
+	TypedElement_VisitAttributes(((DictionaryAttribute*)this)->super, parent, visitor, recursive);
 	
 	/* Local attributes */
 	sprintf(path, "optional");
@@ -174,13 +176,13 @@ void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor
 	visitor->action(NULL, RETURN, NULL);
 }
 
-void DictionaryAttribute_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void DictionaryAttribute_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/* TypedElement attributes */
-	TypedElement_VisitPathAttributes(((DictionaryAttribute*)this)->super, parent, visitor);
+	TypedElement_VisitPathAttributes(((DictionaryAttribute*)this)->super, parent, visitor, recursive);
 
 	/* Local attributes */
 	sprintf(path, "%s\\optional", parent);
@@ -195,43 +197,50 @@ void DictionaryAttribute_VisitPathAttributes(void *const this, char *parent, Vis
 	visitor->action(path, STRING, ((DictionaryAttribute*)(this))->defaultValue);
 }
 
-void DictionaryAttribute_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void DictionaryAttribute_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
-	TypedElement_VisitReferences(((DictionaryAttribute*)(this))->super, parent, visitor);
+	/*
+	 * TODO create "this" object
+	 */
+	TypedElement_VisitReferences(((DictionaryAttribute*)(this))->super, parent, visitor, recursive);
 }
 
-void DictionaryAttribute_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+void DictionaryAttribute_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
-	TypedElement_VisitPathReferences(((DictionaryAttribute*)(this))->super, parent, visitor);
+	/*
+	 * TODO create "this" object
+	 */
+	TypedElement_VisitPathReferences(((DictionaryAttribute*)(this))->super, parent, visitor, recursive);
 }
 
-void *DictionaryAttribute_FindByPath(char *attribute, DictionaryAttribute *const this)
+void *DictionaryAttribute_FindByPath(char *attribute, void *const this)
 {
+	DictionaryAttribute *pObj = (DictionaryAttribute*)this;
 	/* TypedElement attributes and references */
 	if(!strcmp("name", attribute) || !strcmp("genericTypes", attribute))
 	{
-		return TypedElement_FindByPath(attribute, this->super);
+		return TypedElement_FindByPath(attribute, pObj->super);
 	}
 	/* Local attributes */
 	else if(!strcmp("optional", attribute))
 	{
-		return (void*)this->optional;
+		return (void*)pObj->optional;
 	}
 	else if(!strcmp("state", attribute))
 	{
-		return (void*)this->state;
+		return (void*)pObj->state;
 	}
 	else if(!strcmp("datatype", attribute))
 	{
-		return this->datatype;
+		return pObj->datatype;
 	}
 	else if(!strcmp("fragmentDependant", attribute))
 	{
-		return (void*)this->fragmentDependant;
+		return (void*)pObj->fragmentDependant;
 	}
 	else if(!strcmp("defaultValue", attribute))
 	{
-		return this->defaultValue;
+		return pObj->defaultValue;
 	}
 	/* There is no local references */
 	else

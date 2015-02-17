@@ -15,25 +15,27 @@ typedef void* (*fptrFindByPathPortTypeMapping)(char*, PortTypeMapping*);
 
 typedef struct _PortTypeMapping {
 	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char *beanMethodName;
 	char *serviceMethodName;
 	char *paramTypes;
 	char generated_KMF_ID[9];
-	char *eContainer;
-	fptrPortTypMapMetaClassName MetaClassName;
-	fptrPortTypMapInternalGetKey InternalGetKey;
-	fptrDeletePortTypeMapping Delete;
-	fptrVisitAttrPortTypeMapping VisitAttributes;
-	fptrVisitAttrPortTypeMapping VisitPathAttributes;
-	fptrFindByPathPortTypeMapping FindByPath;
 } PortTypeMapping;
 
 PortTypeMapping* new_PortTypeMapping(void);
-char* PortTypeMapping_MetaClassName(PortTypeMapping* const this);
-char* PortTypeMapping_InternalGetKey(PortTypeMapping* const this);
-void delete_PortTypeMapping(PortTypeMapping* const this);
-void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void PortTypeMapping_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
-void* PortTypeMapping_FindByPath(char* attribute, PortTypeMapping* const this);
+char* PortTypeMapping_metaClassName(void * const this);
+char* PortTypeMapping_internalGetKey(void * const this);
+void delete_PortTypeMapping(void * const this);
+void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void PortTypeMapping_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* PortTypeMapping_FindByPath(char* attribute, void * const this);
 
 #endif /*__PortTypeMapping_H */

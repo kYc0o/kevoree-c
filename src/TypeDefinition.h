@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _TypeDefinition TypeDefinition;
 typedef struct _DeployUnit DeployUnit;
@@ -25,8 +26,17 @@ typedef void (*fptrVisitRefsTypeDefinition)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathTypeDefinition)(char*, TypeDefinition*);
 
 typedef struct _TypeDefinition {
-	NamedElement *super;
 	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
+	NamedElement *super;
 	char *version;
 	char *factoryBean;
 	char *bean;
@@ -34,39 +44,30 @@ typedef struct _TypeDefinition {
 	DeployUnit *deployUnits;
 	DictionaryType *dictionaryType;
 	map_t superTypes;
-	char *eContainer;
-	fptrTypeDefInternalGetKey InternalGetKey;
 	fptrTypeDefAddDeployUnit AddDeployUnit;
 	fptrTypeDefAddDictionaryType AddDictionaryType;
 	fptrTypeDefAddSuperTypes AddSuperTypes;
 	fptrTypeDefRemoveDeployUnit RemoveDeployUnit;
 	fptrTypeDefRemoveDictionaryType RemoveDictionaryType;
 	fptrTypeDefRemoveSuperTypes RemoveSuperTypes;
-	fptrTypeDefMetaClassName MetaClassName;
-	fptrDeleteTypeDef Delete;
-	fptrVisitAttrTypeDefinition VisitAttributes;
-	fptrVisitAttrTypeDefinition VisitPathAttributes;
-	fptrVisitRefsTypeDefinition VisitReferences;
-	fptrVisitRefsTypeDefinition VisitPathReferences;
-	fptrFindByPathTypeDefinition FindByPath;
 } TypeDefinition;
 
-char* TypeDefinition_InternalGetKey(TypeDefinition* const this);
+char* TypeDefinition_internalGetKey(void * const this);
 void TypeDefinition_AddDeployUnit(TypeDefinition* const this, DeployUnit *ptr);
 void TypeDefinition_AddDictionaryType(TypeDefinition* const this, DictionaryType *ptr);
 void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition *ptr);
 void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit *ptr);
 void TypeDefinition_RemoveDictionaryType(TypeDefinition* const this, DictionaryType *ptr);
 void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition *ptr);
-char* TypeDefinition_MetaClassName(TypeDefinition* const this);
+char* TypeDefinition_metaClassName(void * const this);
 NamedElement* newPoly_TypeDefinition(void);
 TypeDefinition* new_TypeDefinition(void);
-void deletePoly_TypeDefinition(NamedElement* const this);
-void delete_TypeDefinition(TypeDefinition* const this);
+void deletePoly_TypeDefinition(void * const this);
+void delete_TypeDefinition(void * const this);
 void TypeDefinition_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void TypeDefinition_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
-void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void TypeDefinition_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
-void* TypeDefinition_FindByPath(char* attribute, TypeDefinition* const this);
+void TypeDefinition_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void TypeDefinition_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* TypeDefinition_FindByPath(char* attribute, void * const this);
 
 #endif /* H_TypeDefinition */

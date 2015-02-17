@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _Instance Instance;
 typedef struct _NamedElement NamedElement;
@@ -26,8 +27,17 @@ typedef void (*fptrVisitRefsInstance)(void*, char*, Visitor*, bool);
 typedef void* (*fptrFindByPathInstance)(char*, Instance*);
 
 typedef struct _Instance {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	NamedElement* super;
-	void* pDerivedObj;
 	char *path;
 	char* metaData;
 	bool started;
@@ -41,14 +51,6 @@ typedef struct _Instance {
 	fptrInstRemoveTypeDefinition RemoveTypeDefinition;
 	fptrInstRemoveDictionary RemoveDictionary;
 	fptrInstRemoveFragmentDictionary RemoveFragmentDictionary;
-	fptrInstInternalGetKey InternalGetKey;
-	fptrInstMetaClassName MetaClassName;
-	fptrDeleteInstance Delete;
-	fptrVisitAttrInstance VisitAttributes;
-	fptrVisitAttrInstance VisitPathAttributes;
-	fptrVisitRefsInstance VisitReferences;
-	fptrVisitRefsInstance VisitPathReferences;
-	fptrFindByPathInstance FindByPath;
 } Instance;
 
 NamedElement* newPoly_Instance(void);
@@ -60,14 +62,14 @@ void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* pt
 void Instance_RemoveTypeDefinition(Instance* const this, TypeDefinition* ptr);
 void Instance_RemoveDictionary(Instance* const this, Dictionary* ptr);
 void Instance_RemoveFragmentDictionary(Instance* const this, FragmentDictionary* ptr);
-char* Instance_InternalGetKey(Instance* const this);
-char* Instance_MetaClassName(Instance* const this);
-void deletePoly_Instance(NamedElement* const this);
-void delete_Instance(Instance* const this);
+char* Instance_internalGetKey(void * const this);
+char* Instance_metaClassName(void * const this);
+void deletePoly_Instance(void * const this);
+void delete_Instance(void * const this);
 void Instance_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Instance_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Instance_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Instance_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
-void* Instance_FindByPath(char* attribute, Instance* const this);
+void* Instance_FindByPath(char* attribute, void * const this);
 
 #endif /* H_Instance */

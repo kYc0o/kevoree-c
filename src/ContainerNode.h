@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _ContainerNode ContainerNode;
 typedef struct _Instance Instance;
@@ -33,15 +34,22 @@ typedef void (*fptrVisitRefsContainerNode)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathContainerNode)(char*, ContainerNode*);
 
 typedef struct _ContainerNode {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	Instance *super;
 	map_t components;
 	map_t hosts;
 	ContainerNode *host;
 	map_t networkInformation;
 	map_t groups;
-	char *eContainer;
-	fptrContNodeMetaClassName MetaClassName;
-	fptrContNodeInternalGetKey InternalGetKey;
 	fptrContNodeFindComponentsByID FindComponentsByID;
 	fptrContNodeFindHostsByID FindHostsByID;
 	fptrContNodeFindGroupsByID FindGroupsByID;
@@ -56,18 +64,12 @@ typedef struct _ContainerNode {
 	fptrContNodeRemoveHosts RemoveHosts;
 	fptrContNodeRemoveGroups RemoveGroups;
 	fptrContNodeRemoveNetworkInformation RemoveNetworkInformation;
-	fptrDeleteContNode Delete;
-	fptrVisitAttrContainerNode VisitAttributes;
-	fptrVisitAttrContainerNode VisitPathAttributes;
-	fptrVisitRefsContainerNode VisitReferences;
-	fptrVisitRefsContainerNode VisitPathReferences;
-	fptrFindByPathContainerNode FindByPath;
 } ContainerNode ;
 
 Instance* newPoly_ContainerNode(void);
 ContainerNode* new_ContainerNode(void);
-char* ContainerNode_MetaClassName(ContainerNode* const this);
-char* ContainerNode_InternalGetKey(ContainerNode* const this);
+char* ContainerNode_metaClassName(void* const this);
+char* ContainerNode_internalGetKey(void* const this);
 ComponentInstance* ContainerNode_FindComponentsByID(ContainerNode* const this, char* id);
 ContainerNode* ContainerNode_FindHostsByID(ContainerNode* const this, char* id);
 Group* ContainerNode_FindGroupsByID(ContainerNode* const this, char* id);
@@ -82,12 +84,12 @@ void ContainerNode_RemoveHost(ContainerNode* const this, ContainerNode* ptr);
 void ContainerNode_RemoveHosts(ContainerNode* const this, ContainerNode* ptr);
 void ContainerNode_RemoveGroups(ContainerNode* const this, Group* ptr);
 void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkInfo* ptr);
-void deletePoly_ContainerNode(Instance* const this);
-void delete_ContainerNode(ContainerNode* const this);
+void deletePoly_ContainerNode(void* const this);
+void delete_ContainerNode(void* const this);
 void ContainerNode_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void ContainerNode_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
-void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void ContainerNode_VisitPathReferences(void *const this, char *parent, Visitor *visitor);
-void* ContainerNode_FindByPath(char* attribute, ContainerNode* const this);
+void ContainerNode_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void ContainerNode_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive);
+void* ContainerNode_FindByPath(char* attribute, void* const this);
 
 #endif /* H_ContainerNode */

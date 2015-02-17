@@ -29,8 +29,8 @@ TypeDefinition* newPoly_GroupType()
 
 	pObj->pDerivedObj = pGroupTypeObj; /* Pointing to derived object */
 
-	pObj->super->MetaClassName = GroupType_MetaClassName;
-	pObj->InternalGetKey = GroupType_InternalGetKey;
+	pObj->super->metaClassName = GroupType_metaClassName;
+	pObj->internalGetKey = GroupType_internalGetKey;
 	pObj->VisitAttributes = GroupType_VisitAttributes;
 	pObj->VisitPathAttributes = GroupType_VisitPathAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
@@ -60,8 +60,8 @@ GroupType* new_GroupType()
 	/*pObj->pDerivedObj = pGroupTypeObj;  Pointing to derived object */
 	pGroupTypeObj->super = pObj;
 
-	pGroupTypeObj->MetaClassName = GroupType_MetaClassName;
-	pGroupTypeObj->InternalGetKey = GroupType_InternalGetKey;
+	pGroupTypeObj->metaClassName = GroupType_metaClassName;
+	pGroupTypeObj->internalGetKey = GroupType_internalGetKey;
 	pGroupTypeObj->VisitAttributes = GroupType_VisitAttributes;
 	pGroupTypeObj->VisitPathAttributes = GroupType_VisitPathAttributes;
 	pGroupTypeObj->VisitPathReferences = TypeDefinition_VisitPathReferences;
@@ -71,7 +71,7 @@ GroupType* new_GroupType()
 	return pGroupTypeObj;
 }
 
-char* GroupType_MetaClassName(GroupType* const this)
+char* GroupType_metaClassName(void* const this)
 {
 	char *name;
 
@@ -84,24 +84,26 @@ char* GroupType_MetaClassName(GroupType* const this)
 	return name;
 }
 
-char* GroupType_InternalGetKey(void* const this)
+char* GroupType_internalGetKey(void* const this)
 {
-	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
+	return TypeDefinition_internalGetKey((TypeDefinition*)this);
 }
 
-void deletePoly_GroupType(TypeDefinition* const this)
+void deletePoly_GroupType(void* const this)
 {
+	TypeDefinition *pObj = (TypeDefinition*)this;
 	GroupType* pGroupTypeObj;
-	pGroupTypeObj = this->pDerivedObj;
+	pGroupTypeObj = pObj->pDerivedObj;
 	/*destroy derived obj*/
 	free(pGroupTypeObj);
 	/*destroy base Obj*/
-	delete_TypeDefinition(this);
+	delete_TypeDefinition(pObj);
 }
-void delete_GroupType(GroupType* const this)
+void delete_GroupType(void* const this)
 {
+	GroupType *pObj = (GroupType*)this;
 	/* destroy base object */
-	delete_TypeDefinition(this->super);
+	delete_TypeDefinition(pObj->super);
 	/* destroy data memebers */
 	free(this);
 }

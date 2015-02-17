@@ -5,9 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef CONTIKI
-#include "lib/list.h"
-#endif
+#include "KMF4C.h"
+#include "list.h"
 /*#include "ModelAttributeVisitor.h"
 #include "ModelVisitor.h"*/
 /*#include "ContainerRoot.h"*/
@@ -15,11 +14,9 @@
 typedef struct _ContainerRoot ContainerRoot;
 typedef struct _Visitor Visitor;
 typedef enum Type Type;
-typedef void ** list_t;
 
 typedef void (*fptrVisit)(char*, Type, void*);
 typedef void (*fptrDiff)(Visitor*, char*, Type, void*);
-typedef void (*fptrVDelete)(void*);
 
 enum Type
 {
@@ -48,7 +45,7 @@ typedef struct _Visitor {
 	fptrVisit print;
 	fptrDiff diff;
 	void (*action)(char* path, Type type, void* value);
-	fptrVDelete delete;
+	fptrDelete delete;
 } Visitor;
 
 Visitor *new_Visitor(ContainerRoot *new_model, ContainerRoot *current_model);

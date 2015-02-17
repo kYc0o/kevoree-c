@@ -34,8 +34,8 @@ Instance* newPoly_Channel()
 	pObj->VisitReferences = Channel_VisitReferences;
 	pObj->VisitPathReferences = Channel_VisitPathReferences;
 
-	pObj->MetaClassName = Channel_MetaClassName;
-	pObj->InternalGetKey = Channel_InternalGetKey;
+	pObj->metaClassName = Channel_metaClassName;
+	pObj->internalGetKey = Channel_internalGetKey;
 
 	pChannelObj->bindings = NULL;
 	pChannelObj->eContainer = NULL;
@@ -81,9 +81,9 @@ Channel* new_Channel()
 	pChannelObj->AddBindings = Channel_AddBindings;
 	pChannelObj->RemoveBindings = Channel_RemoveBindings;
 
-	pChannelObj->MetaClassName = Channel_MetaClassName;
-	pObj->super->MetaClassName = Channel_MetaClassName;
-	pChannelObj->InternalGetKey = Channel_InternalGetKey;
+	pChannelObj->metaClassName = Channel_metaClassName;
+	pObj->super->metaClassName = Channel_metaClassName;
+	pChannelObj->internalGetKey = Channel_internalGetKey;
 	pChannelObj->FindByPath = Channel_FindByPath;
 
 	pChannelObj->Delete = delete_Channel;
@@ -120,8 +120,9 @@ void delete_Channel(void* const this)
 	}
 }
 
-char* Channel_MetaClassName(Channel* const this)
+char* Channel_metaClassName(void* const this)
 {
+	Channel *pObj = (Channel*)this;
 	char *name = NULL;
 
 	name = malloc(sizeof(char) * (strlen("Channel")) + 1);
@@ -133,16 +134,17 @@ char* Channel_MetaClassName(Channel* const this)
 	return name;
 }
 
-char* Channel_InternalGetKey(Channel* const this)
+char* Channel_internalGetKey(void* const this)
 {
-	return this->super->InternalGetKey(this->super);
+	Channel *pObj = (Channel*)this;
+	return pObj->super->internalGetKey(pObj->super);
 }
 
 void Channel_AddBindings(Channel* const this, MBinding* ptr)
 {
 	MBinding* container = NULL;
 
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -164,7 +166,7 @@ void Channel_AddBindings(Channel* const this, MBinding* ptr)
 }
 void Channel_RemoveBindings(Channel* const this, MBinding* ptr)
 {
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -226,8 +228,8 @@ void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, b
 			{
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				/*sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));*/
-				sprintf(path, "mBindings[%s]", n->InternalGetKey(n));
+				/*sprintf(path, "%s/bindings[%s]", parent, n->internalGetKey(n));*/
+				sprintf(path, "mBindings[%s]", n->internalGetKey(n));
 				/*n->VisitAttributes(n, path, visitor, 0);
 				n->VisitReferences(n, path, visitor);*/
 				visitor->action(path, STRREF, NULL);
@@ -271,7 +273,7 @@ void Channel_VisitPathReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				sprintf(path, "%s/bindings[%s]", parent, n->InternalGetKey(n));
+				sprintf(path, "%s/bindings[%s]", parent, n->internalGetKey(n));
 				n->VisitPathAttributes(n, path, visitor, 0);
 				/*n->VisitReferences(n, path, visitor);*/
 			}
@@ -282,49 +284,19 @@ void Channel_VisitPathReferences(void* const this, char* parent, Visitor* visito
 	Instance_VisitPathReferences(((Instance*)this)->super, parent, visitor, 0);
 }
 
-void* Channel_FindByPath(char* attribute, Channel* const this)
+void* Channel_FindByPath(char* attribute, void* const this)
 {
+	Channel *pObj = (Channel*)this;
 	/* There is no local attributes */
 
 	/* Instance attributes and references */
 	if(!strcmp("name", attribute) ||  !strcmp("metaData", attribute) || !strcmp("started", attribute) || !strcmp("typeDefinition", attribute))
 	{
-		return Instance_FindByPath(attribute, this->super);
+		return Instance_FindByPath(attribute, pObj->super);
 	}
 	/* Local references */
 	else
 	{
-		/*char* nextAttribute = NULL;
-		char* path = strdup(attribute);
-		char* pch;
-
-		if(indexOf(path,"/") != -1)
-		{
-			pch = strtok (path,"/");
-
-			if(strchr(attribute,'\\') != NULL)
-			{
-				nextAttribute = strtok(NULL, "\\");
-				sprintf(nextAttribute, "%s\\%s", nextAttribute, strtok(NULL, "\\"));
-			}
-			else
-			{
-				nextAttribute = strtok(NULL, "\\");
-			}
-		}
-		else
-		{
-			pch = path;
-			nextAttribute = strtok(pch, "\\");
-			nextAttribute = strtok(NULL, "\\");
-		}
-
-		int i = indexOf(pch,"[") + 2;
-		int y = lastIndexOf(pch,"]") - i + 1;
-
-		char* relationName = (char*)Substring(pch, 0, i - 2);
-		char* queryID = (char*)Substring(pch, i, y);*/
-
 		char path[250];
 		memset(&path[0], 0, sizeof(path));
 		char token[100];
@@ -387,11 +359,11 @@ void* Channel_FindByPath(char* attribute, Channel* const this)
 			if(nextAttribute == NULL)
 			{
 
-				return this->FindBindingsByID(this, key);
+				return pObj->FindBindingsByID(pObj, key);
 			}
 			else
 			{
-				MBinding* binding = this->FindBindingsByID(this, key);
+				MBinding* binding = pObj->FindBindingsByID(pObj, key);
 				if(binding != NULL)
 					return binding->FindByPath(nextPath, binding);
 				else
@@ -402,7 +374,7 @@ void* Channel_FindByPath(char* attribute, Channel* const this)
 		else
 		{
 			free(obj);
-			return Instance_FindByPath(attribute, this->super);
+			return Instance_FindByPath(attribute, pObj->super);
 		}
 	}
 }

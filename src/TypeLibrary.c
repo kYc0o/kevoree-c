@@ -34,8 +34,8 @@ NamedElement* newPoly_TypeLibrary(void)
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
 	pTypeLibObj->RemoveSubTypes = TypeLibrary_RemoveSubTypes;
 
-	pObj->MetaClassName = TypeLibrary_MetaClassname;
-	pObj->InternalGetKey = TypeLibrary_InternalGetKey;
+	pObj->metaClassName = TypeLibrary_metaClassName;
+	pObj->internalGetKey = TypeLibrary_internalGetKey;
 	pObj->Delete = deletePoly_TypeLibrary;
 	pObj->VisitAttributes = TypeLibrary_VisitAttributes;
 	pObj->VisitPathAttributes = TypeLibrary_VisitPathAttributes;
@@ -46,7 +46,7 @@ NamedElement* newPoly_TypeLibrary(void)
 	return pObj;
 }
 
-TypeLibrary* new_TypeLibrary(void)
+TypeLibrary* new_TypeLibrary()
 {
 	TypeLibrary* pTypeLibObj = NULL;
 	NamedElement* pObj = new_NamedElement();
@@ -71,9 +71,9 @@ TypeLibrary* new_TypeLibrary(void)
 	pTypeLibObj->AddSubTypes = TypeLibrary_AddSubTypes;
 	pTypeLibObj->RemoveSubTypes = TypeLibrary_RemoveSubTypes;
 
-	pTypeLibObj->MetaClassName = TypeLibrary_MetaClassname;
-	pObj->MetaClassName = TypeLibrary_MetaClassname;
-	pTypeLibObj->InternalGetKey = TypeLibrary_InternalGetKey;
+	pTypeLibObj->metaClassName = TypeLibrary_metaClassName;
+	pObj->metaClassName = TypeLibrary_metaClassName;
+	pTypeLibObj->internalGetKey = TypeLibrary_internalGetKey;
 	pTypeLibObj->Delete = delete_TypeLibrary;
 	pTypeLibObj->VisitAttributes = TypeLibrary_VisitAttributes;
 	pTypeLibObj->VisitPathAttributes = TypeLibrary_VisitPathAttributes;
@@ -84,7 +84,7 @@ TypeLibrary* new_TypeLibrary(void)
 	return pTypeLibObj;
 }
 
-char* TypeLibrary_MetaClassname(TypeLibrary* const this)
+char* TypeLibrary_metaClassName(void * const this)
 {
 	char *name;
 
@@ -97,9 +97,10 @@ char* TypeLibrary_MetaClassname(TypeLibrary* const this)
 	return name;
 }
 
-char* TypeLibrary_InternalGetKey(TypeLibrary* const this)
+char* TypeLibrary_internalGetKey(void * const this)
 {
-	return this->super->InternalGetKey(this->super);
+	TypeLibrary *pObj = (TypeLibrary*)this;
+	return pObj->super->internalGetKey(pObj->super);
 }
 
 TypeDefinition* TypeLibrary_FindSubTypesByID(TypeLibrary* const this, char* id)
@@ -123,7 +124,7 @@ void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 {
 	TypeDefinition* container = NULL;
 
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -145,7 +146,7 @@ void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 
 void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 {
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -158,45 +159,47 @@ void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr)
 	}
 }
 
-void deletePoly_TypeLibrary(NamedElement* const this)
+void deletePoly_TypeLibrary(void * const this)
 {
 	if(this != NULL)
 	{
+		NamedElement *pObj = (NamedElement*)this;
 		TypeLibrary* pTypeLibObj;
-		pTypeLibObj = this->pDerivedObj;
+		pTypeLibObj = pObj->pDerivedObj;
 		/*destroy derived obj*/
 		hashmap_free(pTypeLibObj->subTypes);
 		free(pTypeLibObj->eContainer);
 		free(pTypeLibObj);
 		/*destroy base Obj*/
-		delete_NamedElement(this);
+		delete_NamedElement(pObj);
 	}
 }
 
-void delete_TypeLibrary(TypeLibrary* const this)
+void delete_TypeLibrary(void * const this)
 {
 	if(this != NULL)
 	{
+		TypeLibrary *pObj = (TypeLibrary*)this;
 		/* destroy base object */
-		delete_NamedElement(this->super);
+		delete_NamedElement(pObj->super);
 		/* destroy data memebers */
-		hashmap_free(this->subTypes);
-		free(this->eContainer);
-		free(this);
+		hashmap_free(pObj->subTypes);
+		free(pObj->eContainer);
+		free(pObj);
 	}
 }
 
-void TypeLibrary_VisitAttributes(void *const this, char *parent, Visitor *visitor)
+void TypeLibrary_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	NamedElement_VisitAttributes(((TypeLibrary*)(this))->super, parent, visitor, true);
 }
 
-void TypeLibrary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void TypeLibrary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	NamedElement_VisitPathAttributes(((TypeLibrary*)(this))->super, parent, visitor, true);
 }
 
-void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -217,7 +220,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path, "typeDefinitions[%s]", n->InternalGetKey(n));
+				sprintf(path, "typeDefinitions[%s]", n->internalGetKey(n));
 				visitor->action(path, STRREF, NULL);
 				if(length > 1)
 				{
@@ -237,7 +240,7 @@ void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visito
 	}
 }
 
-void TypeLibrary_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+void TypeLibrary_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
@@ -256,19 +259,20 @@ void TypeLibrary_VisitPathReferences(void *const this, char *parent, Visitor *vi
 			{
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
-				sprintf(path,"%s/subTypes[%s]", parent, n->InternalGetKey(n));
+				sprintf(path,"%s/subTypes[%s]", parent, n->internalGetKey(n));
 				n->VisitPathAttributes(n, path, visitor, false);
 			}
 		}
 	}
 }
 
-void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
+void* TypeLibrary_FindByPath(char* attribute, void * const this)
 {
+	TypeLibrary *pObj = (TypeLibrary*)this;
 	/* NamedElement attributes */
 	if(!strcmp("name",attribute))
 	{
-		return this->super->FindByPath(attribute, this->super);
+		return pObj->super->FindByPath(attribute, pObj->super);
 	}
 	/* Local references */
 	else
@@ -334,11 +338,11 @@ void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this)
 			free(obj);
 			if(nextAttribute == NULL)
 			{
-				return this->FindSubTypesByID(this, key);
+				return pObj->FindSubTypesByID(pObj, key);
 			}
 			else
 			{
-				TypeDefinition* typdef = this->FindSubTypesByID(this, key);
+				TypeDefinition* typdef = pObj->FindSubTypesByID(pObj, key);
 				if(typdef != NULL)
 					return typdef->FindByPath(nextPath, typdef);
 				else

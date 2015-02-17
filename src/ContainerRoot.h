@@ -2,6 +2,7 @@
 #define H_ContainerRoot
 
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _Group Group;
 typedef struct _Visitor Visitor;
@@ -54,7 +55,16 @@ typedef void (*fptrVisitContainerRoot)(void*, Visitor*);
 typedef void* (*fptrFindByPathContainerRoot)(char*, ContainerRoot*);
 
 typedef struct _ContainerRoot {
-	void* pDerivedObj;
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char generated_KMF_ID[9];
 	map_t nodes;
 	map_t typeDefinitions;
@@ -66,8 +76,6 @@ typedef struct _ContainerRoot {
 	map_t deployUnits;
 	map_t nodeNetworks;
 	map_t groups;
-	fptrContRootMetaClassName MetaClassName;
-	fptrContRootInternalGetKey InternalGetKey;
 	fptrContRootFindNodesByID FindNodesByID;
 	fptrContRootFindTypeDefsByID FindTypeDefsByID;
 	fptrContRootFindRepositoriesByID FindRepositoriesByID;
@@ -98,15 +106,13 @@ typedef struct _ContainerRoot {
 	fptrContRootRemoveDeployUnits RemoveDeployUnits;
 	fptrContRootRemoveNodeNetworks RemoveNodeNetworks;
 	fptrContRootRemoveGroups RemoveGroups;
-	fptrDeleteContainerRoot Delete;
 	fptrVisitContainerRoot Visit;
 	fptrVisitContainerRoot VisitPaths;
-	fptrFindByPathContainerRoot FindByPath;
 } ContainerRoot;
 
 ContainerRoot* new_ContainerRoot(void);
-char* ContainerRoot_MetaClassName(ContainerRoot* const this);
-char* ContainerRoot_InternalGetKey(ContainerRoot* const this);
+char* ContainerRoot_metaClassName(void* const this);
+char* ContainerRoot_internalGetKey(void* const this);
 ContainerNode* ContainerRoot_FindNodesByID(ContainerRoot* const this, char*);
 TypeDefinition* ContainerRoot_FindTypeDefsByID(ContainerRoot* const this, char*);
 Repository* ContainerRoot_FindRepositoriesByID(ContainerRoot* const this, char*);
@@ -137,9 +143,9 @@ void ContainerRoot_RemoveBindings(ContainerRoot* const this, MBinding* ptr);
 void ContainerRoot_RemoveDeployUnits(ContainerRoot* const this,  DeployUnit* ptr);
 void ContainerRoot_RemoveNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr);
 void ContainerRoot_RemoveGroups(ContainerRoot* const this, Group* ptr);
-void delete_ContainerRoot(ContainerRoot* const this);
+void delete_ContainerRoot(void* const this);
 void ContainerRoot_Visit(void* const this, Visitor* visitor);
 void ContainerRoot_VisitPaths(void* const this, Visitor* visitor);
-void* ContainerRoot_FindByPath(char* _path, ContainerRoot* const this);
+void* ContainerRoot_FindByPath(char* _path, void* const this);
 
 #endif

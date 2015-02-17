@@ -1,3 +1,4 @@
+#include <string.h>
 #include "JSONModelLoader.h"
 #include "DefaultFactorykevoree.h"
 #include "kevoree.h"
@@ -5,7 +6,7 @@
 #include "jsonparse.h"
 #include "hashmap.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -48,6 +49,7 @@ ObjectReference *new_ObjectReference(char *srcObjId, char *refId)
 	pObj->mapId = malloc(sizeof(char) * strlen(refId) * strlen(srcObjId) + 1);
 
 	sprintf(pObj->mapId, "%s/%s", refId, srcObjId);
+	PRINTF("stored mapId: %s", pObj->mapId);
 
 	pObj->delete = delete_ObjectReference;
 
@@ -130,12 +132,24 @@ int resolveReferences(any_t root, any_t objRef)
 
 		if(!strcmp(srcObjId, "nodes"))
 		{
+			PRINTF("Solving for nodes...\n");
 			free(srcObj);
-			srcObj = strdup(obj->srcObjectId);
-			srcObj2 = strtok(srcObj, "/");
-			srcObj2 = strdup(strtok(NULL, "/"));
-			PRINTF("srcObj2: %s\n", srcObj2);
-			free(srcObj);
+			PRINTF("srcObj freed!\n");
+			if ((srcObj = strdup(obj->srcObjectId)) != NULL) {
+				PRINTF("srcObj: %s\n", srcObj);
+				srcObj2 = strtok(srcObj, "/");
+				char *srcTmp;
+				if ((srcTmp = strtok(NULL, "/")) != NULL) {
+					if ((srcObj2 = strdup(srcTmp)) != NULL) {
+						PRINTF("srcObj2: %s\n", srcObj2);
+						free(srcObj);
+					} else {
+						PRINTF("ERROR: cannot duplicate srcObj\n");
+					}
+				}
+			} else {
+				PRINTF("ERROR: cannot duplicate %s\n", obj->srcObjectId);
+			}
 
 			if(srcObj2 != NULL)
 			{
@@ -173,7 +187,7 @@ int resolveReferences(any_t root, any_t objRef)
 				ContainerNode *node = model->FindNodesByID(model, srcId);
 				if(grp != NULL && node != NULL)
 				{
-					PRINTF("Adding group %s to node %s\n", grp->InternalGetKey(grp), node->InternalGetKey(node));
+					PRINTF("Adding group %s to node %s\n", grp->internalGetKey(grp), node->internalGetKey(node));
 					node->AddGroups(node, grp);
 					return MAP_OK;
 				}
@@ -193,7 +207,7 @@ int resolveReferences(any_t root, any_t objRef)
 					ContainerNode *node = model->FindNodesByID(model, srcId);
 					if(typdef != NULL && node != NULL)
 					{
-						PRINTF("Adding typeDefinition %s to node %s\n", typdef->InternalGetKey(typdef), node->InternalGetKey(node));
+						PRINTF("Adding typeDefinition %s to node %s\n", typdef->internalGetKey(typdef), node->internalGetKey(node));
 						node->super->AddTypeDefinition(node->super, typdef);
 						return MAP_OK;
 					}
@@ -211,7 +225,7 @@ int resolveReferences(any_t root, any_t objRef)
 					ComponentInstance *comp = node->FindComponentsByID(node, srcId2);
 					if(typdef != NULL && node != NULL && comp != NULL)
 					{
-						PRINTF("Adding typeDefinition %s to component %s\n", typdef->InternalGetKey(typdef), comp->InternalGetKey(comp));
+						PRINTF("Adding typeDefinition %s to component %s\n", typdef->internalGetKey(typdef), comp->internalGetKey(comp));
 						comp->super->AddTypeDefinition(comp->super, typdef);
 						return MAP_OK;
 					}
@@ -232,7 +246,7 @@ int resolveReferences(any_t root, any_t objRef)
 				TypeDefinition *typdef = model->FindTypeDefsByID(model, srcId);
 				if(du != NULL && typdef != NULL)
 				{
-					PRINTF("Adding deployUnit %s to typeDefinition %s\n", du->InternalGetKey(du), typdef->InternalGetKey(typdef));
+					PRINTF("Adding deployUnit %s to typeDefinition %s\n", du->internalGetKey(du), typdef->internalGetKey(typdef));
 					typdef->AddDeployUnit(typdef, du);
 					return MAP_OK;
 				}
@@ -252,7 +266,7 @@ int resolveReferences(any_t root, any_t objRef)
 				TypeLibrary *typlib = model->FindLibrariesByID(model, srcId);
 				if(typdef != NULL && typlib != NULL)
 				{
-					PRINTF("Adding typeDefinition %s to library %s\n", typdef->InternalGetKey(typdef), typlib->InternalGetKey(typlib));
+					PRINTF("Adding typeDefinition %s to library %s\n", typdef->internalGetKey(typdef), typlib->internalGetKey(typlib));
 					typlib->AddSubTypes(typlib, typdef);
 					return MAP_OK;
 				}
@@ -272,7 +286,7 @@ int resolveReferences(any_t root, any_t objRef)
 				Group *group = model->FindGroupsByID(model, srcId);
 				if(node != NULL && group != NULL)
 				{
-					PRINTF("Adding node %s to group %s\n", node->InternalGetKey(node), group->InternalGetKey(group));
+					PRINTF("Adding node %s to group %s\n", node->internalGetKey(node), group->internalGetKey(group));
 					group->AddSubNodes(group, node);
 					return MAP_OK;
 				}
@@ -428,7 +442,7 @@ ContainerRoot *JSONKevDeserializer(struct jsonparse_state *jsonState, char _json
 														if(new_model != NULL && node != NULL)
 														{
 															new_model->AddNodes(new_model, node);
-															PRINTF("Successfully added node %s to new_model %s\n", node->InternalGetKey(node), new_model->InternalGetKey(new_model));
+															PRINTF("Successfully added node %s to new_model %s\n", node->internalGetKey(node), new_model->internalGetKey(new_model));
 														}
 														else
 														{
@@ -495,7 +509,7 @@ ContainerRoot *JSONKevDeserializer(struct jsonparse_state *jsonState, char _json
 														TypeDefinition *typdef = createTypeDefinition(jsonState, jsonparse_next(jsonState), strJson, new_model, loader);
 														if(new_model != NULL && typdef != NULL)
 														{
-															PRINTF("Adding TypeDefinition %s to new_model %s...\n", typdef->InternalGetKey(typdef), new_model->InternalGetKey(new_model));
+															PRINTF("Adding TypeDefinition %s to new_model %s...\n", typdef->internalGetKey(typdef), new_model->internalGetKey(new_model));
 															new_model->AddTypeDefinitions(new_model, typdef);
 															PRINTF("TypeDefinition added successfully!\n");
 														}

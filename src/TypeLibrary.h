@@ -18,35 +18,36 @@ typedef void (*fptrVisitRefsTypeLib)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathTypeLibrary)(char*, TypeLibrary*);
 
 typedef struct _TypeLibrary {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	NamedElement *super;
 	map_t subTypes;
-	char *eContainer;
-	fptrTypeLibMetaClassName MetaClassName;
-	fptrTypeLibInternalGetKey InternalGetKey;
 	fptrTypeLibFindSubTypesByID FindSubTypesByID;
 	fptrTypeLibAddSubTypes AddSubTypes;
 	fptrTypeLibRemoveSubTypes RemoveSubTypes;
-	fptrDeleteTypeLib Delete;
-	fptrVisitAttrTypeLib VisitAttributes;
-	fptrVisitAttrTypeLib VisitPathAttributes;
-	fptrVisitRefsTypeLib VisitReferences;
-	fptrVisitRefsTypeLib VisitPathReferences;
-	fptrFindByPathTypeLibrary FindByPath;
 } TypeLibrary;
 
 NamedElement* newPoly_TypeLibrary(void);
 TypeLibrary* new_TypeLibrary(void);
-char* TypeLibrary_MetaClassname(TypeLibrary* const this);
-char* TypeLibrary_InternalGetKey(TypeLibrary* const this);
+char* TypeLibrary_metaClassName(void * const this);
+char* TypeLibrary_internalGetKey(void * const this);
 TypeDefinition* TypeLibrary_FindSubTypesByID(TypeLibrary* const this, char* id);
 void TypeLibrary_AddSubTypes(TypeLibrary* const this, TypeDefinition* ptr);
 void TypeLibrary_RemoveSubTypes(TypeLibrary* const this, TypeDefinition* ptr);
-void deletePoly_TypeLibrary(NamedElement* const this);
-void delete_TypeLibrary(TypeLibrary* const this);
-void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void TypeLibrary_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
-void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void TypeLibrary_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
-void* TypeLibrary_FindByPath(char* attribute, TypeLibrary* const this);
+void deletePoly_TypeLibrary(void * const this);
+void delete_TypeLibrary(void * const this);
+void TypeLibrary_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void TypeLibrary_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void TypeLibrary_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void TypeLibrary_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* TypeLibrary_FindByPath(char* attribute, void * const this);
 
 #endif /* __TypeLibrary_H */

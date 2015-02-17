@@ -2,8 +2,9 @@
 #include "TypeDefinition.h"
 #include "Visitor.h"
 #include "DictionaryType.h"
+#include "tools.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -31,8 +32,8 @@ DictionaryType* new_DictionaryType()
 	pObj->RemoveAttributes = DictionaryType_RemoveAttributes;
 	pObj->FindAttributesByID = DictionaryType_FindAttributesByID;
 
-	pObj->InternalGetKey = DictionaryType_InternalGetKey;
-	pObj->MetaClassName = DictionaryType_MetaClassName;
+	pObj->internalGetKey = DictionaryType_internalGetKey;
+	pObj->metaClassName = DictionaryType_metaClassName;
 	pObj->Delete = delete_DictionaryType;
 	pObj->VisitAttributes = DictionaryType_VisitAttributes;
 	pObj->VisitPathAttributes = DictionaryType_VisitPathAttributes;
@@ -43,25 +44,27 @@ DictionaryType* new_DictionaryType()
 	return pObj;
 }
 
-void delete_DictionaryType(DictionaryType* const this)
+void delete_DictionaryType(void* const this)
 {
 	if(this != NULL)
 	{
-		free(this->generated_KMF_ID);
+		DictionaryType *pObj = (DictionaryType*)this;
+		free(pObj->generated_KMF_ID);
 		/* TODO check if hashmap is not NULL */
-		hashmap_free(this->attributes);
-		free(this->eContainer);
-		free(this);
+		hashmap_free(pObj->attributes);
+		free(pObj->eContainer);
+		free(pObj);
 		/*this = NULL;*/
 	}
 }
 
-char* DictionaryType_InternalGetKey(DictionaryType* const this)
+char* DictionaryType_internalGetKey(void* const this)
 {
-	return this->generated_KMF_ID;
+	DictionaryType *pObj = (DictionaryType*)this;
+	return pObj->generated_KMF_ID;
 }
 
-char* DictionaryType_MetaClassName(DictionaryType* const this)
+char* DictionaryType_metaClassName(void* const this)
 {
 	char *name;
 
@@ -95,7 +98,7 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 {
 	DictionaryAttribute* container = NULL;
 
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -112,8 +115,8 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 			/*container = (DictionaryAttribute*)ptr;*/
 			if(hashmap_put(this->attributes, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen("dictionaryType[]") + strlen(this->InternalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "dictionaryType[%s]", this->InternalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen("dictionaryType[]") + strlen(this->internalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "dictionaryType[%s]", this->internalGetKey(this));
 			}
 		}
 	}
@@ -121,7 +124,7 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 
 void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttribute* ptr)
 {
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -137,15 +140,15 @@ void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttri
 	}
 }
 
-void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryType*)this)->MetaClassName((DictionaryType*)this))) + 1);
-	sprintf(cClass, "org.kevoree.%s", ((DictionaryType*)this)->MetaClassName((DictionaryType*)this));
-	sprintf(path,"eClass", parent);
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryType*)this)->metaClassName((DictionaryType*)this))) + 1);
+	sprintf(cClass, "org.kevoree.%s", ((DictionaryType*)this)->metaClassName((DictionaryType*)this));
+	sprintf(path, "eClass");
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
 	free(cClass);
@@ -155,14 +158,14 @@ void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* vis
 	visitor->action(NULL, COLON, NULL);
 }
 
-void DictionaryType_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void DictionaryType_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);
-	cClass = ((DictionaryType*)this)->MetaClassName((DictionaryType*)this);
+	cClass = ((DictionaryType*)this)->metaClassName((DictionaryType*)this);
 	visitor->action(path, STRING, cClass);
 	free(cClass);*/
 
@@ -170,7 +173,7 @@ void DictionaryType_VisitPathAttributes(void *const this, char *parent, Visitor 
 	visitor->action(path, STRING, ((DictionaryType*)(this))->generated_KMF_ID);
 }
 
-void DictionaryType_VisitReferences(void *const this, char *parent, Visitor *visitor)
+void DictionaryType_VisitReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	int i;
 
@@ -192,8 +195,8 @@ void DictionaryType_VisitReferences(void *const this, char *parent, Visitor *vis
 				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				DictionaryAttribute* n = data;
-				n->VisitAttributes(n, path, visitor);
-				n->VisitReferences(n, path, visitor);
+				n->VisitAttributes(n, path, visitor,true);
+				n->VisitReferences(n, path, visitor, true);
 				if(length > 1)
 				{
 					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
@@ -212,7 +215,7 @@ void DictionaryType_VisitReferences(void *const this, char *parent, Visitor *vis
 	}
 }
 
-void DictionaryType_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+void DictionaryType_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	int i;
 
@@ -230,20 +233,21 @@ void DictionaryType_VisitPathReferences(void *const this, char *parent, Visitor 
 			{
 				any_t data = (any_t) (m->data[i].data);
 				DictionaryAttribute* n = data;
-				sprintf(path, "%s/attributes[%s]", parent, n->InternalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor);
-				n->VisitPathReferences(n, path, visitor);
+				sprintf(path, "%s/attributes[%s]", parent, n->internalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor, true);
+				n->VisitPathReferences(n, path, visitor, true);
 			}
 		}
 	}
 }
 
-void* DictionaryType_FindByPath(char* attribute, DictionaryType* const this)
+void* DictionaryType_FindByPath(char* attribute, void* const this)
 {
+	DictionaryType *pObj = (DictionaryType*)this;
 	/* Local attributes */
 	if(!strcmp("generated_KMF_ID", attribute))
 	{
-		return this->generated_KMF_ID;
+		return pObj->generated_KMF_ID;
 	}
 	/* Local references */
 	else
@@ -309,12 +313,13 @@ void* DictionaryType_FindByPath(char* attribute, DictionaryType* const this)
 			free(obj);
 			if(nextAttribute == NULL)
 			{
-
-				return this->FindAttributesByID(this, key);
+				DictionaryAttribute *dicattr =  pObj->FindAttributesByID(pObj, key);
+				PRINTF("DEBUG: returning %s object\n", dicattr->metaClassName(dicattr));
+				return dicattr;
 			}
 			else
 			{
-				DictionaryAttribute* value = this->FindAttributesByID(this, key);
+				DictionaryAttribute* value = pObj->FindAttributesByID(pObj, key);
 				if(value != NULL)
 					return value->FindByPath(nextPath, value);
 				else

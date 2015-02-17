@@ -18,33 +18,34 @@ typedef void (*fptrVisitRefsDicType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathDicType)(char*, DictionaryType*);
 
 typedef struct _DictionaryType {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char generated_KMF_ID[9];
 	map_t attributes;
-	char *eContainer;
 	fptrDicTypeFindAttrByID FindAttributesByID;
 	fptrDicTypeAddAttr AddAttributes;
 	fptrDicTypeRemAttr RemoveAttributes;
-	fptrDicTypeInternalGetKey InternalGetKey;
-	fptrDicTypeMetaClassName MetaClassName;
-	fptrVisitAttrDicType VisitAttributes;
-	fptrVisitAttrDicType VisitPathAttributes;
-	fptrVisitRefsDicType VisitReferences;
-	fptrVisitRefsDicType VisitPathReferences;
-	fptrFindByPathDicType FindByPath;
-	fptrDeleteDicType Delete;
 } DictionaryType;
 
 DictionaryType* new_DictionaryType(void);
-void delete_DictionaryType(DictionaryType* const this);
-char* DictionaryType_InternalGetKey(DictionaryType* const this);
-char* DictionaryType_MetaClassName(DictionaryType* const this);
+void delete_DictionaryType(void* const this);
+char* DictionaryType_internalGetKey(void* const this);
+char* DictionaryType_metaClassName(void* const this);
 DictionaryAttribute* DictionaryType_FindAttributesByID(DictionaryType* const this, char* id);
 void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribute* ptr);
 void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttribute* ptr);
-void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void DictionaryType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
-void DictionaryType_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void DictionaryType_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
-void* DictionaryType_FindByPath(char* attribute, DictionaryType* const this);
+void DictionaryType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DictionaryType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DictionaryType_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DictionaryType_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* DictionaryType_FindByPath(char* attribute, void* const this);
 
 #endif /* __DictionaryType_H */

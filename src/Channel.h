@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _MBinding MBinding;
 typedef struct _Channel Channel;
@@ -20,28 +21,29 @@ typedef void* (*fptrFindByPathChannel)(char*, Channel*);
 typedef void (*fptrDeleteChannel)(void*);
 
 typedef struct _Channel {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	Instance *super;
 	map_t bindings;
-	char *eContainer;
-	fptrChannelMetaClassName MetaClassName;
-	fptrChannelInternalGetKey InternalGetKey;
 	fptrChannelFindBindingsByID FindBindingsByID;
 	fptrChannelAddBindings AddBindings;
 	fptrChannelRemoveBindings RemoveBindings;
-	fptrVisitAttrChannel VisitAttributes;
-	fptrVisitAttrChannel VisitPathAttributes;
-	fptrVisitRefsChannel VisitReferences;
-	fptrVisitRefsChannel VisitPathReferences;
-	fptrFindByPathChannel FindByPath;
-	fptrDeleteChannel Delete;
 } Channel;
 
 Instance* newPoly_Channel(void);
 Channel* new_Channel(void);
 void deletePoly_Channel(void* const this);
 void delete_Channel(void* const this);
-char* Channel_MetaClassName(Channel* const this);
-char* Channel_InternalGetKey(Channel* const this);
+char* Channel_metaClassName(void* const this);
+char* Channel_internalGetKey(void* const this);
 void Channel_AddBindings(Channel* const this, MBinding* ptr);
 void Channel_RemoveBindings(Channel* const this, MBinding* ptr);
 MBinding* Channel_FindBindingsByID(Channel* const this, char* id);
@@ -49,6 +51,6 @@ void Channel_VisitAttributes(void* const this, char* parent, Visitor* visitor, b
 void Channel_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Channel_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void Channel_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
-void* Channel_FindByPath(char* attribute, Channel* const this);
+void* Channel_FindByPath(char* attribute, void* const this);
 
 #endif /*__Channel_H */

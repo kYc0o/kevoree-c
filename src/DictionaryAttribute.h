@@ -2,6 +2,7 @@
 #define __DictionaryAttribute_H
 
 #include <stdbool.h>
+#include "KMF4C.h"
 
 typedef struct _DictionaryAttribute DictionaryAttribute;
 typedef struct _TypedElement TypedElement;
@@ -15,33 +16,34 @@ typedef void (*fptrVisitRefsDicAttr)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathDicAttr)(char*, DictionaryAttribute*);
 
 typedef struct _DictionaryAttribute {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	TypedElement* super;
 	bool optional;
 	bool state;
 	char *datatype;
 	bool fragmentDependant;
 	char *defaultValue;
-	char *eContainer;
-	fptrDicAttrInternalGetKey InternalGetKey;
-	fptrDicAttrMetaClassName MetaClassName;
-	fptrDeleteDicAttr Delete;
-	fptrVisitAttrDicAttr VisitAttributes;
-	fptrVisitAttrDicAttr VisitPathAttributes;
-	fptrVisitRefsDicAttr VisitReferences;
-	fptrVisitRefsDicAttr VisitPathReferences;
-	fptrFindByPathDicAttr FindByPath;
 } DictionaryAttribute;
 
 TypedElement* newPoly_DictionaryAttribute(void);
 DictionaryAttribute* new_DictionaryAttribute(void);
 void deletePoly_DictionaryAttribute(void* const this);
 void delete_DictionaryAttribute(void* const this);
-char* DictionaryAttribute_InternalGetKey(DictionaryAttribute* const this);
-char* DictionaryAttribute_MetaClassName(DictionaryAttribute* const this);
-void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void DictionaryAttribute_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
-void DictionaryAttribute_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void DictionaryAttribute_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
-void* DictionaryAttribute_FindByPath(char* attribute, DictionaryAttribute* const this);
+char* DictionaryAttribute_internalGetKey(void* const this);
+char* DictionaryAttribute_metaClassName(void* const this);
+void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DictionaryAttribute_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DictionaryAttribute_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DictionaryAttribute_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* DictionaryAttribute_FindByPath(char* attribute, void* const this);
 
 #endif /* __DictionaryAttribute_H */

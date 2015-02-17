@@ -1,12 +1,9 @@
 #include "Visitor.h"
 #include "ContainerRoot.h"
 #include "ModelTrace.h"
-#include <stdbool.h>
-#ifdef CONTIKI
-#include "lib/list.h"
-#endif
+#include "list.h"
 
-char *buffer;
+char buffer[250];
 
 Visitor *new_Visitor(ContainerRoot *new_model, ContainerRoot *current_model)
 {
@@ -48,9 +45,10 @@ void delete_Visitor(void *const this)
 	}
 }
 
+
 void Visitor_store(char *path, Type type, void *value)
 {
-	switch(type)
+	/*switch(type)
 	{
 	case STRING:
 		sprintf(buffer, "\"%s\" : \"%s\"", path, (char*)value);
@@ -111,12 +109,12 @@ void Visitor_store(char *path, Type type, void *value)
 		sprintf(buffer, "\n");
 		write_to_file(buffer);
 		break;
-	}
+	}*/
 }
 
 void Visitor_printPaths(char *path, Type type, void *value)
 {
-	switch(type)
+	/*switch(type)
 	{
 	case STRING:
 		printf("path = %s  value = %s\n",path,(char*)value);
@@ -138,12 +136,12 @@ void Visitor_printPaths(char *path, Type type, void *value)
 	case RETURN:
 		printf("Type non valid!\n");
 		break;
-	}
+	}*/
 }
 
 void Visitor_print(char *path, Type type, void *value)
 {
-	switch(type)
+	/*switch(type)
 	{
 	case STRING:
 		printf("\"%s\" : \"%s\"", path, (char*)value);
@@ -189,16 +187,14 @@ void Visitor_print(char *path, Type type, void *value)
 	case RETURN:
 		printf("\n");
 		break;
-	}
+	}*/
 }
 
-void Visitor_diff(Visitor *const this, char *path, Type type, void *value)
-{
-
-}
-/*ModelTrace *Visitor_diff(Visitor *const this, char *path, Type type, void *value);
+/*
+ModelTrace *Visitor_diff(Visitor *const this, char *path, Type type, void *value);
 
 char* buffer = NULL;
+
 
 void actionprintf(char *path, Type type, void* value)
 {
@@ -256,3 +252,7 @@ void actionprintf(char *path, Type type, void* value)
 	}
 }
 */
+void Visitor_diff(Visitor *const this, char *path, Type type, void *value)
+{
+
+}

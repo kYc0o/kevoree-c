@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _NamedElement NamedElement;
 typedef struct _MBinding MBinding;
@@ -24,38 +25,39 @@ typedef void* (*fptrFindByPathPort)(char*, Port*);
 typedef void (*fptrDeletePort)(void*);
 
 typedef struct _Port {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	NamedElement *super;
 	map_t bindings;
 	PortTypeRef *portTypeRef;
-	char *eContainer;
-	fptrPortInternalGetKey InternalGetKey;
-	fptrPortMetaClassName MetaClassName;
 	fptrPortFindBindingsByID FindBindingsByID;
 	fptrPortAddBindings AddBindings;
 	fptrPortAddPortTypeRef AddPortTypeRef;
 	fptrPortRemoveBindings RemoveBindings;
 	fptrPortRemovePortTypeRef RemovePortTypeRef;
-	fptrFindByPathPort FindByPath;
-	fptrVisitAttrPort VisitAttributes;
-	fptrVisitAttrPort VisitPathAttributes;
-	fptrVisitRefsPort VisitReferences;
-	fptrVisitRefsPort VisitPathReferences;
-	fptrDeletePort Delete;
 } Port;
 
 Port* new_Port(void);
 void delete_Port(void*);
-char* Port_InternalGetKey(Port* const this);
-char* Port_MetaClassName(Port* const this);
+char* Port_internalGetKey(void * const this);
+char* Port_metaClassName(void * const this);
 MBinding* Port_FindBindingsByID(Port* const this, char* id);
 void Port_AddBindings(Port* const this, MBinding* ptr);
 void Port_AddPortTypeRef(Port* const this, PortTypeRef* ptr);
 void Port_RemoveBindings(Port* const this, MBinding* ptr);
 void Port_RemovePortTypeRef(Port* const this, PortTypeRef* ptr);
-void Port_VisitAttributes(Port* const this, char* parent, Visitor* visitor, bool recursive);
-void Port_VisitPathAttributes(Port* const this, char* parent, Visitor* visitor, bool recursive);
-void Port_VisitReferences(Port* const this, char* parent, Visitor* visitor);
-void Port_VisitPathReferences(Port* const this, char* parent, Visitor* visitor);
-void* Port_FindByPath(char* attribute, Port* const this);
+void Port_VisitAttributes(void * const this, char* parent, Visitor* visitor, bool recursive);
+void Port_VisitPathAttributes(void * const this, char* parent, Visitor* visitor, bool recursive);
+void Port_VisitReferences(void * const this, char* parent, Visitor* visitor, bool recursive);
+void Port_VisitPathReferences(void * const this, char* parent, Visitor* visitor, bool recursive);
+void* Port_FindByPath(char* attribute, void * const this);
 
 #endif /* __Port_H */

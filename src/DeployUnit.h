@@ -18,6 +18,16 @@ typedef void (*fptrVisitRefsDeployUnit)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathDeployUnit)(char*, DeployUnit*);
 
 typedef struct _DeployUnit {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	NamedElement* super;
 	char *groupName;
 	char *version;
@@ -25,33 +35,24 @@ typedef struct _DeployUnit {
 	char *hashcode;
 	char *type;
 	map_t requiredLibs;
-	char *eContainer;
-	fptrDepUnitMetaClassName MetaClassName;
-	fptrDepUnitInternalGetKey InternalGetKey;
 	fptrDepUnitAddRequiredLibs AddRequiredLibs;
 	fptrDepUnitRemoveRequiredLibs RemoveRequiredLibs;
 	fptrDepUnitFindRequiredLibsByID FindRequiredLibsByID;
-	fptrDeleteDepUnit Delete;
-	fptrVisitAttrDeployUnit VisitAttributes;
-	fptrVisitAttrDeployUnit VisitPathAttributes;
-	fptrVisitRefsDeployUnit VisitReferences;
-	fptrVisitRefsDeployUnit VisitPathReferences;
-	fptrFindByPathDeployUnit FindByPath;
 } DeployUnit;
 
 NamedElement* newPoly_DeployUnit(void);
 DeployUnit* new_DeployUnit(void);
-char* DeployUnit_MetaClassName(DeployUnit* const this);
-char* DeployUnit_InternalGetKey(DeployUnit* const this);
+char* DeployUnit_metaClassName(void* const this);
+char* DeployUnit_internalGetKey(void* const this);
 void DeployUnit_AddRequiredLibs(DeployUnit* const this, DeployUnit* ptr);
 void DeployUnit_RemoveRequiredLibs(DeployUnit* const this, DeployUnit* ptr);
 DeployUnit* DeployUnit_FindRequiredLibsByID(DeployUnit* const this, char* id);
-void deletePoly_DeployUnit(NamedElement* const this);
-void delete_DeployUnit(DeployUnit* const this);
+void deletePoly_DeployUnit(void* const this);
+void delete_DeployUnit(void* const this);
 void DeployUnit_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void DeployUnit_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
-void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void DeployUnit_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
-void* DeployUnit_FindByPath(char* attribute, DeployUnit* const this);
+void DeployUnit_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DeployUnit_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* DeployUnit_FindByPath(char* attribute, void* const this);
 
 #endif /* H_DeployUnit */

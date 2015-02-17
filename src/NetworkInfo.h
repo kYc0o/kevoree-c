@@ -1,7 +1,9 @@
 #ifndef H_NetworkInfo
 #define H_NetworkInfo
 
+#include <stdbool.h>
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _NetworkInfo NetworkInfo;
 typedef struct _NamedElement NamedElement;
@@ -18,35 +20,36 @@ typedef void (*fptrVisitRefsNetworkInfo)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNetworkInfo)(char*, NetworkInfo*);
 
 typedef struct _NetworkInfo {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	NamedElement *super;
 	map_t values;
-	char *eContainer;
-	fptrNetInfoMetaClassName MetaClassName;
-	fptrNetInfoInternalGetKey InternalGetKey;
 	fptrNetInfoAddValues AddValues;
 	fptrNetInfoRemoveValues RemoveValues;
 	fptrNetInfoFindValuesByID FindValuesByID;
-	fptrDeleteNetInfo Delete;
-	fptrVisitAttrNetworkInfo VisitAttributes;
-	fptrVisitAttrNetworkInfo VisitPathAttributes;
-	fptrVisitRefsNetworkInfo VisitReferences;
-	fptrVisitRefsNetworkInfo VisitPathReferences;
-	fptrFindByPathNetworkInfo FindByPath;
 } NetworkInfo;
 
 NamedElement* newPoly_NetworkInfo(void);
 NetworkInfo* new_NetworkInfo(void);
-char* NetworkInfo_MetaClassName(NetworkInfo* const this);
-char* NetworkInfo_InternalGetKey(NetworkInfo* const this);
+char* NetworkInfo_metaClassName(void * const this);
+char* NetworkInfo_internalGetKey(void * const this);
 void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr);
 void NetworkInfo_RemoveValues(NetworkInfo* const this, NetworkProperty* ptr);
 NetworkProperty* NetworkInfo_FindValuesByID(NetworkInfo* const this, char* id);
-void deletePoly_NetworkInfo(NamedElement* const this);
-void delete_NetworkInfo(NetworkInfo* const this);
-void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void NetworkInfo_VisitPathAttributes(void *const this, char *parent, Visitor *visitor);
-void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void NetworkInfo_VisitPathReferences(void *const this, char *parent, Visitor *visitor);
-void* NetworkInfo_FindByPath(char* attribute, NetworkInfo* const this);
+void deletePoly_NetworkInfo(void * const this);
+void delete_NetworkInfo(void * const this);
+void NetworkInfo_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NetworkInfo_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive);
+void NetworkInfo_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NetworkInfo_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive);
+void* NetworkInfo_FindByPath(char* attribute, void * const this);
 
 #endif /* H_NetworkInfo */

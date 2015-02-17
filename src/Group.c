@@ -40,8 +40,8 @@ Instance* newPoly_Group()
 	pGroupObj->FindSubNodesByID = Group_FindSubNodesByID;
 	pGroupObj->FindByPath = Group_FindByPath;
 
-	pObj->InternalGetKey = Group_InternalGetKey;
-	pObj->MetaClassName = Group_MetaClassName;
+	pObj->internalGetKey = Group_internalGetKey;
+	pObj->metaClassName = Group_metaClassName;
 	pObj->VisitAttributes = Group_VisitAttributes;
 	pObj->VisitPathAttributes = Group_VisitPathAttributes;
 	pObj->VisitReferences = Group_VisitReferences;
@@ -78,9 +78,9 @@ Group* new_Group()
 	pGroupObj->AddSubNodes = Group_AddSubNodes;
 	pGroupObj->RemoveSubNodes = Group_RemoveSubNodes;
 
-	pGroupObj->InternalGetKey = Group_InternalGetKey;
-	pGroupObj->MetaClassName = Group_MetaClassName;
-	pObj->super->MetaClassName = Group_MetaClassName;
+	pGroupObj->internalGetKey = Group_internalGetKey;
+	pGroupObj->metaClassName = Group_metaClassName;
+	pObj->super->metaClassName = Group_metaClassName;
 	pGroupObj->VisitAttributes = Group_VisitAttributes;
 	pGroupObj->VisitPathAttributes = Group_VisitPathAttributes;
 	pGroupObj->VisitReferences = Group_VisitReferences;
@@ -92,12 +92,13 @@ Group* new_Group()
 	return pGroupObj;
 }
 
-char* Group_InternalGetKey(Group* const this)
+char* Group_internalGetKey(void* const this)
 {
-	return this->super->InternalGetKey(this->super);
+	Group *pObj = (Group*)this;
+	return pObj->super->internalGetKey(pObj->super);
 }
 
-char* Group_MetaClassName(Group* const this)
+char* Group_metaClassName(void* const this)
 {
 	char *name;
 
@@ -131,7 +132,7 @@ void Group_AddSubNodes(Group* const this, ContainerNode* ptr)
 {
 	ContainerNode* container = NULL;
 
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -153,7 +154,7 @@ void Group_AddSubNodes(Group* const this, ContainerNode* ptr)
 
 void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr)
 {
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -166,13 +167,18 @@ void Group_RemoveSubNodes(Group* const this, ContainerNode* ptr)
 	}
 }
 
-void deletePoly_Group(Instance* const this)
+void deletePoly_Group(void* const this)
 {
 	if(this != NULL)
 	{
+		Instance *pObj = (Instance*)this;
 		Group* pGroupObj;
-		pGroupObj = this->pDerivedObj;
+		pGroupObj = pObj->pDerivedObj;
 		/*destroy derived obj*/
+		/*
+		 * TODO verify NULLity
+		 * TODO fix polymorphism
+		 */
 		hashmap_free(pGroupObj->subNodes);
 		free(pGroupObj->eContainer);
 		free(pGroupObj);
@@ -181,15 +187,20 @@ void deletePoly_Group(Instance* const this)
 	}
 }
 
-void delete_Group(Group* const this)
+void delete_Group(void* const this)
 {
 	if(this != NULL)
 	{
+		Group *pObj = (Group*)this;
 		/* destroy base object */
-		delete_Instance(this->super);
+		delete_Instance(pObj->super);
 		/* destroy data memebers */
-		hashmap_free(this->subNodes);
-		free(this->eContainer);
+		/*
+		 * TODO verify NULLity
+		 * TODO fix polymorphism
+		 */
+		hashmap_free(pObj->subNodes);
+		free(pObj->eContainer);
 		free(this);
 		/*this = NULL;*/
 	}
@@ -226,7 +237,7 @@ void Group_VisitReferences(void* const this, char* parent, Visitor* visitor, boo
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"nodes[%s]", n->InternalGetKey(n));
+				sprintf(path,"nodes[%s]", n->internalGetKey(n));
 				visitor->action(path, STRREF, NULL);
 				if(length > 1)
 				{
@@ -270,21 +281,22 @@ void Group_VisitPathReferences(void *const this, char *parent, Visitor *visitor,
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"%s/subNodes[%s]", parent, n->InternalGetKey(n));
+				sprintf(path,"%s/subNodes[%s]", parent, n->internalGetKey(n));
 				n->VisitPathAttributes(n, path, visitor, false);
 			}
 		}
 	}
 }
 
-void* Group_FindByPath(char* attribute, Group* const this)
+void* Group_FindByPath(char* attribute, void* const this)
 {
+	Group *pObj = (Group*)this;
 	/* There is no local attributes */
 
 	/* Instance attributes and references */
 	if(!strcmp("name",attribute) ||  !strcmp("metaData",attribute) || !strcmp("started",attribute) || !strcmp("typeDefinition",attribute))
 	{
-		return Instance_FindByPath(attribute, this->super);/*return this->super->metaData;*/
+		return Instance_FindByPath(attribute, pObj->super);/*return this->super->metaData;*/
 	}
 	/* Local references */
 	else
@@ -350,11 +362,11 @@ void* Group_FindByPath(char* attribute, Group* const this)
 			free(obj);
 			if(nextAttribute == NULL)
 			{
-				return this->FindSubNodesByID(this, key);
+				return pObj->FindSubNodesByID(pObj, key);
 			}
 			else
 			{
-				ContainerNode* contnode = this->FindSubNodesByID(this, key);
+				ContainerNode* contnode = pObj->FindSubNodesByID(pObj, key);
 				if(contnode != NULL)
 					return contnode->FindByPath(nextPath, contnode);
 				else
@@ -364,7 +376,7 @@ void* Group_FindByPath(char* attribute, Group* const this)
 		else
 		{
 			free(obj);
-			return Instance_FindByPath(attribute, this->super);
+			return Instance_FindByPath(attribute, pObj->super);
 		}
 	}
 }

@@ -35,8 +35,8 @@ PortTypeMapping* new_PortTypeMapping()
 	pObj->paramTypes = NULL;
 	pObj->eContainer = NULL;
 	
-	pObj->InternalGetKey = PortTypeMapping_InternalGetKey;
-	pObj->MetaClassName = PortTypeMapping_MetaClassName;
+	pObj->internalGetKey = PortTypeMapping_internalGetKey;
+	pObj->metaClassName = PortTypeMapping_metaClassName;
 	pObj->Delete = delete_PortTypeMapping;
 	pObj->VisitAttributes = PortTypeMapping_VisitAttributes;
 	pObj->VisitPathAttributes = PortTypeMapping_VisitPathAttributes;
@@ -45,7 +45,7 @@ PortTypeMapping* new_PortTypeMapping()
 	return pObj;
 }
 
-char* PortTypeMapping_MetaClassName(PortTypeMapping* const this)
+char* PortTypeMapping_metaClassName(void * const this)
 {
 	char *name;
 
@@ -58,34 +58,35 @@ char* PortTypeMapping_MetaClassName(PortTypeMapping* const this)
 	return name;
 }
 
-char* PortTypeMapping_InternalGetKey(PortTypeMapping* const this)
+char* PortTypeMapping_internalGetKey(void * const this)
 {
-	return this->generated_KMF_ID;
+	PortTypeMapping *pObj = (PortTypeMapping*)this;
+	return pObj->generated_KMF_ID;
 }
 
-void delete_PortTypeMapping(PortTypeMapping* const this)
+void delete_PortTypeMapping(void * const this)
 {
 	/* destroy data memebers */
 	if(this != NULL)
 	{
-		free(this->beanMethodName);
-		free(this->serviceMethodName);
-		free(this->paramTypes);
-		free(this->generated_KMF_ID);
-		free(this->eContainer);
-		free(this);
+		PortTypeMapping *pObj = (PortTypeMapping*)this;
+		free(pObj->beanMethodName);
+		free(pObj->serviceMethodName);
+		free(pObj->paramTypes);
+		free(pObj->eContainer);
+		free(pObj);
 		/*this = NULL;*/
 	}
 }
 
-void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	char* cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
 	sprintf(path,"%s\\cClass", parent);
-	cClass = ((PortTypeMapping*)this)->MetaClassName((PortTypeMapping*)this);
+	cClass = ((PortTypeMapping*)this)->metaClassName((PortTypeMapping*)this);
 	visitor->action(path, STRING, cClass);
 	/*free(cClass);*/
 	free(cClass);
@@ -103,14 +104,14 @@ void PortTypeMapping_VisitAttributes(void* const this, char* parent, Visitor* vi
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->paramTypes);
 }
 
-void PortTypeMapping_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void PortTypeMapping_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	char* cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);
-	cClass = ((PortTypeMapping*)this)->MetaClassName((PortTypeMapping*)this);
+	cClass = ((PortTypeMapping*)this)->metaClassName((PortTypeMapping*)this);
 	visitor->action(path, STRING, cClass);
 	free(cClass);*/
 
@@ -127,24 +128,25 @@ void PortTypeMapping_VisitPathAttributes(void *const this, char *parent, Visitor
 	visitor->action(path, STRING, ((PortTypeMapping*)(this))->paramTypes);
 }
 
-void* PortTypeMapping_FindByPath(char* attribute, PortTypeMapping* const this)
+void* PortTypeMapping_FindByPath(char* attribute, void * const this)
 {
+	PortTypeMapping *pObj = (PortTypeMapping*)this;
 	/* Local attributes */
 	if(!strcmp("beanMethodName", attribute))
 	{
-		return this->beanMethodName;
+		return pObj->beanMethodName;
 	}
 	else if(!strcmp("serviceMethodName", attribute))
 	{
-		return this->serviceMethodName;
+		return pObj->serviceMethodName;
 	}
 	else if(!strcmp("paramTypes", attribute))
 	{
-		return this->paramTypes;
+		return pObj->paramTypes;
 	}
 	else if(!strcmp("generated_KMF_ID", attribute))
 	{
-		return this->generated_KMF_ID;
+		return pObj->generated_KMF_ID;
 	}
 	/* There is no local references */
 	else

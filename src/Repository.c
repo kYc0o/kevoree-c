@@ -22,8 +22,8 @@ Repository* new_Repository()
 	pObj->url = NULL;
 	pObj->eContainer = NULL;
 	
-	pObj->InternalGetKey = Repository_InternalGetKey;
-	pObj->MetaClassName = Repository_MetaClassName;
+	pObj->internalGetKey = Repository_internalGetKey;
+	pObj->metaClassName = Repository_metaClassName;
 	pObj->Delete = delete_Repository;
 	pObj->VisitAttributes = Repository_VisitAttributes;
 	pObj->VisitPathAttributes = Repository_VisitPathAttributes;
@@ -32,7 +32,7 @@ Repository* new_Repository()
 	return pObj;
 }
 
-char* Repository_MetaClassName(Repository* const this)
+char* Repository_metaClassName(void * const this)
 {
 	char *name;
 
@@ -45,31 +45,33 @@ char* Repository_MetaClassName(Repository* const this)
 	return name;
 }
 
-char* Repository_InternalGetKey(Repository* const this)
+char* Repository_internalGetKey(void * const this)
 {
-	return this->url;
+	Repository *pObj = (Repository*)this;
+	return pObj->url;
 }
 
-void delete_Repository(Repository* const this)
+void delete_Repository(void * const this)
 {
 	/* destroy data memebers */
 	if(this != NULL)
 	{
-		free(this->url);
-		free(this->eContainer);
-		free(this);
+		Repository *pObj = (Repository*)this;
+		free(pObj->url);
+		free(pObj->eContainer);
+		free(pObj);
 		/*this = NULL;*/
 	}
 }
 
-void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor)
+void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Repository*)this)->MetaClassName((Repository*)this))) + 1);
-	sprintf(cClass, "org.kevoree.%s", ((Repository*)this)->MetaClassName((Repository*)this));
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((Repository*)this)->metaClassName((Repository*)this))) + 1);
+	sprintf(cClass, "org.kevoree.%s", ((Repository*)this)->metaClassName((Repository*)this));
 	sprintf(path,"eClass");
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
@@ -80,14 +82,14 @@ void Repository_VisitAttributes(void* const this, char* parent, Visitor* visitor
 	visitor->action(NULL, RETURN, NULL);
 }
 
-void Repository_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void Repository_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);
-	cClass = ((Repository*)this)->MetaClassName((Repository*)this);
+	cClass = ((Repository*)this)->metaClassName((Repository*)this);
 	visitor->action(path, STRING, cClass);
 	free(cClass);*/
 
@@ -95,11 +97,12 @@ void Repository_VisitPathAttributes(void *const this, char *parent, Visitor *vis
 	visitor->action(path, STRING, ((Repository*)(this))->url);
 }
 
-void* Repository_FindByPath(char* attribute, Repository* const this)
+void* Repository_FindByPath(char* attribute, void * const this)
 {
-	if(!strcmp("url",attribute))
+	Repository *pObj = (Repository*)this;
+	if(!strcmp("url", attribute))
 	{
-		return this->url;
+		return pObj->url;
 	}
 	else
 	{

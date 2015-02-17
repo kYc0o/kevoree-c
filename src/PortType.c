@@ -31,8 +31,8 @@ TypeDefinition* newPoly_PortType()
 	
 	pPortTypeObj->synchrone = -1;
 
-	pObj->super->MetaClassName = PortType_MetaClassName;
-	pObj->InternalGetKey = PortType_InternalGetKey;
+	pObj->super->metaClassName = PortType_metaClassName;
+	pObj->internalGetKey = PortType_internalGetKey;
 	pObj->VisitAttributes = PortType_VisitAttributes;
 	pObj->VisitPathAttributes = PortType_VisitPathAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
@@ -64,8 +64,8 @@ PortType* new_PortType()
 
 	pPortTypeObj->synchrone = -1;
 	
-	pPortTypeObj->MetaClassName = PortType_MetaClassName;
-	pPortTypeObj->InternalGetKey = PortType_InternalGetKey;
+	pPortTypeObj->metaClassName = PortType_metaClassName;
+	pPortTypeObj->internalGetKey = PortType_internalGetKey;
 	pPortTypeObj->VisitAttributes = PortType_VisitAttributes;
 	pPortTypeObj->VisitPathAttributes = PortType_VisitPathAttributes;
 	pPortTypeObj->VisitReferences = TypeDefinition_VisitReferences;
@@ -77,7 +77,7 @@ PortType* new_PortType()
 	return pPortTypeObj;
 }
 
-char* PortType_MetaClassName(PortType* const this)
+char* PortType_metaClassName(void * const this)
 {
 	char *name;
 
@@ -90,27 +90,29 @@ char* PortType_MetaClassName(PortType* const this)
 	return name;
 }
 
-char* PortType_InternalGetKey(PortType* const this)
+char* PortType_internalGetKey(void * const this)
 {
-	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
+	return TypeDefinition_internalGetKey((TypeDefinition*)this);
 }
 
-void deletePoly_PortType(TypeDefinition* const this)
+void deletePoly_PortType(void * const this)
 {
+	TypeDefinition *pObj = (TypeDefinition*)this;
 	PortType* pPortTypeObj;
-	pPortTypeObj = this->pDerivedObj;
+	pPortTypeObj = pObj->pDerivedObj;
 	/*destroy derived obj*/
 	free(pPortTypeObj);
 	/*destroy base Obj*/
-	delete_TypeDefinition(this);
+	delete_TypeDefinition(pObj);
 }
 
-void delete_PortType(PortType* const this)
+void delete_PortType(void * const this)
 {
+	PortType *pObj = (PortType*)this;
 	/* destroy base object */
-	delete_TypeDefinition(this->super);
+	delete_TypeDefinition(pObj->super);
 	/* destroy data memebers */
-	free(this);
+	free(pObj);
 }
 
 void PortType_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
@@ -154,22 +156,23 @@ void PortType_VisitPathAttributes(void *const this, char *parent, Visitor *visit
 	}
 }
 
-void* PortType_FindByPath(char* attribute, TypeDefinition* const this)
+void* PortType_FindByPath(char* attribute, void * const this)
 {
+	TypeDefinition *pObj = (TypeDefinition*)this;
 	/* TypeDefinition attributes */
 	if(!strcmp("name",attribute) ||  !strcmp("version",attribute) || !strcmp("factoryBean",attribute) || !strcmp("bean",attribute) || !strcmp("abstract",attribute))
 	{
-		return TypeDefinition_FindByPath(attribute, this);
+		return TypeDefinition_FindByPath(attribute, pObj);
 	}
 	/* Local attributes */
-	else if(!strcmp("synchrone",attribute))
+	else if(!strcmp("synchrone", attribute))
 	{
-		PortType* porttype = this->pDerivedObj;
+		PortType* porttype = pObj->pDerivedObj;
 		return (void*)porttype->synchrone;
 	}
 	/* TypeDefinition references */
 	else
 	{
-		return TypeDefinition_FindByPath(attribute, this);
+		return TypeDefinition_FindByPath(attribute, pObj);
 	}
 }

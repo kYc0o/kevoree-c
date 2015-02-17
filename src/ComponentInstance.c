@@ -42,8 +42,8 @@ Instance* newPoly_ComponentInstance()
 	pCompInstanceObj->RemoveProvided = ComponentInstance_RemoveProvided;
 	pCompInstanceObj->RemoveRequired = ComponentInstance_RemoveRequired;
 
-	pObj->MetaClassName = ComponentInstance_MetaClassName;
-	pObj->InternalGetKey = ComponentInstance_InternalGetKey;
+	pObj->metaClassName = ComponentInstance_metaClassName;
+	pObj->internalGetKey = ComponentInstance_internalGetKey;
 	pObj->FindByPath = ComponentInstance_FindByPath;
 
 	pObj->Delete = deletePoly_ComponentInstance;
@@ -82,23 +82,25 @@ ComponentInstance* new_ComponentInstance()
 	pCompInstanceObj->VisitPathAttributes = ComponentInstance_VisitPathAttributes;
 	pCompInstanceObj->VisitReferences = ComponentInstance_VisitReferences;
 	pCompInstanceObj->VisitPathReferences = ComponentInstance_VisitPathReferences;
-	pCompInstanceObj->MetaClassName = ComponentInstance_MetaClassName;
-	pCompInstanceObj->InternalGetKey = ComponentInstance_InternalGetKey;
+	pCompInstanceObj->metaClassName = ComponentInstance_metaClassName;
+	pCompInstanceObj->internalGetKey = ComponentInstance_internalGetKey;
 	pCompInstanceObj->FindByPath = ComponentInstance_FindByPath;
 
-	pObj->super->MetaClassName = ComponentInstance_MetaClassName;
+	pObj->super->metaClassName = ComponentInstance_metaClassName;
 	pCompInstanceObj->Delete = delete_ComponentInstance;
 
 	return pCompInstanceObj;
 }
 
-char* ComponentInstance_InternalGetKey(ComponentInstance* const this)
+char* ComponentInstance_internalGetKey(void* const this)
 {
-	return this->super->InternalGetKey(this->super);
+	ComponentInstance *pObj = (ComponentInstance*)this;
+	return pObj->super->internalGetKey(pObj->super);
 }
 
-char* ComponentInstance_MetaClassName(ComponentInstance* const this)
+char* ComponentInstance_metaClassName(void* const this)
 {
+	ComponentInstance *pObj = (ComponentInstance*)this;
 	char *name = NULL;
 
 	name = malloc(sizeof(char) * (strlen("ComponentInstance")) + 1);
@@ -110,22 +112,24 @@ char* ComponentInstance_MetaClassName(ComponentInstance* const this)
 	return name;
 }
 
-void deletePoly_ComponentInstance(Instance* const this)
+void deletePoly_ComponentInstance(void* const this)
 {
+	Instance *pObj = (Instance*)this;
 	ComponentInstance* pCompInstanceObj;
-	pCompInstanceObj = this->pDerivedObj;
+	pCompInstanceObj = pObj->pDerivedObj;
 	/*destroy derived obj*/
 	free(pCompInstanceObj);
 	/*destroy base Obj*/
-	delete_Instance(this);
+	delete_Instance(pObj);
 }
 
-void delete_ComponentInstance(ComponentInstance* const this)
+void delete_ComponentInstance(void* const this)
 {
+	ComponentInstance *pObj = (ComponentInstance*)this;
 	/* destroy base object */
-	delete_Instance(this->super);
+	delete_Instance(pObj->super);
 	/* destroy data memebers */
-	free(this);
+	free(pObj);
 
 }
 
@@ -167,7 +171,7 @@ void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
 {
 	Port *container = NULL;
 
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -184,8 +188,8 @@ void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
 			/*container = (MBinding*)ptr;*/
 			if(hashmap_put(this->provided, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->InternalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->InternalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->internalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->internalGetKey(this));
 			}
 		}
 	}
@@ -195,7 +199,7 @@ void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
 {
 	Port *container = NULL;
 
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -212,8 +216,8 @@ void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
 			/*container = (MBinding*)ptr;*/
 			if(hashmap_put(this->required, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->InternalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->InternalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->internalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->internalGetKey(this));
 			}
 			/*
 			 * TODO add else
@@ -224,7 +228,7 @@ void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
 
 void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr)
 {
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -244,7 +248,7 @@ void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr)
 
 void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
 {
-	char *internalKey = ptr->InternalGetKey(ptr);
+	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
 	{
@@ -262,27 +266,26 @@ void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
 	}
 }
 
-void ComponentInstance_VisitAttributes(void *const this, char *parent, Visitor *visitor)
+void ComponentInstance_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
-	/*char path[256];
-	char *cClass = NULL;
-	memset(&path[0], 0, sizeof(path));
-
-	sprintf(path,"%s\\cClass", parent);
-	cClass = ((ComponentInstance*)this)->MetaClassName((ComponentInstance*)this);
-	visitor->action(path, STRING, cClass);
-	free(cClass);*/
-
+	/*
+	 * TODO solve recursiveness from parent
+	 * TODO improve polymophism
+	 */
 	Instance_VisitAttributes(((ComponentInstance*)this)->super, parent, visitor, true);
 }
 
-void ComponentInstance_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void ComponentInstance_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	Instance_VisitPathAttributes(((ComponentInstance*)this)->super, parent, visitor, true);
 }
 
-void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor)
+void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
 {
+	/*
+	 * TODO solve recursiveness from parent
+	 * TODO cast this to ComponentInstance in a single object
+	 */
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
@@ -303,10 +306,10 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
-				/*sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));*/
+				/*sprintf(path,"%s/provided[%s]", parent, n->internalGetKey(n));*/
 				sprintf(path, "provided");
 				n->VisitAttributes(n, path, visitor, true);
-				n->VisitReferences(n, path, visitor);
+				n->VisitReferences(n, path, visitor, true);
 				if(length > 1)
 				{
 					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
@@ -341,10 +344,10 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 				visitor->action(NULL, BRACKET, NULL);
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
-				/*sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));*/
+				/*sprintf(path,"%s/required[%s]", parent, n->internalGetKey(n));*/
 				sprintf(path, "required");
-				n->VisitAttributes(n, path, visitor, 1);
-				n->VisitReferences(n, path, visitor);
+				n->VisitAttributes(n, path, visitor, true);
+				n->VisitReferences(n, path, visitor, true);
 				if(length > 1)
 				{
 					visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
@@ -366,8 +369,12 @@ void ComponentInstance_VisitReferences(void* const this, char* parent, Visitor* 
 
 }
 
-void ComponentInstance_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+void ComponentInstance_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
+	/*
+	 * TODO solve recursiveness from parent
+	 * TODO cast this to ComponentInstance in a single object
+	 */
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
@@ -388,9 +395,9 @@ void ComponentInstance_VisitPathReferences(void *const this, char *parent, Visit
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
-				sprintf(path,"%s/provided[%s]", parent, n->InternalGetKey(n));
+				sprintf(path,"%s/provided[%s]", parent, n->internalGetKey(n));
 				n->VisitPathAttributes(n, path, visitor, false);
-				n->VisitPathReferences(n, path, visitor);
+				n->VisitPathReferences(n, path, visitor, false);
 			}
 		}
 	}
@@ -409,22 +416,23 @@ void ComponentInstance_VisitPathReferences(void *const this, char *parent, Visit
 			{
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
-				sprintf(path,"%s/required[%s]", parent, n->InternalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, 1);
-				n->VisitPathReferences(n, path, visitor);
+				sprintf(path,"%s/required[%s]", parent, n->internalGetKey(n));
+				n->VisitPathAttributes(n, path, visitor, true);
+				n->VisitPathReferences(n, path, visitor, true);
 			}
 		}
 	}
 }
 
-void *ComponentInstance_FindByPath(char* attribute, ComponentInstance* const this)
+void *ComponentInstance_FindByPath(char* attribute, void* const this)
 {
+	ComponentInstance *pObj = (ComponentInstance*)this;
 	/* There is no local attributes */
 
 	/* Instance attributes */
 	if(!strcmp("name", attribute) ||  !strcmp("metaData", attribute) || !strcmp("started", attribute) /*|| !strcmp("typeDefinition", attribute)*/)
 	{
-		return Instance_FindByPath(attribute, this->super);/*return this->super->metaData;*/
+		return Instance_FindByPath(attribute, pObj->super);
 	}
 	/* Local references */
 	else
@@ -491,11 +499,11 @@ void *ComponentInstance_FindByPath(char* attribute, ComponentInstance* const thi
 			if(nextAttribute == NULL)
 			{
 
-				return this->FindProvidedByID(this, key);
+				return pObj->FindProvidedByID(pObj, key);
 			}
 			else
 			{
-				Port* port = this->FindProvidedByID(this, key);
+				Port* port = pObj->FindProvidedByID(pObj, key);
 				if(port != NULL)
 					return port->FindByPath(nextPath, port);
 				else
@@ -507,11 +515,11 @@ void *ComponentInstance_FindByPath(char* attribute, ComponentInstance* const thi
 			free(obj);
 			if(nextAttribute == NULL)
 			{
-				return this->FindRequiredByID(this, key);
+				return pObj->FindRequiredByID(pObj, key);
 			}
 			else
 			{
-				Port* port = this->FindRequiredByID(this, key);
+				Port* port = pObj->FindRequiredByID(pObj, key);
 				if(port != NULL)
 					return port->FindByPath(nextPath, port);
 				else
@@ -522,7 +530,7 @@ void *ComponentInstance_FindByPath(char* attribute, ComponentInstance* const thi
 		else
 		{
 			free(obj);
-			return Instance_FindByPath(attribute, this->super);
+			return Instance_FindByPath(attribute, pObj->super);
 		}
 	}
 }

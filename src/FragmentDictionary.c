@@ -32,8 +32,8 @@ Dictionary* newPoly_FragmentDictionary()
 	pObj->VisitReferences = FragmentDictionary_VisitReferences;
 	pObj->VisitPathReferences = FragmentDictionary_VisitPathReferences;
 	
-	pObj->MetaClassName = FragmentDictionary_MetaClassName;
-	pObj->InternalGetKey = FragmentDictionary_InternalGetKey;
+	pObj->metaClassName = FragmentDictionary_metaClassName;
+	pObj->internalGetKey = FragmentDictionary_internalGetKey;
 	
 	pFragDicObj->name = NULL;
 	pFragDicObj->eContainer = NULL;
@@ -70,9 +70,9 @@ FragmentDictionary* new_FragmentDictionary(void)
 	pFragDicObj->name = NULL;
 	pFragDicObj->eContainer = NULL;
 	
-	pFragDicObj->MetaClassName = FragmentDictionary_MetaClassName;
-	pObj->MetaClassName = FragmentDictionary_MetaClassName;
-	pFragDicObj->InternalGetKey = FragmentDictionary_InternalGetKey;
+	pFragDicObj->metaClassName = FragmentDictionary_metaClassName;
+	pObj->metaClassName = FragmentDictionary_metaClassName;
+	pFragDicObj->internalGetKey = FragmentDictionary_internalGetKey;
 	pFragDicObj->FindByPath = FragmentDictionary_FindByPath;
 	
 	pFragDicObj->Delete = delete_FragmentDictionary;
@@ -110,12 +110,13 @@ void delete_FragmentDictionary(void* const this)
 	}
 }
 
-char* FragmentDictionary_InternalGetKey(FragmentDictionary* const this)
+char* FragmentDictionary_internalGetKey(void* const this)
 {
-	return this->name;
+	FragmentDictionary *pObj = (FragmentDictionary*)this;
+	return pObj->name;
 }
 
-char* FragmentDictionary_MetaClassName(FragmentDictionary* const this)
+char* FragmentDictionary_metaClassName(void* const this)
 {
 	char *name;
 
@@ -128,13 +129,13 @@ char* FragmentDictionary_MetaClassName(FragmentDictionary* const this)
 	return name;
 }
 
-void FragmentDictionary_VisitAttributes(void *const this, char *parent, Visitor *visitor)
+void FragmentDictionary_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/* Dictionary attributes */
-	Dictionary_VisitAttributes(((FragmentDictionary*)this)->super, parent, visitor);
+	Dictionary_VisitAttributes(((FragmentDictionary*)this)->super, parent, visitor, recursive);
 	
 	/* Local attributes */
 	sprintf(path, "name");
@@ -142,40 +143,41 @@ void FragmentDictionary_VisitAttributes(void *const this, char *parent, Visitor 
 	visitor->action(NULL, COLON, NULL);
 }
 
-void FragmentDictionary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void FragmentDictionary_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	memset(&path[0], 0, sizeof(path));
 
 	/* Dictionary attributes */
-	Dictionary_VisitPathAttributes(((FragmentDictionary*)this)->super, parent, visitor);
+	Dictionary_VisitPathAttributes(((FragmentDictionary*)this)->super, parent, visitor, recursive);
 
 	/* Local attributes */
 	sprintf(path, "%s\\name", parent);
 	visitor->action(path, STRING, ((FragmentDictionary*)(this))->name);
 }
 
-void FragmentDictionary_VisitReferences(void *const this, char *parent, Visitor *visitor)
+void FragmentDictionary_VisitReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
-	Dictionary_VisitReferences(((FragmentDictionary*)(this))->super, parent, visitor);
+	Dictionary_VisitReferences(((FragmentDictionary*)(this))->super, parent, visitor, recursive);
 }
 
-void FragmentDictionary_VisitPathReferences(void *const this, char *parent, Visitor *visitor)
+void FragmentDictionary_VisitPathReferences(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
-	Dictionary_VisitPathReferences(((FragmentDictionary*)(this))->super, parent, visitor);
+	Dictionary_VisitPathReferences(((FragmentDictionary*)(this))->super, parent, visitor, recursive);
 }
 
-void* FragmentDictionary_FindByPath(char* attribute, FragmentDictionary* const this)
+void* FragmentDictionary_FindByPath(char* attribute, void* const this)
 {
+	FragmentDictionary *pObj = (FragmentDictionary*)this;
 	/* Dictionary attributes and references */
 	if(!strcmp("generated_KMF_ID", attribute) || !strcmp("values", attribute))
 	{
-		return Dictionary_FindByPath(attribute, this->super);
+		return Dictionary_FindByPath(attribute, pObj->super);
 	}
 	/* Local attributes */
 	else if(!strcmp("name", attribute))
 	{
-		return this->name;
+		return pObj->name;
 	}
 	/* There is no local references */
 	else

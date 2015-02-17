@@ -24,8 +24,8 @@ DictionaryValue* new_DictionaryValue(void)
 	pObj->value = NULL;
 	pObj->eContainer = NULL;
 
-	pObj->InternalGetKey = DictionaryValue_InternalGetKey;
-	pObj->MetaClassName = DictionaryValue_MetaClassName;
+	pObj->internalGetKey = DictionaryValue_internalGetKey;
+	pObj->metaClassName = DictionaryValue_metaClassName;
 	pObj->Delete = delete_DictionaryValue;
 	pObj->VisitAttributes = DictionaryValue_VisitAttributes;
 	pObj->VisitPathAttributes = DictionaryValue_VisitPathAttributes;
@@ -34,25 +34,30 @@ DictionaryValue* new_DictionaryValue(void)
 	return pObj;
 }
 
-void delete_DictionaryValue(DictionaryValue* const this)
+void delete_DictionaryValue(void* const this)
 {
 	if(this != NULL)
 	{
-		free(this->name);
-		free(this->value);
-		free(this->eContainer);
-		free(this);
+		DictionaryValue *pObj = (DictionaryValue*)this;
+		free(pObj->name);
+		free(pObj->value);
+		free(pObj->eContainer);
+		free(pObj);
 		/*this = NULL;*/
 	}
 }
 
-char* DictionaryValue_InternalGetKey(DictionaryValue* const this)
+char *DictionaryValue_internalGetKey(void* const this)
 {
-	return this->name;
+	DictionaryValue *pObj = (DictionaryValue*)this;
+	return pObj->name;
 }
 
-char* DictionaryValue_MetaClassName(DictionaryValue* const this)
+char* DictionaryValue_metaClassName(void* const this)
 {
+	/*
+	 * TODO avoid to send an allocated pointer
+	 */
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("DictionaryValue")) + 1);
@@ -64,14 +69,14 @@ char* DictionaryValue_MetaClassName(DictionaryValue* const this)
 	return name;
 }
 
-void DictionaryValue_VisitAttributes(void *const this, char *parent, Visitor *visitor)
+void DictionaryValue_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
-	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this))) + 1);
-	sprintf(cClass, "org.kevoree.%s", ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this));
+	cClass = malloc(sizeof(char) * (strlen("org.kevoree.") + strlen(((DictionaryValue*)this)->metaClassName((DictionaryValue*)this))) + 1);
+	sprintf(cClass, "org.kevoree.%s", ((DictionaryValue*)this)->metaClassName((DictionaryValue*)this));
 	sprintf(path,"eClass");
 	visitor->action(path, STRING, cClass);
 	visitor->action(NULL, COLON, NULL);
@@ -86,14 +91,14 @@ void DictionaryValue_VisitAttributes(void *const this, char *parent, Visitor *vi
 	visitor->action(NULL, RETURN, NULL);
 }
 
-void DictionaryValue_VisitPathAttributes(void *const this, char *parent, Visitor *visitor)
+void DictionaryValue_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
 	char path[256];
 	char *cClass = NULL;
 	memset(&path[0], 0, sizeof(path));
 
 	/*sprintf(path,"%s\\cClass", parent);
-	cClass = ((DictionaryValue*)this)->MetaClassName((DictionaryValue*)this);
+	cClass = ((DictionaryValue*)this)->metaClassName((DictionaryValue*)this);
 	visitor->action(path, STRING, cClass);
 	free(cClass);*/
 
@@ -104,16 +109,17 @@ void DictionaryValue_VisitPathAttributes(void *const this, char *parent, Visitor
 	visitor->action(path, STRING, ((DictionaryValue*)(this))->value);
 }
 
-void* DictionaryValue_FindByPath(char* attribute, DictionaryValue* const this)
+void* DictionaryValue_FindByPath(char* attribute, void* const this)
 {
+	DictionaryValue *pObj = (DictionaryValue*)this;
 	/* Local attributes */
 	if(!strcmp("name", attribute))
 	{
-		return this->name;
+		return pObj->name;
 	}
 	else if(!strcmp("value", attribute))
 	{
-		return this->value;
+		return pObj->value;
 	}
 	/* There is no local references */
 	else

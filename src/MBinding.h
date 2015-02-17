@@ -2,6 +2,7 @@
 #define __MBinding_H
 
 #include <stdbool.h>
+#include "KMF4C.h"
 
 typedef struct _Channel Channel;
 typedef struct _Port Port;
@@ -20,28 +21,29 @@ typedef void* (*fptrFindByPathMBinding)(char*, MBinding*);
 typedef void (*fptrDeleteMBinding)(void*);
 
 typedef struct _MBinding {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char generated_KMF_ID[9];
 	Port* port;
 	Channel* channel;
-	char *eContainer;
-	fptrMBindingInternalGetKey InternalGetKey;
-	fptrMBindingMetaClassName MetaClassName;
 	fptrMBindingAddPort AddPort;
 	fptrMbindingAddHub AddHub;
 	fptrMBindingRemovePort RemovePort;
 	fptrMbindingRemoveHub RemoveHub;
-	fptrVisitAttrMBinding VisitAttributes;
-	fptrVisitAttrMBinding VisitPathAttributes;
-	fptrVisitRefsMbinding VisitReferences;
-	fptrVisitRefsMbinding VisitPathReferences;
-	fptrFindByPathMBinding FindByPath;
-	fptrDeleteMBinding Delete;
 } MBinding;
 
 MBinding* new_MBinding(void);
-void delete_MBinding(void* const this);
-char* MBinding_MetaClassName(MBinding* const this);
-char* MBinding_InternalGetKey(MBinding* const this);
+void delete_MBinding(void * const this);
+char* MBinding_metaClassName(void * const this);
+char* MBinding_internalGetKey(void * const this);
 void MBinding_AddPort(MBinding* const this, Port* ptr);
 void MBinding_AddHub(MBinding* const this, Channel* ptr);
 void MBinding_RemovePort(MBinding* const this, Port* ptr);
@@ -50,6 +52,6 @@ void MBinding_VisitAttributes(void* const this, char* parent, Visitor* visitor, 
 void MBinding_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
 void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
 void MBinding_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
-void* MBinding_FindByPath(char* attribute, MBinding* const this);
+void* MBinding_FindByPath(char* attribute, void * const this);
 
 #endif /* __MBinding_H */

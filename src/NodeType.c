@@ -27,8 +27,8 @@ TypeDefinition* newPoly_NodeType()
 	pObj->pDerivedObj = pNodeTypeObj; /* Pointing to derived object */
 	pNodeTypeObj->super = pObj;
 
-	pObj->super->MetaClassName = NodeType_MetaClassName;
-	pObj->InternalGetKey = NodeType_InternalGetKey;
+	pObj->super->metaClassName = NodeType_metaClassName;
+	pObj->internalGetKey = NodeType_internalGetKey;
 	pObj->VisitAttributes = NodeType_VisitAttributes;
 	pObj->VisitPathAttributes = NodeType_VisitPathAttributes;
 	pObj->VisitReferences = TypeDefinition_VisitReferences;
@@ -58,8 +58,8 @@ NodeType* new_NodeType()
 	/*pObj->pDerivedObj = pNodeTypeObj;  Pointing to derived object */
 	pNodeTypeObj->super = pObj;
 
-	pNodeTypeObj->MetaClassName = NodeType_MetaClassName;
-	pNodeTypeObj->InternalGetKey = NodeType_InternalGetKey;
+	pNodeTypeObj->metaClassName = NodeType_metaClassName;
+	pNodeTypeObj->internalGetKey = NodeType_internalGetKey;
 	pNodeTypeObj->VisitAttributes = NodeType_VisitAttributes;
 	pNodeTypeObj->VisitPathAttributes = NodeType_VisitPathAttributes;
 	pNodeTypeObj->VisitReferences = TypeDefinition_VisitAttributes;
@@ -71,12 +71,12 @@ NodeType* new_NodeType()
 	return pNodeTypeObj;
 }
 
-char* NodeType_InternalGetKey(void* const this)
+char* NodeType_internalGetKey(void* const this)
 {
-	return TypeDefinition_InternalGetKey((TypeDefinition*)this);
+	return TypeDefinition_internalGetKey((TypeDefinition*)this);
 }
 
-char* NodeType_MetaClassName(NodeType* const this)
+char* NodeType_metaClassName(void * const this)
 {
 	char *name;
 
@@ -89,22 +89,24 @@ char* NodeType_MetaClassName(NodeType* const this)
 	return name;
 }
 
-void deletePoly_NodeType(TypeDefinition* const this)
+void deletePoly_NodeType(void * const this)
 {
+	TypeDefinition *pObj = (TypeDefinition*)this;
 	NodeType* pNodeTypeObj;
-	pNodeTypeObj = this->pDerivedObj;
+	pNodeTypeObj = pObj->pDerivedObj;
 	/*destroy derived obj*/
 	free(pNodeTypeObj);
 	/*destroy base Obj*/
 	delete_TypeDefinition(this);
 }
 
-void delete_NodeType(NodeType* const this)
+void delete_NodeType(void * const this)
 {
+	NodeType *pObj = (NodeType*)this;
 	/* destroy base object */
-	delete_TypeDefinition(this->super);
+	delete_TypeDefinition(pObj->super);
 	/* destroy data memebers */
-	free(this);
+	free(pObj);
 	
 }
 

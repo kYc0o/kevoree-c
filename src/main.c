@@ -2,14 +2,18 @@
 #include "Comparekevoree.h"*/
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 #include "kevoree.h"
 
 #include "list.h"
+#include "jsonparse.h"
 
 ContainerRoot *current_model = NULL;
 ContainerRoot *new_model = NULL;
 Visitor *visitor_print;
 LIST(model_traces);
+
 
 char buffer[100];
 
@@ -22,6 +26,9 @@ void write_to_file(char *buf)
 	if(current_model_json)
 	{
 		fprintf(current_model_json, "%s", buf);
+		if(fclose(current_model_json)) {
+			printf("ERROR: cannot close the file!\n");
+		}
 	}
 	else
 	{
@@ -1022,14 +1029,97 @@ int main(void)
 
 	/*visitor_print->action = actionstore;*/
 	/*visitor_print->action = actionprintf;*/
+	visitor_print->action = actionprintpath;
+	/*visitor_print->action = actionUpdateDelete;*/
 
-	/*printf("Elapsed time: %d\n", RTIMER_NOW());*/
-
+	current_model->VisitPaths(current_model, visitor_print);
 	/*current_model->Visit(current_model, visitor_print);*/
 
+	FILE *new_model_json = fopen("new_model.json", "r");
+	fseek(new_model_json, 0L, SEEK_END);
+	int modelLength = ftell(new_model_json);
+	fseek(new_model_json, 0L, SEEK_SET);
 
-	visitor_print->action = actionprintpath;
-	current_model->Visit(current_model, visitor_print);
+
+	printf("Starting Kevoree adaptations\n");
+	printf("INFO: Trying to load new_model with length %d\n", modelLength);
+
+	char *jsonModel = malloc(modelLength + 1);
+	int ch;
+	bool firstChar = true;
+	bool isFirst = true;
+	int listLength = 0;
+
+	while ((ch = fgetc(new_model_json)) != EOF) {
+		if (firstChar) {
+			sprintf(jsonModel, "%c", ch);
+			firstChar = false;
+		} else {
+			sprintf(jsonModel, "%s%c", jsonModel, ch);
+		}
+	}
+
+	fclose(new_model_json);
+
+	printf("INFO: new_model JSON loaded in RAM\n");
+	printf("%s\n", jsonModel);
+
+	struct jsonparse_state jsonState;
+
+	jsonparse_setup(&jsonState, jsonModel, modelLength + 1);
+
+	new_model = JSONKevDeserializer(&jsonState, jsonparse_next(&jsonState));
+
+	if(new_model != NULL)
+	{
+		printf("INFO: new_model loaded successfully!\n");
+	}
+	else
+	{
+		printf("ERROR: new_model cannot be loaded\n");
+	}
+
+
+	if(new_model != NULL)
+	{
+		visitor_print->action = actionprintpath;
+		current_model->VisitPaths(current_model, visitor_print);
+		printf("\n\n");
+		new_model->VisitPaths(new_model, visitor_print);
+		printf("INFO: new_model detected, comparing with curent_model\n\n");
+		visitor_print->action = actionUpdateDelete;
+		current_model->VisitPaths(current_model, visitor_print);
+		visitor_print->action = actionAdd;
+		new_model->VisitPaths(new_model, visitor_print);
+
+		if((listLength = list_length(model_traces)))
+		{
+			ModelTrace *mt;
+
+			for (i = 0; i < listLength; ++i) {
+				if(isFirst)
+				{
+					mt = list_head(model_traces);
+					char *strTrace = mt->ToString(mt->pDerivedObj);
+					printf(strTrace);
+					free(strTrace);
+					isFirst = false;
+				}
+				else {
+					mt = list_item_next(mt);
+					char *strTrace = mt->ToString(mt->pDerivedObj);
+					printf(strTrace);
+					free(strTrace);
+				}
+			}
+		}
+	}
+	else
+	{
+		printf("ERROR: New model cannot be visited!\n");
+	}
+
+	free(jsonModel);
 
 	return EXIT_SUCCESS;
 }

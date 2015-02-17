@@ -1,6 +1,8 @@
 #ifndef __DictionaryValue_H
 #define __DictionaryValue_H
 
+#include "KMF4C.h"
+
 typedef struct _DictionaryValue DictionaryValue;
 typedef struct _Visitor Visitor;
 
@@ -11,23 +13,26 @@ typedef void (*fptrVisitAttrDicVal)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathDicVal)(char*, DictionaryValue*);
 
 typedef struct _DictionaryValue {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char *name;
 	char *value;
-	char *eContainer;
-	fptrDicValInternalGetKey InternalGetKey;
-	fptrDicValMetaClassName MetaClassName;
-	fptrDeleteDicVal Delete;
-	fptrVisitAttrDicVal VisitAttributes;
-	fptrVisitAttrDicVal VisitPathAttributes;
-	fptrFindByPathDicVal FindByPath;
 } DictionaryValue;
 
 DictionaryValue* new_DictionaryValue(void);
-void delete_DictionaryValue(DictionaryValue* const this);
-char* DictionaryValue_InternalGetKey(DictionaryValue* const this);
-char* DictionaryValue_MetaClassName(DictionaryValue* const this);
-void DictionaryValue_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void DictionaryValue_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
-void* DictionaryValue_FindByPath(char* attribute, DictionaryValue* const this);
+void delete_DictionaryValue(void* const this);
+char* DictionaryValue_internalGetKey(void* const this);
+char* DictionaryValue_metaClassName(void* const this);
+void DictionaryValue_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void DictionaryValue_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* DictionaryValue_FindByPath(char* attribute, void* const this);
 
 #endif /* __DictionaryValue_H */

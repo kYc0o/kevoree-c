@@ -2,6 +2,7 @@
 #define H_NodeType
 
 #include <stdbool.h>
+#include "KMF4C.h"
 /*#include "TypeDefinition.h"*/
 
 typedef struct _NodeType NodeType;
@@ -16,24 +17,26 @@ typedef void (*fptrVisitRefsNodeType)(void*, char*, Visitor*);
 typedef void* (*fptrFindByPathNodeType)(char*, TypeDefinition*);
 
 typedef struct _NodeType {
+	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	TypeDefinition* super;
-	fptrNodeTypeMetaClassName MetaClassName;
-	fptrNodeTypeInternalGetKey InternalGetKey;
-	fptrDeleteNodeType Delete;
-	fptrVisitAttrNodeType VisitAttributes;
-	fptrVisitAttrNodeType VisitPathAttributes;
-	fptrVisitRefsNodeType VisitReferences;
-	fptrVisitRefsNodeType VisitPathReferences;
-	fptrFindByPathNodeType FindByPath;
 } NodeType;
 
 TypeDefinition* newPoly_NodeType(void);
 NodeType* new_NodeType(void);
-void deletePoly_NodeType(TypeDefinition*);
-void delete_NodeType(NodeType*);
-char* NodeType_MetaClassName(NodeType* const this);
-char* NodeType_InternalGetKey(void* const this);
-void NodeType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
-void NodeType_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void deletePoly_NodeType(void * const this);
+void delete_NodeType(void * const this);
+char* NodeType_metaClassName(void * const this);
+char* NodeType_internalGetKey(void * const this);
+void NodeType_VisitAttributes(void * const this, char* parent, Visitor* visitor, bool recursive);
+void NodeType_VisitPathAttributes(void * const this, char* parent, Visitor* visitor, bool recursive);
 
 #endif /* H_NodeType */

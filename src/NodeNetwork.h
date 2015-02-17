@@ -2,6 +2,7 @@
 #define H_NodeNetwork
 
 #include "hashmap.h"
+#include "KMF4C.h"
 
 typedef struct _NodeNetwork NodeNetwork;
 typedef struct _ContainerNode ContainerNode;
@@ -24,13 +25,19 @@ typedef void* (*fptrFindByPathNodeNetwork)(char*, NodeNetwork*);
 
 typedef struct _NodeNetwork {
 	void *pDerivedObj;
+	char *eContainer;
+	fptrKMFMetaClassName metaClassName;
+	fptrKMFInternalGetKey internalGetKey;
+	fptrVisitAttr VisitAttributes;
+	fptrVisitAttr VisitPathAttributes;
+	fptrVisitRefs VisitReferences;
+	fptrVisitRefs VisitPathReferences;
+	fptrFindByPath FindByPath;
+	fptrDelete Delete;
 	char generated_KMF_ID[9];
 	map_t link;
 	ContainerNode *initBy;
 	ContainerNode *target;
-	char *eContainer;
-	fptrNodeNetMetaClassName MetaClassName;
-	fptrNodeNetInternalGetKey InternalGetKey;
 	fptrNodeNetFindLinkByID FindLinkByID;
 	fptrNodeNetAddLink AddLink;
 	fptrNodeNetAddInitBy AddInitBy;
@@ -38,17 +45,11 @@ typedef struct _NodeNetwork {
 	fptrNodeNetRemoveLink RemoveLink;
 	fptrNodeNetRemoveInitBy RemoveInitBy;
 	fptrNodeNetRemoveTarget RemoveTarget;
-	fptrDeleteNodeNetwork Delete;
-	fptrVisitAttrNodeNetwork VisitAttributes;
-	fptrVisitAttrNodeNetwork VisitPathAttributes;
-	fptrVisitRefsNodeNetwork VisitReferences;
-	fptrVisitRefsNodeNetwork VisitPathReferences;
-	fptrFindByPathNodeNetwork FindByPath;
 } NodeNetwork;
 
 NodeNetwork* new_NodeNetwork(void);
-char* NodeNetwork_MetaClassName(NodeNetwork* const this);
-char* NodeNetwork_InternalGetKey(NodeNetwork* const this);
+char* NodeNetwork_metaClassName(void * const this);
+char* NodeNetwork_internalGetKey(void * const this);
 NodeLink* NodeNetwork_FindLinkByID(NodeNetwork* const this, char* id);
 void NodeNetwork_AddLink(NodeNetwork* const this, NodeLink* ptr);
 void NodeNetwork_AddInitBy(NodeNetwork* const this, ContainerNode* ptr);
@@ -56,11 +57,11 @@ void NodeNetwork_AddTarget(NodeNetwork* const this, ContainerNode* ptr);
 void NodeNetwork_RemoveLink(NodeNetwork* const this, NodeLink* ptr);
 void NodeNetwork_RemoveInitBy(NodeNetwork* const this, ContainerNode* ptr);
 void NodeNetwork_RemoveTarget(NodeNetwork* const this, ContainerNode* ptr);
-void delete_NodeNetwork(NodeNetwork* const this);
-void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor);
-void NodeNetwork_VisitPathAttributes(void* const this, char* parent, Visitor* visitor);
-void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor);
-void NodeNetwork_VisitPathReferences(void* const this, char* parent, Visitor* visitor);
-void* NodeNetwork_FindByPath(char* attribute, NodeNetwork* const this);
+void delete_NodeNetwork(void * const this);
+void NodeNetwork_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NodeNetwork_VisitPathAttributes(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NodeNetwork_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void NodeNetwork_VisitPathReferences(void* const this, char* parent, Visitor* visitor, bool recursive);
+void* NodeNetwork_FindByPath(char* attribute, void * const this);
 
 #endif /* H_NodeNetwork */
