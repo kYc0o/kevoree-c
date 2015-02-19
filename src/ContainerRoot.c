@@ -4,7 +4,7 @@
 #include "tools.h"
 #include "kevoree.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -24,7 +24,7 @@ ContainerRoot* new_ContainerRoot()
 
 	/* pointing to itself as we are creating base class object*/
 	pObj->pDerivedObj = pObj;
-	
+
 	memset(&pObj->generated_KMF_ID[0], 0, sizeof(pObj->generated_KMF_ID));
 	rand_str(pObj->generated_KMF_ID, 8);
 
@@ -39,8 +39,8 @@ ContainerRoot* new_ContainerRoot()
 	pObj->deployUnits = NULL;
 	pObj->nodeNetworks = NULL;
 	pObj->groups = NULL;
-	
-	
+
+
 	pObj->internalGetKey = ContainerRoot_internalGetKey;
 	pObj->metaClassName = ContainerRoot_metaClassName;
 	pObj->Delete = delete_ContainerRoot;
@@ -78,7 +78,7 @@ ContainerRoot* new_ContainerRoot()
 	pObj->RemoveDeployUnits = ContainerRoot_RemoveDeployUnits;
 	pObj->RemoveNodeNetworks = ContainerRoot_RemoveNodeNetworks;
 	pObj->RemoveGroups = ContainerRoot_RemoveGroups;
-	
+
 	return pObj;
 }
 
@@ -92,7 +92,7 @@ char* ContainerRoot_metaClassName(void* const this)
 		strcpy(name, "ContainerRoot");
 	else
 		return NULL;
-	
+
 	return name;
 }
 
@@ -353,7 +353,7 @@ void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 		{
 			/*container = (Repository*)ptr;*/
 			if(hashmap_put(this->repositories, internalKey, ptr) == MAP_OK)
-					ptr->eContainer = "";
+				ptr->eContainer = "";
 		}
 	}
 }
@@ -640,7 +640,7 @@ void ContainerRoot_RemoveHubs(ContainerRoot* const this, Channel* ptr)
 		}
 	}
 }
- 
+
 void ContainerRoot_RemoveBindings(ContainerRoot* const this, MBinding* ptr)
 {
 	char *internalKey = ptr->internalGetKey(ptr);
@@ -761,7 +761,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 	hashmap_map* m = NULL;
 
 	int length = hashmap_length(((ContainerRoot*)this)->nodes);
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->nodes) != NULL)
 	{
 		visitor->action("nodes", SQBRACKET, NULL);
@@ -792,7 +792,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("nodes", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSEBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->typeDefinitions) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->typeDefinitions);
@@ -825,7 +825,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("typeDefinitions", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->repositories) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->repositories);
@@ -858,7 +858,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("repositories", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->dataTypes) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->dataTypes);
@@ -891,7 +891,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("dataTypes", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->libraries) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->libraries);
@@ -957,7 +957,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("hubs", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->mBindings) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->mBindings);
@@ -990,7 +990,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("mBindings", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->deployUnits) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->deployUnits);
@@ -1023,7 +1023,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("deployUnits", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->nodeNetworks) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->nodeNetworks);
@@ -1056,7 +1056,7 @@ void ContainerRoot_Visit(void* const this, Visitor* visitor)
 		visitor->action("nodeNetworks", SQBRACKET, NULL);
 		visitor->action(NULL, CLOSESQBRACKETCOLON, NULL);
 	}
-	
+
 	if((m = (hashmap_map*) ((ContainerRoot*)(this))->groups) != NULL)
 	{
 		int length = hashmap_length(((ContainerRoot*)this)->groups);
@@ -1333,9 +1333,16 @@ void *ContainerRoot_FindByPath(char *_path, void *const this)
 			}
 			else
 			{
-				strcpy(nextPath, path);
-				PRINTF("Attribute: NULL\n");
-				PRINTF("Next Path: %s\n", nextPath);
+				attribute = strtok(path, "]");
+				if ((attribute = strtok(NULL, "]")) != NULL) {
+					PRINTF("Attribute: %s]\n", attribute);
+					sprintf(nextPath, "%s]", ++attribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				} else {
+					PRINTF("Attribute: NULL\n");
+					PRINTF("Next Path: NULL\n");
+					memset(&nextPath[0], 0, sizeof(nextPath));
+				}
 			}
 		}
 		else

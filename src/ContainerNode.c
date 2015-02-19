@@ -265,7 +265,10 @@ void ContainerNode_AddHosts(ContainerNode* const this, ContainerNode* ptr)
 		if(hashmap_get(this->hosts, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (ContainerNode*)ptr;*/
-			hashmap_put(this->hosts, internalKey, ptr);
+			if ((hashmap_put(this->hosts, internalKey, ptr)) == MAP_OK) {
+				ptr->eContainer = malloc(sizeof(char) * (strlen("node[]") + strlen(this->internalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "node[%s]", this->internalGetKey(this));
+			}
 		}
 	}
 }
@@ -273,6 +276,8 @@ void ContainerNode_AddHosts(ContainerNode* const this, ContainerNode* ptr)
 void ContainerNode_AddHost(ContainerNode* const this, ContainerNode* ptr)
 {
 	this->host = ptr;
+	ptr->eContainer = malloc(sizeof(char) * (strlen("node[]") + strlen(this->internalGetKey(this))) + 1);
+	sprintf(ptr->eContainer, "node[%s]", this->internalGetKey(this));
 }
 
 void ContainerNode_AddGroups(ContainerNode* const this, Group* ptr)
@@ -294,7 +299,10 @@ void ContainerNode_AddGroups(ContainerNode* const this, Group* ptr)
 		if(hashmap_get(this->groups, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (Group*)ptr;*/
-			hashmap_put(this->groups, internalKey, ptr);
+			if ((hashmap_put(this->groups, internalKey, ptr)) == MAP_OK) {
+				ptr->eContainer = malloc(sizeof(char) * (strlen("node[]") + strlen(this->internalGetKey(this))) + 1);
+				sprintf(ptr->eContainer, "node[%s]", this->internalGetKey(this));
+			}
 		}
 	}
 }
@@ -339,8 +347,8 @@ void ContainerNode_RemoveComponents(ContainerNode* const this, ComponentInstance
 	{
 		if(hashmap_remove(this->components, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
 		}
 	}
 }
@@ -355,15 +363,18 @@ void ContainerNode_RemoveHosts(ContainerNode* const this, ContainerNode* ptr)
 	}
 	else
 	{
-		hashmap_remove(this->hosts, internalKey);
-		free(internalKey);
+		if ((hashmap_remove(this->hosts, internalKey)) == MAP_OK) {
+			free(ptr->eContainer);
+			ptr->eContainer = NULL;
+		}
 	}
 }
 
 void ContainerNode_RemoveHost(ContainerNode* const this, ContainerNode* ptr)
 {
-	free(ptr);
-	ptr = NULL;
+	this->host = NULL;
+	free(ptr->eContainer);
+	ptr->eContainer = NULL;
 }
 
 void ContainerNode_RemoveGroups(ContainerNode* const this, Group* ptr)
@@ -376,8 +387,10 @@ void ContainerNode_RemoveGroups(ContainerNode* const this, Group* ptr)
 	}
 	else
 	{
-		hashmap_remove(this->groups, internalKey);
-		free(internalKey);
+		if ((hashmap_remove(this->groups, internalKey)) == MAP_OK) {
+			free(ptr->eContainer);
+			ptr->eContainer = NULL;
+		}
 	}
 }
 
@@ -393,8 +406,8 @@ void ContainerNode_RemoveNetworkInformation(ContainerNode* const this, NetworkIn
 	{
 		if(hashmap_remove(this->networkInformation, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
 		}
 	}
 }
@@ -780,17 +793,28 @@ void* ContainerNode_FindByPath(char* attribute, void* const this)
 			}
 			else
 			{
-				nextAttribute = strtok(NULL, "\\");
-				strcpy(nextPath, ++nextAttribute);
-				PRINTF("Next Path: %s\n", nextPath);
-				nextAttribute = NULL;
+				nextAttribute = strtok(path, "]");
+				if ((nextAttribute = strtok(NULL, "]")) != NULL) {
+					PRINTF("Attribute: %s]\n", nextAttribute);
+					sprintf(nextPath, "%s]", ++nextAttribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				} else {
+					PRINTF("Attribute: NULL\n");
+					PRINTF("Next Path: NULL\n");
+					memset(&nextPath[0], 0, sizeof(nextPath));
+				}
 			}
 		}
 		else
 		{
-			nextAttribute = strtok(path, "\\");
-			nextAttribute = strtok(NULL, "\\");
-			PRINTF("Attribute: %s\n", nextAttribute);
+			if ((nextAttribute = strtok(path, "\\")) != NULL) {
+				if ((nextAttribute = strtok(NULL, "\\")) != NULL) {
+					PRINTF("Attribute: %s\n", nextAttribute);
+				} else {
+					nextAttribute = strtok(path, "\\");
+					PRINTF("Attribute: %s\n", nextAttribute);
+				}
+			}
 		}
 
 		if(!strcmp("components", obj))

@@ -237,6 +237,8 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 				}
 			} else {
 				PRINTF("ERROR: Cannot retrieve source!\n");
+				src = malloc(1);
+				strcpy(src, "");
 			}
 			/*printf("path = %s  value = %s\n", path, (char*)value);
 			printf("Path %s does not exist in new_model, removing...\n\n", path);*/
@@ -396,7 +398,7 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 void actionAdd(char* _path, Type type, void* value)
 {
 	char *__path = strdup(_path);
-	char *path;
+	char path[250];
 	char *path2 = strdup(_path);
 	char *refname = NULL;
 	char *src = NULL;
@@ -410,10 +412,11 @@ void actionAdd(char* _path, Type type, void* value)
 			refname = strtok(path2, "\\");
 		}
 	}
-	if ((path = strtok(__path, "\\")) == NULL) {
-		path = "";
-	} else if (!strcmp("generated_KMF_ID", path)) {
-		path = "";
+
+	strcpy(path, strtok(__path, "\\"));
+
+	if (!strcmp("generated_KMF_ID", path)) {
+		strcpy(path, "");
 	}
 	/*if ((container = current_model->FindByPath(path, current_model)) != NULL) {
 		if ((src = strdup(path)) != NULL) {
@@ -433,7 +436,6 @@ void actionAdd(char* _path, Type type, void* value)
 		container = current_model->FindByPath(path, current_model);
 		if(container == NULL)
 		{
-			PRINTF("DEBUG: looking for container in new_model at %s!\n", path);
 			if ((container = (KMFContainer*)new_model->FindByPath(path, new_model)) != NULL) {
 				if ((src = strdup(container->eContainer)) != NULL) {
 					typename = strdup(container->metaClassName(container));
@@ -444,9 +446,6 @@ void actionAdd(char* _path, Type type, void* value)
 				PRINTF("ERROR: Cannot retrieve source!\n");
 			}
 			/*printf("Path %s does not exist in curent_model, adding...\n\n", path);*/
-			PRINTF("DEBUG: refname: %s\n", refname);
-			PRINTF("DEBUG: src: %s\n", src);
-			PRINTF("DEBUG: typename: %s\n", typename);
 			ModelTrace *mt = newPoly_ModelAddTrace(src, refname, path, typename);
 			/*char *strTrace = mt->ToString(mt->pDerivedObj);
 				PRINTF(strTrace);

@@ -7,7 +7,7 @@
 #include "Visitor.h"
 #include "TypeDefinition.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -150,21 +150,22 @@ void TypeDefinition_AddDictionaryType(TypeDefinition* const this, DictionaryType
 	if(ptr != NULL)
 	{
 		this->dictionaryType = ptr;
+		ptr->eContainer = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(this->internalGetKey(this))) + 1);
+		sprintf(ptr->eContainer, "typeDefinitions[%s]", this->internalGetKey(this));
 		/*ptr->eContainer = this;*/
 	}
 }
 
 void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit* ptr)
 {
-	free(ptr);
 	this->deployUnits = NULL;
 }
 
 void TypeDefinition_RemoveDictionaryType(TypeDefinition* const this, DictionaryType *ptr)
 {
-	ptr->eContainer = NULL;
-	free(ptr);
 	this->dictionaryType = NULL;
+	free(ptr->eContainer);
+	ptr->eContainer = NULL;
 }
 
 void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
@@ -186,9 +187,14 @@ void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* pt
 		if(hashmap_get(this->superTypes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (TypeDefinition*)ptr;*/
-			hashmap_put(this->superTypes, internalKey, ptr);
+			if ((hashmap_put(this->superTypes, internalKey, ptr)) == MAP_OK) {
+				PRINTF("DEBUG: superType successfully added!\n");
+			} else {
+				PRINTF("ERROR: superType can't be added!\n");
+			}
 		}
 	}
+	free(internalKey);
 }
 
 void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
@@ -201,9 +207,13 @@ void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition*
 	}
 	else
 	{
-		hashmap_remove(this->superTypes, internalKey);
-		free(internalKey);
+		if ((hashmap_remove(this->superTypes, internalKey)) == MAP_OK) {
+			PRINTF("DEBUG: superType successfully removed!\n");
+		} else {
+			PRINTF("ERROR: superType can't be removed!\n");
+		}
 	}
+	free(internalKey);
 }
 
 void deletePoly_TypeDefinition(void * const this)
@@ -476,17 +486,28 @@ void* TypeDefinition_FindByPath(char* attribute, void * const this)
 			}
 			else
 			{
-				nextAttribute = strtok(NULL, "\\");
-				strcpy(nextPath, ++nextAttribute);
-				PRINTF("Next Path: %s\n", nextPath);
-				nextAttribute = NULL;
+				nextAttribute = strtok(path, "]");
+				if ((nextAttribute = strtok(NULL, "]")) != NULL) {
+					PRINTF("Attribute: %s]\n", nextAttribute);
+					sprintf(nextPath, "%s]", ++nextAttribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				} else {
+					PRINTF("Attribute: NULL\n");
+					PRINTF("Next Path: NULL\n");
+					memset(&nextPath[0], 0, sizeof(nextPath));
+				}
 			}
 		}
 		else
 		{
-			nextAttribute = strtok(path, "\\");
-			nextAttribute = strtok(NULL, "\\");
-			PRINTF("Attribute: %s\n", nextAttribute);
+			if ((nextAttribute = strtok(path, "\\")) != NULL) {
+				if ((nextAttribute = strtok(NULL, "\\")) != NULL) {
+					PRINTF("Attribute: %s\n", nextAttribute);
+				} else {
+					nextAttribute = strtok(path, "\\");
+					PRINTF("Attribute: %s\n", nextAttribute);
+				}
+			}
 		}
 
 		if(!strcmp("deployUnits", obj))

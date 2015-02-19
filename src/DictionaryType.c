@@ -4,7 +4,7 @@
 #include "DictionaryType.h"
 #include "tools.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -295,17 +295,28 @@ void* DictionaryType_FindByPath(char* attribute, void* const this)
 			}
 			else
 			{
-				nextAttribute = strtok(NULL, "\\");
-				strcpy(nextPath, ++nextAttribute);
-				PRINTF("Next Path: %s\n", nextPath);
-				nextAttribute = NULL;
+				nextAttribute = strtok(path, "]");
+				if ((nextAttribute = strtok(NULL, "]")) != NULL) {
+					PRINTF("Attribute: %s]\n", nextAttribute);
+					sprintf(nextPath, "%s]", ++nextAttribute);
+					PRINTF("Next Path: %s\n", nextPath);
+				} else {
+					PRINTF("Attribute: NULL\n");
+					PRINTF("Next Path: NULL\n");
+					memset(&nextPath[0], 0, sizeof(nextPath));
+				}
 			}
 		}
 		else
 		{
-			nextAttribute = strtok(path, "\\");
-			nextAttribute = strtok(NULL, "\\");
-			PRINTF("Attribute: %s\n", nextAttribute);
+			if ((nextAttribute = strtok(path, "\\")) != NULL) {
+				if ((nextAttribute = strtok(NULL, "\\")) != NULL) {
+					PRINTF("Attribute: %s\n", nextAttribute);
+				} else {
+					nextAttribute = strtok(path, "\\");
+					PRINTF("Attribute: %s\n", nextAttribute);
+				}
+			}
 		}
 
 		if(!strcmp("attributes", obj))
