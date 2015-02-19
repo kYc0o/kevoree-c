@@ -35,6 +35,7 @@ NamedElement* newPoly_DeployUnit()
 	pDepUnitObj->type = NULL;
 	pDepUnitObj->requiredLibs = NULL;
 	pDepUnitObj->eContainer = NULL;
+	pDepUnitObj->internalKey = NULL;
 
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
@@ -79,6 +80,7 @@ DeployUnit* new_DeployUnit()
 	pDepUnitObj->type = NULL;
 	pDepUnitObj->requiredLibs = NULL;
 	pDepUnitObj->eContainer = NULL;
+	pDepUnitObj->internalKey = NULL;
 
 	pDepUnitObj->AddRequiredLibs = DeployUnit_AddRequiredLibs;
 	pDepUnitObj->RemoveRequiredLibs = DeployUnit_RemoveRequiredLibs;
@@ -104,26 +106,30 @@ char* DeployUnit_internalGetKey(void* const this)
 	/*
 	 * TODO add internalGetKey attribute to avoid multiple copies
 	 */
-	char* internalKey;
+	if (pObj->internalKey == NULL) {
+		char* internalKey;
 
-	if (this == NULL)
-		return NULL;
+		if (this == NULL)
+			return NULL;
 
-	/*internalKey = my_malloc(sizeof(char) * (strlen("groupName=") + strlen(this->groupName) + strlen(",") +
-										strlen("hashcode=") + strlen(this->hashcode) + strlen(",") +
-										strlen("name=") + strlen(this->super->name) + strlen(",") +
-										strlen("version=") + strlen(this->version)) + 1);*/
-	internalKey = malloc(sizeof(char) * (strlen(pObj->groupName) + strlen("/") +
-			strlen(pObj->hashcode) + strlen("/") +
-			strlen(pObj->super->name) + strlen("/") +
-			strlen(pObj->version)) + 1);
+		internalKey = malloc(sizeof(char) * (strlen(pObj->groupName) + strlen("/") +
+				strlen(pObj->hashcode) + strlen("/") +
+				strlen(pObj->super->name) + strlen("/") +
+				strlen(pObj->version)) + 1);
 
-	if (internalKey == NULL)
-		return NULL;
+		if (internalKey == NULL) {
+			PRINTF("ERROR: not enough memory for internalKey\n");
+			return NULL;
+		}
 
-	sprintf(internalKey, "%s/%s/%s/%s", pObj->groupName, pObj->hashcode, pObj->super->name, pObj->version);
+		sprintf(internalKey, "%s/%s/%s/%s", pObj->groupName, pObj->hashcode, pObj->super->name, pObj->version);
 
-	return internalKey;
+		pObj->internalKey = internalKey;
+
+		return internalKey;
+	} else {
+		return pObj->internalKey;
+	}
 }
 
 char* DeployUnit_metaClassName(void* const this)

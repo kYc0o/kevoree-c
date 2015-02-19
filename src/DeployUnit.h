@@ -34,6 +34,7 @@ typedef struct _DeployUnit {
 	char *url;
 	char *hashcode;
 	char *type;
+	char *internalKey;
 	map_t requiredLibs;
 	fptrDepUnitAddRequiredLibs AddRequiredLibs;
 	fptrDepUnitRemoveRequiredLibs RemoveRequiredLibs;

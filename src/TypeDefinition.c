@@ -39,6 +39,7 @@ NamedElement* newPoly_TypeDefinition()
 	pTypeDefObj->dictionaryType = NULL;
 	pTypeDefObj->superTypes = NULL;
 	pTypeDefObj->eContainer = NULL;
+	pTypeDefObj->internalKey = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
 	pTypeDefObj->AddDictionaryType = TypeDefinition_AddDictionaryType;
@@ -86,6 +87,7 @@ TypeDefinition* new_TypeDefinition()
 	pTypeDefObj->dictionaryType = NULL;
 	pTypeDefObj->superTypes = NULL;
 	pTypeDefObj->eContainer = NULL;
+	pTypeDefObj->internalKey = NULL;
 
 	pTypeDefObj->AddDeployUnit = TypeDefinition_AddDeployUnit;
 	pTypeDefObj->AddDictionaryType = TypeDefinition_AddDictionaryType;
@@ -114,14 +116,19 @@ char* TypeDefinition_internalGetKey(void * const this)
 	if (this == NULL)
 		return NULL;
 
-	internalKey = malloc(sizeof(char) * (strlen(pObj->super->name) + strlen("/") + strlen(pObj->version)) + 1);
+	if (pObj->internalKey == NULL) {
+		internalKey = malloc(sizeof(char) * (strlen(pObj->super->name) + strlen("/") + strlen(pObj->version)) + 1);
 
-	if (internalKey == NULL)
-		return NULL;
+		if (internalKey == NULL)
+			return NULL;
 
-	sprintf(internalKey, "%s/%s", pObj->super->name, pObj->version);
+		sprintf(internalKey, "%s/%s", pObj->super->name, pObj->version);
 
-	return internalKey;
+		pObj->internalKey = internalKey;
+		return internalKey;
+	} else {
+		return pObj->internalKey;
+	}
 }
 
 char* TypeDefinition_metaClassName(void * const this)

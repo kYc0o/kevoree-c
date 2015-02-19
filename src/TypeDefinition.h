@@ -41,6 +41,7 @@ typedef struct _TypeDefinition {
 	char *factoryBean;
 	char *bean;
 	bool abstract;
+	char *internalKey;
 	DeployUnit *deployUnits;
 	DictionaryType *dictionaryType;
 	map_t superTypes;
