@@ -20,6 +20,8 @@ typedef void* (*fptrFindByPathTypeLibrary)(char*, TypeLibrary*);
 typedef struct _TypeLibrary {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

@@ -39,6 +39,8 @@ Instance* newPoly_Channel()
 
 	pChannelObj->bindings = NULL;
 	pChannelObj->eContainer = NULL;
+	pChannelObj->path = NULL;
+	pChannelObj->refs = NULL;
 
 	pChannelObj->FindBindingsByID = Channel_FindBindingsByID;
 	pChannelObj->AddBindings = Channel_AddBindings;
@@ -76,6 +78,8 @@ Channel* new_Channel()
 
 	pChannelObj->bindings = NULL;
 	pChannelObj->eContainer = NULL;
+	pChannelObj->path = NULL;
+	pChannelObj->refs =  NULL;
 
 	pChannelObj->FindBindingsByID = Channel_FindBindingsByID;
 	pChannelObj->AddBindings = Channel_AddBindings;
@@ -142,6 +146,9 @@ char* Channel_internalGetKey(void* const this)
 
 void Channel_AddBindings(Channel* const this, MBinding* ptr)
 {
+	/*
+	 * TODO change map by reference 1..1
+	 */
 	MBinding* container = NULL;
 
 	char *internalKey = ptr->internalGetKey(ptr);
@@ -154,18 +161,56 @@ void Channel_AddBindings(Channel* const this, MBinding* ptr)
 	{
 		if(this->bindings == NULL)
 		{
+			/*
+			 * TODO add if == NULL
+			 */
 			this->bindings = hashmap_new();
 		}
 		if(hashmap_get(this->bindings, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (MBinding*)ptr;*/
-			hashmap_put(this->bindings, internalKey, ptr);
-
+			if ((hashmap_put(this->bindings, internalKey, ptr)) == MAP_OK) {
+				if (ptr->refs == NULL) {
+					if ((ptr->refs = hashmap_new()) != NULL) {
+						char *reference;
+						if ((reference = malloc(sizeof(char) * strlen("hubs[]") + strlen(this->internalGetKey(this)) + 1)) != NULL) {
+							sprintf(reference, "hubs[%s]", this->internalGetKey);
+							if ((hashmap_put(ptr->refs, this->path, (void**)&reference)) == MAP_OK) {
+								PRINTF("INFO: reference added!\n");
+							} else {
+								PRINTF("ERROR: cannot add reference to map!\n");
+							}
+						} else {
+							PRINTF("ERROR: not enough memory for reference!\n");
+						}
+					} else {
+						PRINTF("ERROR: cannot create references map!\n");
+					}
+				} else {
+					char *reference;
+					if ((reference = malloc(sizeof(char) * strlen("hubs[]") + strlen(this->internalGetKey(this)) + 1)) != NULL) {
+						sprintf(reference, "hubs[%s]", this->internalGetKey);
+						if ((hashmap_put(ptr->refs, this->path, (void**)&reference)) == MAP_OK) {
+							PRINTF("INFO: reference added!\n");
+						} else {
+							PRINTF("ERROR: cannot add reference to map!\n");
+						}
+					} else {
+						PRINTF("ERROR: not enough memory for reference!\n");
+					}
+				}
+			} else {
+				PRINTF("ERROR: cannot add binding!\n");
+			}
 		}
 	}
 }
 void Channel_RemoveBindings(Channel* const this, MBinding* ptr)
 {
+	/*
+	 * TODO change map by reference 1..1
+	 * TODO remove reference too
+	 */
 	char *internalKey = ptr->internalGetKey(ptr);
 
 	if(internalKey == NULL)
@@ -175,7 +220,6 @@ void Channel_RemoveBindings(Channel* const this, MBinding* ptr)
 	else
 	{
 		hashmap_remove(this->bindings, internalKey);
-		free(internalKey);
 	}
 }
 
@@ -273,15 +317,15 @@ void Channel_VisitPathReferences(void* const this, char* parent, Visitor* visito
 			{
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				sprintf(path, "%s/bindings[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, 0);
+				sprintf(path, "%s\\bindings", n->path);
+				visitor->action(path, REFERENCE, parent);
 				/*n->VisitReferences(n, path, visitor);*/
 			}
 		}
 	}
 
 	/* Instance references */
-	Instance_VisitPathReferences(((Instance*)this)->super, parent, visitor, 0);
+	Instance_VisitPathReferences(((Instance*)this)->super, parent, visitor, true);
 }
 
 void* Channel_FindByPath(char* attribute, void* const this)

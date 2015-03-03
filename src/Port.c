@@ -123,7 +123,6 @@ void Port_AddBindings(Port* const this, MBinding* ptr)
 
 		if(hashmap_get(this->bindings, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
-			/*container = (MBinding*)ptr;*/
 			hashmap_put(this->bindings, internalKey, ptr);
 		}
 	}
@@ -240,16 +239,16 @@ void Port_VisitPathReferences(void * const this, char *parent, Visitor *visitor,
 			{
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
-				sprintf(path, "%s/bindings[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, false);
+				sprintf(path, "%s/%s\\bindings", parent, n->path);
+				visitor->action(path, REFERENCE, parent);
 			}
 		}
 	}
 
 	if(pObj->portTypeRef != NULL)
 	{
-		sprintf(path, "%s/portTypeRef[%s]", parent, pObj->portTypeRef->internalGetKey(pObj->portTypeRef));
-		pObj->portTypeRef->VisitPathAttributes(pObj->portTypeRef, path, visitor, false);
+		sprintf(path, "%s/%s\\portTypeRef", parent, pObj->portTypeRef->path);
+		visitor->action(path, REFERENCE, parent);
 	}
 }
 

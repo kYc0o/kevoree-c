@@ -23,6 +23,8 @@ typedef void (*fptrDeleteChannel)(void*);
 typedef struct _Channel {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

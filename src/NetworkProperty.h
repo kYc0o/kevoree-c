@@ -17,6 +17,8 @@ typedef void* (*fptrFindByPathNetworkProperty)(char*, NetworkProperty*);
 typedef struct _NetworkProperty {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;
@@ -27,8 +29,6 @@ typedef struct _NetworkProperty {
 	fptrDelete Delete;
 	NamedElement *super;
 	char *value;
-	char *eContainerNL;
-	char *eContainerNI;
 } NetworkProperty;
 
 NamedElement* newPoly_NetworkProperty(void);

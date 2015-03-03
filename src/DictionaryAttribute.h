@@ -18,6 +18,8 @@ typedef void* (*fptrFindByPathDicAttr)(char*, DictionaryAttribute*);
 typedef struct _DictionaryAttribute {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

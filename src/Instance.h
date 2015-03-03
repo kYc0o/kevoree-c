@@ -29,6 +29,8 @@ typedef void* (*fptrFindByPathInstance)(char*, Instance*);
 typedef struct _Instance {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;
@@ -38,7 +40,6 @@ typedef struct _Instance {
 	fptrFindByPath FindByPath;
 	fptrDelete Delete;
 	NamedElement* super;
-	char *path;
 	char* metaData;
 	bool started;
 	TypeDefinition* typeDefinition;

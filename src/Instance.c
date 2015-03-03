@@ -125,8 +125,10 @@ void Instance_AddTypeDefinition(Instance* this, TypeDefinition* ptr)
 void Instance_AddDictionary(Instance* const this, Dictionary* ptr)
 {
 	this->dictionary = ptr;
-	ptr->eContainer = malloc(sizeof(char) * (strlen("instance[]") + strlen(this->internalGetKey(this))) + 1);
-	sprintf(ptr->eContainer, "instance[%s]", this->internalGetKey(this));
+	ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+	strcpy(ptr->eContainer, this->path);
+	ptr->path = malloc(sizeof(char) * (strlen(this->path) + strlen("/dictionary[]") + strlen(ptr->internalGetKey(ptr))) + 1);
+	sprintf(ptr->path, "%s/dictionary[%s]", this->path, ptr->internalGetKey(ptr));
 }
 
 void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* ptr)
@@ -150,8 +152,12 @@ void Instance_AddFragmentDictionary(Instance* const this, FragmentDictionary* pt
 			/*container = (FragmentDictionary*)ptr;*/
 			if(hashmap_put(this->fragmentDictionary, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen("instance[]") + strlen(this->internalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "instance[%s]", this->internalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+				strcpy(ptr->eContainer, this->path);
+				ptr->super->eContainer = ptr->eContainer;
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) + strlen("/fragmentDictionary[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/fragmentDictionary[%s]", this->path, internalKey);
+				ptr->super->path = ptr->path;
 			}
 		}
 	}
@@ -463,14 +469,15 @@ void Instance_VisitPathReferences(void *const this, char *parent, Visitor *visit
 	{
 		if(((Instance*)(this))->typeDefinition != NULL)
 		{
-			sprintf(path, "%s/typeDefinition[%s]", parent, ((Instance*)(this))->typeDefinition->internalGetKey(((Instance*)(this))->typeDefinition));
-			((Instance*)(this))->typeDefinition->VisitPathAttributes(((Instance*)(this))->typeDefinition, path, visitor, recursive);
+			sprintf(path, "%s/%s\\typeDefinition", parent, ((Instance*)(this))->typeDefinition->path);
+			/*((Instance*)(this))->typeDefinition->VisitPathAttributes(((Instance*)(this))->typeDefinition, path, visitor, recursive);*/
+			visitor->action(path, REFERENCE, parent);
 		}
 		if(((Instance*)(this))->dictionary != NULL)
 		{
 			sprintf(path, "%s/dictionary[%s]", parent, ((Instance*)(this))->dictionary->internalGetKey(((Instance*)(this))->dictionary));
-			((Instance*)(this))->dictionary->VisitPathAttributes(((Instance*)(this))->dictionary, path, visitor, recursive);
-			((Instance*)(this))->dictionary->VisitPathReferences(((Instance*)(this))->dictionary, path, visitor, recursive);
+			((Instance*)(this))->dictionary->VisitPathAttributes(((Instance*)(this))->dictionary, path, visitor, true);
+			((Instance*)(this))->dictionary->VisitPathReferences(((Instance*)(this))->dictionary, path, visitor, true);
 		}
 
 		hashmap_map* m = NULL;
@@ -486,8 +493,8 @@ void Instance_VisitPathReferences(void *const this, char *parent, Visitor *visit
 					any_t data = (any_t) (m->data[i].data);
 					FragmentDictionary* n = data;
 					sprintf(path, "%s/fragmentDictionary[%s]", parent, n->internalGetKey(n));
-					n->VisitPathAttributes(n, path, visitor, recursive);
-					n->VisitPathReferences(n, path, visitor, recursive);
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
 				}
 			}
 		}

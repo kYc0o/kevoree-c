@@ -57,6 +57,8 @@ typedef void* (*fptrFindByPathContainerRoot)(char*, ContainerRoot*);
 typedef struct _ContainerRoot {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

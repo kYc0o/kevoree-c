@@ -19,6 +19,8 @@ typedef void* (*fptrFindByPathNodeType)(char*, TypeDefinition*);
 typedef struct _NodeType {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

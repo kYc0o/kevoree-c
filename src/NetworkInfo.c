@@ -31,6 +31,7 @@ NamedElement* newPoly_NetworkInfo()
 
 	pNetInfoObj->values = NULL;
 	pNetInfoObj->eContainer = NULL;
+	pNetInfoObj->path = NULL;
 
 	pNetInfoObj->AddValues = NetworkInfo_AddValues;
 	pNetInfoObj->RemoveValues = NetworkInfo_RemoveValues;
@@ -70,6 +71,7 @@ NetworkInfo* new_NetworkInfo()
 
 	pNetInfoObj->values = NULL;
 	pNetInfoObj->eContainer = NULL;
+	pNetInfoObj->path = NULL;
 
 	pNetInfoObj->AddValues = NetworkInfo_AddValues;
 	pNetInfoObj->RemoveValues = NetworkInfo_RemoveValues;
@@ -126,11 +128,12 @@ void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr)
 		}
 		if(hashmap_get(this->values, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
-			/*container = (NetworkProperty*)ptr;*/
 			if(hashmap_put(this->values, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainerNI = malloc(sizeof(char) * (strlen("networkInfo[]") + strlen(this->internalGetKey(this))) + 1);
-				sprintf(ptr->eContainerNI, "networkInfo[%s]", this->internalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+				strcpy(ptr->eContainer, this->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) + strlen("/values[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/values[%s]", this->path, internalKey);
 			}
 		}
 	}
@@ -148,8 +151,10 @@ void NetworkInfo_RemoveValues(NetworkInfo* const this, NetworkProperty* ptr)
 	{
 		if(hashmap_remove(this->values, internalKey) == MAP_OK)
 		{
-			ptr->eContainerNI = NULL;
-			free(internalKey);
+			free(ptr->eContainer);
+			ptr->eContainer = NULL;
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }

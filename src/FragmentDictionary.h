@@ -21,6 +21,8 @@ typedef void* (*fptrFindByPathFragDic)(char*, FragmentDictionary*);
 typedef struct _FragmentDictionary {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

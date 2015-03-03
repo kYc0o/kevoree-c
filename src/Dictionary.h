@@ -21,6 +21,8 @@ typedef void* (*fptrFindByPathDictionary)(char*, Dictionary*);
 typedef struct _Dictionary {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

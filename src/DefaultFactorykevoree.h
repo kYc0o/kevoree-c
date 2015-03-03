@@ -22,6 +22,7 @@ typedef struct _FragmentDictionary FragmentDictionary;
 typedef struct _DictionaryValue DictionaryValue;
 typedef struct _JSONModelLoader JSONModelLoader;
 typedef struct _Dictionary Dictionary;
+typedef struct _Instance Instance;
 
 typedef ContainerRoot *(*fptrCreateContRoot)(struct jsonparse_state*, char, char*);
 typedef ContainerNode *(*fptrCreateContNode)(struct jsonparse_state*, char, char*, ContainerRoot*, JSONModelLoader*);
@@ -29,14 +30,14 @@ typedef ComponentInstance *(*fptrCreateCompInst)(struct jsonparse_state*, char, 
 typedef Group *(*fptrCreateGroup)(struct jsonparse_state*, char, char*, ContainerRoot*, JSONModelLoader*);
 typedef TypeDefinition *(*fptrCreateTypeDef)(struct jsonparse_state*, char, char*, ContainerRoot*, JSONModelLoader*);
 typedef DeployUnit *(*fptrCreateDepUnit)(struct jsonparse_state*, char, char*, ContainerRoot*);
-typedef NetworkInfo *(*fptrCreateNetInfo)(struct jsonparse_state*, char, char*);
+typedef NetworkInfo *(*fptrCreateNetInfo)(struct jsonparse_state*, char, char*, ContainerNode*);
 typedef NetworkProperty *(*fptrCreateNetProp)(struct jsonparse_state*, char, char*);
-typedef DictionaryType *(*fptrCreateDicType)(struct jsonparse_state*, char, char*);
+typedef DictionaryType *(*fptrCreateDicType)(struct jsonparse_state*, char, char*, TypeDefinition*);
 typedef DictionaryAttribute *(*fptrCreateDicAttr)(struct jsonparse_state*, char, char*);
 typedef TypeLibrary *(*fptrCreateTypeLib)(struct jsonparse_state*, char, char*, ContainerRoot*, JSONModelLoader*);
-typedef FragmentDictionary *(*fptrCreateFragDic)(struct jsonparse_state*, char, char*);
+typedef FragmentDictionary *(*fptrCreateFragDic)(struct jsonparse_state*, char, char*, Instance*);
 typedef DictionaryValue *(*fptrCreateDicValue)(struct jsonparse_state*, char, char*);
-typedef Dictionary *(*fptrCreateDic)(struct jsonparse_state*, char, char*);
+typedef Dictionary *(*fptrCreateDic)(struct jsonparse_state*, char, char*, Instance*);
 
 typedef struct _KMFFactory {
 	fptrCreateContRoot createContainerRoot;
@@ -64,13 +65,13 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 TypeDefinition *createTypeDefinition(struct jsonparse_state *jsonState, char jsonType, char *strJson, ContainerRoot *root, JSONModelLoader *loader);
 /*NodeNetwork* createNodeNetwork(void);*/
 DeployUnit *createDeployUnit(struct jsonparse_state *jsonState, char jsonType, char *strJson, ContainerRoot *root);
-NetworkInfo *createNetworkInfo(struct jsonparse_state *jsonState, char jsonType, char *strJson);
+NetworkInfo *createNetworkInfo(struct jsonparse_state *jsonState, char jsonType, char *strJson, ContainerNode *node);
 NetworkProperty *createNetworkProperty(struct jsonparse_state *jsonState, char jsonType, char *strJson);
-DictionaryType *createDictionaryType(struct jsonparse_state *jsonState, char jsonType, char *strJson);
+DictionaryType *createDictionaryType(struct jsonparse_state *jsonState, char jsonType, char *strJson, TypeDefinition *typdef);
 DictionaryAttribute *createDictionaryAttribute(struct jsonparse_state *jsonState, char jsonType, char *strJson);
 TypeLibrary *createTypeLibrary(struct jsonparse_state *jsonState, char jsonType, char *strJson, ContainerRoot *root, JSONModelLoader *loader);
-FragmentDictionary *createFragmentDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson);
+FragmentDictionary *createFragmentDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson, Instance *inst);
 DictionaryValue *createDictionaryValue(struct jsonparse_state *jsonState, char jsonType, char *strJson);
-Dictionary *createDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson);
+Dictionary *createDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson, Instance *inst);
 
 #endif

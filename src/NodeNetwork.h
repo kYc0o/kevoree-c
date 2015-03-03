@@ -26,6 +26,8 @@ typedef void* (*fptrFindByPathNodeNetwork)(char*, NodeNetwork*);
 typedef struct _NodeNetwork {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

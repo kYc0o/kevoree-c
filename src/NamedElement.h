@@ -18,6 +18,8 @@ typedef void* (*fptrFindByPathNamedElement)(char*, NamedElement*);
 typedef struct _NamedElement {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

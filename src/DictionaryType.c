@@ -27,6 +27,7 @@ DictionaryType* new_DictionaryType()
 
 	pObj->attributes = NULL;
 	pObj->eContainer = NULL;
+	pObj->path = NULL;
 
 	pObj->AddAttributes = DictionaryType_AddAttributes;
 	pObj->RemoveAttributes = DictionaryType_RemoveAttributes;
@@ -115,8 +116,10 @@ void DictionaryType_AddAttributes(DictionaryType* const this, DictionaryAttribut
 			/*container = (DictionaryAttribute*)ptr;*/
 			if(hashmap_put(this->attributes, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen("dictionaryType[]") + strlen(this->internalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "dictionaryType[%s]", this->internalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+				strcpy(ptr->eContainer, this->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) + strlen("/attributes[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/attributes[%s]", this->path, internalKey);
 			}
 		}
 	}
@@ -134,8 +137,10 @@ void DictionaryType_RemoveAttributes(DictionaryType* const this, DictionaryAttri
 	{
 		if(hashmap_remove(this->attributes, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }

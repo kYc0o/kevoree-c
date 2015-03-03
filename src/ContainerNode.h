@@ -36,6 +36,8 @@ typedef void* (*fptrFindByPathContainerNode)(char*, ContainerNode*);
 typedef struct _ContainerNode {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

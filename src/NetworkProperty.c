@@ -30,8 +30,7 @@ NamedElement* newPoly_NetworkProperty()
 	pObj->pDerivedObj = pNetPropObj; /* Pointing to derived object */
 	
 	pNetPropObj->value = NULL;
-	pNetPropObj->eContainerNL = NULL;
-	pNetPropObj->eContainerNI = NULL;
+	pNetPropObj->eContainer = NULL;
 	
 	pObj->metaClassName = NetworkProperty_metaClassName;
 	pObj->internalGetKey = NetworkProperty_internalGetKey;
@@ -63,8 +62,7 @@ NetworkProperty* new_NetworkProperty()
 	pNetPropObj->super = pObj;
 	
 	pNetPropObj->value = NULL;
-	pNetPropObj->eContainerNL = NULL;
-	pNetPropObj->eContainerNI = NULL;
+	pNetPropObj->eContainer = NULL;
 
 	pNetPropObj->metaClassName = NetworkProperty_metaClassName;
 	pObj->metaClassName = NetworkProperty_metaClassName;
@@ -106,8 +104,6 @@ void deletePoly_NetworkProperty(void * const this)
 		pNetPropObj = pObj->pDerivedObj;
 		/*destroy derived obj*/
 		free(pNetPropObj->value);
-		free(pNetPropObj->eContainerNL);
-		free(pNetPropObj->eContainerNI);
 		free(pNetPropObj);
 		/*destroy base Obj*/
 		delete_NamedElement(pObj);
@@ -123,8 +119,6 @@ void delete_NetworkProperty(void * const this)
 		delete_NamedElement(pObj->super);
 		/* destroy data memebers */
 		free(pObj->value);
-		free(pObj->eContainerNL);
-		free(pObj->eContainerNI);
 		free(pObj);
 		/*this = NULL;*/
 	}

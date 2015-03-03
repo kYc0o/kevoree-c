@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define INITIAL_SIZE (4)
+#define INITIAL_SIZE (1)
 #define MAX_CHAIN_LENGTH (8)
 
 /*

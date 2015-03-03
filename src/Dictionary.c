@@ -30,6 +30,7 @@ Dictionary* new_Dictionary()
 
 	pObj->values = NULL;
 	pObj->eContainer = NULL;
+	pObj->path = NULL;
 
 	pObj->AddValues = Dictionary_AddValues;
 	pObj->RemoveValues = Dictionary_RemoveValues;
@@ -101,8 +102,10 @@ void Dictionary_AddValues(Dictionary* const this, DictionaryValue* ptr)
 			/*container = (DictionaryValue*)ptr;*/
 			if(hashmap_put(this->values, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen("dictionary[]") + strlen(this->internalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "dictionary[%s]", this->internalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+				strcpy(ptr->eContainer, this->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) + strlen("/values[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/values[%s]", this->path, internalKey);
 			}
 		}
 	}
@@ -120,8 +123,10 @@ void Dictionary_RemoveValues(Dictionary* const this, DictionaryValue* ptr)
 	{
 		if(hashmap_remove(this->values, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }

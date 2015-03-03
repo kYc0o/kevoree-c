@@ -22,6 +22,8 @@ typedef void* (*fptrFindByPathNetworkInfo)(char*, NetworkInfo*);
 typedef struct _NetworkInfo {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

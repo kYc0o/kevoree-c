@@ -23,6 +23,8 @@ typedef void (*fptrDeleteMBinding)(void*);
 typedef struct _MBinding {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

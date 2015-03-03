@@ -27,7 +27,19 @@
                         "typeDefinitions[hello_world/0.0.1]"
                     ],
                     "namespace": [],
-                    "dictionary": [],
+                    "dictionary": [
+                        {
+                            "eClass": "org.kevoree.Dictionary",
+                            "generated_KMF_ID": "0.68263587262481451424775426644",
+                            "values": [
+                                {
+                                    "eClass": "org.kevoree.DictionaryValue",
+                                    "name": "time",
+                                    "value": "6"
+                                }
+                            ]
+                        }
+                    ],
                     "fragmentDictionary": [],
                     "provided": [],
                     "required": []

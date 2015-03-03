@@ -20,6 +20,8 @@ typedef void (*fptrVisitRefsGroupType)(void*, char*, Visitor*);
 typedef struct _GroupType {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

@@ -30,6 +30,9 @@ TypeDefinition* newPoly_ChannelType()
 	pObj->pDerivedObj = pChanTypeObj; /* Pointing to derived object */
 	pChanTypeObj->super = pObj;
 	
+	pChanTypeObj->path = NULL;
+	pChanTypeObj->eContainer = NULL;
+	pChanTypeObj->refs = NULL;
 	pChanTypeObj->lowerBindings = -1;
 	pChanTypeObj->upperBindings = -1;
 	pChanTypeObj->lowerFragments = -1;
@@ -70,6 +73,9 @@ ChannelType* new_ChannelType()
 	pObj->pDerivedObj = NULL;
 	pChanTypeObj->super = pObj;
 	
+	pChanTypeObj->eContainer = NULL;
+	pChanTypeObj->path = NULL;
+	pChanTypeObj->refs = NULL;
 	pChanTypeObj->lowerBindings = -1;
 	pChanTypeObj->upperBindings = -1;
 	pChanTypeObj->lowerFragments = -1;

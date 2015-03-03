@@ -34,6 +34,9 @@ Instance* newPoly_ComponentInstance()
 	pObj->VisitReferences = ComponentInstance_VisitReferences;
 	pObj->VisitPathReferences = ComponentInstance_VisitPathReferences;
 
+	pCompInstanceObj->eContainer = NULL;
+	pCompInstanceObj->path = NULL;
+	pCompInstanceObj->refs = NULL;
 	pCompInstanceObj->provided = NULL;
 	pCompInstanceObj->required = NULL;
 
@@ -70,6 +73,9 @@ ComponentInstance* new_ComponentInstance()
 	/*((Instance*)(pObj->pDerivedObj))->pDerivedObj = pCompInstanceObj; Pointing to derived object */
 	pCompInstanceObj->super = pObj;
 
+	pCompInstanceObj->eContainer = NULL;
+	pCompInstanceObj->path = NULL;
+	pCompInstanceObj->refs = NULL;
 	pCompInstanceObj->provided = NULL;
 	pCompInstanceObj->required = NULL;
 
@@ -181,6 +187,9 @@ void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
 	{
 		if(this->provided == NULL)
 		{
+			/*
+			 * TODO add if == NULL
+			 */
 			this->provided = hashmap_new();
 		}
 		if(hashmap_get(this->provided, internalKey, (void**)(&container)) == MAP_MISSING)
@@ -188,8 +197,13 @@ void ComponentInstance_AddProvided(ComponentInstance* const this, Port* ptr)
 			/*container = (MBinding*)ptr;*/
 			if(hashmap_put(this->provided, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->internalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->internalGetKey(this));
+				/*
+				 * TODO add if == NULL
+				 */
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+				strcpy(ptr->eContainer, this->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) +	strlen("/provided[]") +	strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/provided[%s]", this->path, internalKey);
 			}
 		}
 	}
@@ -216,8 +230,10 @@ void ComponentInstance_AddRequired(ComponentInstance* const this, Port* ptr)
 			/*container = (MBinding*)ptr;*/
 			if(hashmap_put(this->required, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen(this->eContainer) + strlen("/component[]") + strlen(this->internalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "%s/component[%s]", this->eContainer, this->internalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+				strcpy(ptr->eContainer, this->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) +	strlen("/required[]") +	strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/required[%s]", this->path, internalKey);
 			}
 			/*
 			 * TODO add else
@@ -233,7 +249,6 @@ void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr)
 	if(internalKey == NULL)
 	{
 		PRINTF("The Port cannot be removed in ComponentInstance because the key is not defined\n");
-		free(internalKey);
 	}
 	else
 	{
@@ -241,7 +256,8 @@ void ComponentInstance_RemoveProvided(ComponentInstance* const this, Port* ptr)
 		{
 			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -253,7 +269,6 @@ void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
 	if(internalKey == NULL)
 	{
 		PRINTF("The Port cannot be removed in ComponentInstance because the key is not defined\n");
-		free(internalKey);
 	}
 	else
 	{
@@ -261,7 +276,8 @@ void ComponentInstance_RemoveRequired(ComponentInstance* const this, Port* ptr)
 		{
 			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -396,8 +412,8 @@ void ComponentInstance_VisitPathReferences(void *const this, char *parent, Visit
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				sprintf(path,"%s/provided[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, false);
-				n->VisitPathReferences(n, path, visitor, false);
+				n->VisitPathAttributes(n, path, visitor, true);
+				n->VisitPathReferences(n, path, visitor, true);
 			}
 		}
 	}

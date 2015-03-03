@@ -141,14 +141,14 @@ void MBinding_VisitPathAttributes(void *const this, char *parent, Visitor *visit
 
 	if(recursive)
 	{
-		/*sprintf(path,"%s\\cClass", parent);
-		cClass = ((MBinding*)this)->metaClassName((MBinding*)this);
-		visitor->action(path, STRING, cClass);
-		free(cClass);*/
+		sprintf(path, "%s\\generated_KMF_ID", parent);
+		visitor->action(path, STRING, ((MBinding*)(this))->generated_KMF_ID);
+	} else {
+		sprintf(path, "%s\\generated_KMF_ID", parent);
+		visitor->action(path, REFERENCE, ((MBinding*)(this))->generated_KMF_ID);
 	}
 
-	sprintf(path, "%s\\generated_KMF_ID", parent);
-	visitor->action(path, STRING, ((MBinding*)(this))->generated_KMF_ID);
+
 }
 
 void MBinding_VisitReferences(void* const this, char* parent, Visitor* visitor, bool recursive)
@@ -197,14 +197,14 @@ void MBinding_VisitPathReferences(void *const this, char *parent, Visitor *visit
 
 		if(((MBinding*)(this))->port != NULL)
 		{
-			sprintf(path, "%s/port[%s]", parent, ((MBinding*)(this))->port->internalGetKey(((MBinding*)(this))->port));
-			((MBinding*)(this))->port->VisitPathAttributes(((MBinding*)(this))->port, path, visitor, false);
+			sprintf(path, "%s/%s\\port", parent, ((MBinding*)(this))->port->path);
+			visitor->action(path, REFERENCE, parent);
 		}
 
 		if(((MBinding*)(this))->channel != NULL)
 		{
-			sprintf(path, "%s/hub[%s]", parent, ((MBinding*)(this))->channel->internalGetKey(((MBinding*)(this))->channel));
-			((MBinding*)(this))->channel->VisitPathAttributes(((MBinding*)(this))->channel, path, visitor, false);
+			sprintf(path, "%s/%s\\hub", parent, ((MBinding*)(this))->channel->path);
+			visitor->action(path, REFERENCE, parent);
 		}
 	}
 }

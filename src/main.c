@@ -167,6 +167,7 @@ void actionprintpath(char *path, Type type, void *value)
 	switch(type)
 	{
 	case STRING:
+	case REFERENCE:
 		printf("path = %s  value = %s\n",path,(char*)value);
 		break;
 
@@ -225,6 +226,30 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 
 	switch(type)
 	{
+	case REFERENCE:
+		if (container == NULL) {
+			if ((container = (KMFContainer*)current_model->FindByPath(path, current_model)) != NULL) {
+				if ((src = strdup(path)) != NULL) {
+				} else {
+					PRINTF("ERROR: not enough memory for src!\n");
+				}
+			} else {
+				PRINTF("ERROR: Cannot retrieve source!\n");
+				src = malloc(1);
+				strcpy(src, "");
+			}
+
+			ModelTrace *mt = newPoly_ModelRemoveTrace(src, refname, path);
+
+			if (mt != NULL)	{
+				list_add(model_traces, mt);
+			} else {
+				printf("ERROR: ModelTrace cannot be added!\n");
+				printf("path = %s  value = %s\n", path, (char*)value);
+			}
+		}
+		break;
+
 	case STRING:
 		if (container == NULL) {
 			/*
@@ -520,6 +545,24 @@ int main(void)
 {
 	printf("Starting kevoree C implementation\n");
 
+	current_model = new_ContainerRoot();
+
+	/* ContainerNode contikiNode */
+	ContainerNode* contikiNode = new_ContainerNode();
+	contikiNode->super->super->name = malloc(sizeof(char) * (strlen("nodeX")) + 1);
+	sprintf(contikiNode->super->super->name, "node0");
+	contikiNode->super->started = true;
+	contikiNode->super->metaData = malloc(sizeof(char) * (strlen("")) + 1);
+	strcpy(contikiNode->super->metaData, "");
+
+	current_model->AddNodes(current_model, contikiNode);
+
+	/* NetworkInfo ip */
+	NetworkInfo* serverNodeIP = new_NetworkInfo();
+	serverNodeIP->super->name = malloc(sizeof(char) * (strlen("ip")) + 1);
+	strcpy(serverNodeIP->super->name, "ip");
+
+	contikiNode->AddNetworkInformation(contikiNode, serverNodeIP);
 	/* NeworkProperty front
 		NetworkProperty* contikiNodeFront = new_NetworkProperty();
 		contikiNodeFront->super->name = malloc(sizeof(char) * (strlen("front")) + 1);
@@ -557,10 +600,6 @@ int main(void)
 		contikiNodeIP->AddValues(contikiNodeIP, contikiNodeFront);
 		contikiNodeIP->AddValues(contikiNodeIP, contikiNodeLocal);*/
 
-	/* NetworkInfo ip */
-	NetworkInfo* serverNodeIP = new_NetworkInfo();
-	serverNodeIP->super->name = malloc(sizeof(char) * (strlen("ip")) + 1);
-	strcpy(serverNodeIP->super->name, "ip");
 
 	serverNodeIP->AddValues(serverNodeIP, serverNodeFront);
 	serverNodeIP->AddValues(serverNodeIP, serverNodeLocal);
@@ -593,6 +632,17 @@ int main(void)
 	coapGroupType->factoryBean = malloc(sizeof(char) * (strlen("")) + 1);
 	strcpy(coapGroupType->factoryBean, "");
 
+	current_model->AddTypeDefinitions(current_model, coapGroupType);
+
+
+	/* TypeLibrary Contiki */
+	TypeLibrary* contiki = new_TypeLibrary();
+	contiki->super->name = malloc(sizeof(char) * (strlen("ContikiLib")) + 1);
+	strcpy(contiki->super->name, "ContikiLib");
+	/*contiki->AddSubTypes(contiki, ctFakeConsole);*/
+	/*contiki->AddSubTypes(contiki, ctHelloWorld);*/
+	contiki->AddSubTypes(contiki, contikiNodeType);
+	contiki->AddSubTypes(contiki, coapGroupType);
 	/* TypeDefinition CoAPChan/0.0.1
 	  	TypeDefinition* coapChanType = newPoly_ChannelType();
 	  	coapChanType->abstract = false;
@@ -633,14 +683,6 @@ int main(void)
 		ctHelloWorld->factoryBean = malloc(sizeof(char) * (strlen("")) + 1);
 		strcpy(ctHelloWorld->factoryBean, "");*/
 
-	/* TypeLibrary Contiki */
-	TypeLibrary* contiki = new_TypeLibrary();
-	contiki->super->name = malloc(sizeof(char) * (strlen("ContikiLib")) + 1);
-	strcpy(contiki->super->name, "ContikiLib");
-	/*contiki->AddSubTypes(contiki, ctFakeConsole);*/
-	/*contiki->AddSubTypes(contiki, ctHelloWorld);*/
-	contiki->AddSubTypes(contiki, contikiNodeType);
-	contiki->AddSubTypes(contiki, coapGroupType);
 
 	/* TypeLibrary Default */
 	TypeLibrary* defLib = new_TypeLibrary();
@@ -668,10 +710,10 @@ int main(void)
 	/*defaultChannel->super->AddFragmentDictionary(defaultChannel->super, fdChannelContikiNode);*/
 	/*defaultChannel->super->AddFragmentDictionary(defaultChannel->super, fdChannelServerNode);*/
 
-	/*Channel FragmentDictionary server-node */
+	/*Channel FragmentDictionary server-node
 	FragmentDictionary* fdContikiNode = new_FragmentDictionary();
 	fdContikiNode->name = malloc(sizeof(char) * (strlen("contiki-node")) + 1);
-	strcpy(fdContikiNode->name, "contiki-node");
+	strcpy(fdContikiNode->name, "contiki-node");*/
 
 	/* Channel DictionaryValue host
 	  	DictionaryValue* chanValueHost = new_DictionaryValue();
@@ -815,8 +857,11 @@ int main(void)
 	/* ComponentInstance DictionaryType HelloWorld
 		DictionaryType* dtHelloWorld = new_DictionaryType();*/
 
+
 	/* GroupType DictionaryType */
 	DictionaryType* gtDicType = new_DictionaryType();
+	coapGroupType->AddDictionaryType(coapGroupType, gtDicType);
+
 	gtDicType->AddAttributes(gtDicType, gtDicAttrPort);
 	gtDicType->AddAttributes(gtDicType, gtDicAttrPath);
 	gtDicType->AddAttributes(gtDicType, gtDicAttrProxy);
@@ -986,13 +1031,14 @@ int main(void)
 	coapGroup->super->metaData = malloc(sizeof(char) * (strlen("")) + 1);
 	strcpy(coapGroup->super->metaData, "");
 
+	current_model->AddGroups(current_model, coapGroup);
 	/*coapGroup->AddSubNodes(coapGroup, serverNode);*/
 	coapGroup->super->AddTypeDefinition(coapGroup->super, coapGroupType);
 
 	/* FragmentDictionary contiki-node */
-	FragmentDictionary* contikiNodeFragDico = new_FragmentDictionary();
-	contikiNodeFragDico->name = malloc(sizeof(char) * (strlen("contiki-node")) + 1);
-	strcpy(contikiNodeFragDico->name, "contiki-node");
+	FragmentDictionary* coapGroupFragDico = new_FragmentDictionary();
+	coapGroupFragDico->name = malloc(sizeof(char) * (strlen("CoAPGroupFragDic")) + 1);
+	strcpy(coapGroupFragDico->name, "CoAPGroupFragDic");
 
 	/* Group DictionaryValue port */
 	DictionaryValue* groupValuePort = new_DictionaryValue();
@@ -1015,16 +1061,16 @@ int main(void)
 	groupValuePath->value = malloc(sizeof(char) * (strlen("CoAPGroup")) + 1);
 	strcpy(groupValuePath->value, "CoAPGroup");
 
+	coapGroup->super->AddFragmentDictionary(coapGroup->super, coapGroupFragDico);
 	/* Adding values to FragmentDictionary ContikiNode */
-	contikiNodeFragDico->super->AddValues(contikiNodeFragDico->super, groupValuePort);
-	contikiNodeFragDico->super->AddValues(contikiNodeFragDico->super, groupValueProxy);
-	contikiNodeFragDico->super->AddValues(contikiNodeFragDico->super, groupValuePath);
+	coapGroupFragDico->super->AddValues(coapGroupFragDico->super, groupValuePort);
+	coapGroupFragDico->super->AddValues(coapGroupFragDico->super, groupValueProxy);
+	coapGroupFragDico->super->AddValues(coapGroupFragDico->super, groupValuePath);
 
-	coapGroup->super->AddFragmentDictionary(coapGroup->super, fdContikiNode);
 
-	/* DictionaryType contikiNodeDicType */
+	/* DictionaryType contikiNodeDicType
 	DictionaryType* contikiNodeDicType = new_DictionaryType();
-	contikiNodeType->AddDictionaryType(contikiNodeType, contikiNodeDicType);
+	contikiNodeType->AddDictionaryType(contikiNodeType, contikiNodeDicType);*/
 
 	/*ComponentInstance* ciFakeConsole = new_ComponentInstance();
 	  		ciFakeConsole->super->super->name = malloc(sizeof(char) * (strlen("fakeconsole")) + 1);
@@ -1050,7 +1096,6 @@ int main(void)
 
 	/*ctFakeConsole->AddDictionaryType(ctFakeConsole, dtFakeConsole);*/
 	/*ctHelloWorld->AddDictionaryType(ctHelloWorld, dtHelloWorld);*/
-	coapGroupType->AddDictionaryType(coapGroupType, gtDicType);
 	/*coapChanType->AddDictionaryType(coapChanType, chanDicType);*/
 
 	/*defaultChannel->AddBindings(defaultChannel, mbInMsg);*/
@@ -1063,14 +1108,12 @@ int main(void)
 	/*((ComponentType*)ctHelloWorld->pDerivedObj)->AddProvided((ComponentType*)ctHelloWorld->pDerivedObj, ptrFake);
 	  	((ComponentType*)ctHelloWorld->pDerivedObj)->AddRequired((ComponentType*)ctHelloWorld->pDerivedObj, ptrSendText);*/
 
-	current_model = new_ContainerRoot();
 
 	current_model->AddLibraries(current_model, contiki);
 	current_model->AddLibraries(current_model, defLib);
 
 	/*type definition*/
 	current_model->AddTypeDefinitions(current_model, contikiNodeType);
-	current_model->AddTypeDefinitions(current_model, coapGroupType);
 	/*current_model->AddTypeDefinitions(current_model, ctHelloWorld);*/
 
 	/*deploy unit*/
@@ -1081,23 +1124,14 @@ int main(void)
 
 
 	/*instances*/
-	current_model->AddGroups(current_model, coapGroup);
 
 	int i = 0;
 	int j = 0;
 
 	for(i = 0; i < 1; i++)
 	{
-		/* ContainerNode contikiNode */
-		ContainerNode* contikiNode = new_ContainerNode();
-		contikiNode->super->super->name = malloc(sizeof(char) * (strlen("nodeX")) + 1);
-		sprintf(contikiNode->super->super->name, "node%d", i);
-		contikiNode->super->started = true;
-		contikiNode->super->metaData = malloc(sizeof(char) * (strlen("")) + 1);
-		strcpy(contikiNode->super->metaData, "");
 
 		/*contiki->AddSubTypes(contiki, coapChanType);*/
-		contikiNode->AddNetworkInformation(contikiNode, serverNodeIP);
 		contikiNode->super->AddTypeDefinition(contikiNode->super, contikiNodeType);
 		contikiNode->AddGroups(contikiNode, coapGroup);
 		//
@@ -1122,7 +1156,6 @@ int main(void)
 		coapGroup->AddSubNodes(coapGroup, contikiNode);
 
 
-		current_model->AddNodes(current_model, contikiNode);
 		/*printf("%d\n", mem_count);*/
 	}
 
@@ -1136,13 +1169,14 @@ int main(void)
 	current_model->VisitPaths(current_model, visitor_print);
 	/*current_model->Visit(current_model, visitor_print);*/
 
+
+	printf("Starting Kevoree adaptations\n");
+
 	FILE *new_model_json = fopen("new_model.json", "r");
 	fseek(new_model_json, 0L, SEEK_END);
 	int modelLength = ftell(new_model_json);
 	fseek(new_model_json, 0L, SEEK_SET);
 
-
-	printf("Starting Kevoree adaptations\n");
 	printf("INFO: Trying to load new_model with length %d\n", modelLength);
 
 	char *jsonModel = malloc(modelLength + 1);
@@ -1184,10 +1218,11 @@ int main(void)
 	if(new_model != NULL)
 	{
 		visitor_print->action = actionprintpath;
-		current_model->VisitPaths(current_model, visitor_print);
+		/*current_model->VisitPaths(current_model, visitor_print);*/
 		printf("\n\n");
 		new_model->VisitPaths(new_model, visitor_print);
-		printf("INFO: new_model detected, comparing with curent_model\n\n");
+	}
+		/*printf("INFO: new_model detected, comparing with curent_model\n\n");
 		visitor_print->action = actionUpdateDelete;
 		current_model->VisitPaths(current_model, visitor_print);
 		visitor_print->action = actionAdd;
@@ -1221,6 +1256,7 @@ int main(void)
 	}
 
 	free(jsonModel);
+	*/
 
 	return EXIT_SUCCESS;
 }

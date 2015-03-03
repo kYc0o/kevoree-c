@@ -112,14 +112,14 @@ void NamedElement_VisitPathAttributes(void *const this, char *parent, Visitor *v
 	else
 	{
 		sprintf(path, "%s\\name", parent);
-		visitor->action(path, STRING, ((NamedElement*)(this))->name);
+		visitor->action(path, REFERENCE, ((NamedElement*)(this))->name);
 	}
 }
 
 void* NamedElement_FindByPath(char* attribute, void * const this)
 {
 	NamedElement *pObj = (NamedElement*)this;
-	if(!strcmp("name",attribute))
+	if(!strcmp("name", attribute))
 	{
 		return pObj->name;
 	}

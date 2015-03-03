@@ -2,6 +2,7 @@
 #define __KMF4C_H
 
 #include <stdbool.h>
+#include "hashmap.h"
 
 typedef struct _KMFContainer KMFContainer;
 typedef struct _Visitor Visitor;
@@ -19,6 +20,8 @@ typedef void (*fptrDelete)(void*);
 typedef struct _KMFContainer {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

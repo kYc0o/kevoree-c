@@ -77,6 +77,8 @@ TypeDefinition* new_TypeDefinition()
 	}
 
 	pTypeDefObj->super = pObj; /* Pointing to base object */
+	pTypeDefObj->eContainer = NULL;
+	pTypeDefObj->path = NULL;
 
 	pTypeDefObj->version = NULL;
 	pTypeDefObj->factoryBean = NULL;
@@ -149,6 +151,22 @@ void TypeDefinition_AddDeployUnit(TypeDefinition* const this, DeployUnit* ptr)
 	if(ptr != NULL)
 	{
 		this->deployUnits = ptr;
+		/*if (ptr->refs == NULL) {
+			if((ptr->refs = hashmap_new()) == MAP_OK) {
+				PRINTF("INFO: deployUnit refs created!\n");
+			} else {
+				PRINTF("ERROR: deployUnit refs cannot be created!\n");
+			}
+		}
+		if (ptr->refs != NULL) {
+			char *value = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(this->internalGetKey(this))) + 1);
+			sprintf(value, "typeDefinitions[%s]", this->internalGetKey(this));
+			if ((hashmap_put(ptr->refs, this->path, (void**)&value)) == MAP_OK) {
+				PRINTF("INFO: deployUnit reference added!\n");
+			} else {
+				PRINTF("ERROR: deployUnit reference cannot be added\n");
+			}
+		}*/
 	}
 }
 
@@ -157,15 +175,21 @@ void TypeDefinition_AddDictionaryType(TypeDefinition* const this, DictionaryType
 	if(ptr != NULL)
 	{
 		this->dictionaryType = ptr;
-		ptr->eContainer = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(this->internalGetKey(this))) + 1);
-		sprintf(ptr->eContainer, "typeDefinitions[%s]", this->internalGetKey(this));
-		/*ptr->eContainer = this;*/
+		ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+		strcpy(ptr->eContainer, this->path);
+		ptr->path = malloc(sizeof(char) * (strlen(this->path) + strlen("/dictionaryType[]") + strlen(ptr->internalGetKey(ptr))) + 1);
+		sprintf(ptr->path, "%s/dictionaryType[%s]", this->path, ptr->internalGetKey(ptr));
 	}
 }
 
 void TypeDefinition_RemoveDeployUnit(TypeDefinition* const this, DeployUnit* ptr)
 {
 	this->deployUnits = NULL;
+	/*if ((hashmap_remove(ptr->refs, this->path)) == MAP_OK) {
+		PRINTF("INFO: deployUnit reference removed!\n");
+	} else {
+		PRINTF("INFO: cannot remove deployUnit reference\n");
+	}*/
 }
 
 void TypeDefinition_RemoveDictionaryType(TypeDefinition* const this, DictionaryType *ptr)
@@ -173,6 +197,8 @@ void TypeDefinition_RemoveDictionaryType(TypeDefinition* const this, DictionaryT
 	this->dictionaryType = NULL;
 	free(ptr->eContainer);
 	ptr->eContainer = NULL;
+	free(ptr->path);
+	ptr->path = NULL;
 }
 
 void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
@@ -195,13 +221,28 @@ void TypeDefinition_AddSuperTypes(TypeDefinition* const this, TypeDefinition* pt
 		{
 			/*container = (TypeDefinition*)ptr;*/
 			if ((hashmap_put(this->superTypes, internalKey, ptr)) == MAP_OK) {
+				/*if (ptr->refs == NULL) {
+					if((ptr->refs = hashmap_new()) == MAP_OK) {
+						PRINTF("INFO: superType refs created!\n");
+					} else {
+						PRINTF("ERROR: superType refs cannot be created!\n");
+					}
+				}
+				if (ptr->refs != NULL) {
+					char *value = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(this->internalGetKey(this))) + 1);
+					sprintf(value, "typeDefinitions[%s]", this->internalGetKey(this));
+					if ((hashmap_put(ptr->refs, this->path, (void**)&value)) == MAP_OK) {
+						PRINTF("INFO: superType reference added!\n");
+					} else {
+						PRINTF("ERROR: superType reference cannot be added\n");
+					}
+				}*/
 				PRINTF("DEBUG: superType successfully added!\n");
 			} else {
 				PRINTF("ERROR: superType can't be added!\n");
 			}
 		}
 	}
-	free(internalKey);
 }
 
 void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition* ptr)
@@ -215,12 +256,16 @@ void TypeDefinition_RemoveSuperTypes(TypeDefinition* const this, TypeDefinition*
 	else
 	{
 		if ((hashmap_remove(this->superTypes, internalKey)) == MAP_OK) {
+			/*if ((hashmap_remove(ptr->refs, this->path)) == MAP_OK) {
+				PRINTF("INFO: superType reference removed!\n");
+			} else {
+				PRINTF("INFO: cannot remove superType reference\n");
+			}*/
 			PRINTF("DEBUG: superType successfully removed!\n");
 		} else {
 			PRINTF("ERROR: superType can't be removed!\n");
 		}
 	}
-	free(internalKey);
 }
 
 void deletePoly_TypeDefinition(void * const this)
@@ -289,11 +334,11 @@ void TypeDefinition_VisitAttributes(void *const this, char *parent, Visitor *vis
 
 void TypeDefinition_VisitPathAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)
 {
+	char path[256];
+	memset(&path[0], 0, sizeof(path));
+
 	if(recursive)
 	{
-		char path[256];
-		memset(&path[0], 0, sizeof(path));
-
 		NamedElement_VisitPathAttributes(((TypeDefinition*)(this))->super, parent, visitor, recursive);
 
 		sprintf(path, "%s\\version", parent);
@@ -310,7 +355,11 @@ void TypeDefinition_VisitPathAttributes(void *const this, char *parent, Visitor 
 	}
 	else
 	{
+		/*
 		NamedElement_VisitPathAttributes(((TypeDefinition*)(this))->super, parent, visitor, recursive);
+		*/
+		sprintf(path, "%s\\typeDefinition", parent);
+		visitor->action(path, BOOL, (void*)((TypeDefinition*)(this))->abstract);
 	}
 }
 
@@ -386,9 +435,10 @@ void TypeDefinition_VisitPathReferences(void *const this, char *parent, Visitor 
 
 	if(((TypeDefinition*)(this))->deployUnits != NULL)
 	{
-		sprintf(path, "%s/deployUnits[%s]", parent, ((TypeDefinition*)(this))->deployUnits->internalGetKey(((TypeDefinition*)(this))->deployUnits));
-		DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
-		n->VisitPathAttributes(n, path, visitor, false);
+		sprintf(path, "%s/%s\\deployUnit", parent, ((TypeDefinition*)(this))->deployUnits->path);
+		/*DeployUnit* n = ((TypeDefinition*)(this))->deployUnits;
+		n->VisitPathAttributes(n, path, visitor, false);*/
+		visitor->action(path, REFERENCE, parent);
 	}
 
 	if(((TypeDefinition*)(this))->dictionaryType != NULL)

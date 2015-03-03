@@ -15,6 +15,8 @@ typedef void* (*fptrFindByPathDicVal)(char*, DictionaryValue*);
 typedef struct _DictionaryValue {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

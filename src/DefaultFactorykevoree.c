@@ -142,11 +142,14 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.ComponentInstance"))
 												{
+													if (obj->path == NULL) {
+														root->AddNodes(root, obj);
+													}
 													ComponentInstance *component = createComponentInstance(jsonState, jsonType, strJson, root, obj, loader);
-													if(component != NULL)
+													/*if(component != NULL)
 														obj->AddComponents(obj, component);
 													else
-														PRINTF("Component cannot be added!\n");
+														PRINTF("Component cannot be added!\n");*/
 												}
 												break;
 											}
@@ -351,11 +354,14 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.NetworkInfo"))
 												{
-													NetworkInfo *netInfo = createNetworkInfo(jsonState, jsonType, strJson);
-													if(netInfo != NULL)
+													if (obj->path == NULL) {
+														root->AddNodes(root, obj);
+													}
+													NetworkInfo *netInfo = createNetworkInfo(jsonState, jsonType, strJson, obj);
+													/*if(netInfo != NULL)
 														obj->AddNetworkInformation(obj, netInfo);
 													else
-														PRINTF("NetworkInfo cannot be added!\n");
+														PRINTF("NetworkInfo cannot be added!\n");*/
 												}
 												break;
 											}
@@ -472,8 +478,11 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.Dictionary"))
 												{
-													Dictionary *dic = createDictionary(jsonState, jsonType, strJson);
-													obj->super->AddDictionary(obj->super, dic);
+													if (obj->super->path == NULL) {
+														root->AddNodes(root, obj);
+													}
+													Dictionary *dic = createDictionary(jsonState, jsonType, strJson, obj->super);
+													/*obj->super->AddDictionary(obj->super, dic);*/
 												}
 												break;
 											}
@@ -542,8 +551,8 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.FragmentDictionary"))
 												{
-													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson);
-													if(fragdic != NULL)
+													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson, obj->super);
+													/*if(fragdic != NULL)
 													{
 														Instance *inst = obj->super;
 														inst->AddFragmentDictionary(inst, fragdic);
@@ -551,7 +560,7 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 													else
 													{
 														PRINTF("DictionaryValue cannot be created!\n");
-													}
+													}*/
 												}
 												break;
 											}
@@ -575,10 +584,14 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 	return obj;
 }
 
-NetworkInfo *createNetworkInfo(struct jsonparse_state *jsonState, char jsonType, char *strJson)
+NetworkInfo *createNetworkInfo(struct jsonparse_state *jsonState, char jsonType, char *strJson, ContainerNode *node)
 {
 	PRINTF("%s\n", strJson);
 	NetworkInfo *obj = new_NetworkInfo();
+
+	if (obj == NULL) {
+		return NULL;
+	}
 
 	while((jsonType = jsonparse_next(jsonState)) != '}')
 	{
@@ -642,8 +655,13 @@ NetworkInfo *createNetworkInfo(struct jsonparse_state *jsonState, char jsonType,
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.NetworkProperty"))
 												{
+													if (obj->path == NULL) {
+														node->AddNetworkInformation(node, obj);
+													}
 													NetworkProperty *netprop = createNetworkProperty(jsonState, jsonType, strJson);
-													obj->AddValues(obj, netprop);
+													if (netprop != NULL) {
+														obj->AddValues(obj, netprop);
+													}
 												}
 												break;
 											}
@@ -900,8 +918,15 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.Dictionary"))
 												{
-													Dictionary *dic = createDictionary(jsonState, jsonType, strJson);
-													obj->super->AddDictionary(obj->super, dic);
+													if (obj->super->path == NULL) {
+														node->AddComponents(node, obj);
+													}
+													Dictionary *dic = createDictionary(jsonState, jsonType, strJson, obj->super);
+													/*if (dic != NULL) {
+														if ((obj->FindByPath(obj, dic->path)) == NULL) {
+															obj->super->AddDictionary(obj->super, dic);
+														}
+													}*/
 												}
 												break;
 											}
@@ -970,8 +995,11 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.FragmentDictionary"))
 												{
-													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson);
-													if(fragdic != NULL)
+													if (obj->super->path == NULL) {
+														node->AddComponents(node, obj);
+													}
+													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson, obj->super);
+													/*if(fragdic != NULL)
 													{
 														Instance *inst = obj->super;
 														inst->AddFragmentDictionary(inst, fragdic);
@@ -979,7 +1007,7 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 													else
 													{
 														PRINTF("DictionaryValue cannot be created!\n");
-													}
+													}*/
 												}
 												break;
 											}
@@ -1088,11 +1116,15 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 	return obj;
 }
 
-Dictionary *createDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson)
+Dictionary *createDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson, Instance *inst)
 {
 	PRINTF("%s\n", strJson);
 
 	Dictionary *obj = new_Dictionary();
+
+	if (obj == NULL) {
+		return NULL;
+	}
 
 	while((jsonType = jsonparse_next(jsonState)) != '}')
 	{
@@ -1153,8 +1185,11 @@ Dictionary *createDictionary(struct jsonparse_state *jsonState, char jsonType, c
 											{
 											case JSON_TYPE_STRING:
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
-												if(!strcmp(strJson, "org.kevoree.DictionaryType"))
+												if(!strcmp(strJson, "org.kevoree.DictionaryValue"))
 												{
+													if (obj->path == NULL) {
+														inst->AddDictionary(inst, obj);
+													}
 													DictionaryValue *dicval = createDictionaryValue(jsonState, jsonType, strJson);
 													obj->AddValues(obj, dicval);
 												}
@@ -1406,24 +1441,59 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 						{
 							switch(jsonType)
 							{
-							/*case JSON_TYPE_OBJECT:
-															JSONKevDeserializer(jsonState, jsonType, NULL);
-															break;*/
-
-							case JSON_TYPE_STRING:
-								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
-								PRINTF("\t\t\t\t%s\n", strJson);
+							case JSON_TYPE_OBJECT:
+								PRINTF("JSON_TYPE_OBJECT\n\t{\n");
+								switch(jsonparse_next(jsonState))
+								{
+								case JSON_TYPE_PAIR_NAME:
+									jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
+									PRINTF("JSON_TYPE_PAIR_NAME\n%s\n", strJson);
+									if(!strcmp(strJson, "eClass"))
+									{
+										switch(jsonparse_next(jsonState))
+										{
+										case JSON_TYPE_PAIR:
+											jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
+											PRINTF("JSON_TYPE_PAIR\n\t\t\t%s : ", strJson);
+											switch(jsonparse_next(jsonState))
+											{
+											case JSON_TYPE_STRING:
+												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
+												if(!strcmp(strJson, "org.kevoree.Dictionary"))
+												{
+													if (obj->super->path == NULL) {
+														root->AddGroups(root, obj);
+													}
+													Dictionary *dic = createDictionary(jsonState, jsonType, strJson, obj->super);
+													/*if (dic != NULL) {
+														if ((obj->FindByPath(obj, dic->path)) == NULL) {
+															obj->super->AddDictionary(obj->super, dic);
+														}
+													}*/
+												}
+												break;
+											}
+											break;
+										}
+									}
+									break;
+								}
 								break;
 
-							case JSON_TYPE_INT:
-								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
-								PRINTF("\t\t\t\t%s\n", strJson);
-								break;
+								case JSON_TYPE_STRING:
+									jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
+									PRINTF("\t\t\t\t%s\n", strJson);
+									break;
 
-							case JSON_TYPE_NUMBER:
-								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
-								PRINTF("\t\t\t\t%s\n", strJson);
-								break;
+								case JSON_TYPE_INT:
+									jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
+									PRINTF("\t\t\t\t%s\n", strJson);
+									break;
+
+								case JSON_TYPE_NUMBER:
+									jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
+									PRINTF("\t\t\t\t%s\n", strJson);
+									break;
 							}
 						}
 						PRINTF("\t\t\t]\n");
@@ -1468,8 +1538,11 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.FragmentDictionary"))
 												{
-													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson);
-													if(fragdic != NULL)
+													if (obj->super->path == NULL) {
+														root->AddGroups(root, obj);
+													}
+													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson, obj->super);
+													/*if(fragdic != NULL)
 													{
 														Instance *inst = obj->super;
 														inst->AddFragmentDictionary(inst, fragdic);
@@ -1477,7 +1550,7 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 													else
 													{
 														PRINTF("DictionaryValue cannot be created!\n");
-													}
+													}*/
 												}
 												break;
 											}
@@ -1502,7 +1575,7 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 	return obj;
 }
 
-FragmentDictionary *createFragmentDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson)
+FragmentDictionary *createFragmentDictionary(struct jsonparse_state *jsonState, char jsonType, char *strJson, Instance *inst)
 {
 	PRINTF("%s\n", strJson);
 	FragmentDictionary *obj = new_FragmentDictionary();
@@ -1587,6 +1660,9 @@ FragmentDictionary *createFragmentDictionary(struct jsonparse_state *jsonState, 
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.DictionaryValue"))
 												{
+													if (obj->path == NULL) {
+														inst->AddFragmentDictionary(inst, obj);
+													}
 													DictionaryValue *dicval = createDictionaryValue(jsonState, jsonType, strJson);
 													if(dicval != NULL)
 													{
@@ -1699,6 +1775,10 @@ TypeDefinition *createTypeDefinition(struct jsonparse_state *jsonState, char jso
 	else
 	{
 		PRINTF("TypeDefinition %s not supported!\n", strJson);
+		return NULL;
+	}
+
+	if (obj == NULL) {
 		return NULL;
 	}
 
@@ -1949,11 +2029,14 @@ TypeDefinition *createTypeDefinition(struct jsonparse_state *jsonState, char jso
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.DictionaryType"))
 												{
-													DictionaryType *dictype = createDictionaryType(jsonState, jsonType, strJson);
-													if(dictype != NULL)
+													if (obj->path == NULL) {
+														root->AddTypeDefinitions(root, obj);
+													}
+													DictionaryType *dictype = createDictionaryType(jsonState, jsonType, strJson, obj);
+													/*if(dictype != NULL)
 														obj->AddDictionaryType(obj, dictype);
 													else
-														return NULL;
+														return NULL;*/
 												}
 												break;
 											}
@@ -2062,7 +2145,7 @@ TypeDefinition *createTypeDefinition(struct jsonparse_state *jsonState, char jso
 	return obj;
 }
 
-DictionaryType *createDictionaryType(struct jsonparse_state *jsonState, char jsonType, char *strJson)
+DictionaryType *createDictionaryType(struct jsonparse_state *jsonState, char jsonType, char *strJson, TypeDefinition *typdef)
 {
 	PRINTF("%s\n", strJson);
 
@@ -2133,6 +2216,9 @@ DictionaryType *createDictionaryType(struct jsonparse_state *jsonState, char jso
 												jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 												if(!strcmp(strJson, "org.kevoree.DictionaryAttribute"))
 												{
+													if (obj->path == NULL) {
+														typdef->AddDictionaryType(typdef, obj);
+													}
 													DictionaryAttribute *dicattr = createDictionaryAttribute(jsonState, jsonType, strJson);
 													obj->AddAttributes(obj, dicattr);
 												}

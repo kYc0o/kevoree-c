@@ -29,6 +29,7 @@ ContainerRoot* new_ContainerRoot()
 	rand_str(pObj->generated_KMF_ID, 8);
 
 	pObj->eContainer = "";
+	pObj->path = "";
 	pObj->nodes = NULL;
 	pObj->typeDefinitions = NULL;
 	pObj->repositories = NULL;
@@ -302,8 +303,11 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 		if(hashmap_get(this->nodes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (ContainerNode*)ptr;*/
-			if(hashmap_put(this->nodes, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->nodes, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("nodes[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "nodes[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -327,8 +331,11 @@ void ContainerRoot_AddTypeDefinitions(ContainerRoot* const this, TypeDefinition*
 		if(hashmap_get(this->typeDefinitions, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (TypeDefinition*)ptr;*/
-			if(hashmap_put(this->typeDefinitions, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->typeDefinitions, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "typeDefinitions[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -352,8 +359,11 @@ void ContainerRoot_AddRepositories(ContainerRoot* const this, Repository* ptr)
 		if(hashmap_get(this->repositories, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (Repository*)ptr;*/
-			if(hashmap_put(this->repositories, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->repositories, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("repositories[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "repositories[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -377,8 +387,11 @@ void ContainerRoot_AddDataTypes(ContainerRoot* const this, TypedElement* ptr)
 		if(hashmap_get(this->dataTypes, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (TypedElement*)ptr;*/
-			if(hashmap_put(this->dataTypes, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->dataTypes, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("dataTypes[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "dataTypes[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -402,8 +415,11 @@ void ContainerRoot_AddLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 		if(hashmap_get(this->libraries, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (TypeLibrary*)ptr;*/
-			if(hashmap_put(this->libraries, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->libraries, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("dataTypes[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "dataTypes[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -426,8 +442,11 @@ void ContainerRoot_AddHubs(ContainerRoot* const this, Channel* ptr)
 		if(hashmap_get(this->hubs, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (Channel*)ptr;*/
-			if(hashmap_put(this->hubs, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->hubs, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("hubs[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "hubs[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -450,8 +469,11 @@ void ContainerRoot_AddBindings(ContainerRoot* const this, MBinding* ptr)
 		if(hashmap_get(this->mBindings, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (MBinding*)ptr;*/
-			if(hashmap_put(this->mBindings, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->mBindings, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("mBindings[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "mBindings[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -475,13 +497,13 @@ void ContainerRoot_AddDeployUnits(ContainerRoot* const this, DeployUnit* ptr)
 		if(hashmap_get(this->deployUnits, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (DeployUnit*)ptr;*/
-			if(hashmap_put(this->deployUnits, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->deployUnits, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("deployUnits[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "deployUnits[%s]", internalKey);
+			}
 		}
-
-		/*free(internalKey);*/
 	}
-
 }
 
 void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
@@ -503,8 +525,11 @@ void ContainerRoot_AddNodeNetworks(ContainerRoot* const this, NodeNetwork* ptr)
 		if(hashmap_get(this->nodeNetworks, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (NodeNetwork*)ptr;*/
-			if(hashmap_put(this->nodeNetworks, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->nodeNetworks, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->path = malloc(sizeof(char) * (strlen("nodeNetworks[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "nodeNetworks[%s]", internalKey);
+			}
 		}
 	}
 }
@@ -528,8 +553,13 @@ void ContainerRoot_AddGroups(ContainerRoot* const this, Group* ptr)
 		if(hashmap_get(this->groups, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			/*container = (Group*)ptr;*/
-			if(hashmap_put(this->groups, internalKey, ptr) == MAP_OK)
+			if(hashmap_put(this->groups, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->super->path = "";
+				ptr->path = malloc(sizeof(char) * (strlen("groups[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "groups[%s]", internalKey);
+				ptr->super->path = ptr->path;
+			}
 		}
 	}
 }
@@ -546,8 +576,10 @@ void ContainerRoot_RemoveNodes(ContainerRoot* const this, ContainerNode* ptr)
 	{
 		if(hashmap_remove(this->nodes, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -564,8 +596,10 @@ void ContainerRoot_RemoveTypeDefinitions(ContainerRoot* const this, TypeDefiniti
 	{
 		if(hashmap_remove(this->nodes, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -582,8 +616,11 @@ void ContainerRoot_RemoveRepositories(ContainerRoot* const this, Repository* ptr
 	{
 		if(hashmap_remove(this->repositories, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
+
 		}
 	}
 }
@@ -599,8 +636,10 @@ void ContainerRoot_RemoveDataTypes(ContainerRoot* const this, TypedElement* ptr)
 	{
 		if(hashmap_remove(this->dataTypes, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -617,8 +656,10 @@ void ContainerRoot_RemoveLibraries(ContainerRoot* const this, TypeLibrary* ptr)
 	{
 		if(hashmap_remove(this->libraries, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -635,8 +676,10 @@ void ContainerRoot_RemoveHubs(ContainerRoot* const this, Channel* ptr)
 	{
 		if(hashmap_remove(this->hubs, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -653,8 +696,10 @@ void ContainerRoot_RemoveBindings(ContainerRoot* const this, MBinding* ptr)
 	{
 		if(hashmap_remove(this->mBindings, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -671,8 +716,10 @@ void ContainerRoot_RemoveDeployUnits(ContainerRoot* const this,  DeployUnit* ptr
 	{
 		if(hashmap_remove(this->deployUnits, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
 			free(internalKey);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -689,8 +736,10 @@ void ContainerRoot_RemoveNodeNetworks(ContainerRoot* const this, NodeNetwork* pt
 	{
 		if(hashmap_remove(this->nodeNetworks, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -707,8 +756,10 @@ void ContainerRoot_RemoveGroups(ContainerRoot* const this, Group* ptr)
 	{
 		if(hashmap_remove(this->groups, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }

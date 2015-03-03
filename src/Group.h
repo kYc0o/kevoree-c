@@ -23,6 +23,8 @@ typedef void* (*fptrFindByPathGroup)(char*, Group*);
 typedef struct _Group { 
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

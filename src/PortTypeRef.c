@@ -158,8 +158,10 @@ void PortTypeRef_AddMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 			/*container = (PortTypeMapping*)ptr;*/
 			if(hashmap_put(this->mappings, internalKey, ptr) == MAP_OK)
 			{
-				ptr->eContainer = malloc(sizeof(char) * (strlen("portTypeRef[]") + strlen(this->internalGetKey(this))) + 1);
-				sprintf(ptr->eContainer, "portTypeRef[%s]", this->internalGetKey(this));
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
+				strcpy(ptr->eContainer, this->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) + strlen("/mappings[]") + strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/mappings[%s]", this->path, internalKey);
 			}
 		}
 	}
@@ -167,7 +169,6 @@ void PortTypeRef_AddMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 
 void PortTypeRef_RemoveRef(PortTypeRef* const this, PortType* ptr)
 {
-	free(ptr);
 	this->ref = NULL;
 }
 
@@ -183,8 +184,10 @@ void PortTypeRef_RemoveMappings(PortTypeRef* const this, PortTypeMapping* ptr)
 	{
 		if(hashmap_remove(this->mappings, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }

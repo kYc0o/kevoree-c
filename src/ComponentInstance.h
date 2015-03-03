@@ -25,6 +25,8 @@ typedef void* (*fptrFindByPathComponentInstance)(char*, ComponentInstance*);
 typedef struct _ComponentInstance { 
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;

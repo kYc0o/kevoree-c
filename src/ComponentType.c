@@ -32,6 +32,9 @@ TypeDefinition* newPoly_ComponentType(void)
 	pObj->pDerivedObj = pCompTypeObj; /* Pointing to derived object */
 	pCompTypeObj->super = pObj;
 
+	pCompTypeObj->eContainer = NULL;
+	pCompTypeObj->path = NULL;
+	pCompTypeObj->refs = NULL;
 	pCompTypeObj->required = NULL;
 	pCompTypeObj->provided = NULL;
 
@@ -81,6 +84,9 @@ ComponentType* new_ComponentType(void)
 	pObj->pDerivedObj = NULL;
 	pCompTypeObj->super = pObj;
 
+	pCompTypeObj->eContainer = NULL;
+	pCompTypeObj->path = NULL;
+	pCompTypeObj->refs = NULL;
 	pCompTypeObj->required = NULL;
 	pCompTypeObj->provided = NULL;
 
@@ -165,14 +171,12 @@ void ComponentType_AddRequired(ComponentType* const this, PortTypeRef* ptr)
 
 		if(hashmap_get(this->required, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
-			/*container = (PortTypeRef*)ptr;*/
 			if(hashmap_put(this->required, internalKey, ptr) == MAP_OK)
 			{
-				TypeDefinition *typdef = this->super;
-				char *strContainer = typdef->internalGetKey(typdef);
-				ptr->eContainer = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
-				sprintf(ptr->eContainer, "typeDefinitions[%s]", strContainer);
-				free(strContainer);
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->super->path)) + 1);
+				strcpy(ptr->eContainer, this->super->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) +	strlen("/required[]") +	strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/required[%s]", this->super->path, ptr->internalGetKey(ptr));
 			}
 		}
 	}
@@ -199,11 +203,10 @@ void ComponentType_AddProvided(ComponentType* const this, PortTypeRef* ptr)
 			/*container = (PortTypeRef*)ptr;*/
 			if(hashmap_put(this->provided, internalKey, ptr) == MAP_OK)
 			{
-				TypeDefinition *typdef = this->super;
-				char *strContainer = typdef->internalGetKey(typdef);
-				ptr->eContainer = malloc(sizeof(char) * (strlen("typeDefinitions[]") + strlen(strContainer)) + 1);
-				sprintf(ptr->eContainer, "typeDefinitions[%s]", strContainer);
-				free(strContainer);
+				ptr->eContainer = malloc(sizeof(char) * (strlen(this->super->path)) + 1);
+				strcpy(ptr->eContainer, this->super->path);
+				ptr->path = malloc(sizeof(char) * (strlen(this->path) +	strlen("/provided[]") +	strlen(internalKey)) + 1);
+				sprintf(ptr->path, "%s/provided[%s]", this->super->path, ptr->internalGetKey(ptr));
 			}
 		}
 	}
@@ -223,7 +226,8 @@ void ComponentType_RemoveRequired(TypeDefinition* const this, PortTypeRef* ptr)
 		{
 			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }
@@ -240,8 +244,10 @@ void ComponentType_RemoveProvided(TypeDefinition* const this, PortTypeRef* ptr)
 	{
 		if(hashmap_remove(((ComponentType*)this->pDerivedObj)->provided, internalKey) == MAP_OK)
 		{
+			free(ptr->eContainer);
 			ptr->eContainer = NULL;
-			free(internalKey);
+			free(ptr->path);
+			ptr->path = NULL;
 		}
 	}
 }

@@ -281,8 +281,8 @@ void Group_VisitPathReferences(void *const this, char *parent, Visitor *visitor,
 			{
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
-				sprintf(path,"%s/subNodes[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, false);
+				sprintf(path,"%s/%s\\subNodes", parent, n->path);
+				visitor->action(path, REFERENCE, parent);
 			}
 		}
 	}

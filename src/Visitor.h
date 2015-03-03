@@ -31,7 +31,8 @@ enum Type
 	CLOSESQBRACKETCOLON,
 	COLON,
 	STRREF,
-	RETURN
+	RETURN,
+	REFERENCE
 };
 
 typedef struct _Visitor {

@@ -20,6 +20,8 @@ typedef void* (*fptrFindByPathDeployUnit)(char*, DeployUnit*);
 typedef struct _DeployUnit {
 	void *pDerivedObj;
 	char *eContainer;
+	char *path;
+	map_t refs;
 	fptrKMFMetaClassName metaClassName;
 	fptrKMFInternalGetKey internalGetKey;
 	fptrVisitAttr VisitAttributes;
