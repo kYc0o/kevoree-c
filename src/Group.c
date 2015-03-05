@@ -368,7 +368,7 @@ void* Group_FindByPath(char* attribute, void* const this)
 			}
 		}
 
-		if(!strcmp("subNodes", obj))
+		if(!strcmp("nodes", obj))
 		{
 			free(obj);
 			if(nextAttribute == NULL)

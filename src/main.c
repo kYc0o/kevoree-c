@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "kevoree.h"
+#include "JSONModelLoader.h"
 
 #include "list.h"
 #include "jsonparse.h"
@@ -455,6 +456,39 @@ void actionAdd(char* _path, Type type, void* value)
 
 	switch(type)
 	{
+	case REFERENCE:
+		container = current_model->FindByPath(path, current_model);
+		if(container == NULL)
+		{
+			if ((container = (KMFContainer*)new_model->FindByPath(path, new_model)) != NULL) {
+				if ((src = strdup(container->eContainer)) != NULL) {
+					typename = strdup(container->metaClassName(container));
+				} else {
+					PRINTF("ERROR: not enough memory for src!\n");
+				}
+			} else {
+				PRINTF("ERROR: Cannot retrieve source!\n");
+			}
+			/*printf("Path %s does not exist in curent_model, adding...\n\n", path);*/
+			ModelTrace *mt = newPoly_ModelAddTrace(src, refname, path, NULL);
+			/*char *strTrace = mt->ToString(mt->pDerivedObj);
+				PRINTF(strTrace);
+				free(strTrace);*/
+			if(mt != NULL)
+			{
+				list_add(model_traces, mt);
+			}
+			else {
+				printf("ERROR: ModelTrace cannot be added!\n");
+				printf("path = %s  value = %s\n", path, (char*)value);
+			}
+		}
+		else
+		{
+			/*printf("Path %s already exists...\n", path);*/
+		}
+		break;
+
 	case STRING:
 		/*printf("path = %s  value = %s\n", path, (char*)value);*/
 		/*path = strtok(path, "\\");*/
@@ -1221,8 +1255,7 @@ int main(void)
 		/*current_model->VisitPaths(current_model, visitor_print);*/
 		printf("\n\n");
 		new_model->VisitPaths(new_model, visitor_print);
-	}
-		/*printf("INFO: new_model detected, comparing with curent_model\n\n");
+		printf("INFO: new_model detected, comparing with curent_model\n\n");
 		visitor_print->action = actionUpdateDelete;
 		current_model->VisitPaths(current_model, visitor_print);
 		visitor_print->action = actionAdd;
@@ -1256,7 +1289,6 @@ int main(void)
 	}
 
 	free(jsonModel);
-	*/
 
 	return EXIT_SUCCESS;
 }

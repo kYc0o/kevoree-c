@@ -249,8 +249,12 @@ ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previou
 	strcpy(pObj->refName, _refName);
 	pModAddTraceObj->previousPath = malloc(sizeof(char)*(strlen(_previousPath)+1));
 	strcpy(pModAddTraceObj->previousPath, _previousPath);
-	pModAddTraceObj->typeName = malloc(sizeof(char)*(strlen(_typeName)+1));
-	strcpy(pModAddTraceObj->typeName, _typeName);
+	if (_typeName != NULL) {
+		pModAddTraceObj->typeName = malloc(sizeof(char)*(strlen(_typeName)+1));
+		strcpy(pModAddTraceObj->typeName, _typeName);
+	} else {
+		pModAddTraceObj->typeName = NULL;
+	}
 	
 	pModAddTraceObj->Delete = delete_ModelAddTrace;
 	pModAddTraceObj->ToString = ModelAddTrace_ToString;

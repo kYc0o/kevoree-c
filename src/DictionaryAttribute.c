@@ -41,6 +41,7 @@ TypedElement* newPoly_DictionaryAttribute()
 	pDicAttrObj->fragmentDependant = -1;
 	pDicAttrObj->defaultValue = NULL;
 	pDicAttrObj->eContainer = NULL;
+	pDicAttrObj->path = NULL;
 	
 	pObj->FindByPath = DictionaryAttribute_FindByPath;
 	
@@ -77,6 +78,7 @@ DictionaryAttribute* new_DictionaryAttribute()
 	pDicAttrObj->fragmentDependant = -1;
 	pDicAttrObj->defaultValue = NULL;
 	pDicAttrObj->eContainer = NULL;
+	pDicAttrObj->path = NULL;
 	
 	pDicAttrObj->metaClassName = DictionaryAttribute_metaClassName;
 	pObj->super->metaClassName = DictionaryAttribute_metaClassName;

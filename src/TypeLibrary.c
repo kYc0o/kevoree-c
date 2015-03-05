@@ -260,7 +260,7 @@ void TypeLibrary_VisitPathReferences(void *const this, char *parent, Visitor *vi
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
 				sprintf(path,"%s/subTypes[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, false);
+				visitor->action(path, REFERENCE, parent);
 			}
 		}
 	}

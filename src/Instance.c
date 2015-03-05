@@ -588,7 +588,7 @@ void* Instance_FindByPath(char* attribute, void* const this)
 			}
 		}
 
-		if(!strcmp("typeDefinition", obj))
+		if(!strcmp("typeDefinitions", obj))
 		{
 			free(obj);
 			if(nextAttribute == NULL)
