@@ -339,7 +339,7 @@ void actionUpdateDelete(char* _path, Type type, void* value)
 				else {
 					printf("ERROR: ModelTrace cannot be added!\n");
 					printf("path = %s  value = %s\n", path, (char*)value);
-				}	printf("path = %s  value = %s\n", path, (char*)value);
+				}
 			}
 		}
 		break;
@@ -1289,6 +1289,5 @@ int main(void)
 	}
 
 	free(jsonModel);
-
 	return EXIT_SUCCESS;
 }

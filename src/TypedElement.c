@@ -311,14 +311,22 @@ void* TypedElement_FindByPath(char* attribute, void * const this)
 			else
 			{
 				nextAttribute = strtok(path, "]");
-				if ((nextAttribute = strtok(NULL, "]")) != NULL) {
-					PRINTF("Attribute: %s]\n", nextAttribute);
-					sprintf(nextPath, "%s]", ++nextAttribute);
+				bool isFirst = true;
+				char *fragPath = NULL;
+				while ((fragPath = strtok(NULL, "]")) != NULL) {
+					PRINTF("Attribute: %s]\n", fragPath);
+					if (isFirst) {
+						sprintf(nextPath, "%s]", ++fragPath);
+						isFirst = false;
+					} else {
+						sprintf(nextPath, "%s/%s]", nextPath, ++fragPath);
+					}
 					PRINTF("Next Path: %s\n", nextPath);
-				} else {
+				}
+				if (strlen(nextPath) == 0) {
 					PRINTF("Attribute: NULL\n");
 					PRINTF("Next Path: NULL\n");
-					memset(&nextPath[0], 0, sizeof(nextPath));
+					nextAttribute = NULL;
 				}
 			}
 		}

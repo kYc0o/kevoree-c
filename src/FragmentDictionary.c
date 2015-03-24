@@ -169,20 +169,15 @@ void FragmentDictionary_VisitPathReferences(void *const this, char *parent, Visi
 void* FragmentDictionary_FindByPath(char* attribute, void* const this)
 {
 	FragmentDictionary *pObj = (FragmentDictionary*)this;
-	/* Dictionary attributes and references */
-	if(!strcmp("generated_KMF_ID", attribute) || !strcmp("values", attribute))
-	{
-		return Dictionary_FindByPath(attribute, pObj->super);
-	}
+
 	/* Local attributes */
-	else if(!strcmp("name", attribute))
+	if(!strcmp("name", attribute))
 	{
 		return pObj->name;
 	}
-	/* There is no local references */
-	else
+	/* Dictionary attributes and references */
+	else /*(!strcmp("generated_KMF_ID", attribute) || !strcmp("values", attribute))*/
 	{
-		PRINTF("Wrong attribute or reference\n");
-		return NULL;
+		return Dictionary_FindByPath(attribute, pObj->super);
 	}
 }

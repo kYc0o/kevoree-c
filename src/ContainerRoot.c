@@ -1385,14 +1385,22 @@ void *ContainerRoot_FindByPath(char *_path, void *const this)
 			else
 			{
 				attribute = strtok(path, "]");
-				if ((attribute = strtok(NULL, "]")) != NULL) {
+				bool isFirst = true;
+				char *fragPath = NULL;
+				while ((fragPath = strtok(NULL, "]")) != NULL) {
 					PRINTF("Attribute: %s]\n", attribute);
-					sprintf(nextPath, "%s]", ++attribute);
+					if (isFirst) {
+						sprintf(nextPath, "%s]", ++fragPath);
+						isFirst = false;
+					} else {
+						sprintf(nextPath, "%s/%s]", nextPath, ++fragPath);
+					}
 					PRINTF("Next Path: %s\n", nextPath);
-				} else {
+				}
+				if (strlen(nextPath) == 0) {
 					PRINTF("Attribute: NULL\n");
 					PRINTF("Next Path: NULL\n");
-					memset(&nextPath[0], 0, sizeof(nextPath));
+					attribute = NULL;
 				}
 			}
 		}
