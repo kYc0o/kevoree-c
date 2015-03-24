@@ -1264,6 +1264,7 @@ int main(void)
 		if((listLength = list_length(model_traces)))
 		{
 			ModelTrace *mt;
+			printf("[");
 
 			for (i = 0; i < listLength; ++i) {
 				if(isFirst)
@@ -1280,7 +1281,13 @@ int main(void)
 					printf(strTrace);
 					free(strTrace);
 				}
+
+				if (i < listLength - 1) {
+					printf(",");
+				}
 			}
+
+			printf("]");
 		}
 	}
 	else
