@@ -1171,8 +1171,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				ContainerNode* n = data;
 				sprintf(path, "nodes[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "nodes")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1188,8 +1195,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
 				sprintf(path, "typeDefinitions[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "typeDefinitions")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1204,8 +1218,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				Repository* n = data;
 				sprintf(path, "repositories[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathAttributes(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "repositories")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1220,8 +1241,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement* n = data;
 				sprintf(path, "dataTypes[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "dataTypes")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1236,8 +1264,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				TypeLibrary* n = data;
 				sprintf(path, "libraries[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "libraries")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1252,8 +1287,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				Channel* n = data;
 				sprintf(path, "hubs[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "hubs")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1268,8 +1310,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				MBinding* n = data;
 				sprintf(path, "mBindings[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "mBindings")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1284,8 +1333,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
 				sprintf(path, "deployUnits[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "deployUnits")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1300,8 +1356,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				NodeNetwork* n = data;
 				sprintf(path, "nodeNetworks[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathAttributes(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "nodeNetworks")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -1316,8 +1379,15 @@ void ContainerRoot_VisitPaths(void *const this, Visitor *visitor)
 				any_t data = (any_t) (m->data[i].data);
 				Group* n = data;
 				sprintf(path, "groups[%s]", n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "groups")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}

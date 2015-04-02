@@ -152,7 +152,7 @@ char *ModelSetTrace_ToString(void* const this)
 	
 	if(((ModelSetTrace*)this)->content != NULL)
 	{
-		sprintf(traceBuf, "%s, \"content\" : \" %s \"", traceBuf, ((ModelSetTrace*)this)->content);
+		sprintf(traceBuf, "%s, \"content\" : \"%s\"", traceBuf, ((ModelSetTrace*)this)->content);
 	}
 	
 	sprintf(traceBuf, "%s }\n", traceBuf);
@@ -361,7 +361,7 @@ char *ModelRemoveTrace_ToString(void* const this)
 
 	traceBuf = malloc(TRACE_BUF_SIZE);
 
-	sprintf(traceBuf, "{ \"traceType\" : \"%s\" , \"src\" : \" %s \", \"refname\" : \" %s \", \"objpath\" : \" %s \" }\n",
+	sprintf(traceBuf, "{ \"traceType\" : \"%s\" , \"src\" : \"%s\", \"refname\" : \"%s\", \"objpath\" : \"%s\" }\n",
 			ActionType(REMOVE),
 			((ModelRemoveTrace*)this)->super->srcPath,
 			((ModelRemoveTrace*)this)->super->refName,

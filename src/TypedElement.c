@@ -249,8 +249,15 @@ void TypedElement_VisitPathReferences(void *const this, char *parent, Visitor *v
 				any_t data = (any_t) (m->data[i].data);
 				TypedElement *n = data;
 				sprintf(path,"%s/genericTypes[%s]", parent, n->super->name);
-				n->VisitPathAttributes(n, path, visitor, recursive);
-				n->VisitPathReferences(n, path, visitor, recursive);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "genericTypes")) {
+						n->VisitPathAttributes(n, path, visitor, recursive);
+						n->VisitPathReferences(n, path, visitor, recursive);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, recursive);
+					n->VisitPathReferences(n, path, visitor, recursive);
+				}
 			}
 		}
 	}

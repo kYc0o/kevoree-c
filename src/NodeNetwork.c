@@ -246,13 +246,25 @@ void NodeNetwork_VisitPathReferences(void *const this, char *parent, Visitor *vi
 	if(((NodeNetwork*)(this))->target != NULL)
 	{
 		sprintf(path, "%s/target[%s]", parent, ((NodeNetwork*)(this))->target->internalGetKey(((NodeNetwork*)(this))->target));
-		((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, false);
+		if (visitor->secondAction != NULL) {
+			if (visitor->secondAction(path, "target")) {
+				((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, false);
+			}
+		} else {
+			((NodeNetwork*)(this))->target->VisitAttributes(((NodeNetwork*)(this))->target, path, visitor, false);
+		}
 	}
 
 	if(((NodeNetwork*)(this))->initBy != NULL)
 	{
 		sprintf(path, "%s/initBy[%s]", parent, ((NodeNetwork*)(this))->initBy->internalGetKey(((NodeNetwork*)(this))->initBy));
-		((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor, false);
+		if (visitor->secondAction != NULL) {
+			if (visitor->secondAction(path, "initBy")) {
+				((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor, false);
+			}
+		} else {
+			((NodeNetwork*)(this))->initBy->VisitAttributes(((NodeNetwork*)(this))->initBy, path, visitor, false);
+		}
 	}
 
 	if(((NodeNetwork*)(this))->link != NULL)
@@ -270,8 +282,15 @@ void NodeNetwork_VisitPathReferences(void *const this, char *parent, Visitor *vi
 				any_t data = (any_t) (m->data[i].data);
 				NodeLink* n = data;
 				sprintf(path,"%s/link[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, recursive);
-				n->VisitPathReferences(n, path, visitor, recursive);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "link")) {
+						n->VisitPathAttributes(n, path, visitor, recursive);
+						n->VisitPathReferences(n, path, visitor, recursive);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, recursive);
+					n->VisitPathReferences(n, path, visitor, recursive);
+				}
 			}
 		}
 	}

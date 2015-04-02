@@ -443,10 +443,17 @@ void TypeDefinition_VisitPathReferences(void *const this, char *parent, Visitor 
 
 	if(((TypeDefinition*)(this))->dictionaryType != NULL)
 	{
-		sprintf(path, "%s/dictionaryType[%s]", parent, ((TypeDefinition*)(this))->dictionaryType->internalGetKey(((TypeDefinition*)(this))->dictionaryType));
 		DictionaryType* n = ((TypeDefinition*)(this))->dictionaryType;
-		n->VisitPathAttributes(n, path, visitor, recursive);
-		n->VisitPathReferences(n, path, visitor, recursive);
+		sprintf(path, "%s/dictionaryType[%s]", parent, ((TypeDefinition*)(this))->dictionaryType->internalGetKey(((TypeDefinition*)(this))->dictionaryType));
+		if (visitor->secondAction != NULL) {
+			if (visitor->secondAction(path, "dictionaryType")) {
+				n->VisitPathAttributes(n, path, visitor, recursive);
+				n->VisitPathReferences(n, path, visitor, recursive);
+			}
+		} else {
+			n->VisitPathAttributes(n, path, visitor, recursive);
+			n->VisitPathReferences(n, path, visitor, recursive);
+		}
 	}
 
 	if(((TypeDefinition*)(this))->superTypes != NULL)
@@ -464,7 +471,13 @@ void TypeDefinition_VisitPathReferences(void *const this, char *parent, Visitor 
 				any_t data = (any_t) (m->data[i].data);
 				TypeDefinition* n = data;
 				sprintf(path,"%s/superTypes[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, false);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "dictionaryType")) {
+						n->VisitPathAttributes(n, path, visitor, false);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, false);
+				}
 			}
 		}
 	}
@@ -580,7 +593,6 @@ void* TypeDefinition_FindByPath(char* attribute, void * const this)
 			free(obj);
 			if(nextAttribute == NULL)
 			{
-				PRINTF("DEBUG: returning %s object\n", pObj->deployUnits->metaClassName(pObj->deployUnits));
 				return pObj->deployUnits;
 			}
 			else

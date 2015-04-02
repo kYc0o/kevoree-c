@@ -278,7 +278,13 @@ void NetworkInfo_VisitPathReferences(void *const this, char *parent, Visitor *vi
 				any_t data = (any_t) (m->data[i].data);
 				NetworkProperty* n = data;
 				sprintf(path,"%s/values[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, recursive);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "values")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+				}
 			}
 		}
 	}

@@ -412,8 +412,15 @@ void ComponentInstance_VisitPathReferences(void *const this, char *parent, Visit
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				sprintf(path,"%s/provided[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "provided")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -433,8 +440,15 @@ void ComponentInstance_VisitPathReferences(void *const this, char *parent, Visit
 				any_t data = (any_t) (m->data[i].data);
 				Port* n = data;
 				sprintf(path,"%s/required[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "required")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}

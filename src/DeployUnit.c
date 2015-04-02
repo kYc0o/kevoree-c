@@ -360,7 +360,13 @@ void DeployUnit_VisitPathReferences(void *const this, char *parent, Visitor *vis
 				any_t data = (any_t) (m->data[i].data);
 				DeployUnit* n = data;
 				sprintf(path,"%s/requiredLibs[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, false);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "requiredLibs")) {
+						n->VisitPathAttributes(n, path, visitor, false);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, false);
+				}
 			}
 		}
 	}

@@ -746,8 +746,15 @@ void ContainerNode_VisitPathReferences(void *const this, char *parent, Visitor *
 				any_t data = (any_t) (m->data[i].data);
 				ComponentInstance* n = data;
 				sprintf(path,"%s/components[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "components")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}
@@ -816,8 +823,15 @@ void ContainerNode_VisitPathReferences(void *const this, char *parent, Visitor *
 				any_t data = (any_t) (m->data[i].data);
 				NetworkInfo* n = data;
 				sprintf(path,"%s/networkInformation[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, true);
-				n->VisitPathReferences(n, path, visitor, true);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "networkInformation")) {
+						n->VisitPathAttributes(n, path, visitor, true);
+						n->VisitPathReferences(n, path, visitor, true);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, true);
+					n->VisitPathReferences(n, path, visitor, true);
+				}
 			}
 		}
 	}

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "KMF4C.h"
 #include "list.h"
 /*#include "ModelAttributeVisitor.h"
@@ -45,7 +46,8 @@ typedef struct _Visitor {
 	fptrVisit printPaths;
 	fptrVisit print;
 	fptrDiff diff;
-	void (*action)(char* path, Type type, void* value);
+	void (*action)(char *path, Type type, void *value);
+	bool (*secondAction)(char *path, char *value);
 	fptrDelete delete;
 } Visitor;
 

@@ -244,7 +244,13 @@ void Dictionary_VisitPathReferences(void *const this, char *parent, Visitor *vis
 				any_t data = (any_t) (m->data[i].data);
 				DictionaryValue* n = data;
 				sprintf(path, "%s/values[%s]", parent, n->internalGetKey(n));
-				n->VisitPathAttributes(n, path, visitor, false);
+				if (visitor->secondAction != NULL) {
+					if (visitor->secondAction(path, "values")) {
+						n->VisitPathAttributes(n, path, visitor, false);
+					}
+				} else {
+					n->VisitPathAttributes(n, path, visitor, false);
+				}
 			}
 		}
 	}
