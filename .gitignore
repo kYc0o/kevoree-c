@@ -14,3 +14,4 @@ CMakeCache.txt
 /tmp/
 
 /current_model.json
+*.old
