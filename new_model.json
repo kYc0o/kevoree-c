@@ -1,12 +1,12 @@
 {
     "eClass": "org.kevoree.ContainerRoot",
-    "generated_KMF_ID": "CtHbJw37",
+    "generated_KMF_ID": "BXX5q3eV",
     "nodes": [
         {
             "eClass": "org.kevoree.ContainerNode",
             "name": "node0",
             "started": "false",
-            "metaData": "{\"x\":296,\"y\":167}",
+            "metaData": "{\"x\":328,\"y\":209}",
             "typeDefinition": [
                 "typeDefinitions[ContikiNode/0.0.1]"
             ],
@@ -20,26 +20,14 @@
             "components": [
                 {
                     "eClass": "org.kevoree.ComponentInstance",
-                    "name": "comp457",
+                    "name": "comp903",
                     "started": "true",
-                    "metaData": "{\"x\":408,\"y\":239}",
+                    "metaData": "{\"x\":453,\"y\":274}",
                     "typeDefinition": [
                         "typeDefinitions[hello_world/0.0.1]"
                     ],
                     "namespace": [],
-                    "dictionary": [
-                        {
-                            "eClass": "org.kevoree.Dictionary",
-                            "generated_KMF_ID": "0.68263587262481451424775426644",
-                            "values": [
-                                {
-                                    "eClass": "org.kevoree.DictionaryValue",
-                                    "name": "time",
-                                    "value": "6"
-                                }
-                            ]
-                        }
-                    ],
+                    "dictionary": [],
                     "fragmentDictionary": [],
                     "provided": [],
                     "required": []
@@ -52,13 +40,13 @@
                     "values": [
                         {
                             "eClass": "org.kevoree.NetworkProperty",
-                            "name": "local",
-                            "value": "aaaa::0:0:5"
+                            "name": "front",
+                            "value": "m3-XX.lille.iotlab.info"
                         },
                         {
                             "eClass": "org.kevoree.NetworkProperty",
-                            "name": "front",
-                            "value": "m3-XX.lille.iotlab.info"
+                            "name": "local",
+                            "value": "fe80:0000:0000:0000:0323:4501:4471:0343"
                         }
                     ]
                 }
@@ -66,75 +54,6 @@
         }
     ],
     "typeDefinitions": [
-        {
-            "eClass": "org.kevoree.NodeType",
-            "abstract": "false",
-            "bean": "",
-            "name": "ContikiNode",
-            "factoryBean": "",
-            "version": "0.0.1",
-            "deployUnit": [
-                "deployUnits[org.kevoree.library.c//kevoree-contiki-node/0.0.1]"
-            ],
-            "superTypes": [],
-            "dictionaryType": [
-                {
-                    "eClass": "org.kevoree.DictionaryType",
-                    "generated_KMF_ID": "9o86ZdvQ",
-                    "attributes": []
-                }
-            ]
-        },
-        {
-            "eClass": "org.kevoree.GroupType",
-            "abstract": "false",
-            "bean": "",
-            "name": "CoAPGroup",
-            "factoryBean": "",
-            "version": "0.0.1",
-            "deployUnit": [
-                "deployUnits[//kevoree-group-coap/0.0.1]"
-            ],
-            "superTypes": [],
-            "dictionaryType": [
-                {
-                    "eClass": "org.kevoree.DictionaryType",
-                    "generated_KMF_ID": "hytCmvXU",
-                    "attributes": [
-                        {
-                            "eClass": "org.kevoree.DictionaryAttribute",
-                            "fragmentDependant": "false",
-                            "optional": "false",
-                            "name": "path",
-                            "state": "false",
-                            "datatype": "string",
-                            "defaultValue": "",
-                            "genericTypes": []
-                        },
-                        {
-                            "eClass": "org.kevoree.DictionaryAttribute",
-                            "fragmentDependant": "false",
-                            "optional": "false",
-                            "name": "port",
-                            "state": "false",
-                            "datatype": "number",
-                            "defaultValue": "",
-                            "genericTypes": []
-                        },
-                        {
-                            "eClass": "org.kevoree.DictionaryAttribute",
-                            "fragmentDependant": "false",
-                            "optional": "false",
-                            "name": "proxy_port",
-                            "state": "false",
-                            "datatype": "int",
-                            "defaultValue": "20000",
-                            "genericTypes": []
-                        }
-                    ]
-                }
-            ]
-        },
         {
             "eClass": "org.kevoree.ComponentType",
             "abstract": "false",
@@ -166,6 +85,75 @@
             ],
             "required": [],
             "provided": []
+        },
+        {
+            "eClass": "org.kevoree.NodeType",
+            "abstract": "false",
+            "bean": "",
+            "name": "ContikiNode",
+            "factoryBean": "",
+            "version": "0.0.1",
+            "deployUnit": [
+                "deployUnits[org.kevoree.library.c//kevoree-contiki-node/0.0.1]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "o8AVQY3e",
+                    "attributes": []
+                }
+            ]
+        },
+        {
+            "eClass": "org.kevoree.GroupType",
+            "abstract": "false",
+            "bean": "",
+            "name": "CoAPGroup",
+            "factoryBean": "",
+            "version": "0.0.1",
+            "deployUnit": [
+                "deployUnits[//kevoree-group-coap/0.0.1]"
+            ],
+            "superTypes": [],
+            "dictionaryType": [
+                {
+                    "eClass": "org.kevoree.DictionaryType",
+                    "generated_KMF_ID": "3dddTFpd",
+                    "attributes": [
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "proxy_port",
+                            "state": "false",
+                            "datatype": "int",
+                            "defaultValue": "20000",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "port",
+                            "state": "false",
+                            "datatype": "number",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        },
+                        {
+                            "eClass": "org.kevoree.DictionaryAttribute",
+                            "fragmentDependant": "false",
+                            "optional": "false",
+                            "name": "path",
+                            "state": "false",
+                            "datatype": "string",
+                            "defaultValue": "",
+                            "genericTypes": []
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "repositories": [
@@ -178,23 +166,33 @@
     "libraries": [
         {
             "eClass": "org.kevoree.TypeLibrary",
-            "name": "ContikiLib",
+            "name": "Default",
             "subTypes": [
-                "typeDefinitions[ContikiNode/0.0.1]",
-                "typeDefinitions[CoAPGroup/0.0.1]"
+                "typeDefinitions[hello_world/0.0.1]"
             ]
         },
         {
             "eClass": "org.kevoree.TypeLibrary",
-            "name": "Default",
+            "name": "ContikiLib",
             "subTypes": [
-                "typeDefinitions[hello_world/0.0.1]"
+                "typeDefinitions[ContikiNode/0.0.1]",
+                "typeDefinitions[CoAPGroup/0.0.1]"
             ]
         }
     ],
     "hubs": [],
     "mBindings": [],
     "deployUnits": [
+        {
+            "eClass": "org.kevoree.DeployUnit",
+            "groupName": "kev_contiki",
+            "name": "hello_world",
+            "hashcode": "",
+            "type": "ce",
+            "url": "",
+            "version": "0.0.1",
+            "requiredLibs": []
+        },
         {
             "eClass": "org.kevoree.DeployUnit",
             "groupName": "",
@@ -214,16 +212,6 @@
             "url": "",
             "version": "0.0.1",
             "requiredLibs": []
-        },
-        {
-            "eClass": "org.kevoree.DeployUnit",
-            "groupName": "kev_contiki",
-            "name": "hello_world",
-            "hashcode": "",
-            "type": "ce",
-            "url": "",
-            "version": "0.0.1",
-            "requiredLibs": []
         }
     ],
     "nodeNetworks": [],
@@ -232,7 +220,7 @@
             "eClass": "org.kevoree.Group",
             "name": "group0",
             "started": "false",
-            "metaData": "{\"x\":504,\"y\":259}",
+            "metaData": "{\"x\":553,\"y\":286}",
             "typeDefinition": [
                 "typeDefinitions[CoAPGroup/0.0.1]"
             ],
@@ -244,7 +232,7 @@
                 {
                     "eClass": "org.kevoree.FragmentDictionary",
                     "name": "contiki-node",
-                    "generated_KMF_ID": "QoMNUckL",
+                    "generated_KMF_ID": "VEj2RlNr",
                     "values": []
                 }
             ]
