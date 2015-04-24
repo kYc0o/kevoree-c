@@ -221,8 +221,20 @@ int resolveReferences(any_t root, any_t objRef)
 					free(srcObjId2);
 					PRINTF("Resolving for typeDefinitions in components!\n");
 					TypeDefinition *typdef = model->FindTypeDefsByID(model, refId);
+					if (typdef == NULL) {
+						PRINTF("ERROR: Cannot retrieve TypeDefinition %s\n", refId);
+					}
+
 					ContainerNode *node = model->FindNodesByID(model, srcId);
+					if (node == NULL) {
+						PRINTF("ERROR: Cannot retrieve ContainerNode %s\n", srcId);
+					}
+
 					ComponentInstance *comp = node->FindComponentsByID(node, srcId2);
+					if (comp == NULL) {
+						PRINTF("ERROR: Cannot retrieve ComponentInstance %s\n", srcId2);
+					}
+
 					if(typdef != NULL && node != NULL && comp != NULL)
 					{
 						PRINTF("Adding typeDefinition %s to component %s\n", typdef->internalGetKey(typdef), comp->internalGetKey(comp));

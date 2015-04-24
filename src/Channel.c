@@ -174,7 +174,7 @@ void Channel_AddBindings(Channel* const this, MBinding* ptr)
 					if ((ptr->refs = hashmap_new()) != NULL) {
 						char *reference;
 						if ((reference = malloc(sizeof(char) * strlen("hubs[]") + strlen(this->internalGetKey(this)) + 1)) != NULL) {
-							sprintf(reference, "hubs[%s]", this->internalGetKey);
+							sprintf(reference, "hubs[%s]", this->internalGetKey(this));
 							if ((hashmap_put(ptr->refs, this->path, (void**)&reference)) == MAP_OK) {
 								PRINTF("INFO: reference added!\n");
 							} else {
@@ -189,7 +189,7 @@ void Channel_AddBindings(Channel* const this, MBinding* ptr)
 				} else {
 					char *reference;
 					if ((reference = malloc(sizeof(char) * strlen("hubs[]") + strlen(this->internalGetKey(this)) + 1)) != NULL) {
-						sprintf(reference, "hubs[%s]", this->internalGetKey);
+						sprintf(reference, "hubs[%s]", this->internalGetKey(this));
 						if ((hashmap_put(ptr->refs, this->path, (void**)&reference)) == MAP_OK) {
 							PRINTF("INFO: reference added!\n");
 						} else {

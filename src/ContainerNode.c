@@ -397,7 +397,7 @@ void ContainerNode_AddNetworkInformation(ContainerNode* const this, NetworkInfo*
 				ptr->eContainer = malloc(sizeof(char) * (strlen(this->path)) + 1);
 				strcpy(ptr->eContainer, this->path);
 				ptr->path = malloc(sizeof(char) * (strlen(this->path) +	strlen("/networkInformation[]") + strlen(internalKey)) + 1);
-				sprintf(ptr->path, "%s/networkInformation[%s]", this->path, this->internalGetKey(this), internalKey);
+				sprintf(ptr->path, "%s/networkInformation[%s]", this->path, internalKey);
 			}
 		}
 	}

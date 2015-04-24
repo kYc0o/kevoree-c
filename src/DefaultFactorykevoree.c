@@ -146,10 +146,10 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 														root->AddNodes(root, obj);
 													}
 													ComponentInstance *component = createComponentInstance(jsonState, jsonType, strJson, root, obj, loader);
-													/*if(component != NULL)
+													if(component != NULL)
 														obj->AddComponents(obj, component);
 													else
-														PRINTF("Component cannot be added!\n");*/
+														PRINTF("Component cannot be added!\n");
 												}
 												break;
 											}
@@ -358,10 +358,10 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 														root->AddNodes(root, obj);
 													}
 													NetworkInfo *netInfo = createNetworkInfo(jsonState, jsonType, strJson, obj);
-													/*if(netInfo != NULL)
+													if(netInfo != NULL)
 														obj->AddNetworkInformation(obj, netInfo);
 													else
-														PRINTF("NetworkInfo cannot be added!\n");*/
+														PRINTF("NetworkInfo cannot be added!\n");
 												}
 												break;
 											}
@@ -482,7 +482,11 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 														root->AddNodes(root, obj);
 													}
 													Dictionary *dic = createDictionary(jsonState, jsonType, strJson, obj->super);
-													/*obj->super->AddDictionary(obj->super, dic);*/
+													if (dic != NULL) {
+														obj->super->AddDictionary(obj->super, dic);
+													} else {
+														PRINTF("ERROR: Dictionary cannot be added!\n");
+													}
 												}
 												break;
 											}
@@ -552,15 +556,12 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 												if(!strcmp(strJson, "org.kevoree.FragmentDictionary"))
 												{
 													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson, obj->super);
-													/*if(fragdic != NULL)
-													{
+													if (fragdic != NULL) {
 														Instance *inst = obj->super;
 														inst->AddFragmentDictionary(inst, fragdic);
-													}
-													else
-													{
+													} else {
 														PRINTF("DictionaryValue cannot be created!\n");
-													}*/
+													}
 												}
 												break;
 											}
@@ -922,11 +923,11 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 														node->AddComponents(node, obj);
 													}
 													Dictionary *dic = createDictionary(jsonState, jsonType, strJson, obj->super);
-													/*if (dic != NULL) {
-														if ((obj->FindByPath(obj, dic->path)) == NULL) {
+													if (dic != NULL) {
+														if ((obj->FindByPath(dic->path, obj)) == NULL) {
 															obj->super->AddDictionary(obj->super, dic);
 														}
-													}*/
+													}
 												}
 												break;
 											}
@@ -999,15 +1000,12 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 														node->AddComponents(node, obj);
 													}
 													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson, obj->super);
-													/*if(fragdic != NULL)
-													{
+													if(fragdic != NULL) {
 														Instance *inst = obj->super;
 														inst->AddFragmentDictionary(inst, fragdic);
-													}
-													else
-													{
+													} else {
 														PRINTF("DictionaryValue cannot be created!\n");
-													}*/
+													}
 												}
 												break;
 											}
@@ -1465,11 +1463,11 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 														root->AddGroups(root, obj);
 													}
 													Dictionary *dic = createDictionary(jsonState, jsonType, strJson, obj->super);
-													/*if (dic != NULL) {
-														if ((obj->FindByPath(obj, dic->path)) == NULL) {
+													if (dic != NULL) {
+														if ((obj->FindByPath(dic->path, obj)) == NULL) {
 															obj->super->AddDictionary(obj->super, dic);
 														}
-													}*/
+													}
 												}
 												break;
 											}
@@ -1542,15 +1540,12 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 														root->AddGroups(root, obj);
 													}
 													FragmentDictionary *fragdic = createFragmentDictionary(jsonState, jsonType, strJson, obj->super);
-													/*if(fragdic != NULL)
-													{
+													if(fragdic != NULL) {
 														Instance *inst = obj->super;
 														inst->AddFragmentDictionary(inst, fragdic);
-													}
-													else
-													{
+													} else {
 														PRINTF("DictionaryValue cannot be created!\n");
-													}*/
+													}
 												}
 												break;
 											}
@@ -2033,10 +2028,10 @@ TypeDefinition *createTypeDefinition(struct jsonparse_state *jsonState, char jso
 														root->AddTypeDefinitions(root, obj);
 													}
 													DictionaryType *dictype = createDictionaryType(jsonState, jsonType, strJson, obj);
-													/*if(dictype != NULL)
+													if(dictype != NULL)
 														obj->AddDictionaryType(obj, dictype);
 													else
-														return NULL;*/
+														return NULL;
 												}
 												break;
 											}
