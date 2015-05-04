@@ -78,6 +78,7 @@ char* NodeType_internalGetKey(void* const this)
 
 char* NodeType_metaClassName(void * const this)
 {
+	/*
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("NodeType")) + 1);
@@ -87,6 +88,8 @@ char* NodeType_metaClassName(void * const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "NodeType";
 }
 
 void deletePoly_NodeType(void * const this)

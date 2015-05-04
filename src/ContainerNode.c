@@ -137,6 +137,7 @@ char* ContainerNode_internalGetKey(void* const this)
 
 char* ContainerNode_metaClassName(void* const this)
 {
+	/*
 	ContainerNode *pObj = (ContainerNode*)this;
 	char *name;
 
@@ -147,6 +148,8 @@ char* ContainerNode_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "ContainerNode";
 }
 
 ComponentInstance* ContainerNode_FindComponentsByID(ContainerNode* const this, char* id)

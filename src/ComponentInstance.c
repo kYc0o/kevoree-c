@@ -106,6 +106,7 @@ char* ComponentInstance_internalGetKey(void* const this)
 
 char* ComponentInstance_metaClassName(void* const this)
 {
+	/*
 	ComponentInstance *pObj = (ComponentInstance*)this;
 	char *name = NULL;
 
@@ -116,6 +117,8 @@ char* ComponentInstance_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "ComponentInstance";
 }
 
 void deletePoly_ComponentInstance(void* const this)

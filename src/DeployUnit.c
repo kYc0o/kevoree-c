@@ -134,7 +134,7 @@ char* DeployUnit_internalGetKey(void* const this)
 
 char* DeployUnit_metaClassName(void* const this)
 {
-	DeployUnit *pObj = (DeployUnit*)this;
+	/*DeployUnit *pObj = (DeployUnit*)this;
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("DeployUnit")) + 1);
@@ -144,6 +144,8 @@ char* DeployUnit_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "DeployUnit";
 }
 
 void DeployUnit_AddRequiredLibs(DeployUnit* const this, DeployUnit* ptr)

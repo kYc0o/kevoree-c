@@ -67,6 +67,7 @@ char* DictionaryType_internalGetKey(void* const this)
 
 char* DictionaryType_metaClassName(void* const this)
 {
+	/*
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("DictionaryType")) + 1);
@@ -76,6 +77,8 @@ char* DictionaryType_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "DictionaryType";
 }
 
 DictionaryAttribute* DictionaryType_FindAttributesByID(DictionaryType* const this, char* id)

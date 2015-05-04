@@ -136,6 +136,7 @@ char* DictionaryAttribute_internalGetKey(void* const this)
 
 char* DictionaryAttribute_metaClassName(void* const this)
 {
+	/*
 	DictionaryAttribute *pObj = (DictionaryAttribute*)this;
 	char *name;
 
@@ -146,6 +147,8 @@ char* DictionaryAttribute_metaClassName(void* const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "DictionaryAttribute";
 }
 
 void DictionaryAttribute_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)

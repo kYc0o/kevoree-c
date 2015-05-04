@@ -124,12 +124,8 @@ char* ChannelType_internalGetKey(void* const this)
 
 char* ChannelType_metaClassName(void* const this)
 {
-	ChannelType *pObj = (ChannelType*)this;
+	/*ChannelType *pObj = (ChannelType*)this;
 	char *name = NULL;
-
-	/*
-	 * TODO Avoid return an allocated string
-	 */
 
 	name = malloc(sizeof(char) * (strlen("ChannelType")) + 1);
 	if(name != NULL)
@@ -138,6 +134,8 @@ char* ChannelType_metaClassName(void* const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "ChannelType";
 }
 
 void ChannelType_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)

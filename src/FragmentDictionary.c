@@ -118,7 +118,7 @@ char* FragmentDictionary_internalGetKey(void* const this)
 
 char* FragmentDictionary_metaClassName(void* const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("FragmentDictionary")) + 1);
 	if(name != NULL)
@@ -127,6 +127,8 @@ char* FragmentDictionary_metaClassName(void* const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "FragmentDictionary";
 }
 
 void FragmentDictionary_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)

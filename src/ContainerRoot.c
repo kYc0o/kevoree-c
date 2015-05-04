@@ -85,7 +85,7 @@ ContainerRoot* new_ContainerRoot()
 
 char* ContainerRoot_metaClassName(void* const this)
 {
-	ContainerRoot *pObj = (ContainerRoot*)this;
+	/*ContainerRoot *pObj = (ContainerRoot*)this;
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("ContainerRoot")) + 1);
@@ -95,6 +95,8 @@ char* ContainerRoot_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "ContainerRoot";
 }
 
 char* ContainerRoot_internalGetKey(void* const this)

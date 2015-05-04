@@ -79,6 +79,7 @@ PortType* new_PortType()
 
 char* PortType_metaClassName(void * const this)
 {
+	/*
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("PortType")) + 1);
@@ -88,6 +89,8 @@ char* PortType_metaClassName(void * const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "PortType";
 }
 
 char* PortType_internalGetKey(void * const this)

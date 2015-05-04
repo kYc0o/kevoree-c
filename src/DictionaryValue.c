@@ -56,8 +56,6 @@ char *DictionaryValue_internalGetKey(void* const this)
 char* DictionaryValue_metaClassName(void* const this)
 {
 	/*
-	 * TODO avoid to send an allocated pointer
-	 */
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("DictionaryValue")) + 1);
@@ -67,6 +65,8 @@ char* DictionaryValue_metaClassName(void* const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "DictionaryValue";
 }
 
 void DictionaryValue_VisitAttributes(void *const this, char *parent, Visitor *visitor, bool recursive)

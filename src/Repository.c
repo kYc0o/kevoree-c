@@ -34,7 +34,7 @@ Repository* new_Repository()
 
 char* Repository_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("Repository")) + 1);
 	if(name != NULL)
@@ -43,6 +43,8 @@ char* Repository_metaClassName(void * const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "Repository";
 }
 
 char* Repository_internalGetKey(void * const this)

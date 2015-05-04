@@ -126,6 +126,7 @@ void delete_Channel(void* const this)
 
 char* Channel_metaClassName(void* const this)
 {
+	/*
 	Channel *pObj = (Channel*)this;
 	char *name = NULL;
 
@@ -136,6 +137,8 @@ char* Channel_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "Channel";
 }
 
 char* Channel_internalGetKey(void* const this)

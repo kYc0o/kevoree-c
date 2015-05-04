@@ -100,6 +100,7 @@ char* Group_internalGetKey(void* const this)
 
 char* Group_metaClassName(void* const this)
 {
+	/*
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("Group")) + 1);
@@ -109,6 +110,8 @@ char* Group_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "Group";
 }
 
 ContainerNode* Group_FindSubNodesByID(Group* const this, char* id)

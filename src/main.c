@@ -1340,7 +1340,7 @@ int main(void)
 		new_model->VisitPaths(new_model, visitor_print);
 
 		for (ModelTrace* entry = list_head(model_traces) ; entry != NULL; entry = list_item_next(entry)) {
-			entry->Delete(entry);		
+			//entry->Delete(entry);		
 		}
 
 		//TraceSequence *ts = new_TraceSequence();

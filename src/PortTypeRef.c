@@ -98,6 +98,7 @@ PortTypeRef* new_PortTypeRef(void)
 
 char* PortTypeRef_metaClassName(void * const this)
 {
+	/*
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("PortTypeRef")) + 1);
@@ -107,6 +108,8 @@ char* PortTypeRef_metaClassName(void * const this)
 		return NULL;
 
 	return name;
+	*/
+	return "PortTypeRef";
 }
 
 char* PortTypeRef_internalGetKey(void * const this)

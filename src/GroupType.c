@@ -73,6 +73,7 @@ GroupType* new_GroupType()
 
 char* GroupType_metaClassName(void* const this)
 {
+	/*
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("GroupType")) + 1);
@@ -82,6 +83,8 @@ char* GroupType_metaClassName(void* const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "GroupType";
 }
 
 char* GroupType_internalGetKey(void* const this)

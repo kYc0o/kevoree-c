@@ -86,7 +86,7 @@ TypeLibrary* new_TypeLibrary()
 
 char* TypeLibrary_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("TypeLibrary")) + 1);
 	if(name != NULL)
@@ -95,6 +95,8 @@ char* TypeLibrary_metaClassName(void * const this)
 		return NULL;
 
 	return name;
+	*/
+	return "TypeLibrary";
 }
 
 char* TypeLibrary_internalGetKey(void * const this)

@@ -76,7 +76,7 @@ char* Port_internalGetKey(void * const this)
 
 char* Port_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("Port")) + 1);
 	if(name != NULL)
@@ -85,6 +85,8 @@ char* Port_metaClassName(void * const this)
 		return NULL;
 
 	return name;
+	*/
+	return "Port";
 }
 
 MBinding* Port_FindBindingsByID(Port* const this, char* id)
