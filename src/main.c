@@ -14,6 +14,8 @@
 #include "list.h"
 #include "jsonparse.h"
 
+#include <mcheck.h>
+
 #define MAX_NUMBER 6
 
 #define DEBUG 1
@@ -1277,6 +1279,7 @@ int main(void)
 
 
 	printf("Starting Kevoree adaptations\n");
+	mtrace();
 
 	FILE *new_model_json = fopen("new_model-compact.json", "r");
 	fseek(new_model_json, 0L, SEEK_END);
@@ -1336,11 +1339,15 @@ int main(void)
 		visitor_print->secondAction = actionAdd;
 		new_model->VisitPaths(new_model, visitor_print);
 
-		TraceSequence *ts = new_TraceSequence();
+		for (ModelTrace* entry = list_head(model_traces) ; entry != NULL; entry = list_item_next(entry)) {
+			entry->Delete(entry);		
+		}
 
-		ts->populate(ts, model_traces);
+		//TraceSequence *ts = new_TraceSequence();
 
-		printf("%s\n", ts->toString(ts));
+		//ts->populate(ts, model_traces);
+
+		//printf("%s\n", ts->toString(ts));
 
 	}
 	else
@@ -1365,5 +1372,8 @@ int main(void)
 //	}
 
 	free(jsonModel);
+
+	muntrace();
+
 	return EXIT_SUCCESS;
 }

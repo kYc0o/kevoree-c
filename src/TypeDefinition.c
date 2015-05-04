@@ -135,15 +135,17 @@ char* TypeDefinition_internalGetKey(void * const this)
 
 char* TypeDefinition_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("TypeDefinition")) + 1);
 	if(name != NULL)
 		strcpy(name, "TypeDefinition");
 	else
 		return NULL;
+	
 
-	return name;
+	return name;*/
+	return "TypeDefinition";
 }
 
 void TypeDefinition_AddDeployUnit(TypeDefinition* const this, DeployUnit* ptr)

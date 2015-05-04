@@ -46,7 +46,7 @@ char* NamedElement_internalGetKey(void * const this)
 
 char* NamedElement_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("NamedElement")) + 1);
 	if(name != NULL)
@@ -55,6 +55,8 @@ char* NamedElement_metaClassName(void * const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "NamedElement";
 }
 
 void delete_NamedElement(void * const this)
