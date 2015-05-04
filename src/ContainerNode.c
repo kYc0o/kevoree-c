@@ -350,24 +350,7 @@ void ContainerNode_AddGroups(ContainerNode* const this, Group* ptr)
 		if(hashmap_get(this->groups, internalKey, (void**)(&container)) == MAP_MISSING)
 		{
 			if ((hashmap_put(this->groups, internalKey, ptr)) == MAP_OK) {
-				/*if (ptr->refs == NULL) {
-					if ((ptr->refs = hashmap_new()) == MAP_OK) {
-						PRINTF("INFO: group references created successfully!\n");
-					} else {
-						PRINTF("ERROR: group references cannot be created!\n");
-					}
-				}
-				if (ptr->refs != NULL) {
-					char *ref = malloc(sizeof(char) * (strlen("node[]") + strlen(this->internalGetKey(this))) + 1);
-					sprintf(ref, "node[%s]", this->internalGetKey(this));
-					char *key = malloc(sizeof(char) * (strlen(ref) + strlen("/groups[]") + strlen(internalKey)) + 1);
-					sprintf(key, "%s/groups[%s]", ref, internalKey);
-					if ((hashmap_put(ptr->refs, key, (void**)&ref)) == MAP_OK) {
-						PRINTF("INFO: group reference added successfully!\n");
-					} else {
-						PRINTF("ERROR: group reference cannot be added!\n");
-					}
-				}*/
+				PRINTF("INFO: Successfully added Group %s to ContainerNode %s\n", internalKey, this->internalGetKey(this));
 			}
 		}
 	}
