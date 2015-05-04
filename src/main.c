@@ -4,8 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
 #include "kevoree.h"
 #include "JSONModelLoader.h"
+#include "TraceSequence.h"
 
 #include "list.h"
 #include "jsonparse.h"
@@ -1274,7 +1278,7 @@ int main(void)
 
 	printf("Starting Kevoree adaptations\n");
 
-	FILE *new_model_json = fopen("new_model.json", "r");
+	FILE *new_model_json = fopen("new_model-compact.json", "r");
 	fseek(new_model_json, 0L, SEEK_END);
 	int modelLength = ftell(new_model_json);
 	fseek(new_model_json, 0L, SEEK_SET);
@@ -1332,39 +1336,33 @@ int main(void)
 		visitor_print->secondAction = actionAdd;
 		new_model->VisitPaths(new_model, visitor_print);
 
-		if((listLength = list_length(model_traces)))
-		{
-			ModelTrace *mt;
-			printf("[");
+		TraceSequence *ts = new_TraceSequence();
 
-			for (i = 0; i < listLength; ++i) {
-				if(isFirst)
-				{
-					mt = list_head(model_traces);
-					char *strTrace = mt->ToString(mt->pDerivedObj);
-					printf(strTrace);
-					free(strTrace);
-					isFirst = false;
-				}
-				else {
-					mt = list_item_next(mt);
-					char *strTrace = mt->ToString(mt->pDerivedObj);
-					printf(strTrace);
-					free(strTrace);
-				}
+		ts->populate(ts, model_traces);
 
-				if (i < listLength - 1) {
-					printf(",");
-				}
-			}
+		printf("%s\n", ts->toString(ts));
 
-			printf("]");
-		}
 	}
 	else
 	{
 		printf("ERROR: New model cannot be visited!\n");
 	}
+
+//	struct rusage r;
+//
+//	if((getrusage(RUSAGE_SELF, &r)) == 0) {
+//		printf("getrusage is working!\n");
+//	}
+//
+//	printf("ru_maxrss: %ld\n", r.ru_maxrss);
+//	printf("ru_idrss: %ld\n", r.ru_idrss);
+//	printf("ru_isrss: %ld\n", r.ru_isrss);
+//	printf("ru_ixrss: %ld\n", r.ru_ixrss);
+//	printf("Total memory: %ld\n", r.ru_isrss + r.ru_idrss);
+//
+//	while(true) {
+//
+//	}
 
 	free(jsonModel);
 	return EXIT_SUCCESS;
