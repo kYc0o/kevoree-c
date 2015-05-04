@@ -66,7 +66,7 @@ void delete_MBinding(void * const this)
 
 char* MBinding_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("MBinding")) + 1);
 	if(name != NULL)
@@ -74,7 +74,9 @@ char* MBinding_metaClassName(void * const this)
 	else
 		return NULL;
 
-	return name;
+	return name;*/
+
+	return "MBinding";
 }
 
 char* MBinding_internalGetKey(void * const this)

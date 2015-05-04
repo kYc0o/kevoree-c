@@ -57,7 +57,7 @@ char* NodeNetwork_internalGetKey(void * const this)
 
 char* NodeNetwork_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("NodeNetwork")) + 1);
 	if(name != NULL)
@@ -66,6 +66,8 @@ char* NodeNetwork_metaClassName(void * const this)
 		return NULL;
 
 	return name;
+	*/
+	return "NodeNetwork";
 }
 
 NodeLink* NodeNetwork_FindLinkByID(NodeNetwork* const this, char* id)

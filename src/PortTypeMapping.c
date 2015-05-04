@@ -47,7 +47,7 @@ PortTypeMapping* new_PortTypeMapping()
 
 char* PortTypeMapping_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("PortTypeMapping")) + 1);
 	if(name != NULL)
@@ -55,7 +55,8 @@ char* PortTypeMapping_metaClassName(void * const this)
 	else
 		return NULL;
 	
-	return name;
+	return name;*/
+	return "PortTypeMapping";
 }
 
 char* PortTypeMapping_internalGetKey(void * const this)

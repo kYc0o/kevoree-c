@@ -99,7 +99,7 @@ char* NetworkInfo_internalGetKey(void * const this)
 
 char* NetworkInfo_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("NetworkInfo")) + 1);
 	if(name != NULL)
@@ -108,6 +108,8 @@ char* NetworkInfo_metaClassName(void * const this)
 		return NULL;
 
 	return name;
+	*/
+	return "NetworkInfo";
 }
 
 void NetworkInfo_AddValues(NetworkInfo* const this, NetworkProperty* ptr)

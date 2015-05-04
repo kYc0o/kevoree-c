@@ -139,7 +139,7 @@ char* Dictionary_internalGetKey(void* const this)
 
 char* Dictionary_metaClassName(void* const this)
 {
-	Dictionary *pObj = (Dictionary*)this;
+	/*Dictionary *pObj = (Dictionary*)this;
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("Dictionary")) + 1);
@@ -149,6 +149,8 @@ char* Dictionary_metaClassName(void* const this)
 		return NULL;
 
 	return name;
+	*/
+	return "Dictionary";
 }
 
 void Dictionary_VisitAttributes(void* const this, char* parent, Visitor* visitor, bool recursive)

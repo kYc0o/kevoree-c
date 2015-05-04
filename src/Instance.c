@@ -197,7 +197,7 @@ char* Instance_internalGetKey(void* const this)
 
 char* Instance_metaClassName(void* const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("Instance")) + 1);
 	if(name != NULL)
@@ -205,7 +205,8 @@ char* Instance_metaClassName(void* const this)
 	else
 		return NULL;
 
-	return name;
+	return name;*/
+	return "Instance";
 }
 
 void deletePoly_Instance(void * const this)

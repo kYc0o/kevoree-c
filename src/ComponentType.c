@@ -120,7 +120,7 @@ char* ComponentType_internalGetKey(void* const this)
 
 char* ComponentType_metaClassName(void* const this)
 {
-	ComponentType *pObj = (ComponentType*)this;
+	/*ComponentType *pObj = (ComponentType*)this;
 	char *name;
 
 	name = malloc(sizeof(char) * (strlen("ComponentType")) + 1);
@@ -129,7 +129,8 @@ char* ComponentType_metaClassName(void* const this)
 	else
 		return NULL;
 
-	return name;
+	return name;*/
+	return "ComponentType";
 }
 
 PortTypeRef* ComponentType_FindRequiredByID(TypeDefinition* const this, char* id)

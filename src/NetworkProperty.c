@@ -84,7 +84,7 @@ char* NetworkProperty_internalGetKey(void * const this)
 
 char* NetworkProperty_metaClassName(void * const this)
 {
-	char *name = NULL;
+	/*char *name = NULL;
 
 	name = malloc(sizeof(char) * (strlen("NetworkProperty")) + 1);
 	if(name != NULL)
@@ -93,6 +93,8 @@ char* NetworkProperty_metaClassName(void * const this)
 		return NULL;
 	
 	return name;
+	*/
+	return "NetworkProperty";
 }
 
 void deletePoly_NetworkProperty(void * const this)

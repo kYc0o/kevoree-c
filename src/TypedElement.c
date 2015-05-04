@@ -87,7 +87,7 @@ TypedElement* new_TypedElement(void)
 
 char* TypedElement_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("TypedElement")) + 1);
 	if(name != NULL)
@@ -96,6 +96,9 @@ char* TypedElement_metaClassName(void * const this)
 		return NULL;
 
 	return name;
+	*/
+
+	return "TypedElement";
 }
 
 char* TypedElement_internalGetKey(void * const this)

@@ -56,7 +56,7 @@ char* NodeLink_internalGetKey(void * const this)
 
 char* NodeLink_metaClassName(void * const this)
 {
-	char *name;
+	/*char *name;
 
 	name = malloc(sizeof(char) * (strlen("NodeLink")) + 1);
 	if(name != NULL)
@@ -65,6 +65,8 @@ char* NodeLink_metaClassName(void * const this)
 		return NULL;
 
 	return name;
+	*/
+	return "NodeLink";
 }
 
 NetworkProperty* NodeLink_FindNetworkPropertiesByID(NodeLink* const this, char* id)
