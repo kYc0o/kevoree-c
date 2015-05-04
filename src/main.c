@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sys/time.h>
-#include <sys/resource.h>
 
 #include "kevoree.h"
 #include "JSONModelLoader.h"
@@ -1339,8 +1337,14 @@ int main(void)
 		visitor_print->secondAction = actionAdd;
 		new_model->VisitPaths(new_model, visitor_print);
 
-		for (ModelTrace* entry = list_head(model_traces) ; entry != NULL; entry = list_item_next(entry)) {
-			//entry->Delete(entry);		
+		int i, listLength;
+		bool isFirst = true;
+		ModelTrace *mt;
+		ModelTrace *mt2;
+
+		while (list_length(model_traces)) {
+			mt = list_pop(model_traces);
+			mt->Delete(mt);
 		}
 
 		//TraceSequence *ts = new_TraceSequence();
@@ -1354,22 +1358,6 @@ int main(void)
 	{
 		printf("ERROR: New model cannot be visited!\n");
 	}
-
-//	struct rusage r;
-//
-//	if((getrusage(RUSAGE_SELF, &r)) == 0) {
-//		printf("getrusage is working!\n");
-//	}
-//
-//	printf("ru_maxrss: %ld\n", r.ru_maxrss);
-//	printf("ru_idrss: %ld\n", r.ru_idrss);
-//	printf("ru_isrss: %ld\n", r.ru_isrss);
-//	printf("ru_ixrss: %ld\n", r.ru_ixrss);
-//	printf("Total memory: %ld\n", r.ru_isrss + r.ru_idrss);
-//
-//	while(true) {
-//
-//	}
 
 	free(jsonModel);
 
