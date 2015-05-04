@@ -279,7 +279,7 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 							case JSON_TYPE_STRING:
 								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 								Group *group = NULL;
-								char id[30];
+								char id[150];
 								sscanf(strJson, "%*[^[][%[^]]", id);
 								PRINTF("Looking for Group %s\n", id);
 
@@ -402,7 +402,7 @@ ContainerNode *createContainerNode(struct jsonparse_state *jsonState, char jsonT
 							case JSON_TYPE_STRING:
 								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 								TypeDefinition *typdef = NULL;
-								char id[30];
+								char id[150];
 								sscanf(strJson, "%*[^[][%[^]]", id);
 								PRINTF("Looking for TypeDefinition %s\n", id);
 
@@ -843,7 +843,7 @@ ComponentInstance *createComponentInstance(struct jsonparse_state *jsonState, ch
 							case JSON_TYPE_STRING:
 								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 								TypeDefinition *typdef = NULL;
-								char id[30];
+								char id[150];
 								sscanf(strJson, "%*[^[][%[^]]", id);
 								PRINTF("Looking for TypeDefinition %s\n", id);
 
@@ -1306,7 +1306,7 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 							case JSON_TYPE_STRING:
 								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 								TypeDefinition *typdef = NULL;
-								char id[30];
+								char id[150];
 								sscanf(strJson, "%*[^[][%[^]]", id);
 								PRINTF("Looking for TypeDefinition %s\n", id);
 
@@ -1369,7 +1369,7 @@ Group *createGroup(struct jsonparse_state *jsonState, char jsonType, char *strJs
 							case JSON_TYPE_STRING:
 								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 								ContainerNode *node = NULL;
-								char id[30];
+								char id[150];
 								sscanf(strJson, "%*[^[][%[^]]", id);
 								PRINTF("Looking for SubNode %s\n", id);
 
@@ -1901,7 +1901,7 @@ TypeDefinition *createTypeDefinition(struct jsonparse_state *jsonState, char jso
 							case JSON_TYPE_STRING:
 								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 								DeployUnit *du = NULL;
-								char id[100];
+								char id[150];
 								memset(&id[0], 0, sizeof(id));
 								sscanf(strJson, "%*[^[][%[^]]", id);
 								PRINTF("Looking for DeployUnit %s\n", id);
@@ -2443,7 +2443,7 @@ TypeLibrary *createTypeLibrary(struct jsonparse_state *jsonState, char jsonType,
 							case JSON_TYPE_STRING:
 								jsonparse_copy_value(jsonState, strJson, MAX_STRJSON_SIZE);
 								TypeDefinition *typdef = NULL;
-								char id[30];
+								char id[150];
 								sscanf(strJson, "%*[^[][%[^]]", id);
 								PRINTF("Looking for TypeDefinition %s\n", id);
 

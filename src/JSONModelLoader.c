@@ -100,13 +100,13 @@ int resolveReferences(any_t root, any_t objRef)
 {
 	ContainerRoot *model = (ContainerRoot*)root;
 	char *srcObj = NULL;
-	char srcId[50];
+	char srcId[100];
 	char *srcObjId = NULL;
 	char *refObj = NULL;
-	char refId[50];
+	char refId[100];
 	char *refObjId = NULL;
 	char *srcObj2 = NULL;
-	char srcId2[50];
+	char srcId2[100];
 	char *srcObjId2 = NULL;
 
 	if(objRef != NULL && model != NULL)
@@ -314,6 +314,7 @@ int resolveReferences(any_t root, any_t objRef)
 				Group *group = model->FindGroupsByID(model, srcId);
 				if(typdef != NULL && group != NULL)
 				{
+					PRINTF("Adding typeDefinition %s to group %s\n", typdef->internalGetKey(typdef), group->internalGetKey(group));
 					group->super->AddTypeDefinition(group->super, typdef);
 					return MAP_OK;
 				}
@@ -806,11 +807,14 @@ ContainerRoot *JSONKevDeserializer(struct jsonparse_state *jsonState, char _json
 		if(hashmap_iterate(loader->objects, resolveReferences, new_model) == MAP_OK)
 		{
 			loader->delete(loader);
+
+			PRINTF("INFO: Dependencies solved successfully\n");
 			return new_model;
 		}
 		else
 		{
 			loader->delete(loader);
+			PRINTF("ERROR: Dependencies cannot be resolved!\n");
 			return NULL;
 		}
 	}

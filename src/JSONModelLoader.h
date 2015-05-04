@@ -4,7 +4,7 @@
 #include "jsonparse.h"
 #include "hashmap.h"
 
-#define MAX_STRJSON_SIZE 100
+#define MAX_STRJSON_SIZE 200
 
 typedef struct _ContainerRoot ContainerRoot;
 typedef struct _JSONModelLoader JSONModelLoader;
