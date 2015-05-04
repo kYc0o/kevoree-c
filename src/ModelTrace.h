@@ -69,5 +69,6 @@ ModelRemoveTrace* new_ModelRemoveTrace(char* _srcPath, char* _refName, char* _ob
 ModelTrace *newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objPath);
 char* ModelRemoveTrace_ToString(void* const this);
 void delete_ModelRemoveTrace(void* const this);
+void deletePoly_ModelRemoveTrace(void* const this);
 
 #endif /*MODEL_TRACE_H */

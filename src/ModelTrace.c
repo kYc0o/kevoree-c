@@ -85,6 +85,7 @@ ModelTrace* newPoly_ModelSetTrace(char* _srcPath, char* _refName, /*char* _objPa
 	pModSetTraceObj->Delete = delete_ModelSetTrace;
 	pModSetTraceObj->ToString = ModelSetTrace_ToString;
 	pObj->ToString = ModelSetTrace_ToString;
+	pObj->Delete = deletePoly_ModelSetTrace;
 
 	return pObj;
 }
@@ -193,6 +194,7 @@ ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previou
 	pModAddTraceObj->Delete = delete_ModelAddTrace;
 	pModAddTraceObj->ToString = ModelAddTrace_ToString;
 	pObj->ToString = ModelAddTrace_ToString;
+	pObj->Delete = deletePoly_ModelAddTrace;
 
 	return pObj;
 }
@@ -303,6 +305,7 @@ ModelTrace *newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objP
 	pModRemTraceObj->Delete = delete_ModelRemoveTrace;
 	pModRemTraceObj->ToString = ModelRemoveTrace_ToString;
 	pObj->ToString = ModelRemoveTrace_ToString;
+	pObj->Delete = deletePoly_ModelRemoveTrace;
 
 	return pObj;
 }
