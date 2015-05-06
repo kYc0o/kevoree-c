@@ -16,6 +16,9 @@
 #include "Instance.h"
 #include "DictionaryValue.h"
 #include "ActionType.h"
+#include "TypeDefinition.h"
+#include "DeployUnit.h"
+#include "ComponentInstance.h"
 
 #include "list.h"
 
@@ -48,16 +51,7 @@ void Planner_compareModels(ContainerRoot *currModel, ContainerRoot *targetModel,
 
 	list_init(adaptations);
 
-	for (i = 0; i < tracesLength; ++i) {
-		if (!isFirst) {
-			trace = list_item_next(trace);
-		}
-		else
-		{
-			trace = list_head(traces->traces_list);
-			isFirst = false;
-		}
-
+	for (trace = list_head(traces->traces_list); trace != NULL; trace = list_item_next(trace)) {
 		PRINTF("INFO: Passing trace %s\n", trace->refName);
 
 		KMFContainer *modelElement = targetModel->FindByPath(trace->srcPath, targetModel);
@@ -79,10 +73,14 @@ void Planner_compareModels(ContainerRoot *currModel, ContainerRoot *targetModel,
 			}
 
 		} else if(!strcmp(trace->refName, "started")) {
-			if ((!strcmp(modelElement->metaClassName(modelElement), "ComponentInstance")) ||
-					(!strcmp(modelElement->metaClassName(modelElement), "ContainerNode")) ||
-					(!strcmp(modelElement->metaClassName(modelElement), "Group")) &&
-					(trace->vt->getType == SET)) {
+			if (
+					(
+							(!strcmp(modelElement->metaClassName(modelElement), "ComponentInstance")) /*||
+							(!strcmp(modelElement->metaClassName(modelElement), "ContainerNode")) ||
+							(!strcmp(modelElement->metaClassName(modelElement), "Group"))*/
+					) &&
+					(trace->vt->getType() == SET)
+				) {
 				ModelSetTrace *modelsettrace = (ModelSetTrace*)trace;
 
 				if (!strcmp(modelsettrace->srcPath, targetNode->path)) {
@@ -103,6 +101,13 @@ void Planner_compareModels(ContainerRoot *currModel, ContainerRoot *targetModel,
 				/*
 				 * Check why modelElement->eContainer->eContainer
 				 */
+			}
+		} else if (!strcmp(trace->refName, "typeDefinition")) {
+			if (!strcmp(modelElement->metaClassName(modelElement), "ComponentInstance")) {
+				ComponentInstance *ci = (ComponentInstance*)modelElement;
+				TypeDefinition *t = ci->super->typeDefinition;
+				DeployUnit *du = t->deployUnits;
+				AdaptationModel_add(Planner_adapt(AddDeployUnit, du));
 			}
 		}
 
