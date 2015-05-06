@@ -78,7 +78,7 @@ TraceSequence *TraceSequence_populate(TraceSequence *const this, list_t addTrace
 		list_add(this->traces_list, temp);
 	}
 
-	PRINTF("TraceSequence populated!\n");
+	PRINTF("INFO: TraceSequence populated!\n");
 
 	return this;
 }
@@ -91,7 +91,7 @@ char *TraceSequence_toString(TraceSequence *const this)
 
 	ModelTrace *mt;
 
-	PRINTF("Creating string traces!\n");
+	PRINTF("INFO: Creating string traces!\n");
 
 	listLength = list_length(this->traces_list);
 	sequences = malloc(strlen("[]"));
