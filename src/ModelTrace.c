@@ -43,23 +43,30 @@ static char
 			ActionType(SET),
 			((ModelSetTrace*)this)->srcPath,
 			((ModelSetTrace*)this)->refName);
-	
+
 	if(((ModelSetTrace*)this)->content != NULL)
 	{
 		sprintf(traceBuf, "%s, \"content\" : \"%s\"", traceBuf, ((ModelSetTrace*)this)->content);
 	}
-	
+
 	sprintf(traceBuf, "%s }\n", traceBuf);
 	char *r = strdup(traceBuf);
 	free(traceBuf);
 
 	return r;
-}  
+}
+
+static int
+ModelSetTrace_getType()
+{
+	return SET;
+}
 
 static const
 ModelTrace_VT modelSetTrace_VT = {
-	.ToString = ModelSetTrace_ToString,
-	.Delete = deletePoly_ModelSetTrace
+		.ToString = ModelSetTrace_ToString,
+		.Delete = deletePoly_ModelSetTrace,
+		.getType = ModelSetTrace_getType
 };
 
 ModelTrace* newPoly_ModelSetTrace(char* _srcPath, char* _refName, /*char* _objPath,*/ char* _content/*, char* _typeName*/)
@@ -68,11 +75,11 @@ ModelTrace* newPoly_ModelSetTrace(char* _srcPath, char* _refName, /*char* _objPa
 	ModelSetTrace* pModSetTraceObj = (ModelSetTrace*)malloc(sizeof(ModelSetTrace));
 
 	if (pModSetTraceObj == NULL) return NULL;
-	
+
 	pModSetTraceObj->srcPath = strdup(_srcPath);
 	pModSetTraceObj->refName = strdup(_refName);
 	pModSetTraceObj->content = strdup(_content);
-	
+
 	// hey, use this virtual method table
 	pModSetTraceObj->vt = &modelSetTrace_VT;
 
@@ -110,7 +117,7 @@ static char
 			ActionType(ADD),
 			pModAddTraceObj->srcPath,
 			pModAddTraceObj->refName);
-	
+
 	if(pModAddTraceObj->previousPath != NULL)
 	{
 		sprintf(traceBuf, "%s, \"previouspath\" : \"%s\"", traceBuf, ((ModelAddTrace*)this)->previousPath);
@@ -127,10 +134,17 @@ static char
 	return r;
 }
 
+static int
+ModelAddTrace_getType()
+{
+	return ADD;
+}
+
 static const
 ModelTrace_VT modelAddTrace_VT = {
-	.ToString = ModelAddTrace_ToString,
-	.Delete = deletePoly_ModelAddTrace
+		.ToString = ModelAddTrace_ToString,
+		.Delete = deletePoly_ModelAddTrace,
+		.getType = ModelAddTrace_getType
 };
 
 ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previousPath, char* _typeName)
@@ -141,7 +155,7 @@ ModelTrace* newPoly_ModelAddTrace(char* _srcPath, char* _refName, char* _previou
 	pModAddTraceObj = (ModelAddTrace*)malloc(sizeof(ModelAddTrace));
 
 	if (pModAddTraceObj == NULL) return NULL;
-	
+
 	pModAddTraceObj->srcPath = strdup(_srcPath);
 	pModAddTraceObj->refName = strdup(_refName);
 	pModAddTraceObj->previousPath = strdup(_previousPath);
@@ -187,10 +201,17 @@ static char
 	return r;
 }
 
+static int
+ModelRemoveTrace_getType()
+{
+	return REMOVE;
+}
+
 static const
 ModelTrace_VT modelRemoveTrace_VT = {
-	.ToString = ModelRemoveTrace_ToString,
-	.Delete = deletePoly_ModelRemoveTrace
+		.ToString = ModelRemoveTrace_ToString,
+		.Delete = deletePoly_ModelRemoveTrace,
+		.getType = ModelRemoveTrace_getType
 };
 
 ModelTrace *newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objPath)
@@ -201,11 +222,11 @@ ModelTrace *newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objP
 	pModRemTraceObj = (ModelRemoveTrace*)malloc(sizeof(ModelRemoveTrace));
 
 	if (pModRemTraceObj == NULL) return NULL;
-	
+
 	pModRemTraceObj->srcPath = strdup(_srcPath);
 	pModRemTraceObj->refName = strdup(_refName);
 	pModRemTraceObj->objPath = strdup(_objPath);
-	
+
 	pModRemTraceObj->vt = &modelRemoveTrace_VT;
 
 	return (ModelTrace*)pModRemTraceObj;

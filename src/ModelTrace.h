@@ -13,10 +13,12 @@
 
 typedef char *(*fptrModelTraceToString)(void*);
 typedef void (*fptrDeleteModelTrace)(void*);
+typedef int (*fptrGetType)(void);
 
 typedef struct {
 	fptrModelTraceToString ToString;
 	fptrDeleteModelTrace Delete;
+	fptrGetType getType;
 } ModelTrace_VT;
 
 // abstract
@@ -55,7 +57,7 @@ typedef struct {
 	const ModelTrace_VT* vt;
 	char *srcPath;
 	char *refName;
-	char* objPath;
+	char *objPath;
 } ModelRemoveTrace;
 
 ModelTrace *newPoly_ModelRemoveTrace(char* _srcPath, char* _refName, char* _objPath);
