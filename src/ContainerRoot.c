@@ -307,8 +307,10 @@ void ContainerRoot_AddNodes(ContainerRoot* const this, ContainerNode* ptr)
 			/*container = (ContainerNode*)ptr;*/
 			if(hashmap_put(this->nodes, internalKey, ptr) == MAP_OK) {
 				ptr->eContainer = "";
+				ptr->super->eContainer = ptr->eContainer;
 				ptr->path = malloc(sizeof(char) * (strlen("nodes[]") + strlen(internalKey)) + 1);
 				sprintf(ptr->path, "nodes[%s]", internalKey);
+				ptr->super->path = ptr->path;
 			}
 		}
 	}

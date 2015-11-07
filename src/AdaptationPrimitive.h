@@ -15,6 +15,7 @@ typedef struct _KMFContainer KMFContainer;
 typedef void (*fptrDeleteAP)(AdaptationPrimitive*);
 
 typedef struct _AdaptationPrimitive {
+	void *next;
 	fptrDeleteAP delete;
 	int priority;
 	int primitiveType;

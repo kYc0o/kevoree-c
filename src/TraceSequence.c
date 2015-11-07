@@ -41,11 +41,13 @@ void delete_TraceSequence(void *const this)
 		int i;
 		int length;
 		TraceSequence *ts = this;
+		ModelTrace *mt;
 
 		length = list_length(ts->traces_list);
 
 		for (i = 0; i < length; ++i) {
-			list_chop(ts->traces_list);
+			mt = list_chop(ts->traces_list);
+			mt->vt->Delete(mt);
 		}
 
 		free(this);

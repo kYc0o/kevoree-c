@@ -651,9 +651,11 @@ void* Instance_FindByPath(char* attribute, void* const this)
 			{
 				return pObj->dictionary;
 			}
-			else
+			else if (pObj->dictionary != NULL)
 			{
 				return pObj->dictionary->FindByPath(nextPath, pObj->dictionary);
+			} else {
+				return NULL;
 			}
 		}
 		else if(!strcmp("fragmentDictionary", obj))

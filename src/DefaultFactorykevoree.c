@@ -1189,7 +1189,9 @@ Dictionary *createDictionary(struct jsonparse_state *jsonState, char jsonType, c
 														inst->AddDictionary(inst, obj);
 													}
 													DictionaryValue *dicval = createDictionaryValue(jsonState, jsonType, strJson);
-													obj->AddValues(obj, dicval);
+													if (dicval != NULL) {
+														obj->AddValues(obj, dicval);
+													}
 												}
 												break;
 											}
